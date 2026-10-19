@@ -1,0 +1,129 @@
+/* =========================================
+   פונטים
+   ========================================= */
+@font-face {
+  font-family: "Pilowlava";
+  src: url("fonts/Pilowlava-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* =========================================
+   משתנים: צבעים, פונטים, גדלים וריווחים מהפיגמה
+   (הפריים בפיגמה ברוחב 1440px, לכן vw = פיקסלים / 14.4)
+   ========================================= */
+:root {
+  /* צבעים */
+  --color-red: #f10000;
+  --color-pink: #ffe5e5;
+
+  /* פונטים */
+  --font-display: "Pilowlava", sans-serif;
+  --font-label: "Bebas Neue", sans-serif;
+
+  /* גדלי טקסט: 150px ו-48px במחשב, קטנים יותר בטלפון */
+  --size-title: clamp(48px, 10.4vw, 150px);
+  --size-signature: clamp(24px, 3.33vw, 48px);
+
+  /* המסגרת: מרחק מקצה המסך, עובי קו ורדיוסים */
+  --frame-gap-x: clamp(12px, 2.1vw, 30px);
+  --frame-gap-y: clamp(12px, 2.8vw, 40px);
+  --frame-border: clamp(8px, 1.25vw, 18px);
+  --radius-outer: clamp(20px, 2.7vw, 39px);
+  --radius-inner: clamp(40px, 7.9vw, 114px);
+
+  /* ריווחים בתוך המסגרת */
+  --space-top: clamp(48px, 8.5vw, 123px);
+  --space-bottom: clamp(32px, 5.9vw, 85px);
+  --space-side: clamp(16px, 4vw, 60px);
+  --space-signature-gap: 0.25em;
+}
+
+/* =========================================
+   בסיס
+   ========================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-pink);
+  color: var(--color-red);
+  overflow: hidden; /* עמוד של מסך אחד, בלי גלילה */
+}
+
+/* =========================================
+   המסגרת: שכבה אדומה עם פינות קטנות,
+   ומעליה שכבה ורודה עם קו אדום ופינות גדולות
+   ========================================= */
+.frame {
+  position: fixed;
+  top: var(--frame-gap-y);
+  bottom: var(--frame-gap-y);
+  left: var(--frame-gap-x);
+  right: var(--frame-gap-x);
+  background-color: var(--color-red);
+  border-radius: var(--radius-outer);
+}
+
+.frame-inner {
+  height: 100%;
+  background-color: var(--color-pink);
+  border: var(--frame-border) solid var(--color-red);
+  border-radius: var(--radius-inner);
+
+  /* הכותרת למעלה, השם למטה */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-top) var(--space-side) var(--space-bottom);
+}
+
+/* =========================================
+   הכותרת "Coming Sooon..."
+   ========================================= */
+.coming-soon {
+  font-family: var(--font-display);
+  font-weight: normal;
+  font-size: var(--size-title);
+  line-height: normal;
+  text-align: left;
+}
+
+.coming-soon-line {
+  display: block;
+}
+
+/* השורה השנייה מוזזת מעט ימינה, כמו בפיגמה */
+.coming-soon-line--indent {
+  padding-left: 0.3em;
+}
+
+/* =========================================
+   שורת השם בתחתית
+   ========================================= */
+.signature {
+  font-size: var(--size-signature);
+  line-height: normal;
+  display: flex;
+  align-items: center;
+  gap: var(--space-signature-gap);
+  white-space: nowrap;
+}
+
+.signature-word {
+  font-family: var(--font-label);
+}
+
+.signature-mark {
+  font-family: var(--font-display);
+}
