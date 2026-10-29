@@ -47,3 +47,185 @@ document.querySelectorAll(".nav-button").forEach(function (button) {
   button.addEventListener("focus", startLoop);
   button.addEventListener("blur", stopLoop);
 });
+
+// =========================================
+// הפולרויד בעמוד הבית: נדחף כמו דף נייר כבד שנעוץ בנקודה אחת.
+// נקודת הציר היא מרכז הקצה העליון של התמונה (ראו .photo ב-styles.css).
+// אין קפיץ: התמונה נשארת בזווית שאליה נדחפה, ורק דחיפה נוספת מזיזה אותה.
+// =========================================
+
+const photo = document.querySelector(".photo");
+
+if (photo) {
+  // הגדרות כלליות
+  const maxAngle = 18;       // זווית מקסימלית (במעלות) לכל כיוון מהזווית בעיצוב
+  const edgeSlowdown = 3;    // ליד הקצה של הטווח התמונה מאטה בהדרגה (גדול יותר = עוצרת קרוב יותר לקצה)
+  const pushDuration = 60;   // כמה זמן (מילישניות) כל תנועת עכבר ממשיכה לדחוף
+  const newPushAfter = 250;  // הפסקה (מילישניות) שאחריה תנועת עכבר נחשבת דחיפה חדשה
+  const softStopSpeed = 6;   // מתחת למהירות הזאת החיכוך נחלש (עד שליש), כדי שהעצירה תהיה רכה
+  const tapPush = 12;        // דחיפה קטנה מנגיעה בטלפון (מעלות לשנייה)
+  const tempo = 1.3;         // קצב התנועה: 1 = הקצב המקורי, 1.3 = מהיר ב-30% (אותן זוויות, בפחות זמן)
+
+  // סוגי דחיפה. כל דחיפה חדשה מקבלת סוג אחר, כדי שהתנועה לא תרגיש חוזרת.
+  // strength: כמה חזק תנועת העכבר דוחפת
+  // buildUp:  כמה זמן (שניות) לוקח לנייר "להיגרר" אחרי היד. גדול = כבד ואיטי
+  // glide:    כמה זמן (שניות) הנייר ממשיך לגלוש אחרי שהיד עוזבת
+  // friction: חיכוך קבוע (מעלות לשנייה בשנייה) שעוצר את הגלישה
+  const pushTypes = [
+    { name: "heavy-slide", strength: 0.38, buildUp: 0.30, glide: 0.80, friction: 5 },
+    { name: "firm-shove",  strength: 0.50, buildUp: 0.16, glide: 0.45, friction: 9 },
+    { name: "soft-nudge",  strength: 0.26, buildUp: 0.38, glide: 0.35, friction: 4 },
+    { name: "lazy-drift",  strength: 0.32, buildUp: 0.50, glide: 1.10, friction: 2.5 },
+  ];
+
+  // הדחיפה בטלפון: עדינה, עם גלישה קצרה
+  const tapType = pushTypes[2];
+
+  // מי שביקש במחשב צמצום תנועה: לא מזיזים את התמונה
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  let angle = 0;          // הזווית הנוספת עכשיו (מעלות). נשמרת בין דחיפות
+  let speed = 0;          // מהירות הסיבוב (מעלות לשנייה)
+  let handSpeed = 0;      // המהירות שהיד "רוצה" לתת לנייר
+  let pushUntil = 0;      // עד מתי היד עדיין דוחפת
+  let lastPushTime = -Infinity;
+  let pushType = pushTypes[0];
+  let typeBag = [];       // הסוגים שעוד לא השתמשנו בהם בסבב הנוכחי
+  let lastPointer = null; // המיקום והזמן האחרונים של העכבר
+  let frame = null;       // מספר הפריים של האנימציה (null = האנימציה עצרה)
+  let lastFrameTime = 0;
+
+  // בוחר את סוג הדחיפה הבא: כל הסוגים בסדר אקראי, ואף פעם לא אותו סוג פעמיים ברצף
+  function nextPushType() {
+    if (typeBag.length === 0) {
+      typeBag = pushTypes.slice().sort(function () { return Math.random() - 0.5; });
+      if (typeBag[0] === pushType) {
+        typeBag.push(typeBag.shift());
+      }
+    }
+    return typeBag.shift();
+  }
+
+  // מחשב איפה נמצאת התמונה במסך: נקודת הציר, הגודל וההטיה
+  function getPhotoGeometry() {
+    const home = photo.offsetParent.getBoundingClientRect();
+    const width = photo.offsetWidth;
+    const height = photo.offsetHeight;
+    const tilt = parseFloat(getComputedStyle(photo).getPropertyValue("--photo-rotation"));
+    const tiltRadians = (tilt * Math.PI) / 180;
+    // מרכז התמונה, ומשם חצי גובה "למעלה" בכיוון של ההטיה
+    const centerX = home.left + photo.offsetLeft;
+    const centerY = home.top + photo.offsetTop;
+    return {
+      pivotX: centerX + (height / 2) * Math.sin(tiltRadians),
+      pivotY: centerY - (height / 2) * Math.cos(tiltRadians),
+      width: width,
+      height: height,
+      tilt: tilt,
+    };
+  }
+
+  // בודק אם נקודה במסך נמצאת על התמונה (כולל ההטיה והזווית הנוכחית).
+  // בודקים לפי חישוב ולא לפי אירועי עכבר על התמונה, כי הכותרת portfolio
+  // נמצאת מעל החלק העליון של התמונה
+  function pointOnPhoto(x, y) {
+    const photoBox = getPhotoGeometry();
+    const radians = (-(photoBox.tilt + angle) * Math.PI) / 180;
+    const dx = x - photoBox.pivotX;
+    const dy = y - photoBox.pivotY;
+    // מסובבים את הנקודה בחזרה, כאילו התמונה ישרה
+    const across = dx * Math.cos(radians) - dy * Math.sin(radians);
+    const down = dx * Math.sin(radians) + dy * Math.cos(radians);
+    return {
+      inside: Math.abs(across) <= photoBox.width / 2 && down >= 0 && down <= photoBox.height,
+      across: across,
+    };
+  }
+
+  // צעד אחד של האנימציה. הזמן מוכפל ב-tempo, כך שכל התנועה רצה מהר יותר
+  function step(time) {
+    const seconds = tempo * Math.min((time - lastFrameTime) / 1000, 1 / 30);
+    lastFrameTime = time;
+    const handIsPushing = time < pushUntil;
+
+    if (handIsPushing) {
+      // היד דוחפת: הנייר הכבד מגיע בהדרגה למהירות של היד
+      speed += (handSpeed - speed) * (1 - Math.exp(-seconds / pushType.buildUp));
+    } else {
+      // היד עזבה: הנייר גולש ומאט בהדרגה (התנגדות האוויר + חיכוך)
+      speed *= Math.exp(-seconds / pushType.glide);
+      const friction = pushType.friction * seconds * Math.max(0.3, Math.min(1, Math.abs(speed) / softStopSpeed));
+      speed = Math.sign(speed) * Math.max(0, Math.abs(speed) - friction);
+    }
+
+    // ליד הקצה של הטווח: ככל שמתקרבים לקצה, המהירות לכיוונו קטנה, בלי קפיצה
+    const room = maxAngle - Math.sign(speed) * angle;
+    speed = Math.sign(speed) * Math.min(Math.abs(speed), Math.max(0, room) * edgeSlowdown);
+    angle += speed * seconds;
+    angle = Math.max(-maxAngle, Math.min(maxAngle, angle));
+
+    // הנייר נעצר: עוצרים את האנימציה, והזווית נשארת כמו שהיא
+    if (!handIsPushing && Math.abs(speed) < 0.05) {
+      speed = 0;
+      frame = null;
+    } else {
+      frame = requestAnimationFrame(step);
+    }
+
+    photo.style.setProperty("--photo-swing", angle + "deg");
+  }
+
+  function startAnimation() {
+    if (frame) return;
+    lastFrameTime = performance.now();
+    frame = requestAnimationFrame(step);
+  }
+
+  // דוחף את התמונה. turn היא מהירות הסיבוב שהיד נותנת (מעלות לשנייה).
+  // אם עברה הפסקה מאז הדחיפה הקודמת, זו דחיפה חדשה עם סוג חדש
+  function pushPhoto(turn, now) {
+    if (now - lastPushTime > newPushAfter) {
+      pushType = nextPushType();
+      photo.dataset.push = pushType.name;
+    }
+    lastPushTime = now;
+    // מחלקים ב-tempo כדי שהתנועה המהירה יותר תגיע לאותן זוויות כמו קודם
+    handSpeed = (pushType.strength * turn) / tempo;
+    pushUntil = now + pushDuration;
+    startAnimation();
+  }
+
+  // עכבר: הדחיפה תלויה במהירות ובכיוון התנועה, ובמרחק מנקודת הציר
+  window.addEventListener("pointermove", function (event) {
+    if (event.pointerType === "touch" || reducedMotion.matches) return;
+
+    const now = performance.now();
+    if (lastPointer && pointOnPhoto(event.clientX, event.clientY).inside) {
+      const seconds = (now - lastPointer.time) / 1000;
+      if (seconds > 0) {
+        const photoBox = getPhotoGeometry();
+        const speedX = (event.clientX - lastPointer.x) / seconds;
+        const speedY = (event.clientY - lastPointer.y) / seconds;
+        const fromPivotX = event.clientX - photoBox.pivotX;
+        const fromPivotY = event.clientY - photoBox.pivotY;
+        // מהירות הסיבוב שהיד נותנת (במעלות לשנייה).
+        // תנועה ימינה מתחת לציר מסובבת נגד כיוון השעון, כך שהתחתית זזה ימינה
+        const turn = (fromPivotX * speedY - fromPivotY * speedX) / (photoBox.height * photoBox.height);
+        pushPhoto(turn * (180 / Math.PI), now);
+      }
+    }
+    lastPointer = { x: event.clientX, y: event.clientY, time: now };
+  });
+
+  // טלפון: נגיעה בתמונה נותנת דחיפה קטנה אחת, הרחק מהאצבע
+  window.addEventListener("pointerdown", function (event) {
+    if (event.pointerType !== "touch" || reducedMotion.matches) return;
+
+    const touch = pointOnPhoto(event.clientX, event.clientY);
+    if (!touch.inside) return;
+    pushType = tapType;
+    lastPushTime = performance.now();
+    speed += touch.across > 0 ? tapPush : -tapPush;
+    startAnimation();
+  });
+}

@@ -11,21 +11,39 @@
 
 @font-face {
   font-family: "TheBasics Corporate";
+  src: url("fonts/TheBasics_Corporate-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TheBasics Corporate";
   src: url("fonts/TheBasics_Corporate-Medium.otf") format("opentype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
+@font-face {
+  font-family: "TheBasics Corporate";
+  src: url("fonts/TheBasics_Corporate-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* =========================================
    משתנים
-   הכול בנוי על רשת אחת של משבצות ריבועיות.
-   אזור העיצוב מהפיגמה הוא 15 משבצות לרוחב ו-9 לגובה (משבצת = 96px בפיגמה).
-   גודל המשבצת נקבע כך שאזור העיצוב ייכנס בחלון, והגריד ממשיך
-   מסביבו עד קצות החלון (גם משבצות חלקיות).
+   כל עמוד בנוי על רשת אחת של משבצות ריבועיות (משבצת = 96px בפיגמה).
    מיקומים כתובים במשבצות: עמודה 0 ושורה 0 הן הפינה השמאלית העליונה
    של אזור העיצוב.
    ========================================= */
+
+/* ----- עמוד הבית (ברירת המחדל) -----
+   אזור העיצוב הוא 15 משבצות לרוחב ו-9 לגובה, ממורכז בחלון.
+   גודל המשבצת נקבע כך שאזור העיצוב ייכנס בחלון, והגריד ממשיך
+   מסביבו עד קצות החלון (גם משבצות חלקיות). */
 :root {
   /* הרשת */
   --grid-columns: 15;
@@ -39,11 +57,18 @@
   /* המיקום של אזור העיצוב, ממורכז בחלון */
   --grid-left: round(down, (100vw - var(--grid-columns) * var(--cell)) / 2, 1px);
   --grid-top: round(down, (100dvh - var(--grid-rows) * var(--cell)) / 2, 1px);
+  /* מאיפה מתחילים אריחי הגריד ברקע */
+  --grid-lines-position: var(--grid-left) var(--grid-top);
 
   /* צבעים */
   --color-blue: #2f8cf4;
   --color-pink: #fea7ec;
   --color-yellow: #ffff05;
+  --color-mint: #effff9;
+
+  /* צבעי העמוד */
+  --page-background: var(--color-blue);
+  --grid-line-color: var(--color-pink);
 
   /* פונטים */
   --font-title: "Reisinger Michal", sans-serif;
@@ -58,9 +83,12 @@
   --year-tracking: calc(var(--cell) * 2.25 / 96);
   --title-size: calc(var(--cell) * 275 / 96);
 
-  /* כפתורים: עמודה, שורה וגודל (במשבצות) */
+  /* כפתורים: גודל (במשבצות) */
   --button-columns: 2;
   --button-rows: 1;
+  --button-padding: calc(var(--cell) * 10 / 96);
+
+  /* כפתורים בעמוד הבית: עמודה ושורה */
   --button-top-row: 1;
   --button-bottom-row: 7;
   --home-column: 2;
@@ -68,7 +96,6 @@
   --about-column: 8;
   --contact-column: 11;
   --process-column: 2;
-  --button-padding: calc(var(--cell) * 10 / 96);
 
   /* בלחיצה הטקסט קטן מ-25px ל-20px, כמו ב-State3 בפיגמה (20/25 = 0.8) */
   --pressed-scale: 0.8;
@@ -99,6 +126,87 @@
   --transition-speed: 0.25s;
 }
 
+/* ----- עמוד התהליך -----
+   אזור העיצוב הוא 14 משבצות לרוחב ו-20 לגובה, עם מסגרת קו מסביב
+   ושוליים מנטה בלי קווים (כמו בפיגמה). הרוחב קובע את גודל המשבצת:
+   14 משבצות + חצי משבצת שוליים מכל צד = 15. העמוד נגלל לגובה. */
+:root.page-process {
+  --grid-columns: 14;
+  --grid-rows: 20;
+  --cell: round(down, 100vw / 15, 1px);
+  --grid-top: round(down, var(--cell) * 0.38, 1px);
+  --grid-bottom: round(down, var(--cell) * 0.42, 1px);
+  /* כאן הגריד הוא רקע של אזור העיצוב עצמו, ולכן מתחיל מהפינה שלו */
+  --grid-lines-position: 0 0;
+
+  --page-background: var(--color-mint);
+  --grid-line-color: var(--color-blue);
+
+  /* טקסטים (בפיגמה: 24px, והכותרת 96px) */
+  --label-size: calc(var(--cell) * 24 / 96);
+  --heading-size: var(--cell);
+  --heading-line-height: 0.99355;
+  --heading-tracking: -0.04em;
+
+  /* הכותרת Process */
+  --heading-column: 0.286;
+  --heading-row: 0.089;
+
+  /* כפתור HOME */
+  --home-button-column: 12;
+  --home-button-row: 0;
+
+  /* מלבנים שמאחדים משבצות (מסתירים את הקווים שבתוכם) */
+  --box-1-row: 1;   --box-1-columns: 5;  --box-1-rows: 1;
+  --box-2-row: 2;   --box-2-columns: 5;  --box-2-rows: 3;
+  --box-3-row: 5;   --box-3-columns: 7;  --box-3-rows: 1;
+  --box-4-row: 6;   --box-4-columns: 13; --box-4-rows: 5;
+  --box-5-row: 11;  --box-5-columns: 5;  --box-5-rows: 1;
+  --box-6-row: 12;  --box-6-columns: 12; --box-6-rows: 6;
+
+  /* תוויות טקסט: עמודה ושורה */
+  --date-1-column: 0.276;          --date-1-row: 1.401;
+  --coming-soon-label-column: 2.474; --coming-soon-label-row: 1.401;
+  --date-2-column: 0.359;          --date-2-row: 5.38;
+  --direction-one-column: 2.276;   --direction-one-row: 5.38;
+  --direction-two-column: 0.224;   --direction-two-row: 11.411;
+
+  /* תמונות: עמודה, שורה, רוחב וגובה (במשבצות) */
+  --coming-soon-column: 0.224;  --coming-soon-row: 2.057;  --coming-soon-columns: 4.062; --coming-soon-rows: 2.885;
+  --board-column: 0.224;        --board-row: 6.266;        --board-columns: 3.729;       --board-rows: 4.281;
+  --green-column: 4.339;        --green-row: 6.276;        --green-columns: 3.719;       --green-rows: 1.562;
+  --blue-column: 4.339;         --blue-row: 8.214;         --blue-columns: 3.719;        --blue-rows: 1.562;
+  --pink-column: 8.443;         --pink-row: 6.276;         --pink-columns: 3.719;        --pink-rows: 1.552;
+  --moodboard-column: 0.224;    --moodboard-row: 12.182;   --moodboard-columns: 3.74;    --moodboard-rows: 5.698;
+  --option-1-column: 4.182;     --option-1-row: 12.203;    --option-1-columns: 3.792;    --option-1-rows: 1.469;
+  --option-2-column: 8.13;      --option-2-row: 12.203;    --option-2-columns: 3.76;     --option-2-rows: 1.469;
+  --option-3-column: 4.203;     --option-3-row: 13.911;    --option-3-columns: 3.771;    --option-3-rows: 1.448;
+  --option-4-column: 8.141;     --option-4-row: 13.911;    --option-4-columns: 3.76;     --option-4-rows: 1.448;
+
+  /* שלושה חיתוכים מאותו צילום מסך (direction-one-board.png), כמו בפיגמה:
+     רוחב, גובה, ומיקום התמונה בתוך המסגרת */
+  --board-crop-width: 212.01%;  --board-crop-height: 142.09%;  --board-crop-left: -108.1%;  --board-crop-top: -4.38%;
+  --green-crop-width: 212.61%;  --green-crop-height: 389.33%;  --green-crop-left: -2.24%;   --green-crop-top: -10.67%;
+  --blue-crop-width: 212.61%;   --blue-crop-height: 389.33%;   --blue-crop-left: -2.09%;    --blue-crop-top: -147.37%;
+
+  /* עיגולים צבעוניים: קוטר, ועמודה ושורה של כל עיגול */
+  --circle-size: 0.76;
+  --circle-1-column: 10.02;  --circle-1-row: 0.57;
+  --circle-2-column: 12.54;  --circle-2-row: 11.32;
+  --circle-3-column: 8.64;   --circle-3-row: 2.6;
+  --circle-4-column: 11.57;  --circle-4-row: 8.18;
+  --circle-5-column: 5.64;   --circle-5-row: 16.53;
+  --circle-6-column: 11.14;  --circle-6-row: 3.74;
+  --circle-7-column: 6.73;   --circle-7-row: 10.02;
+  --circle-8-column: 9.03;   --circle-8-row: 17.62;
+  --circle-9-column: 6.08;   --circle-9-row: 3.51;
+  --circle-10-column: 12.49; --circle-10-row: 2.21;
+  --circle-11-column: 9.69;  --circle-11-row: 10.64;
+  --circle-12-column: 12.87; --circle-12-row: 16.53;
+  --circle-13-column: 12.64; --circle-13-row: 5.23;
+  --circle-14-column: 13.26; --circle-14-row: 14.55;
+}
+
 /* =========================================
    בסיס
    ========================================= */
@@ -108,45 +216,22 @@
   padding: 0;
 }
 
+body {
+  background-color: var(--page-background);
+}
+
 /* =========================================
-   הרקע: קווי הגריד מצוירים ב-CSS על כל החלון.
+   קווי הגריד, מצוירים ב-CSS.
    כל אריח הוא משבצת אחת, עם קו בצד שמאל ובצד העליון.
    האריחים מתחילים מהפינה של אזור העיצוב, כך שהקווים
    נופלים בדיוק על אותם מקומות שבהם ממוקמים הכפתורים.
    ========================================= */
-body {
-  height: 100dvh;
-  overflow: hidden; /* עמוד של מסך אחד, בלי גלילה */
-  background-color: var(--color-blue);
+.grid-lines {
   background-image:
-    linear-gradient(to right, var(--color-pink) var(--line), transparent var(--line)),
-    linear-gradient(to bottom, var(--color-pink) var(--line), transparent var(--line));
+    linear-gradient(to right, var(--grid-line-color) var(--line), transparent var(--line)),
+    linear-gradient(to bottom, var(--grid-line-color) var(--line), transparent var(--line));
   background-size: var(--cell) var(--cell);
-  background-position: var(--grid-left) var(--grid-top);
-}
-
-/* המסגרת הוורודה סביב החלון, מעל הכול */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  border: var(--frame-border) solid var(--color-pink);
-  pointer-events: none;
-}
-
-/* =========================================
-   אזור העיצוב מהפיגמה, ממורכז בחלון
-   ========================================= */
-.home {
-  position: absolute;
-  left: var(--grid-left);
-  top: var(--grid-top);
-  width: calc(var(--grid-columns) * var(--cell) + var(--line));
-  height: calc(var(--grid-rows) * var(--cell) + var(--line));
-  color: var(--color-yellow);
-  font-family: var(--font-text);
-  font-weight: 500;
-  line-height: var(--line-height);
+  background-position: var(--grid-lines-position);
 }
 
 /* =========================================
@@ -164,62 +249,12 @@ body::after {
   border: var(--line) solid transparent;
 }
 
-/* =========================================
-   "ORI KURZ" ו-"2026"
-   ========================================= */
-.name-box,
-.year-box {
-  --row: var(--text-row);
-  --rows: 1;
-  padding-top: var(--text-offset);
-  font-size: var(--text-size);
-  text-align: center;
-  white-space: nowrap;
-}
-
-/* מלבן כחול עם מסגרת ורודה: מסתיר את הקו שבין שתי המשבצות */
-.name-box {
-  --column: var(--name-column);
-  --columns: var(--name-columns);
-  background-color: var(--color-blue);
-  border-color: var(--color-pink);
-  letter-spacing: var(--text-tracking);
-}
-
-.year-box {
-  --column: var(--year-column);
-  --columns: var(--year-columns);
-  letter-spacing: var(--year-tracking);
-}
-
-/* =========================================
-   הפולרויד: ממוקם לפי המרכז שלו, ומסובב
-   ========================================= */
-.photo {
+/* on-grid: רכיב שממוקם על הרשת אבל לא חייב ליפול על הקווים
+   (תמונות, טקסטים, עיגולים). גם הוא משתמש ב---column וב---row */
+.on-grid {
   position: absolute;
-  left: calc(var(--photo-center-column) * var(--cell));
-  top: calc(var(--photo-center-row) * var(--cell));
-  width: var(--photo-width);
-  height: var(--photo-height);
-  object-fit: cover;
-  transform: translate(-50%, -50%) rotate(var(--photo-rotation));
-}
-
-/* =========================================
-   הכותרת "portfolio", ממורכזת ברוחב אזור העיצוב
-   ========================================= */
-.title {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: var(--title-top);
-  padding-top: var(--title-font-offset);
-  font-family: var(--font-title);
-  font-weight: bold;
-  font-size: var(--title-size);
-  line-height: var(--line-height);
-  text-align: center;
-  white-space: nowrap;
+  left: calc(var(--column) * var(--cell));
+  top: calc(var(--row) * var(--cell));
 }
 
 /* =========================================
@@ -234,9 +269,12 @@ body::after {
   justify-content: center;
   padding: var(--button-padding);
   background-color: var(--color-blue);
-  border-color: var(--color-pink);
+  border-color: var(--grid-line-color);
   color: var(--color-yellow);
+  font-family: var(--font-text);
+  font-weight: 500;
   font-size: var(--text-size);
+  line-height: var(--line-height);
   letter-spacing: var(--text-tracking);
   text-decoration: none;
   white-space: nowrap;
@@ -270,7 +308,100 @@ body::after {
   letter-spacing: 0;
 }
 
-/* המיקום של כל כפתור על הרשת */
+/* =========================================
+   עמוד הבית
+   ========================================= */
+
+/* עמוד של מסך אחד, בלי גלילה. הגריד הוא הרקע של כל החלון */
+.page-home body {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* המסגרת הוורודה סביב החלון, מעל הכול */
+.page-home body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  border: var(--frame-border) solid var(--grid-line-color);
+  pointer-events: none;
+}
+
+/* אזור העיצוב מהפיגמה, ממורכז בחלון */
+.home {
+  position: absolute;
+  left: var(--grid-left);
+  top: var(--grid-top);
+  width: calc(var(--grid-columns) * var(--cell) + var(--line));
+  height: calc(var(--grid-rows) * var(--cell) + var(--line));
+  color: var(--color-yellow);
+  font-family: var(--font-text);
+  font-weight: 500;
+  line-height: var(--line-height);
+}
+
+/* ----- "ORI KURZ" ו-"2026" ----- */
+.name-box,
+.year-box {
+  --row: var(--text-row);
+  --rows: 1;
+  padding-top: var(--text-offset);
+  font-size: var(--text-size);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* מלבן כחול עם מסגרת בצבע הקו: מסתיר את הקו שבין שתי המשבצות */
+.name-box {
+  --column: var(--name-column);
+  --columns: var(--name-columns);
+  background-color: var(--color-blue);
+  border-color: var(--grid-line-color);
+  letter-spacing: var(--text-tracking);
+}
+
+.year-box {
+  --column: var(--year-column);
+  --columns: var(--year-columns);
+  letter-spacing: var(--year-tracking);
+}
+
+/* ----- הפולרויד: ממוקם לפי המרכז שלו, ומסובב -----
+   --photo-swing היא הזווית הנוספת כשהעכבר דוחף את התמונה (script.js).
+   הסיבוב הנוסף הוא סביב מרכז הקצה העליון של הפולרויד (כולל ההטיה שלו):
+   זזים חצי גובה למעלה, מסובבים, וחוזרים חצי גובה למטה. */
+.photo {
+  --photo-swing: 0deg;
+  position: absolute;
+  left: calc(var(--photo-center-column) * var(--cell));
+  top: calc(var(--photo-center-row) * var(--cell));
+  width: var(--photo-width);
+  height: var(--photo-height);
+  object-fit: cover;
+  transform:
+    translate(-50%, -50%)
+    rotate(var(--photo-rotation))
+    translateY(-50%)
+    rotate(var(--photo-swing))
+    translateY(50%);
+}
+
+/* ----- הכותרת "portfolio", ממורכזת ברוחב אזור העיצוב ----- */
+.title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--title-top);
+  padding-top: var(--title-font-offset);
+  font-family: var(--font-title);
+  font-weight: bold;
+  font-size: var(--title-size);
+  line-height: var(--line-height);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ----- המיקום של כל כפתור על הרשת ----- */
 .nav-button--home {
   --column: var(--home-column);
   --row: var(--button-top-row);
@@ -295,3 +426,139 @@ body::after {
   --column: var(--process-column);
   --row: var(--button-bottom-row);
 }
+
+/* =========================================
+   עמוד התהליך
+   ========================================= */
+
+/* העמוד נגלל לגובה, בלי גלילה לרוחב */
+.page-process body {
+  overflow-x: hidden;
+}
+
+/* גובה העמוד: שוליים + 20 שורות + שוליים */
+.process-page {
+  position: relative;
+  height: calc(var(--grid-top) + var(--grid-rows) * var(--cell) + var(--line) + var(--grid-bottom));
+  color: var(--color-blue);
+  font-family: var(--font-text);
+  line-height: var(--line-height);
+}
+
+/* אזור העיצוב: 14x20 משבצות, ממורכז לרוחב. הקווים הם הרקע שלו */
+.process-grid {
+  position: absolute;
+  left: var(--grid-left);
+  top: var(--grid-top);
+  width: calc(var(--grid-columns) * var(--cell) + var(--line));
+  height: calc(var(--grid-rows) * var(--cell) + var(--line));
+}
+
+/* ----- הכותרת Process ----- */
+.process-heading {
+  --column: var(--heading-column);
+  --row: var(--heading-row);
+  font-weight: 900;
+  font-size: var(--heading-size);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-tracking);
+  white-space: nowrap;
+}
+
+/* ----- כפתור HOME ----- */
+.process-home-button {
+  --column: var(--home-button-column);
+  --row: var(--home-button-row);
+}
+
+/* ----- מלבני מנטה שמאחדים משבצות. כולם מתחילים בעמודה 0 ----- */
+.merge-box {
+  --column: 0;
+  background-color: var(--color-mint);
+  border-color: var(--grid-line-color);
+}
+
+.merge-box--1 { --row: var(--box-1-row); --columns: var(--box-1-columns); --rows: var(--box-1-rows); }
+.merge-box--2 { --row: var(--box-2-row); --columns: var(--box-2-columns); --rows: var(--box-2-rows); }
+.merge-box--3 { --row: var(--box-3-row); --columns: var(--box-3-columns); --rows: var(--box-3-rows); }
+.merge-box--4 { --row: var(--box-4-row); --columns: var(--box-4-columns); --rows: var(--box-4-rows); }
+.merge-box--5 { --row: var(--box-5-row); --columns: var(--box-5-columns); --rows: var(--box-5-rows); }
+.merge-box--6 { --row: var(--box-6-row); --columns: var(--box-6-columns); --rows: var(--box-6-rows); }
+
+/* ----- תוויות טקסט (#תאריך ועוד) ----- */
+.process-label {
+  font-weight: 400;
+  font-size: var(--label-size);
+  white-space: pre; /* שומר על הרווח הכפול שיש בפיגמה ב-"Direction two" */
+}
+
+.process-label--date-1 { --column: var(--date-1-column); --row: var(--date-1-row); }
+.process-label--coming-soon { --column: var(--coming-soon-label-column); --row: var(--coming-soon-label-row); }
+.process-label--date-2 { --column: var(--date-2-column); --row: var(--date-2-row); }
+.process-label--direction-one { --column: var(--direction-one-column); --row: var(--direction-one-row); }
+.process-label--direction-two { --column: var(--direction-two-column); --row: var(--direction-two-row); }
+
+/* ----- תמונות התהליך ----- */
+.shot {
+  width: calc(var(--columns) * var(--cell));
+  height: calc(var(--rows) * var(--cell));
+  object-fit: cover;
+}
+
+/* התמונה ממלאת את המסגרת ונחתכת מלמטה / מלמעלה, כמו בפיגמה */
+.shot--align-top {
+  object-position: center top;
+}
+
+.shot--align-bottom {
+  object-position: center bottom;
+}
+
+.shot--coming-soon { --column: var(--coming-soon-column); --row: var(--coming-soon-row); --columns: var(--coming-soon-columns); --rows: var(--coming-soon-rows); }
+.shot--board       { --column: var(--board-column);       --row: var(--board-row);       --columns: var(--board-columns);       --rows: var(--board-rows); }
+.shot--green       { --column: var(--green-column);       --row: var(--green-row);       --columns: var(--green-columns);       --rows: var(--green-rows); }
+.shot--blue        { --column: var(--blue-column);        --row: var(--blue-row);        --columns: var(--blue-columns);        --rows: var(--blue-rows); }
+.shot--pink        { --column: var(--pink-column);        --row: var(--pink-row);        --columns: var(--pink-columns);        --rows: var(--pink-rows); }
+.shot--moodboard   { --column: var(--moodboard-column);   --row: var(--moodboard-row);   --columns: var(--moodboard-columns);   --rows: var(--moodboard-rows); }
+.shot--option-1    { --column: var(--option-1-column);    --row: var(--option-1-row);    --columns: var(--option-1-columns);    --rows: var(--option-1-rows); }
+.shot--option-2    { --column: var(--option-2-column);    --row: var(--option-2-row);    --columns: var(--option-2-columns);    --rows: var(--option-2-rows); }
+.shot--option-3    { --column: var(--option-3-column);    --row: var(--option-3-row);    --columns: var(--option-3-columns);    --rows: var(--option-3-rows); }
+.shot--option-4    { --column: var(--option-4-column);    --row: var(--option-4-row);    --columns: var(--option-4-columns);    --rows: var(--option-4-rows); }
+
+/* חיתוך: מסגרת שמסתירה את מה שבחוץ, והתמונה בפנים גדולה ומוזזת */
+.shot-crop {
+  overflow: hidden;
+}
+
+.shot-crop img {
+  position: absolute;
+  width: var(--crop-width);
+  height: var(--crop-height);
+  left: var(--crop-left);
+  top: var(--crop-top);
+}
+
+.shot--board { --crop-width: var(--board-crop-width); --crop-height: var(--board-crop-height); --crop-left: var(--board-crop-left); --crop-top: var(--board-crop-top); }
+.shot--green { --crop-width: var(--green-crop-width); --crop-height: var(--green-crop-height); --crop-left: var(--green-crop-left); --crop-top: var(--green-crop-top); }
+.shot--blue  { --crop-width: var(--blue-crop-width);  --crop-height: var(--blue-crop-height);  --crop-left: var(--blue-crop-left);  --crop-top: var(--blue-crop-top); }
+
+/* ----- עיגולים צבעוניים ----- */
+.circle {
+  width: calc(var(--circle-size) * var(--cell));
+  height: calc(var(--circle-size) * var(--cell));
+}
+
+.circle--1  { --column: var(--circle-1-column);  --row: var(--circle-1-row); }
+.circle--2  { --column: var(--circle-2-column);  --row: var(--circle-2-row); }
+.circle--3  { --column: var(--circle-3-column);  --row: var(--circle-3-row); }
+.circle--4  { --column: var(--circle-4-column);  --row: var(--circle-4-row); }
+.circle--5  { --column: var(--circle-5-column);  --row: var(--circle-5-row); }
+.circle--6  { --column: var(--circle-6-column);  --row: var(--circle-6-row); }
+.circle--7  { --column: var(--circle-7-column);  --row: var(--circle-7-row); }
+.circle--8  { --column: var(--circle-8-column);  --row: var(--circle-8-row); }
+.circle--9  { --column: var(--circle-9-column);  --row: var(--circle-9-row); }
+.circle--10 { --column: var(--circle-10-column); --row: var(--circle-10-row); }
+.circle--11 { --column: var(--circle-11-column); --row: var(--circle-11-row); }
+.circle--12 { --column: var(--circle-12-column); --row: var(--circle-12-row); }
+.circle--13 { --column: var(--circle-13-column); --row: var(--circle-13-row); }
+.circle--14 { --column: var(--circle-14-column); --row: var(--circle-14-row); }
