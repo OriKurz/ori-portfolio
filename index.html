@@ -4,35 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ori Kurz — Portfolio</title>
-
-  <!-- פונט Bebas Neue (לשורת השם למטה) מ-Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- המסגרת האדומה עם הפינות המעוגלות -->
-  <main class="frame">
-    <div class="frame-inner">
+  <!-- עמוד הבית: הפריים HOME מהפיגמה.
+       קווי הגריד מצוירים ב-CSS על כל החלון (ברקע של body),
+       ואזור העיצוב (15x9 משבצות) ממורכז מעליהם -->
+  <main class="home">
 
-      <!-- הכותרת הגדולה -->
-      <h1 class="coming-soon">
-        <span class="coming-soon-line">Coming</span>
-        <span class="coming-soon-line coming-soon-line--indent">Sooon...</span>
-      </h1>
-
-      <!-- השם בתחתית: "#" בפונט Pilowlava נראה כמו כוכבית -->
-      <p class="signature">
-        <span class="signature-word">ori kurz</span>
-        <span class="signature-mark">#</span>
-        <span class="signature-word">PORTFOLIO</span>
-      </p>
-
+    <!-- "ORI KURZ" על מלבן כחול שמסתיר את הקו שבאמצע -->
+    <div class="grid-box name-box">
+      <p class="name">ORI KURZ</p>
     </div>
+
+    <!-- הפולרויד, מסובב כמו בפיגמה -->
+    <img class="photo" src="Images/ME.png" alt="Ori Kurz as a child, lying in the snow">
+
+    <h1 class="title">portfolio</h1>
+
+    <div class="grid-box year-box">
+      <p class="year">2026</p>
+    </div>
+
+    <!-- כפתורי הניווט. המילים בכל שפה שמורות ב-data-en / data-he / data-ar -->
+    <!-- הקישורים זמניים (#) עד שיהיו עמודים -->
+    <nav>
+      <a class="grid-box nav-button nav-button--home" href="#" data-en="HOME" data-he="בית" data-ar="الرئيسية"><span class="nav-button-label">HOME</span></a>
+      <a class="grid-box nav-button nav-button--works" href="#" data-en="WORKS" data-he="פרויקטים" data-ar="مشاريع"><span class="nav-button-label">WORKS</span></a>
+      <a class="grid-box nav-button nav-button--about" href="#" data-en="ABOUT" data-he="עליי" data-ar="عنّي"><span class="nav-button-label">ABOUT</span></a>
+      <a class="grid-box nav-button nav-button--contact" href="#" data-en="CONTACT" data-he="צרו איתי קשר" data-ar="تواصل معي"><span class="nav-button-label">CONTACT</span></a>
+      <a class="grid-box nav-button nav-button--process" href="#" data-en="PROCESS" data-he="תהליך" data-ar="مراحل العمل"><span class="nav-button-label">PROCESS</span></a>
+    </nav>
+
   </main>
 
+  <script src="script.js"></script>
 </body>
 </html>

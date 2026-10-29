@@ -2,42 +2,101 @@
    פונטים
    ========================================= */
 @font-face {
-  font-family: "Pilowlava";
-  src: url("fonts/Pilowlava-Regular.otf") format("opentype");
-  font-weight: normal;
+  font-family: "Reisinger Michal";
+  src: url("fonts/Reisinger-Michal-Bold.otf") format("opentype");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TheBasics Corporate";
+  src: url("fonts/TheBasics_Corporate-Medium.otf") format("opentype");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 /* =========================================
-   משתנים: צבעים, פונטים, גדלים וריווחים מהפיגמה
-   (הפריים בפיגמה ברוחב 1440px, לכן vw = פיקסלים / 14.4)
+   משתנים
+   הכול בנוי על רשת אחת של משבצות ריבועיות.
+   אזור העיצוב מהפיגמה הוא 15 משבצות לרוחב ו-9 לגובה (משבצת = 96px בפיגמה).
+   גודל המשבצת נקבע כך שאזור העיצוב ייכנס בחלון, והגריד ממשיך
+   מסביבו עד קצות החלון (גם משבצות חלקיות).
+   מיקומים כתובים במשבצות: עמודה 0 ושורה 0 הן הפינה השמאלית העליונה
+   של אזור העיצוב.
    ========================================= */
 :root {
+  /* הרשת */
+  --grid-columns: 15;
+  --grid-rows: 9;
+  /* גודל משבצת בפיקסלים שלמים, כדי שהקווים יהיו חדים ומדויקים */
+  --cell: round(down, min(100vw / var(--grid-columns), 100dvh / var(--grid-rows)), 1px);
+  /* עובי קו: 3px מתוך משבצת של 96px */
+  --line: max(1px, round(var(--cell) * 3 / 96, 1px));
+  /* עובי המסגרת סביב החלון: 6px מתוך 96px */
+  --frame-border: calc(var(--line) * 2);
+  /* המיקום של אזור העיצוב, ממורכז בחלון */
+  --grid-left: round(down, (100vw - var(--grid-columns) * var(--cell)) / 2, 1px);
+  --grid-top: round(down, (100dvh - var(--grid-rows) * var(--cell)) / 2, 1px);
+
   /* צבעים */
-  --color-red: #f10000;
-  --color-pink: #ffe5e5;
+  --color-blue: #2f8cf4;
+  --color-pink: #fea7ec;
+  --color-yellow: #ffff05;
 
   /* פונטים */
-  --font-display: "Pilowlava", sans-serif;
-  --font-label: "Bebas Neue", sans-serif;
+  --font-title: "Reisinger Michal", sans-serif;
+  --font-text: "TheBasics Corporate", sans-serif;
 
-  /* גדלי טקסט: 150px ו-48px במחשב, קטנים יותר בטלפון */
-  --size-title: clamp(48px, 10.4vw, 150px);
-  --size-signature: clamp(24px, 3.33vw, 48px);
+  /* גובה שורה (99.96% בפיגמה) */
+  --line-height: 0.9996;
 
-  /* המסגרת: מרחק מקצה המסך, עובי קו ורדיוסים */
-  --frame-gap-x: clamp(12px, 2.1vw, 30px);
-  --frame-gap-y: clamp(12px, 2.8vw, 40px);
-  --frame-border: clamp(8px, 1.25vw, 18px);
-  --radius-outer: clamp(20px, 2.7vw, 39px);
-  --radius-inner: clamp(40px, 7.9vw, 114px);
+  /* גדלי טקסט (בפיגמה: 25px ו-275px מתוך משבצת של 96px) */
+  --text-size: calc(var(--cell) * 25 / 96);
+  --text-tracking: calc(var(--cell) * 1 / 96);
+  --year-tracking: calc(var(--cell) * 2.25 / 96);
+  --title-size: calc(var(--cell) * 275 / 96);
 
-  /* ריווחים בתוך המסגרת */
-  --space-top: clamp(48px, 8.5vw, 123px);
-  --space-bottom: clamp(32px, 5.9vw, 85px);
-  --space-side: clamp(16px, 4vw, 60px);
-  --space-signature-gap: 0.25em;
+  /* כפתורים: עמודה, שורה וגודל (במשבצות) */
+  --button-columns: 2;
+  --button-rows: 1;
+  --button-top-row: 1;
+  --button-bottom-row: 7;
+  --home-column: 2;
+  --works-column: 5;
+  --about-column: 8;
+  --contact-column: 11;
+  --process-column: 2;
+  --button-padding: calc(var(--cell) * 10 / 96);
+
+  /* בלחיצה הטקסט קטן מ-25px ל-20px, כמו ב-State3 בפיגמה (20/25 = 0.8) */
+  --pressed-scale: 0.8;
+
+  /* "ORI KURZ" ו-"2026" */
+  --name-column: 9;
+  --name-columns: 2;
+  --year-column: 12;
+  --year-columns: 1;
+  --text-row: 7;
+  /* המרחק מהקו העליון של המשבצת לטקסט, כמו בפיגמה */
+  --text-offset: calc(var(--cell) * 0.4);
+
+  /* הכותרת portfolio: ממורכזת לרוחב */
+  --title-top: calc(var(--cell) * 1.8);
+  /* פיגמה והדפדפן קוראים את מדדי הגובה של הפונט Reisinger אחרת
+     (הפרש של 0.2em), לכן מורידים את הטקסט כדי שישב כמו בפיגמה */
+  --title-font-offset: 0.2em;
+
+  /* הפולרויד: מרכז התמונה וגודלה (במשבצות) */
+  --photo-center-column: 11.36;
+  --photo-center-row: 5.91;
+  --photo-width: calc(var(--cell) * 2.771);
+  --photo-height: calc(var(--cell) * 3.169);
+  --photo-rotation: 29.72deg;
+
+  /* מעבר רך בין מצבי הכפתור */
+  --transition-speed: 0.25s;
 }
 
 /* =========================================
@@ -49,81 +108,190 @@
   padding: 0;
 }
 
-html,
+/* =========================================
+   הרקע: קווי הגריד מצוירים ב-CSS על כל החלון.
+   כל אריח הוא משבצת אחת, עם קו בצד שמאל ובצד העליון.
+   האריחים מתחילים מהפינה של אזור העיצוב, כך שהקווים
+   נופלים בדיוק על אותם מקומות שבהם ממוקמים הכפתורים.
+   ========================================= */
 body {
-  height: 100%;
-}
-
-body {
-  background-color: var(--color-pink);
-  color: var(--color-red);
+  height: 100dvh;
   overflow: hidden; /* עמוד של מסך אחד, בלי גלילה */
+  background-color: var(--color-blue);
+  background-image:
+    linear-gradient(to right, var(--color-pink) var(--line), transparent var(--line)),
+    linear-gradient(to bottom, var(--color-pink) var(--line), transparent var(--line));
+  background-size: var(--cell) var(--cell);
+  background-position: var(--grid-left) var(--grid-top);
 }
 
-/* =========================================
-   המסגרת: שכבה אדומה עם פינות קטנות,
-   ומעליה שכבה ורודה עם קו אדום ופינות גדולות
-   ========================================= */
-.frame {
+/* המסגרת הוורודה סביב החלון, מעל הכול */
+body::after {
+  content: "";
   position: fixed;
-  top: var(--frame-gap-y);
-  bottom: var(--frame-gap-y);
-  left: var(--frame-gap-x);
-  right: var(--frame-gap-x);
-  background-color: var(--color-red);
-  border-radius: var(--radius-outer);
-}
-
-.frame-inner {
-  height: 100%;
-  background-color: var(--color-pink);
-  border: var(--frame-border) solid var(--color-red);
-  border-radius: var(--radius-inner);
-
-  /* הכותרת למעלה, השם למטה */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-top) var(--space-side) var(--space-bottom);
+  inset: 0;
+  border: var(--frame-border) solid var(--color-pink);
+  pointer-events: none;
 }
 
 /* =========================================
-   הכותרת "Coming Sooon..."
+   אזור העיצוב מהפיגמה, ממורכז בחלון
    ========================================= */
-.coming-soon {
-  font-family: var(--font-display);
-  font-weight: normal;
-  font-size: var(--size-title);
-  line-height: normal;
-  text-align: left;
-}
-
-.coming-soon-line {
-  display: block;
-}
-
-/* השורה השנייה מוזזת מעט ימינה, כמו בפיגמה */
-.coming-soon-line--indent {
-  padding-left: 0.3em;
+.home {
+  position: absolute;
+  left: var(--grid-left);
+  top: var(--grid-top);
+  width: calc(var(--grid-columns) * var(--cell) + var(--line));
+  height: calc(var(--grid-rows) * var(--cell) + var(--line));
+  color: var(--color-yellow);
+  font-family: var(--font-text);
+  font-weight: 500;
+  line-height: var(--line-height);
 }
 
 /* =========================================
-   שורת השם בתחתית
+   grid-box: מלבן שתופס משבצות שלמות, מקו לקו.
+   כל רכיב מגדיר --column, --row, --columns, --rows.
+   למלבן יש מסגרת בעובי הקו, שיושבת בדיוק על קווי הגריד,
+   כך שהרקע שלו ממלא את כל השטח שבין הקווים.
    ========================================= */
-.signature {
-  font-size: var(--size-signature);
-  line-height: normal;
-  display: flex;
-  align-items: center;
-  gap: var(--space-signature-gap);
+.grid-box {
+  position: absolute;
+  left: calc(var(--column) * var(--cell));
+  top: calc(var(--row) * var(--cell));
+  width: calc(var(--columns) * var(--cell) + var(--line));
+  height: calc(var(--rows) * var(--cell) + var(--line));
+  border: var(--line) solid transparent;
+}
+
+/* =========================================
+   "ORI KURZ" ו-"2026"
+   ========================================= */
+.name-box,
+.year-box {
+  --row: var(--text-row);
+  --rows: 1;
+  padding-top: var(--text-offset);
+  font-size: var(--text-size);
+  text-align: center;
   white-space: nowrap;
 }
 
-.signature-word {
-  font-family: var(--font-label);
+/* מלבן כחול עם מסגרת ורודה: מסתיר את הקו שבין שתי המשבצות */
+.name-box {
+  --column: var(--name-column);
+  --columns: var(--name-columns);
+  background-color: var(--color-blue);
+  border-color: var(--color-pink);
+  letter-spacing: var(--text-tracking);
 }
 
-.signature-mark {
-  font-family: var(--font-display);
+.year-box {
+  --column: var(--year-column);
+  --columns: var(--year-columns);
+  letter-spacing: var(--year-tracking);
+}
+
+/* =========================================
+   הפולרויד: ממוקם לפי המרכז שלו, ומסובב
+   ========================================= */
+.photo {
+  position: absolute;
+  left: calc(var(--photo-center-column) * var(--cell));
+  top: calc(var(--photo-center-row) * var(--cell));
+  width: var(--photo-width);
+  height: var(--photo-height);
+  object-fit: cover;
+  transform: translate(-50%, -50%) rotate(var(--photo-rotation));
+}
+
+/* =========================================
+   הכותרת "portfolio", ממורכזת ברוחב אזור העיצוב
+   ========================================= */
+.title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--title-top);
+  padding-top: var(--title-font-offset);
+  font-family: var(--font-title);
+  font-weight: bold;
+  font-size: var(--title-size);
+  line-height: var(--line-height);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* =========================================
+   כפתורי הניווט (קומפוננטת Button בפיגמה)
+   Default: רקע כחול | Hover: רקע ורוד | State3 (לחיצה): ורוד וטקסט קטן יותר
+   ========================================= */
+.nav-button {
+  --columns: var(--button-columns);
+  --rows: var(--button-rows);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--button-padding);
+  background-color: var(--color-blue);
+  border-color: var(--color-pink);
+  color: var(--color-yellow);
+  font-size: var(--text-size);
+  letter-spacing: var(--text-tracking);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+}
+
+/* הטקסט שבתוך הכפתור */
+.nav-button-label {
+  display: inline-block; /* כדי שאפשר יהיה להקטין אותו עם transform */
+  transition: transform var(--transition-speed) ease;
+}
+
+/* מעבר עכבר (וגם ניווט במקלדת) */
+.nav-button:hover,
+.nav-button:focus-visible {
+  background-color: var(--color-pink);
+}
+
+/* אפקט לחיצה */
+.nav-button:active {
+  background-color: var(--color-pink);
+}
+
+.nav-button:active .nav-button-label {
+  transform: scale(var(--pressed-scale));
+}
+
+/* בערבית האותיות מחוברות, אז בלי ריווח בין אותיות */
+.nav-button:lang(ar) {
+  letter-spacing: 0;
+}
+
+/* המיקום של כל כפתור על הרשת */
+.nav-button--home {
+  --column: var(--home-column);
+  --row: var(--button-top-row);
+}
+
+.nav-button--works {
+  --column: var(--works-column);
+  --row: var(--button-top-row);
+}
+
+.nav-button--about {
+  --column: var(--about-column);
+  --row: var(--button-top-row);
+}
+
+.nav-button--contact {
+  --column: var(--contact-column);
+  --row: var(--button-top-row);
+}
+
+.nav-button--process {
+  --column: var(--process-column);
+  --row: var(--button-bottom-row);
 }
