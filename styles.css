@@ -27,6 +27,14 @@
 
 @font-face {
   font-family: "TheBasics Corporate";
+  src: url("fonts/TheBasics_Corporate-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TheBasics Corporate";
   src: url("fonts/TheBasics_Corporate-Black.otf") format("opentype");
   font-weight: 900;
   font-style: normal;
@@ -65,6 +73,8 @@
   --color-pink: #fea7ec;
   --color-yellow: #ffff05;
   --color-mint: #effff9;
+  --color-orange: #fa4202;
+  --color-green: #25bf61;
 
   /* צבעי העמוד */
   --page-background: var(--color-blue);
@@ -126,22 +136,57 @@
 
   /* מעבר רך בין מצבי הכפתור */
   --transition-speed: 0.25s;
+
+  /* בריכת הכדורים (ball-pit.js): קוטר כדור במשבצות, ו-4 הצבעים */
+  --ball-size: 0.76;
+  --ball-color-1: var(--color-mint);
+  --ball-color-2: var(--color-orange);
+  --ball-color-3: var(--color-green);
+  --ball-color-4: var(--color-pink);
+
+  /* הכפתור PEEK / PLAY: עמודה, שורה וגודל (בפיגמה: 100x97 מתוך משבצת של 96px) */
+  --toggle-column: 0.49;
+  --toggle-row: 0.505;
+  --toggle-width: calc(var(--cell) * 100 / 96);
+  --toggle-height: calc(var(--cell) * 97 / 96);
+  --toggle-text-size: calc(var(--cell) * 25 / 96);
+  --toggle-tracking: calc(var(--cell) * 1 / 96);
+  --toggle-text-color: var(--color-green);
+  --toggle-background: var(--color-yellow);
+  --toggle-text-offset: calc(var(--cell) * 5 / 96); /* בפיגמה הטקסט קצת מתחת לאמצע */
+
+  /* שכבות: מה מעל מה. הכדורים מעל כל העמוד, והכפתור PEEK / PLAY מעל הכדורים */
+  --layer-balls: 1;
+  --layer-frame: 2;
+  --layer-toggle: 3;
 }
 
 /* ----- עמוד הבית במובייל (מסכים צרים מ-768px) -----
-   הפריים iPhone בפיגמה: בדיוק 8 משבצות לרוחב המסך (משבצת = 49.06px בפיגמה).
-   לגובה, הגריד ממשיך במשבצות ריבועיות עד סוף המסך: מסך גבוה מקבל
-   עוד שורות, ומסך נמוך נגלל. אזור העיצוב הוא 17 שורות, כמו בפריים. */
+   הפריים iPhone בפיגמה: 8 משבצות לרוחב המסך (משבצת = 49.06px בפיגמה),
+   ואזור העיצוב הוא 17 שורות. העמוד ממלא בדיוק את המסך, בלי גלילה.
+   מסך גבוה: בדיוק 8 משבצות לרוחב, ולמטה נשארת שורה חלקית.
+   מסך נמוך (כל 17 השורות לא נכנסות): המשבצות קטנות כדי שהכול ייכנס לגובה,
+   ואזור העיצוב ממורכז לרוחב, עם משבצות חלקיות בצדדים. */
 @media (max-width: 767.98px) {
   :root.page-home {
     --grid-columns: 8;
     --grid-rows: 17;
-    --cell: calc(100vw / var(--grid-columns));
+    /* 100dvh = הגובה האמיתי של המסך, גם כשסרגלי הדפדפן בטלפון משתנים */
+    --cell: min(100vw / var(--grid-columns), 100dvh / var(--grid-rows));
     --line: 2px;
     --frame-border: 3px;
-    /* הגריד מתחיל מהפינה השמאלית העליונה של המסך */
-    --grid-left: 0px;
+    /* הגריד מתחיל מלמעלה, וממורכז לרוחב (במסך גבוה זה 0, כלומר מהקצה השמאלי) */
+    --grid-left: calc((100vw - var(--grid-columns) * var(--cell)) / 2);
     --grid-top: 0px;
+
+    /* הכפתור PEEK / PLAY (בפיגמה: ריבוע של 48px, טקסט 14px) */
+    --toggle-column: 0.53;
+    --toggle-row: 0.468;
+    --toggle-width: calc(var(--cell) * 48 / 49.06);
+    --toggle-height: calc(var(--cell) * 48 / 49.06);
+    --toggle-text-size: calc(var(--cell) * 14 / 49.06);
+    --toggle-tracking: calc(var(--cell) * 0.56 / 49.06);
+    --toggle-text-offset: 0px;
 
     /* גדלי טקסט (בפיגמה: 17px ו-70px מתוך משבצת של 49.06px) */
     --text-size: calc(var(--cell) * 17 / 49.06);
@@ -150,11 +195,11 @@
     --title-size: calc(var(--cell) * 70 / 49.06);
     --button-padding: calc(var(--cell) * 10 / 49.06);
 
-    /* כפתורים: עמודה ושורה */
-    --works-column: 1;    --works-row: 1;
-    --home-column: 5;     --home-row: 2;
-    --about-column: 2;    --about-row: 3;
-    --contact-column: 5;  --contact-row: 4;
+    /* כפתורים: עמודה ושורה (שורה 0-1 פנויה לכפתור PEEK / PLAY) */
+    --works-column: 1;    --works-row: 2;
+    --home-column: 5;     --home-row: 3;
+    --about-column: 2;    --about-row: 4;
+    --contact-column: 5;  --contact-row: 5;
     --process-column: 3;  --process-row: 15;
 
     /* "ORI KURZ" ו-"2026": ורודים, כל אחד על מלבן שמאחד משבצות */
@@ -167,13 +212,13 @@
     --info-text-color: var(--color-pink);
 
     /* הכותרת portfolio: מיושרת לימין, לקו של עמודה 7 */
-    --title-top: calc(var(--cell) * 5.36);
+    --title-top: calc(var(--cell) * 6.32);
     --title-align: right;
     --title-right: calc(var(--cell) * (var(--grid-columns) - 7));
 
     /* הפולרויד */
     --photo-center-column: 4.526;
-    --photo-center-row: 8.647;
+    --photo-center-row: 9.604;
     --photo-width: calc(var(--cell) * 3.182);
     --photo-height: calc(var(--cell) * 3.638);
   }
@@ -372,19 +417,89 @@ body {
    עמוד הבית
    ========================================= */
 
-/* עמוד של מסך אחד, בלי גלילה. הגריד הוא הרקע של כל החלון */
+/* עמוד של מסך אחד, בלי גלילה ובלי "קפיצה" גמישה בקצוות.
+   touch-action: none = מגע באצבע לא גולל ולא מגדיל. הוא משמש רק
+   לאינטראקציות (דחיפת הכדורים והתמונה), ראו ball-pit.js */
+.page-home {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+/* הגריד הוא הרקע של כל החלון */
 .page-home body {
   height: 100dvh;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
-/* המסגרת הוורודה סביב החלון, מעל הכול */
+/* המסגרת הוורודה סביב החלון. היא "הקיר" של בריכת הכדורים, ולכן מעליהם */
 .page-home body::after {
   content: "";
   position: fixed;
   inset: 0;
+  z-index: var(--layer-frame);
   border: var(--frame-border) solid var(--grid-line-color);
   pointer-events: none;
+}
+
+/* ----- בריכת הכדורים: קנבס שמכסה את כל החלון, מעל כל העמוד -----
+   הקנבס לא "תופס" את העכבר, כדי שהכפתורים והתמונה יעבדו במקומות החשופים.
+   כשהעכבר נמצא על כדור, ball-pit.js מוסיף is-blocking והקנבס חוסם את מה שמתחתיו */
+.ball-pit {
+  position: fixed;
+  inset: 0;
+  z-index: var(--layer-balls);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ball-pit.is-blocking {
+  pointer-events: auto;
+}
+
+/* אלמנט נסתר שהרוחב שלו הוא קוטר כדור. ball-pit.js מודד אותו */
+.ball-size-probe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: calc(var(--cell) * var(--ball-size));
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* נגיעה באצבע על כדור שמכסה כפתור: הכפתור לא נראה לחוץ */
+.is-touching-ball .nav-button:active {
+  background-color: var(--color-blue);
+}
+
+.is-touching-ball .nav-button:active .nav-button-label {
+  transform: none;
+}
+
+/* ----- הכפתור PEEK / PLAY: תמיד מעל הכדורים ----- */
+.balls-toggle {
+  --column: var(--toggle-column);
+  --row: var(--toggle-row);
+  z-index: var(--layer-toggle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
+  padding-top: var(--toggle-text-offset);
+  border: none;
+  background-color: var(--toggle-background);
+  color: var(--toggle-text-color);
+  font-family: var(--font-text);
+  font-weight: 700;
+  font-size: var(--toggle-text-size);
+  line-height: var(--line-height);
+  letter-spacing: var(--toggle-tracking);
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 /* אזור העיצוב מהפיגמה, ממורכז בחלון */
@@ -489,21 +604,9 @@ body {
   --row: var(--process-row);
 }
 
-/* ----- מובייל: העמוד גבוה לפחות כמו 17 שורות, ונגלל אם המסך נמוך יותר ----- */
+/* ----- מובייל ----- */
 @media (max-width: 767.98px) {
-  .page-home body {
-    position: relative;
-    height: auto;
-    min-height: max(100dvh, calc(var(--grid-rows) * var(--cell) + var(--line)));
-    overflow: visible;
-  }
-
-  /* המסגרת הוורודה מקיפה את כל העמוד, ולא רק את החלון */
-  .page-home body::after {
-    position: absolute;
-  }
-
-  /* אזור העיצוב ברוחב המסך בדיוק, כדי שלא תהיה גלילה לצדדים
+  /* אזור העיצוב ברוחב 8 משבצות בדיוק
      (הקו הימני ביותר נמצא בכל מקרה מתחת למסגרת) */
   .home {
     width: calc(var(--grid-columns) * var(--cell));

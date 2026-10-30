@@ -211,6 +211,12 @@ if (photo) {
     };
   }
 
+  // בעמוד הבית יש בריכת כדורים (ball-pit.js). במקום שבו כדור מכסה את התמונה,
+  // היד דוחפת את הכדור ולא את התמונה. בעמודים בלי כדורים זה תמיד false
+  function coveredByBall(x, y) {
+    return typeof isUnderBall === "function" && isUnderBall(x, y);
+  }
+
   // צעד אחד של האנימציה. הזמן מוכפל ב-tempo, כך שכל התנועה רצה מהר יותר
   function step(time) {
     const seconds = tempo * Math.min((time - lastFrameTime) / 1000, 1 / 30);
@@ -286,14 +292,14 @@ if (photo) {
     if (event.pointerType === "touch" || reducedMotion.matches) return;
 
     const now = performance.now();
-    if (lastPointer && pointOnPhoto(event.clientX, event.clientY).inside) {
+    if (lastPointer && pointOnPhoto(event.clientX, event.clientY).inside && !coveredByBall(event.clientX, event.clientY)) {
       pushFromMovement(lastPointer, event.clientX, event.clientY, now, 1);
     }
     lastPointer = { x: event.clientX, y: event.clientY, time: now };
   });
 
   // טלפון: החלקת אצבע על התמונה דוחפת אותה, כמו העכבר במחשב, אבל ברגישות גבוהה.
-  // האירועים "פסיביים" (passive), ולכן ההחלקה לא חוסמת את הגלילה של העמוד
+  // האירועים "פסיביים" (passive): הם רק מקשיבים ולא משנים את התנהגות הדפדפן
   let lastTouch = null;
 
   window.addEventListener("touchstart", function (event) {
@@ -304,7 +310,7 @@ if (photo) {
   window.addEventListener("touchmove", function (event) {
     const touch = event.touches[0];
     const now = performance.now();
-    if (lastTouch && !reducedMotion.matches && pointOnPhoto(touch.clientX, touch.clientY).inside) {
+    if (lastTouch && !reducedMotion.matches && pointOnPhoto(touch.clientX, touch.clientY).inside && !coveredByBall(touch.clientX, touch.clientY)) {
       pushFromMovement(lastTouch, touch.clientX, touch.clientY, now, touchSensitivity);
     }
     lastTouch = { x: touch.clientX, y: touch.clientY, time: now };
@@ -315,7 +321,7 @@ if (photo) {
     if (event.pointerType !== "touch" || reducedMotion.matches) return;
 
     const touch = pointOnPhoto(event.clientX, event.clientY);
-    if (!touch.inside) return;
+    if (!touch.inside || coveredByBall(event.clientX, event.clientY)) return;
     pushType = tapType;
     lastPushTime = performance.now();
     speed += touch.across > 0 ? tapPush : -tapPush;

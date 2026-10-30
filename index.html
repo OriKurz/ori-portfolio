@@ -13,6 +13,9 @@
        ואזור העיצוב (15x9 משבצות) ממורכז מעליהם -->
   <main class="home">
 
+    <!-- הכפתור שמפנה את הכדורים לשוליים (PEEK) ומחזיר אותם (PLAY). תמיד מעל הכדורים -->
+    <button class="on-grid balls-toggle" type="button">PEEK</button>
+
     <!-- "ORI KURZ" על מלבן כחול שמסתיר את הקו שבאמצע -->
     <div class="grid-box name-box">
       <p class="name">ORI KURZ</p>
@@ -40,6 +43,12 @@
 
   </main>
 
+  <!-- בריכת הכדורים: מצוירת על קנבס שמכסה את כל החלון (ball-pit.js) -->
+  <canvas class="ball-pit" aria-hidden="true"></canvas>
+  <span class="ball-size-probe" aria-hidden="true"></span>
+
+  <!-- ball-pit.js נטען ראשון, כי script.js בודק דרכו אם יש כדור מעל התמונה -->
+  <script src="ball-pit.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
