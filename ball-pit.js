@@ -49,6 +49,7 @@ if (ballCanvas) {
   const handJump = 4;             // קפיצה של העכבר ביותר מזה (במשבצות) בבת אחת = נכנס מחדש, לא דוחף לאורך הדרך
   const frameShare = 0.7;        // במצב PEEK: לכל היותר החלק הזה מהכדורים נשאר במסגרת, והשאר יוצאים מהמסך
   const keepOutMargin = 0.25;    // מרווח (במשבצות) בין המסגרת לכפתורים, לטקסטים ולתמונה
+  const loadHeadStart = 3.1;      // בטעינה: כמה שניות מתנועת ה-PLAY רצות מאחורי הקלעים לפני שרואים משהו
   const restSpeed = 0.05;         // מתחת למהירות הזאת (משבצות לשנייה) כדור נחשב עומד
 
   const context = ballCanvas.getContext("2d");
@@ -216,6 +217,35 @@ if (ballCanvas) {
       });
       freeBalls[nearest].target = spot;
       freeBalls.splice(nearest, 1);
+      spot.taken = true;
+    });
+  }
+
+  // נותן צבע לכל מקום שעוד אין לו צבע (color = -1), כך שלמקומות סמוכים יהיו
+  // כמה שפחות צבעים זהים (בלי מקבצים). מכל צבע יוצא בערך אותו מספר מקומות
+  function colorSpots(spots) {
+    const neighborDistance = ballRadius * 3; // מקומות קרובים יותר מזה נחשבים שכנים
+    // כמה מקומות עוד צריכים לקבל כל צבע, כדי שכל הצבעים יהיו בכמות שווה
+    const left = colors.map(function (color, colorIndex) {
+      const share = Math.floor(spots.length / colors.length) + (colorIndex < spots.length % colors.length ? 1 : 0);
+      const alreadyColored = spots.filter(function (spot) { return spot.color === colorIndex; }).length;
+      return share - alreadyColored;
+    });
+    spots.forEach(function (spot) {
+      if (spot.color >= 0) return;
+      // הצבעים שכבר יש לשכנים
+      const nearby = new Set();
+      spots.forEach(function (other) {
+        if (other !== spot && other.color >= 0 && Math.hypot(other.x - spot.x, other.y - spot.y) < neighborDistance) nearby.add(other.color);
+      });
+      let options = colors.map(function (color, colorIndex) { return colorIndex; }).filter(function (colorIndex) {
+        return !nearby.has(colorIndex);
+      });
+      if (options.length === 0) options = colors.map(function (color, colorIndex) { return colorIndex; });
+      // מבין הצבעים האפשריים: זה שנשארו ממנו הכי הרבה כדורים (בשוויון: אקראי)
+      options.sort(function (a, b) { return left[b] - left[a] || Math.random() - 0.5; });
+      spot.color = options[0];
+      left[spot.color]--;
     });
   }
 
@@ -231,15 +261,6 @@ if (ballCanvas) {
       return { x: spot.x, y: spot.y, vx: 0, vy: 0, startX: 0, startY: 0, color: colorOrder[index], target: null, insideScreen: true, pushedBy: null, passThrough: false, onTheWay: false };
     });
     prepareGrid();
-    // כמה סבבים של "ניעור" כדי שהכדורים לא ייראו מסודרים בשורות
-    balls.forEach(function (ball) {
-      ball.x += (Math.random() - 0.5) * ballRadius * 1.2;
-      ball.y += (Math.random() - 0.5) * ballRadius * 1.2;
-    });
-    for (let round = 0; round < 60; round++) {
-      separateBalls(1, 0);
-      keepInsideScreen();
-    }
   }
 
   // שם כל כדור מיד במקום שלו (בלי אנימציה): בטעינה, בשינוי גודל חלון ולמי שביקש צמצום תנועה
@@ -279,7 +300,18 @@ if (ballCanvas) {
   // הכדורים (כולל אלה שמחוץ למסך) מתגלגלים בחזרה ומתפזרים על כל המסך
   function spreadBallsOverScreen() {
     balls.forEach(function (ball) { ball.target = null; });
-    giveSpotsToNearestBalls(coverSpots(), balls.slice());
+    const spots = coverSpots();
+    giveSpotsToNearestBalls(spots, balls.slice());
+    // ערבוב צבעים: כדור שרואים שומר על הצבע שלו, וכדור שמחוץ למסך מקבל צבע
+    // שמשלים את השכנים במקום שאליו הוא מתגלגל (הוא לא נראה, אז לא רואים שהצבע השתנה)
+    spots.forEach(function (spot) { spot.color = -1; });
+    balls.forEach(function (ball) {
+      if (ball.target && !isOutOfSight(ball)) ball.target.color = ball.color;
+    });
+    colorSpots(spots);
+    balls.forEach(function (ball) {
+      if (ball.target && isOutOfSight(ball)) ball.color = ball.target.color;
+    });
     // ליתר ביטחון: כדור שלא קיבל מקום מתגלגל למקום אקראי במסך
     balls.forEach(function (ball) {
       if (!ball.target) {
@@ -492,8 +524,7 @@ if (ballCanvas) {
       // - כשהוא כבר לא נראה, כדי שלא ייווצר מחוץ למסך פקק שחוסם את המסגרת
       // - כשהוא עוד לא יצא אחרי רגע קצר (נתקע מאחורי המסגרת), כדי שלא יישאר מעל כפתור או טקסט
       const goingOut = ballsAtEdges && Boolean(ball.target && ball.target.hidden);
-      const outOfSight = ball.x < -ballRadius || ball.x > width + ballRadius || ball.y < -ballRadius || ball.y > height + ballRadius;
-      ball.passThrough = goingOut && (outOfSight || transitionTime > passThroughAfter);
+      ball.passThrough = goingOut && (isOutOfSight(ball) || transitionTime > passThroughAfter);
     });
 
     // כל יד מתחילה את הפריים במקום שבו סיימה את הקודם
@@ -571,6 +602,40 @@ if (ballCanvas) {
     });
   }
 
+  // האם הכדור כולו מחוץ למסך
+  function isOutOfSight(ball) {
+    return ball.x < -ballRadius || ball.x > width + ballRadius || ball.y < -ballRadius || ball.y > height + ballRadius;
+  }
+
+  // בוחר לכדור צבע שיש כמה שפחות ממנו בכדורים שליד place,
+  // בלי שצבע אחד יהיה הרבה יותר נפוץ מהאחרים בכל הבריכה
+  function pickColor(ball, place) {
+    const nearby = colors.map(function () { return 0; });
+    const total = colors.map(function () { return 0; });
+    balls.forEach(function (other) {
+      if (other === ball || other.color < 0) return;
+      total[other.color]++;
+      if (isOutOfSight(other)) return;
+      const distance = Math.hypot(other.x - place.x, other.y - place.y);
+      if (distance < ballRadius * 2.4) nearby[other.color] += 1;        // נוגע
+      else if (distance < ballRadius * 3.6) nearby[other.color] += 0.3; // קרוב
+    });
+    const maxPerColor = Math.ceil(balls.length / colors.length) + 1;
+    let options = colors.map(function (color, colorIndex) { return colorIndex; }).filter(function (colorIndex) {
+      return total[colorIndex] < maxPerColor;
+    });
+    if (options.length === 0) options = colors.map(function (color, colorIndex) { return colorIndex; });
+    options.sort(function (a, b) { return nearby[a] - nearby[b] || total[a] - total[b] || Math.random() - 0.5; });
+    ball.color = options[0];
+  }
+
+  // צובע מחדש את כל הכדורים לפי המקום שלהם, כך ששכנים יקבלו צבעים שונים (רק לפני שמציירים אותם)
+  function mixColorsByPosition() {
+    balls.forEach(function (ball) { ball.color = -1; });
+    const order = balls.slice().sort(function () { return Math.random() - 0.5; });
+    order.forEach(function (ball) { pickColor(ball, ball); });
+  }
+
   function limitSpeed(ball, limit) {
     const speed = Math.hypot(ball.vx, ball.vy);
     if (speed > limit) {
@@ -589,7 +654,7 @@ if (ballCanvas) {
       balls.forEach(function (ball) {
         if (ball.color !== colorIndex) return;
         // כדור שכולו מחוץ למסך לא צריך ציור
-        if (ball.x < -ballRadius || ball.x > width + ballRadius || ball.y < -ballRadius || ball.y > height + ballRadius) return;
+        if (isOutOfSight(ball)) return;
         context.moveTo(ball.x + ballRadius, ball.y);
         context.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
       });
@@ -736,13 +801,34 @@ if (ballCanvas) {
   function setUp() {
     measure();
     createBalls();
-    // מי שביקש צמצום תנועה: מתחילים כשהכדורים כבר בשוליים (הכפתור כתוב PLAY)
     if (ballsAtEdges) {
+      // מי שביקש צמצום תנועה: מתחילים כשהכדורים כבר בשוליים (הכפתור כתוב PLAY)
       sendBallsToEdges();
       placeBallsNow();
+    } else {
+      startLikeAfterPlay();
     }
     updateToggleText();
     draw();
+  }
+
+  // בטעינה הכדורים נראים בדיוק כמו אחרי לחיצה על PLAY: ערימה מבולגנת על כל המסך.
+  // מריצים את התנועה של PLAY (מהשוליים) מאחורי הקלעים, בלי לצייר,
+  // ועל המסך רואים רק את הסוף שלה: התמקמות קטנה בשנייה הראשונה
+  function startLikeAfterPlay() {
+    ballsAtEdges = true;
+    sendBallsToEdges();
+    placeBallsNow();
+    ballsAtEdges = false;
+    spreadBallsOverScreen();
+    transitionTime = 0;
+    const frameTime = 1 / 30;
+    for (let time = 0; time < loadHeadStart; time += frameTime) {
+      step(frameTime);
+    }
+    // הכדורים עוד לא צוירו, אז אפשר לצבוע אותם לפי המקום שבו הם יופיעו
+    mixColorsByPosition();
+    wakeUp();
   }
 
   ballsAtEdges = reducedMotion.matches;

@@ -115,7 +115,7 @@
   --year-column: 12;
   --year-row: 7;
   --year-columns: 1;
-  --info-text-color: var(--color-yellow);
+  --info-text-color: var(--color-pink);
   /* המרחק מהקו העליון של המשבצת לטקסט, כמו בפיגמה */
   --text-offset: calc(var(--cell) * 0.4);
 
@@ -147,12 +147,14 @@
   /* הכפתור PEEK / PLAY: עמודה, שורה וגודל (בפיגמה: 100x97 מתוך משבצת של 96px) */
   --toggle-column: 0.49;
   --toggle-row: 0.505;
+  --toggle-left: calc(var(--toggle-column) * var(--cell));
   --toggle-width: calc(var(--cell) * 100 / 96);
   --toggle-height: calc(var(--cell) * 97 / 96);
   --toggle-text-size: calc(var(--cell) * 25 / 96);
   --toggle-tracking: calc(var(--cell) * 1 / 96);
   --toggle-text-color: var(--color-green);
   --toggle-background: var(--color-yellow);
+  --toggle-hover-background: var(--color-pink);
   --toggle-text-offset: calc(var(--cell) * 5 / 96); /* בפיגמה הטקסט קצת מתחת לאמצע */
 
   /* שכבות: מה מעל מה. הכדורים מעל כל העמוד, והכפתור PEEK / PLAY מעל הכדורים */
@@ -171,17 +173,21 @@
   :root.page-home {
     --grid-columns: 8;
     --grid-rows: 17;
-    /* 100dvh = הגובה האמיתי של המסך, גם כשסרגלי הדפדפן בטלפון משתנים */
-    --cell: min(100vw / var(--grid-columns), 100dvh / var(--grid-rows));
+    /* 100dvh = הגובה האמיתי של המסך, גם כשסרגלי הדפדפן בטלפון משתנים.
+       גודל המשבצת בפיקסלים שלמים (כמו במחשב), כדי שהקווים ברקע והמסגרות
+       של הכפתורים והריבועים ייפלו בדיוק על אותם פיקסלים */
+    --cell: round(down, min(100vw / var(--grid-columns), 100dvh / var(--grid-rows)), 1px);
     --line: 2px;
     --frame-border: 3px;
-    /* הגריד מתחיל מלמעלה, וממורכז לרוחב (במסך גבוה זה 0, כלומר מהקצה השמאלי) */
-    --grid-left: calc((100vw - var(--grid-columns) * var(--cell)) / 2);
+    /* הגריד מתחיל מלמעלה, וממורכז לרוחב. במסך גבוה נשארים רק כמה פיקסלים
+       בצדדים, והם מתחת למסגרת הוורודה */
+    --grid-left: round(down, (100vw - var(--grid-columns) * var(--cell)) / 2, 1px);
     --grid-top: 0px;
 
-    /* הכפתור PEEK / PLAY (בפיגמה: ריבוע של 48px, טקסט 14px) */
-    --toggle-column: 0.53;
+    /* הכפתור PEEK / PLAY (בפיגמה: ריבוע של 48px, טקסט 14px).
+       המרחק מהקצה השמאלי של המסך שווה בדיוק למרחק מהקצה העליון */
     --toggle-row: 0.468;
+    --toggle-left: calc(var(--toggle-row) * var(--cell) - var(--grid-left));
     --toggle-width: calc(var(--cell) * 48 / 49.06);
     --toggle-height: calc(var(--cell) * 48 / 49.06);
     --toggle-text-size: calc(var(--cell) * 14 / 49.06);
@@ -209,7 +215,6 @@
     --year-column: 5;
     --year-row: 13;
     --year-columns: 2;
-    --info-text-color: var(--color-pink);
 
     /* הכותרת portfolio: מיושרת לימין, לקו של עמודה 7 */
     --title-top: calc(var(--cell) * 6.32);
@@ -500,6 +505,15 @@ body {
   letter-spacing: var(--toggle-tracking);
   white-space: nowrap;
   cursor: pointer;
+  left: var(--toggle-left);
+  transition: background-color var(--transition-speed) ease;
+}
+
+/* מעבר עכבר על PEEK / PLAY: רק במחשב (עכבר), לא בטלפון */
+@media (hover: hover) and (pointer: fine) {
+  .balls-toggle:hover {
+    background-color: var(--toggle-hover-background);
+  }
 }
 
 /* אזור העיצוב מהפיגמה, ממורכז בחלון */
