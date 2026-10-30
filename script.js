@@ -21,32 +21,100 @@ function showLanguage(button, index) {
   button.dir = language.direction;
 }
 
-document.querySelectorAll(".nav-button").forEach(function (button) {
-  let timer = null;
+// הטיימר של כל כפתור שמחליף עכשיו שפות
+const languageTimers = new Map();
+
+// מתחילים להחליף שפה כל חצי שנייה
+function startLanguageLoop(button) {
+  if (languageTimers.has(button)) return;
   let currentIndex = 0;
-
-  // העכבר נכנס: מתחילים להחליף שפה כל חצי שנייה
-  function startLoop() {
-    if (timer) return;
-    timer = setInterval(function () {
-      currentIndex = (currentIndex + 1) % languages.length;
-      showLanguage(button, currentIndex);
-    }, switchEvery);
-  }
-
-  // העכבר יצא: עוצרים וחוזרים לאנגלית
-  function stopLoop() {
-    clearInterval(timer);
-    timer = null;
-    currentIndex = 0;
+  const timer = setInterval(function () {
+    currentIndex = (currentIndex + 1) % languages.length;
     showLanguage(button, currentIndex);
-  }
+  }, switchEvery);
+  languageTimers.set(button, timer);
+}
 
-  button.addEventListener("mouseenter", startLoop);
-  button.addEventListener("mouseleave", stopLoop);
-  button.addEventListener("focus", startLoop);
-  button.addEventListener("blur", stopLoop);
+// עוצרים וחוזרים לאנגלית
+function stopLanguageLoop(button) {
+  clearInterval(languageTimers.get(button));
+  languageTimers.delete(button);
+  showLanguage(button, 0);
+}
+
+const navButtons = document.querySelectorAll(".nav-button");
+
+navButtons.forEach(function (button) {
+  // עכבר נכנס / יוצא. נגיעה באצבע מטופלת בנפרד (למטה)
+  button.addEventListener("pointerenter", function (event) {
+    if (event.pointerType === "mouse") startLanguageLoop(button);
+  });
+  button.addEventListener("pointerleave", function (event) {
+    if (event.pointerType === "mouse" && !button.classList.contains("is-active")) stopLanguageLoop(button);
+  });
+
+  // ניווט במקלדת
+  button.addEventListener("focus", function () {
+    if (button.matches(":focus-visible")) startLanguageLoop(button);
+  });
+  button.addEventListener("blur", function () {
+    if (!button.classList.contains("is-active")) stopLanguageLoop(button);
+  });
 });
+
+// =========================================
+// עמוד הבית בטלפון: נגיעה ראשונה בכפתור מדליקה אותו (רקע ורוד והחלפת שפות),
+// ונגיעה שנייה באותו כפתור עוברת לעמוד שלו.
+// נגיעה בכפתור אחר או מחוץ לכפתורים מכבה אותו. רק כפתור אחד דולק בכל רגע.
+// =========================================
+
+const mobileScreen = window.matchMedia("(max-width: 767.98px)");
+const isHomePage = document.documentElement.classList.contains("page-home");
+let activeButton = null;      // הכפתור הדולק (null = אף אחד)
+let lastPointerType = "mouse"; // האם הלחיצה האחרונה הייתה באצבע או בעכבר
+
+// מדליק כפתור אחד ומכבה את הקודם. null מכבה הכול
+function setActiveButton(button) {
+  if (button === activeButton) return;
+  if (activeButton) {
+    activeButton.classList.remove("is-active");
+    stopLanguageLoop(activeButton);
+  }
+  activeButton = button;
+  if (button) {
+    button.classList.add("is-active");
+    startLanguageLoop(button);
+  }
+}
+
+window.addEventListener("pointerdown", function (event) {
+  lastPointerType = event.pointerType;
+}, true);
+
+if (isHomePage) {
+  navButtons.forEach(function (button) {
+    button.addEventListener("click", function (event) {
+      if (lastPointerType !== "touch" || !mobileScreen.matches) return;
+      // נגיעה שנייה באותו כפתור: הקישור עובד כרגיל
+      if (button === activeButton) return;
+      // נגיעה ראשונה: רק מדליקים, בלי לעבור עמוד
+      event.preventDefault();
+      setActiveButton(button);
+    });
+  });
+
+  // נגיעה מחוץ לכפתורים מכבה את הכפתור הדולק
+  window.addEventListener("pointerup", function (event) {
+    if (event.pointerType === "touch" && !event.target.closest(".nav-button")) {
+      setActiveButton(null);
+    }
+  });
+
+  // חוזרים לעמוד בכפתור "אחורה": מתחילים בלי כפתור דולק
+  window.addEventListener("pageshow", function () {
+    setActiveButton(null);
+  });
+}
 
 // =========================================
 // הפולרויד בעמוד הבית: נדחף כמו דף נייר כבד שנעוץ בנקודה אחת.
@@ -64,6 +132,7 @@ if (photo) {
   const newPushAfter = 250;  // הפסקה (מילישניות) שאחריה תנועת עכבר נחשבת דחיפה חדשה
   const softStopSpeed = 6;   // מתחת למהירות הזאת החיכוך נחלש (עד שליש), כדי שהעצירה תהיה רכה
   const tapPush = 12;        // דחיפה קטנה מנגיעה בטלפון (מעלות לשנייה)
+  const touchSensitivity = 9; // בטלפון החלקת אצבע דוחפת פי כמה יותר חזק מהעכבר
   const tempo = 1.3;         // קצב התנועה: 1 = הקצב המקורי, 1.3 = מהיר ב-30% (אותן זוויות, בפחות זמן)
 
   // סוגי דחיפה. כל דחיפה חדשה מקבלת סוג אחר, כדי שהתנועה לא תרגיש חוזרת.
@@ -195,27 +264,51 @@ if (photo) {
     startAnimation();
   }
 
-  // עכבר: הדחיפה תלויה במהירות ובכיוון התנועה, ובמרחק מנקודת הציר
+  // דוחף את התמונה לפי תנועה של היד מהנקודה from אל (x, y).
+  // הדחיפה תלויה במהירות ובכיוון התנועה, ובמרחק מנקודת הציר.
+  // sensitivity מכפיל את הדחיפה (באצבע היא חזקה יותר)
+  function pushFromMovement(from, x, y, now, sensitivity) {
+    const seconds = (now - from.time) / 1000;
+    if (seconds <= 0) return;
+    const photoBox = getPhotoGeometry();
+    const speedX = (x - from.x) / seconds;
+    const speedY = (y - from.y) / seconds;
+    const fromPivotX = x - photoBox.pivotX;
+    const fromPivotY = y - photoBox.pivotY;
+    // מהירות הסיבוב שהיד נותנת (במעלות לשנייה).
+    // תנועה ימינה מתחת לציר מסובבת נגד כיוון השעון, כך שהתחתית זזה ימינה
+    const turn = (fromPivotX * speedY - fromPivotY * speedX) / (photoBox.height * photoBox.height);
+    pushPhoto(sensitivity * turn * (180 / Math.PI), now);
+  }
+
+  // עכבר
   window.addEventListener("pointermove", function (event) {
     if (event.pointerType === "touch" || reducedMotion.matches) return;
 
     const now = performance.now();
     if (lastPointer && pointOnPhoto(event.clientX, event.clientY).inside) {
-      const seconds = (now - lastPointer.time) / 1000;
-      if (seconds > 0) {
-        const photoBox = getPhotoGeometry();
-        const speedX = (event.clientX - lastPointer.x) / seconds;
-        const speedY = (event.clientY - lastPointer.y) / seconds;
-        const fromPivotX = event.clientX - photoBox.pivotX;
-        const fromPivotY = event.clientY - photoBox.pivotY;
-        // מהירות הסיבוב שהיד נותנת (במעלות לשנייה).
-        // תנועה ימינה מתחת לציר מסובבת נגד כיוון השעון, כך שהתחתית זזה ימינה
-        const turn = (fromPivotX * speedY - fromPivotY * speedX) / (photoBox.height * photoBox.height);
-        pushPhoto(turn * (180 / Math.PI), now);
-      }
+      pushFromMovement(lastPointer, event.clientX, event.clientY, now, 1);
     }
     lastPointer = { x: event.clientX, y: event.clientY, time: now };
   });
+
+  // טלפון: החלקת אצבע על התמונה דוחפת אותה, כמו העכבר במחשב, אבל ברגישות גבוהה.
+  // האירועים "פסיביים" (passive), ולכן ההחלקה לא חוסמת את הגלילה של העמוד
+  let lastTouch = null;
+
+  window.addEventListener("touchstart", function (event) {
+    const touch = event.touches[0];
+    lastTouch = { x: touch.clientX, y: touch.clientY, time: performance.now() };
+  }, { passive: true });
+
+  window.addEventListener("touchmove", function (event) {
+    const touch = event.touches[0];
+    const now = performance.now();
+    if (lastTouch && !reducedMotion.matches && pointOnPhoto(touch.clientX, touch.clientY).inside) {
+      pushFromMovement(lastTouch, touch.clientX, touch.clientY, now, touchSensitivity);
+    }
+    lastTouch = { x: touch.clientX, y: touch.clientY, time: now };
+  }, { passive: true });
 
   // טלפון: נגיעה בתמונה נותנת דחיפה קטנה אחת, הרחק מהאצבע
   window.addEventListener("pointerdown", function (event) {

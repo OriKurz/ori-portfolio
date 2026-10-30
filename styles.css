@@ -89,28 +89,30 @@
   --button-padding: calc(var(--cell) * 10 / 96);
 
   /* כפתורים בעמוד הבית: עמודה ושורה */
-  --button-top-row: 1;
-  --button-bottom-row: 7;
-  --home-column: 2;
-  --works-column: 5;
-  --about-column: 8;
-  --contact-column: 11;
-  --process-column: 2;
+  --home-column: 2;      --home-row: 1;
+  --works-column: 5;     --works-row: 1;
+  --about-column: 8;     --about-row: 1;
+  --contact-column: 11;  --contact-row: 1;
+  --process-column: 2;   --process-row: 7;
 
   /* בלחיצה הטקסט קטן מ-25px ל-20px, כמו ב-State3 בפיגמה (20/25 = 0.8) */
   --pressed-scale: 0.8;
 
-  /* "ORI KURZ" ו-"2026" */
+  /* "ORI KURZ" ו-"2026": עמודה, שורה ורוחב (במשבצות) */
   --name-column: 9;
+  --name-row: 7;
   --name-columns: 2;
   --year-column: 12;
+  --year-row: 7;
   --year-columns: 1;
-  --text-row: 7;
+  --info-text-color: var(--color-yellow);
   /* המרחק מהקו העליון של המשבצת לטקסט, כמו בפיגמה */
   --text-offset: calc(var(--cell) * 0.4);
 
   /* הכותרת portfolio: ממורכזת לרוחב */
   --title-top: calc(var(--cell) * 1.8);
+  --title-align: center;
+  --title-right: 0px;
   /* פיגמה והדפדפן קוראים את מדדי הגובה של הפונט Reisinger אחרת
      (הפרש של 0.2em), לכן מורידים את הטקסט כדי שישב כמו בפיגמה */
   --title-font-offset: 0.2em;
@@ -124,6 +126,57 @@
 
   /* מעבר רך בין מצבי הכפתור */
   --transition-speed: 0.25s;
+}
+
+/* ----- עמוד הבית במובייל (מסכים צרים מ-768px) -----
+   הפריים iPhone בפיגמה: בדיוק 8 משבצות לרוחב המסך (משבצת = 49.06px בפיגמה).
+   לגובה, הגריד ממשיך במשבצות ריבועיות עד סוף המסך: מסך גבוה מקבל
+   עוד שורות, ומסך נמוך נגלל. אזור העיצוב הוא 17 שורות, כמו בפריים. */
+@media (max-width: 767.98px) {
+  :root.page-home {
+    --grid-columns: 8;
+    --grid-rows: 17;
+    --cell: calc(100vw / var(--grid-columns));
+    --line: 2px;
+    --frame-border: 3px;
+    /* הגריד מתחיל מהפינה השמאלית העליונה של המסך */
+    --grid-left: 0px;
+    --grid-top: 0px;
+
+    /* גדלי טקסט (בפיגמה: 17px ו-70px מתוך משבצת של 49.06px) */
+    --text-size: calc(var(--cell) * 17 / 49.06);
+    --text-tracking: calc(var(--cell) * 0.68 / 49.06);
+    --year-tracking: calc(var(--cell) * 1.53 / 49.06);
+    --title-size: calc(var(--cell) * 70 / 49.06);
+    --button-padding: calc(var(--cell) * 10 / 49.06);
+
+    /* כפתורים: עמודה ושורה */
+    --works-column: 1;    --works-row: 1;
+    --home-column: 5;     --home-row: 2;
+    --about-column: 2;    --about-row: 3;
+    --contact-column: 5;  --contact-row: 4;
+    --process-column: 3;  --process-row: 15;
+
+    /* "ORI KURZ" ו-"2026": ורודים, כל אחד על מלבן שמאחד משבצות */
+    --name-column: 1;
+    --name-row: 12;
+    --name-columns: 3;
+    --year-column: 5;
+    --year-row: 13;
+    --year-columns: 2;
+    --info-text-color: var(--color-pink);
+
+    /* הכותרת portfolio: מיושרת לימין, לקו של עמודה 7 */
+    --title-top: calc(var(--cell) * 5.36);
+    --title-align: right;
+    --title-right: calc(var(--cell) * (var(--grid-columns) - 7));
+
+    /* הפולרויד */
+    --photo-center-column: 4.526;
+    --photo-center-row: 8.647;
+    --photo-width: calc(var(--cell) * 3.182);
+    --photo-height: calc(var(--cell) * 3.638);
+  }
 }
 
 /* ----- עמוד התהליך -----
@@ -288,9 +341,16 @@ body {
   transition: transform var(--transition-speed) ease;
 }
 
-/* מעבר עכבר (וגם ניווט במקלדת) */
-.nav-button:hover,
-.nav-button:focus-visible {
+/* מעבר עכבר. רק במכשירים עם עכבר, כדי שבטלפון הכפתור לא יישאר ורוד אחרי נגיעה */
+@media (hover: hover) {
+  .nav-button:hover {
+    background-color: var(--color-pink);
+  }
+}
+
+/* ניווט במקלדת, ו-is-active: כפתור שנבחר בנגיעה ראשונה בטלפון (script.js) */
+.nav-button:focus-visible,
+.nav-button.is-active {
   background-color: var(--color-pink);
 }
 
@@ -340,28 +400,30 @@ body {
   line-height: var(--line-height);
 }
 
-/* ----- "ORI KURZ" ו-"2026" ----- */
+/* ----- "ORI KURZ" ו-"2026" -----
+   מלבן כחול עם מסגרת בצבע הקו: מסתיר את הקווים שבין המשבצות שלו */
 .name-box,
 .year-box {
-  --row: var(--text-row);
   --rows: 1;
   padding-top: var(--text-offset);
+  background-color: var(--color-blue);
+  border-color: var(--grid-line-color);
+  color: var(--info-text-color);
   font-size: var(--text-size);
   text-align: center;
   white-space: nowrap;
 }
 
-/* מלבן כחול עם מסגרת בצבע הקו: מסתיר את הקו שבין שתי המשבצות */
 .name-box {
   --column: var(--name-column);
+  --row: var(--name-row);
   --columns: var(--name-columns);
-  background-color: var(--color-blue);
-  border-color: var(--grid-line-color);
   letter-spacing: var(--text-tracking);
 }
 
 .year-box {
   --column: var(--year-column);
+  --row: var(--year-row);
   --columns: var(--year-columns);
   letter-spacing: var(--year-tracking);
 }
@@ -386,45 +448,66 @@ body {
     translateY(50%);
 }
 
-/* ----- הכותרת "portfolio", ממורכזת ברוחב אזור העיצוב ----- */
+/* ----- הכותרת "portfolio": במחשב ממורכזת, במובייל מיושרת לימין ----- */
 .title {
   position: absolute;
   left: 0;
-  right: 0;
+  right: var(--title-right);
   top: var(--title-top);
   padding-top: var(--title-font-offset);
   font-family: var(--font-title);
   font-weight: bold;
   font-size: var(--title-size);
   line-height: var(--line-height);
-  text-align: center;
+  text-align: var(--title-align);
   white-space: nowrap;
 }
 
 /* ----- המיקום של כל כפתור על הרשת ----- */
 .nav-button--home {
   --column: var(--home-column);
-  --row: var(--button-top-row);
+  --row: var(--home-row);
 }
 
 .nav-button--works {
   --column: var(--works-column);
-  --row: var(--button-top-row);
+  --row: var(--works-row);
 }
 
 .nav-button--about {
   --column: var(--about-column);
-  --row: var(--button-top-row);
+  --row: var(--about-row);
 }
 
 .nav-button--contact {
   --column: var(--contact-column);
-  --row: var(--button-top-row);
+  --row: var(--contact-row);
 }
 
 .nav-button--process {
   --column: var(--process-column);
-  --row: var(--button-bottom-row);
+  --row: var(--process-row);
+}
+
+/* ----- מובייל: העמוד גבוה לפחות כמו 17 שורות, ונגלל אם המסך נמוך יותר ----- */
+@media (max-width: 767.98px) {
+  .page-home body {
+    position: relative;
+    height: auto;
+    min-height: max(100dvh, calc(var(--grid-rows) * var(--cell) + var(--line)));
+    overflow: visible;
+  }
+
+  /* המסגרת הוורודה מקיפה את כל העמוד, ולא רק את החלון */
+  .page-home body::after {
+    position: absolute;
+  }
+
+  /* אזור העיצוב ברוחב המסך בדיוק, כדי שלא תהיה גלילה לצדדים
+     (הקו הימני ביותר נמצא בכל מקרה מתחת למסגרת) */
+  .home {
+    width: calc(var(--grid-columns) * var(--cell));
+  }
 }
 
 /* =========================================
