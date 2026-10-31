@@ -310,6 +310,149 @@
   --circle-14-column: 13.26; --circle-14-row: 14.55;
 }
 
+/* ----- עמוד מבואה לפרויקט (the-perfect-crime.html) -----
+   הפריים בפיגמה: 1440x871, משבצת = 93px. אזור העיצוב הוא 14x8 משבצות,
+   ומסביבו שוליים מנטה בלי קווים. כל הפריים (15.48x9.36 משבצות) נכנס בחלון,
+   ואזור העיצוב ממורכז. מספרים כמו 17 / 93 הם פיקסלים מתוך משבצת של 93px. */
+:root.page-project {
+  --grid-columns: 14;
+  --grid-rows: 8;
+  /* כל הפריים, כולל השוליים (במשבצות) */
+  --page-columns: 15.48;
+  --page-rows: 9.36;
+  --cell: round(down, min(100vw / var(--page-columns), 100dvh / var(--page-rows)), 1px);
+  --line: 3px;
+  /* השוליים מעל ומתחת לאזור העיצוב */
+  --grid-top-margin: calc(var(--cell) * 71 / 93);
+  --grid-bottom-margin: calc(var(--cell) * 53 / 93);
+  /* במסך גבוה מהפריים, הפריים ממורכז גם לגובה */
+  --grid-top: round(down, max(var(--grid-top-margin), (100dvh - var(--page-rows) * var(--cell)) / 2 + var(--grid-top-margin)), 1px);
+  --grid-lines-position: 0 0;
+
+  --page-background: var(--color-mint);
+  --grid-line-color: var(--color-pink);
+
+  /* גלולות (הכפתורים המעוגלים): פינות עגולות */
+  --pill-radius: calc(var(--cell) * 32 / 93);
+  --pill-text-color: var(--color-yellow);
+
+  /* תפריט ההמבורגר: שלושה קווים ורודים */
+  --menu-column: -0.527;   --menu-row: -0.57;
+  --menu-width: calc(var(--cell) * 30 / 93);
+  --menu-line-height: calc(var(--cell) * 4 / 93);
+  --menu-gap: calc(var(--cell) * 6 / 93);
+
+  /* Index//אינדקס//فهرس */
+  --index-column: 0;       --index-row: -0.355;
+  --index-width: calc(var(--cell) * 216 / 93);
+  --index-height: calc(var(--cell) * 21 / 93);
+  --index-text-size: calc(var(--cell) * 16 / 93);
+
+  /* העיגולים הצבעוניים: מיקום הקבוצה, וגודל כל עיגול */
+  --dots-column: 10.097;   --dots-row: -0.355;
+  --dot-width: calc(var(--cell) * 24 / 93);
+  --dot-height: calc(var(--cell) * 23 / 93);
+  --dots-gap: calc(var(--cell) * 7 / 93);
+
+  /* שם הפרויקט למעלה, והכפתור View full project */
+  --title-button-column: 11.753;  --title-button-row: -0.355;
+  --pill-width: calc(var(--cell) * 212 / 93);
+  --pill-height: calc(var(--cell) * 23 / 93);
+  --pill-text-size: calc(var(--cell) * 17 / 93);
+
+  /* המלבן עם הטקסט: עמודה, שורה, רוחב וגובה (במשבצות) */
+  --text-box-column: 1;    --text-box-row: 1;
+  --text-box-columns: 4;   --text-box-rows: 6;
+  --text-box-padding-top: calc(var(--cell) * 19 / 93);
+  --text-box-padding-left: calc(var(--cell) * 17 / 93);
+  --text-box-padding-right: calc(var(--cell) * 23 / 93);
+  --description-size: calc(var(--cell) * 17 / 93);
+  --description-line-height: calc(20 / 17);
+  --description-tracking: 0.02em;
+  /* הכפתור בתחתית המלבן: המרחק מהצד ומהתחתית */
+  --full-project-left: calc(var(--cell) * 13 / 93);
+  --full-project-bottom: calc(var(--cell) * 11 / 93);
+
+  /* הדימוי המרכזי (הסרטון) */
+  --media-column: 6;       --media-row: 1;
+  --media-columns: 8;      --media-rows: 4;
+
+  /* עיגול "Motion Design" */
+  --tag-column: 6.892;     --tag-row: 0.473;
+  --tag-size: calc(var(--cell) * 73 / 93);
+
+  /* שלושת ריבועי השם, צמודים מתחת לדימוי */
+  --name-square-row: 5;
+  --name-square-size: 2;
+  --name-en-column: 6;
+  --name-he-column: 9;
+  --name-ar-column: 12;
+  --name-square-padding: calc(var(--cell) * 10 / 93);
+  --name-square-text-size: calc(var(--cell) * 25 / 93);
+  /* בערבית השורות קצת יותר מרווחות (28px במקום 25px בפיגמה) */
+  --arabic-line-height: calc(28 / 25);
+}
+
+/* ----- עמוד מבואה לפרויקט במובייל -----
+   אין עיצוב מובייל בפיגמה. אזור העיצוב הוא 8 משבצות לרוחב, עם חצי משבצת
+   שוליים מכל צד, והאלמנטים יורדים בטור: הסרטון, ריבועי השם, הטקסט והכפתור.
+   העמוד נגלל לגובה. */
+@media (max-width: 767.98px) {
+  :root.page-project {
+    --grid-columns: 8;
+    --grid-rows: 14;
+    --cell: round(down, 100vw / 9, 1px);
+    --line: 2px;
+    --grid-top-margin: calc(var(--cell) * 1.35);
+    --grid-bottom-margin: calc(var(--cell) * 0.65);
+    --grid-top: round(down, var(--grid-top-margin), 1px);
+
+    /* הסרגל העליון: ההמבורגר בשורה משלו, ומתחתיו הגלולות */
+    --menu-column: 0;        --menu-row: -1.15;
+    --menu-width: calc(var(--cell) * 0.5);
+    --menu-line-height: calc(var(--cell) * 0.07);
+    --menu-gap: calc(var(--cell) * 0.1);
+
+    --index-column: 0;       --index-row: -0.55;
+    --index-width: calc(var(--cell) * 2.75);
+    --index-height: calc(var(--cell) * 0.38);
+    --index-text-size: calc(var(--cell) * 0.25);
+
+    --dots-column: 3.4;      --dots-row: -0.55;
+    --dot-width: calc(var(--cell) * 0.34);
+    --dot-height: calc(var(--cell) * 0.38);
+    --dots-gap: calc(var(--cell) * 0.07);
+
+    --title-button-column: 5.45;  --title-button-row: -0.55;
+    --pill-width: calc(var(--cell) * 2.6);
+    --pill-height: calc(var(--cell) * 0.38);
+    --pill-text-size: calc(var(--cell) * 0.26);
+
+    /* 1. הסרטון: כל הרוחב, שורות 1-4 */
+    --media-column: 0;       --media-row: 1;
+
+    --tag-column: 0.725;     --tag-row: 0.3;
+    --tag-size: calc(var(--cell) * 1.15);
+
+    /* 2. ריבועי השם: שורות 5-6, באותו סידור כמו במחשב (2, 1, 2, 1, 2) */
+    --name-en-column: 0;
+    --name-he-column: 3;
+    --name-ar-column: 6;
+    --name-square-padding: calc(var(--cell) * 0.15);
+    --name-square-text-size: calc(var(--cell) * 0.4);
+
+    /* 3. הטקסט והכפתור: שורות 8-12 */
+    --text-box-column: 1;    --text-box-row: 8;
+    --text-box-columns: 6;   --text-box-rows: 5;
+    --text-box-padding-top: calc(var(--cell) * 0.25);
+    --text-box-padding-left: calc(var(--cell) * 0.25);
+    --text-box-padding-right: calc(var(--cell) * 0.25);
+    --description-size: calc(var(--cell) * 0.33);
+    --full-project-left: calc(var(--cell) * 0.25);
+    --full-project-bottom: calc(var(--cell) * 0.25);
+  }
+}
+
 /* =========================================
    בסיס
    ========================================= */
@@ -762,3 +905,227 @@ body {
 .circle--12 { --column: var(--circle-12-column); --row: var(--circle-12-row); }
 .circle--13 { --column: var(--circle-13-column); --row: var(--circle-13-row); }
 .circle--14 { --column: var(--circle-14-column); --row: var(--circle-14-row); }
+
+/* =========================================
+   עמוד מבואה לפרויקט
+   ========================================= */
+
+/* העמוד נגלל לגובה (במובייל), בלי גלילה לרוחב */
+.page-project body {
+  overflow-x: hidden;
+}
+
+/* גובה העמוד: שוליים + השורות + שוליים, ולפחות גובה החלון */
+.project-page {
+  position: relative;
+  min-height: 100dvh;
+  height: calc(var(--grid-top) + var(--grid-rows) * var(--cell) + var(--line) + var(--grid-bottom-margin));
+  color: var(--color-pink);
+  font-family: var(--font-text);
+  line-height: var(--line-height);
+}
+
+/* אזור העיצוב, ממורכז לרוחב. הקווים הם הרקע שלו */
+.project-grid {
+  position: absolute;
+  left: var(--grid-left);
+  top: var(--grid-top);
+  width: calc(var(--grid-columns) * var(--cell) + var(--line));
+  height: calc(var(--grid-rows) * var(--cell) + var(--line));
+}
+
+/* כל הכפתורים בעמוד: בלי העיצוב של הדפדפן */
+.project-grid button {
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent; /* בלי ההבהוב הכחול בנגיעה בטלפון */
+}
+
+/* ----- גלולות: כפתור מעוגל עם טקסט צהוב באמצע (ורוד, או ירוק ב-Index) ----- */
+.project-grid .pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pill-width);
+  height: var(--pill-height);
+  border: none;
+  border-radius: var(--pill-radius);
+  background-color: var(--color-pink);
+  color: var(--pill-text-color);
+  font-weight: 700;
+  font-size: var(--pill-text-size);
+  white-space: nowrap;
+}
+
+/* בערבית האותיות מחוברות, אז בלי ריווח בין אותיות */
+.language-button:lang(ar) {
+  letter-spacing: 0;
+}
+
+/* ----- הסרגל העליון ----- */
+.project-grid .menu-button {
+  --column: var(--menu-column);
+  --row: var(--menu-row);
+  display: flex;
+  flex-direction: column;
+  gap: var(--menu-gap);
+  width: var(--menu-width);
+  border: none;
+}
+
+.menu-button-line {
+  display: block;
+  height: var(--menu-line-height);
+  border-radius: var(--pill-radius);
+  background-color: var(--color-pink);
+}
+
+.project-grid .index-button {
+  --column: var(--index-column);
+  --row: var(--index-row);
+  width: var(--index-width);
+  height: var(--index-height);
+  background-color: var(--color-green);
+  font-weight: 500;
+  font-size: var(--index-text-size);
+}
+
+.project-dots {
+  --column: var(--dots-column);
+  --row: var(--dots-row);
+  display: flex;
+  gap: var(--dots-gap);
+}
+
+.project-grid .project-dot {
+  width: var(--dot-width);
+  height: var(--dot-height);
+  border: none;
+  border-radius: var(--pill-radius);
+}
+
+.project-grid .project-dot--blue   { background-color: var(--color-blue); }
+.project-grid .project-dot--pink   { background-color: var(--color-pink); }
+.project-grid .project-dot--orange { background-color: var(--color-orange); }
+.project-grid .project-dot--green  { background-color: var(--color-green); }
+
+.project-title-button {
+  --column: var(--title-button-column);
+  --row: var(--title-button-row);
+}
+
+/* ----- המלבן עם הטקסט: מנטה, מסתיר את הקווים שבתוכו ----- */
+.project-text-box {
+  --column: var(--text-box-column);
+  --row: var(--text-box-row);
+  --columns: var(--text-box-columns);
+  --rows: var(--text-box-rows);
+  padding-top: var(--text-box-padding-top);
+  background-color: var(--color-mint);
+  border-color: var(--grid-line-color);
+  font-size: var(--description-size);
+  line-height: var(--description-line-height);
+  letter-spacing: var(--description-tracking);
+}
+
+/* הריווח מהצדדים מתהפך לבד בעברית ובערבית (start = הצד שבו השורה מתחילה) */
+.project-text {
+  padding-inline-start: var(--text-box-padding-left);
+  padding-inline-end: var(--text-box-padding-right);
+}
+
+/* עברית וערבית: מימין לשמאל ומיושרות לימין (dir="rtl" ב-HTML). אנגלית לשמאל */
+.project-text[dir="rtl"] {
+  text-align: right;
+}
+
+.project-text:lang(ar) {
+  letter-spacing: 0;
+}
+
+/* שורה ריקה בין שתי הפסקאות, כמו בפיגמה */
+.project-text p + p {
+  margin-top: 1lh;
+}
+
+/* הכפתור בתחתית המלבן, בצד שמאל */
+.full-project-button {
+  position: absolute;
+  left: var(--full-project-left);
+  bottom: var(--full-project-bottom);
+  letter-spacing: normal;
+  line-height: var(--line-height);
+}
+
+/* ----- הדימוי המרכזי: הסרטון ממלא את המלבן שבין הקווים ----- */
+.project-media {
+  --column: var(--media-column);
+  --row: var(--media-row);
+  --columns: var(--media-columns);
+  --rows: var(--media-rows);
+  overflow: hidden;
+  background-color: var(--color-mint);
+  border-color: var(--grid-line-color);
+}
+
+.project-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none; /* אי אפשר ללחוץ על הסרטון ולעצור אותו */
+}
+
+/* ----- עיגול "Motion Design": הטקסט במרכז העיגול ----- */
+.project-tag {
+  --column: var(--tag-column);
+  --row: var(--tag-row);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tag-size);
+  height: var(--tag-size);
+  color: var(--color-yellow);
+  font-weight: 700;
+  font-size: var(--pill-text-size);
+  text-align: center;
+}
+
+.project-tag-circle {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.project-tag-text {
+  position: relative; /* מעל העיגול */
+}
+
+/* ----- ריבועי השם: 2x2 משבצות, מנטה עם מסגרת בצבע הקו.
+   הטקסט בפינה העליונה: משמאל באנגלית, מימין בעברית ובערבית ----- */
+.project-grid .project-name {
+  --row: var(--name-square-row);
+  --columns: var(--name-square-size);
+  --rows: var(--name-square-size);
+  display: flex;
+  align-items: flex-start;
+  padding: var(--name-square-padding);
+  background-color: var(--color-mint);
+  border-color: var(--grid-line-color);
+  color: var(--color-pink);
+  font-size: var(--name-square-text-size);
+  line-height: var(--line-height);
+  text-align: start;
+}
+
+.project-name--en { --column: var(--name-en-column); }
+.project-name--he { --column: var(--name-he-column); }
+.project-name--ar { --column: var(--name-ar-column); }
+
+.project-grid .project-name--ar {
+  line-height: var(--arabic-line-height);
+}

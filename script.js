@@ -15,7 +15,7 @@ const switchEvery = 500;
 // מציג בכפתור את המילה בשפה שבמקום index ברשימה
 function showLanguage(button, index) {
   const language = languages[index];
-  const label = button.querySelector(".nav-button-label");
+  const label = button.querySelector(".nav-button-label, .language-button-label");
   label.textContent = button.dataset[language.code];
   button.lang = language.code;
   button.dir = language.direction;
@@ -44,7 +44,11 @@ function stopLanguageLoop(button) {
 
 const navButtons = document.querySelectorAll(".nav-button");
 
-navButtons.forEach(function (button) {
+// בעמודי הפרויקטים: הכפתורים שמחליפים שפה (שם הפרויקט, View full project)
+const languageButtons = document.querySelectorAll(".language-button");
+
+// מחליף שפות כשהעכבר על הכפתור או כשמגיעים אליו במקלדת
+function loopLanguagesOnHover(button) {
   // עכבר נכנס / יוצא. נגיעה באצבע מטופלת בנפרד (למטה)
   button.addEventListener("pointerenter", function (event) {
     if (event.pointerType === "mouse") startLanguageLoop(button);
@@ -60,7 +64,10 @@ navButtons.forEach(function (button) {
   button.addEventListener("blur", function () {
     if (!button.classList.contains("is-active")) stopLanguageLoop(button);
   });
-});
+}
+
+navButtons.forEach(loopLanguagesOnHover);
+languageButtons.forEach(loopLanguagesOnHover);
 
 // =========================================
 // עמוד הבית בטלפון: נגיעה ראשונה בכפתור מדליקה אותו (רקע ורוד והחלפת שפות),
@@ -115,6 +122,61 @@ if (isHomePage) {
     setActiveButton(null);
   });
 }
+
+// =========================================
+// עמודי הפרויקטים בטלפון: נגיעה בכפתור שמחליף שפה מתחילה את ההחלפה,
+// ונגיעה נוספת בו (או מחוץ לו) עוצרת אותה. רק כפתור אחד מחליף בכל רגע.
+// =========================================
+
+if (languageButtons.length > 0) {
+  languageButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      if (lastPointerType !== "touch") return;
+      setActiveButton(button === activeButton ? null : button);
+    });
+  });
+
+  window.addEventListener("pointerup", function (event) {
+    if (event.pointerType === "touch" && !event.target.closest(".language-button")) {
+      setActiveButton(null);
+    }
+  });
+}
+
+// =========================================
+// עמוד מבואה לפרויקט: שלושת ריבועי השם מחליפים את שפת הטקסט במלבן.
+// hover על ריבוע מציג את הטקסט בשפה שלו, ויציאה מחזירה לשפה שנבחרה.
+// לחיצה על ריבוע נועלת את השפה שלו. בטעינה: אנגלית.
+// =========================================
+
+const nameSquares = document.querySelectorAll(".project-name");
+const projectTexts = document.querySelectorAll(".project-text");
+let chosenLanguage = "en";
+
+// מציג רק את הטקסט בשפה code (en / he / ar)
+function showProjectText(code) {
+  projectTexts.forEach(function (text) {
+    text.hidden = text.lang !== code;
+  });
+}
+
+nameSquares.forEach(function (square) {
+  square.addEventListener("pointerenter", function (event) {
+    if (event.pointerType === "mouse") showProjectText(square.lang);
+  });
+  square.addEventListener("pointerleave", function (event) {
+    if (event.pointerType === "mouse") showProjectText(chosenLanguage);
+  });
+
+  square.addEventListener("click", function () {
+    chosenLanguage = square.lang;
+    showProjectText(chosenLanguage);
+    // לקוראי מסך: איזה ריבוע נבחר
+    nameSquares.forEach(function (other) {
+      other.setAttribute("aria-pressed", other === square ? "true" : "false");
+    });
+  });
+});
 
 // =========================================
 // הפולרויד בעמוד הבית: נדחף כמו דף נייר כבד שנעוץ בנקודה אחת.

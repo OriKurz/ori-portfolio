@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="page-project">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Perfect Crime — Ori Kurz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- עמוד מבואה לפרויקט: הפריים "גלריית עבודות הפשע המושלם" מהפיגמה -->
+  <main class="project-page">
+
+    <!-- אזור העיצוב: 14x8 משבצות (במובייל 8x14). קווי הגריד הם הרקע שלו -->
+    <div class="project-grid grid-lines">
+
+      <!-- ----- הסרגל העליון (מעל הגריד). עוד לא מחובר לשום מקום ----- -->
+      <button class="on-grid menu-button" type="button" aria-label="Menu">
+        <span class="menu-button-line"></span>
+        <span class="menu-button-line"></span>
+        <span class="menu-button-line"></span>
+      </button>
+
+      <button class="on-grid pill index-button" type="button">Index//אינדקס//فهرس</button>
+
+      <!-- העיגולים הצבעוניים -->
+      <div class="on-grid project-dots">
+        <button class="project-dot project-dot--blue" type="button" aria-label="Blue"></button>
+        <button class="project-dot project-dot--pink" type="button" aria-label="Pink"></button>
+        <button class="project-dot project-dot--orange" type="button" aria-label="Orange"></button>
+        <button class="project-dot project-dot--green" type="button" aria-label="Green"></button>
+        <button class="project-dot project-dot--blue" type="button" aria-label="Blue"></button>
+      </div>
+
+      <!-- שם הפרויקט: בהובר (או בנגיעה בטלפון) מתחלף בין אנגלית, עברית וערבית -->
+      <button class="on-grid pill language-button project-title-button" type="button"
+        data-en="The Perfect Crime" data-he="הפשע המושלם" data-ar="الجريمة الكاملة"><span class="language-button-label">The Perfect Crime</span></button>
+
+      <!-- ----- המלבן עם הטקסט על הפרויקט -----
+           שלוש גרסאות של הטקסט, ורק אחת מוצגת (script.js מחליף לפי ריבועי השם) -->
+      <div class="grid-box project-text-box">
+        <div class="project-text" lang="en" dir="ltr">
+          <p>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
+          <p>An audio-driven animation based on a soundbite from the sitcom The Office</p>
+        </div>
+        <div class="project-text" lang="he" dir="rtl" hidden>
+          <p>מה קורה כשעובד פס ייצור במפעל אריזות מתכנן את הפשע המושלם עד הפרט האחרון?</p>
+          <p>אנימציה שנבנתה סביב קטע אודיו מתוך הסיטקום "המשרד".</p>
+        </div>
+        <div class="project-text" lang="ar" dir="rtl" hidden>
+          <p>ماذا يحدث عندما يخطّط عاملٌ على خط الإنتاج في مصنع تغليف للجريمة الكاملة حتى أدقّ التفاصيل؟</p>
+          <p>رسوم متحركة مبنية على مقطع صوتي من المسلسل الكوميدي "ذا أوفيس".</p>
+        </div>
+
+        <!-- הכפתור לפרויקט המלא. בהובר מתחלף בין השפות. עוד לא מחובר לשום מקום -->
+        <button class="pill language-button full-project-button" type="button"
+          data-en="View full project" data-he="לפרויקט המלא" data-ar="للمشروع الكامل"><span class="language-button-label">View full project</span></button>
+      </div>
+
+      <!-- ----- הדימוי המרכזי: סרטון בלופ, בלי סאונד ובלי כפתורים ----- -->
+      <div class="grid-box project-media">
+        <video class="project-video" src="video/logo%20tpc.mp4" autoplay muted loop playsinline preload="auto"
+          disablepictureinpicture disableremoteplayback aria-label="The Perfect Crime logo animation"></video>
+      </div>
+
+      <!-- עיגול "Motion Design" (מעל הסרטון). אותו עיגול ירוק כמו בעמוד התהליך -->
+      <div class="on-grid project-tag">
+        <img class="project-tag-circle" src="Images/process/circle-green.svg" alt="">
+        <p class="project-tag-text">Motion<br>Design</p>
+      </div>
+
+      <!-- ----- שם הפרויקט בשלוש שפות, צמוד לדימוי המרכזי -----
+           hover מציג את הטקסט בשפה של הריבוע, ולחיצה נועלת אותה -->
+      <button class="grid-box project-name project-name--en" type="button" lang="en" dir="ltr" aria-pressed="true"><span>The<br>Perfect<br>Crime</span></button>
+      <button class="grid-box project-name project-name--he" type="button" lang="he" dir="rtl" aria-pressed="false"><span>הפשע<br>המושלם</span></button>
+      <button class="grid-box project-name project-name--ar" type="button" lang="ar" dir="rtl" aria-pressed="false"><span>الجريمة<br>الكاملة</span></button>
+
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
