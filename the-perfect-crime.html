@@ -6,20 +6,24 @@
   <title>The Perfect Crime — Ori Kurz</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="grid-lines">
 
-  <!-- עמוד מבואה לפרויקט: הפריים "גלריית עבודות הפשע המושלם" מהפיגמה -->
+  <!-- עמוד מבואה לפרויקט: הפריים "גלריית עבודות הפשע המושלם" מהפיגמה.
+       קווי הגריד מצוירים ב-CSS על כל החלון (ברקע של body),
+       ואזור העיצוב (1440x810 בפיגמה) ממורכז מעליהם -->
   <main class="project-page">
 
-    <!-- אזור העיצוב: 14x8 משבצות (במובייל 8x14). קווי הגריד הם הרקע שלו -->
-    <div class="project-grid grid-lines">
+    <div class="project-grid">
 
-      <!-- ----- הסרגל העליון (מעל הגריד). עוד לא מחובר לשום מקום ----- -->
-      <button class="on-grid menu-button" type="button" aria-label="Menu">
+      <!-- ----- הסרגל העליון ----- -->
+      <!-- ההמבורגר: קישור זמני לעמוד הבית, עד שיהיה תפריט -->
+      <a class="on-grid menu-button" href="index.html" aria-label="Menu">
         <span class="menu-button-line"></span>
         <span class="menu-button-line"></span>
         <span class="menu-button-line"></span>
-      </button>
+      </a>
+
+      <!-- Index והעיגולים הצבעוניים: עוד לא מחוברים לשום מקום -->
 
       <button class="on-grid pill index-button" type="button">Index//אינדקס//فهرس</button>
 
@@ -63,18 +67,18 @@
           disablepictureinpicture disableremoteplayback aria-label="The Perfect Crime logo animation"></video>
       </div>
 
-      <!-- עיגול "Motion Design" (מעל הסרטון). אותו עיגול ירוק כמו בעמוד התהליך -->
-      <div class="on-grid project-tag">
-        <img class="project-tag-circle" src="Images/process/circle-green.svg" alt="">
-        <p class="project-tag-text">Motion<br>Design</p>
-      </div>
-
-      <!-- ----- שם הפרויקט בשלוש שפות, צמוד לדימוי המרכזי -----
+      <!-- ----- שם הפרויקט בשלוש שפות, במשבצות צמודות לדימוי המרכזי -----
            hover מציג את הטקסט בשפה של הריבוע, ולחיצה נועלת אותה -->
       <button class="grid-box project-name project-name--en" type="button" lang="en" dir="ltr" aria-pressed="true"><span>The<br>Perfect<br>Crime</span></button>
       <button class="grid-box project-name project-name--he" type="button" lang="he" dir="rtl" aria-pressed="false"><span>הפשע<br>המושלם</span></button>
       <button class="grid-box project-name project-name--ar" type="button" lang="ar" dir="rtl" aria-pressed="false"><span>الجريمة<br>الكاملة</span></button>
 
+      <!-- עיגול "Motion Design" (על הקצה של הסרטון). אותו עיגול ירוק כמו בעמוד התהליך.
+           הוא אחרון ב-HTML כדי שיהיה מעל הסרטון ומעל ריבועי השם -->
+      <div class="on-grid project-tag">
+        <img class="project-tag-circle" src="Images/process/circle-green.svg" alt="">
+        <p class="project-tag-text">Motion<br>Design</p>
+      </div>
     </div>
   </main>
 
