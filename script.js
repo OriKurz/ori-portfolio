@@ -179,6 +179,75 @@ nameSquares.forEach(function (square) {
 });
 
 // =========================================
+// בר האינדקס בעמוד מבואה לפרויקט: כל כדור הוא פרויקט.
+// בכל רגע רק כדור אחד פתוח ומורחב לפס עם שם הפרויקט.
+// בטעינה The Perfect Crime נפתח אחרי השהיה קצרה. hover על כדור אחר פותח אותו,
+// וכשהעכבר יוצא מהבר חוזרים ל-The Perfect Crime. בטלפון: נגיעה בכדור פותחת אותו.
+// =========================================
+
+const indexBar = document.querySelector(".index-bar");
+
+if (indexBar) {
+  const projectBalls = indexBar.querySelectorAll("button.index-ball");
+  const defaultBall = indexBar.querySelector("[data-default]");
+  const openDelay = 600; // כמה זמן (מילישניות) מחכים בטעינה לפני שהפס נפתח
+
+  // פותח כדור אחד וסוגר את כל השאר
+  function openBall(ball) {
+    projectBalls.forEach(function (other) {
+      other.classList.toggle("is-open", other === ball);
+    });
+  }
+
+  // מודד את השם הארוך מבין שלוש השפות של כל כדור, כדי שרוחב הפס יהיה קבוע
+  function measureBallNames() {
+    projectBalls.forEach(function (ball) {
+      const label = ball.querySelector(".index-ball-label");
+      const shownLanguage = Math.max(0, languages.findIndex(function (language) {
+        return language.code === ball.lang;
+      }));
+      let widest = 0;
+      languages.forEach(function (language, index) {
+        showLanguage(ball, index);
+        widest = Math.max(widest, label.getBoundingClientRect().width);
+      });
+      showLanguage(ball, shownLanguage);
+      ball.style.setProperty("--label-width", Math.ceil(widest) + "px");
+    });
+  }
+
+  projectBalls.forEach(function (ball) {
+    // עכבר או מקלדת: הכדור שעליו עומדים נפתח
+    ball.addEventListener("pointerenter", function (event) {
+      if (event.pointerType === "mouse") openBall(ball);
+    });
+    ball.addEventListener("focus", function () {
+      openBall(ball);
+    });
+    // טלפון: נגיעה פותחת את הכדור
+    ball.addEventListener("click", function () {
+      if (lastPointerType === "touch") openBall(ball);
+    });
+  });
+
+  // העכבר יצא מהבר: חוזרים לפרויקט של העמוד
+  indexBar.addEventListener("pointerleave", function (event) {
+    if (event.pointerType === "mouse") openBall(defaultBall);
+  });
+
+  // אחרי שהפונטים נטענו (אחרת המדידה לא מדויקת): מודדים, ואז הפס של העמוד נפתח
+  document.fonts.ready.then(function () {
+    measureBallNames();
+    setTimeout(function () {
+      if (!indexBar.querySelector(".is-open")) openBall(defaultBall);
+    }, openDelay);
+  });
+
+  // גודל המשבצת משתנה עם החלון, אז מודדים מחדש
+  window.addEventListener("resize", measureBallNames);
+}
+
+// =========================================
 // הפולרויד בעמוד הבית: נדחף כמו דף נייר כבד שנעוץ בנקודה אחת.
 // נקודת הציר היא מרכז הקצה העליון של התמונה (ראו .photo ב-styles.css).
 // אין קפיץ: התמונה נשארת בזווית שאליה נדחפה, ורק דחיפה נוספת מזיזה אותה.

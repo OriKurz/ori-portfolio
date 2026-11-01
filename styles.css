@@ -341,46 +341,54 @@
   --menu-line-height: calc(var(--cell) * 4 / 93);
   --menu-gap: calc(var(--cell) * 6 / 93);
 
-  /* Index//אינדקס//فهرس */
-  --index-column: 0.634;   --index-row: 0.43;
+  /* Index//אינדקס//فهرس בפינה הימנית העליונה */
+  --index-column: 12.624;  --index-row: 0.387;
   --index-width: calc(var(--cell) * 216 / 93);
   --index-height: calc(var(--cell) * 21 / 93);
   --index-text-size: calc(var(--cell) * 16 / 93);
-
-  /* העיגולים הצבעוניים: מיקום הקבוצה, וגודל כל עיגול */
-  --dots-column: 11.14;    --dots-row: 0.387;
-  --dot-width: calc(var(--cell) * 24 / 93);
-  --dot-height: calc(var(--cell) * 23 / 93);
-  --dots-gap: calc(var(--cell) * 7 / 93);
-
-  /* שם הפרויקט למעלה */
-  --title-button-column: 12.796;  --title-button-row: 0.387;
-  --title-button-width: calc(var(--cell) * 212 / 93);
-  --title-button-height: calc(var(--cell) * 23 / 93);
   --pill-text-size: calc(var(--cell) * 17 / 93);
 
-  /* המלבן עם הטקסט: עמודה, שורה, רוחב וגובה (במשבצות).
-     בפיגמה הוא מתחיל באמצע העמודה הראשונה (x=51) */
-  --text-box-column: 0.548;  --text-box-row: 1;
-  --text-box-columns: 2.462; --text-box-rows: 7;
+  /* בר האינדקס: טור כדורים בצד שמאל. כדור סגור הוא 23x24, ופס פתוח בגובה 23.
+     רוחב הפס = השם הארוך מבין שלוש השפות (script.js מודד) + ריווח משני הצדדים */
+  --index-bar-column: 0.677;  --index-bar-row: 1.108;
+  --index-bar-direction: column;
+  --index-bar-gap: calc(var(--cell) * 6.6 / 93);
+  --ball-width: calc(var(--cell) * 23 / 93);
+  --ball-height: calc(var(--cell) * 24 / 93);
+  --bar-height: calc(var(--cell) * 23 / 93);
+  --bar-padding: calc(var(--cell) * 32 / 93);
+  --label-width: 0px; /* נקבע לכל כדור ב-script.js */
+  /* תנועת הפתיחה והסגירה */
+  --bar-easing: cubic-bezier(0.22, 1, 0.36, 1); /* מתחיל מהר ונעצר ברכות */
+  --bar-open-time: 700ms;
+  --bar-close-time: 450ms;
+  --label-in-time: 350ms;
+  --label-in-delay: 350ms;  /* השם נכנס אחרי שהפס כמעט נפתח */
+  --label-out-time: 150ms;
+  --label-slide: calc(var(--cell) * 6 / 93);
+
+  /* המלבן עם הטקסט: מתחת לסרטון, באותו רוחב, בגובה משבצת אחת */
+  --text-box-column: 5;    --text-box-row: 6;
+  --text-box-columns: 10;  --text-box-rows: 1;
   --text-box-padding-top: calc(var(--cell) * 23 / 93);
   --text-box-padding-left: calc(var(--cell) * 19 / 93);
-  --text-box-padding-right: calc(var(--cell) * 20 / 93);
+  --text-box-padding-right: 0px;
+  --description-width: calc(var(--cell) * 543 / 93);
   --description-size: calc(var(--cell) * 19 / 93);
-  --description-line-height: calc(20 / 19);
+  --description-line-height: calc(24 / 19);
   --description-tracking: 0.02em;
 
-  /* הכפתור View full project בתחתית המלבן: גודל, והמרחק מהצד ומהתחתית */
+  /* הכפתור View full project בצד ימין של המלבן (מתחת ל-Index): גודל, והמרחק מהצד ומהתחתית */
   --full-project-width: calc(var(--cell) * 216 / 93);
   --full-project-height: calc(var(--cell) * 21 / 93);
-  --full-project-left: calc(var(--cell) * 4 / 93);
-  --full-project-bottom: calc(var(--cell) * 14 / 93);
+  --full-project-right: calc(var(--cell) * 5 / 93);
+  --full-project-bottom: calc(var(--cell) * 31 / 93);
 
   /* הדימוי המרכזי (הסרטון) */
   --media-column: 5;       --media-row: 1;
   --media-columns: 10;     --media-rows: 5;
 
-  /* עיגול "Motion Design" על הקצה השמאלי של הסרטון */
+  /* עיגול "Motion Graphic" על הקצה השמאלי של הסרטון */
   --tag-column: 4.71;      --tag-row: 4.118;
   --tag-size: calc(var(--cell) * 73 / 93);
 
@@ -398,42 +406,43 @@
 
 /* ----- עמוד מבואה לפרויקט במובייל -----
    אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב המסך (כמו עמוד הבית במובייל),
-   והאלמנטים יורדים בטור: הסרגל העליון, הסרטון, ריבועי השם, הטקסט והכפתור.
+   והאלמנטים יורדים בטור: הסרגל העליון, בר האינדקס, הסרטון, ריבועי השם, הטקסט והכפתור.
    העמוד נגלל לגובה, וקווי הגריד ממשיכים עד קצות המסך. */
 @media (max-width: 767.98px) {
   :root.page-project {
     --grid-columns: 8;
-    --grid-rows: 15;
+    --grid-rows: 13;
     --cell: round(down, 100vw / var(--grid-columns), 1px);
     --line: 2px;
     --grid-top: 0px;
 
-    /* שורה 0: ההמבורגר. שורה 1: הגלולות */
+    /* שורה 0: ההמבורגר משמאל ו-Index מימין */
     --menu-column: 0.25;     --menu-row: 0.3;
     --menu-width: calc(var(--cell) * 0.5);
     --menu-line-height: calc(var(--cell) * 0.07);
     --menu-gap: calc(var(--cell) * 0.1);
 
-    --index-column: 0.2;     --index-row: 1.31;
+    --index-column: 5.1;     --index-row: 0.31;
     --index-width: calc(var(--cell) * 2.7);
     --index-height: calc(var(--cell) * 0.38);
     --index-text-size: calc(var(--cell) * 0.24);
-
-    --dots-column: 3.15;     --dots-row: 1.31;
-    --dot-width: calc(var(--cell) * 0.34);
-    --dot-height: calc(var(--cell) * 0.38);
-    --dots-gap: calc(var(--cell) * 0.07);
-
-    --title-button-column: 5.2;  --title-button-row: 1.31;
-    --title-button-width: calc(var(--cell) * 2.6);
-    --title-button-height: calc(var(--cell) * 0.38);
     --pill-text-size: calc(var(--cell) * 0.25);
+
+    /* שורה 1: בר האינדקס, הפעם בשורה לרוחב (בטור הוא היה דוחף את הסרטון למטה) */
+    --index-bar-column: 0.2;  --index-bar-row: 1.31;
+    --index-bar-direction: row;
+    --index-bar-gap: calc(var(--cell) * 0.1);
+    --ball-width: calc(var(--cell) * 0.38);
+    --ball-height: calc(var(--cell) * 0.38);
+    --bar-height: calc(var(--cell) * 0.38);
+    --bar-padding: calc(var(--cell) * 0.45);
+    --label-slide: calc(var(--cell) * 0.06);
 
     /* 1. הסרטון: כל הרוחב, שורות 2-5 */
     --media-column: 0;       --media-row: 2;
     --media-columns: 8;      --media-rows: 4;
 
-    /* עיגול "Motion Design": על הקו התחתון של הסרטון, מעל המשבצת שבין ריבועי השם,
+    /* עיגול "Motion Graphic": על הקו התחתון של הסרטון, מעל המשבצת שבין ריבועי השם,
        כמו במחשב (שם הוא על הקו השמאלי) וכדי שלא יסתיר את הלוגו */
     --tag-column: 1.925;     --tag-row: 5.425;
     --tag-size: calc(var(--cell) * 1.15);
@@ -447,16 +456,19 @@
     --name-square-padding-side: calc(var(--cell) * 0.15);
     --name-square-text-size: calc(var(--cell) * 0.4);
 
-    /* 3. הטקסט והכפתור: שורות 9-13 */
+    /* 3. הטקסט והכפתור: שורות 9-11. הכפתור בפינה הימנית התחתונה, כמו במחשב */
     --text-box-column: 1;    --text-box-row: 9;
-    --text-box-columns: 6;   --text-box-rows: 5;
+    --text-box-columns: 6;   --text-box-rows: 3;
     --text-box-padding-top: calc(var(--cell) * 0.25);
     --text-box-padding-left: calc(var(--cell) * 0.25);
     --text-box-padding-right: calc(var(--cell) * 0.25);
+    /* כל הרוחב שבתוך המלבן, פחות הריווח משני הצדדים */
+    --description-width: calc(var(--cell) * 6 - var(--line) - 2 * var(--text-box-padding-left));
     --description-size: calc(var(--cell) * 0.33);
+    --description-line-height: calc(20 / 19);
     --full-project-width: calc(var(--cell) * 2.7);
     --full-project-height: calc(var(--cell) * 0.38);
-    --full-project-left: calc(var(--cell) * 0.25);
+    --full-project-right: calc(var(--cell) * 0.25);
     --full-project-bottom: calc(var(--cell) * 0.25);
   }
 }
@@ -1013,30 +1025,82 @@ body {
   font-size: var(--index-text-size);
 }
 
-.project-dots {
-  --column: var(--dots-column);
-  --row: var(--dots-row);
+/* ----- בר האינדקס: טור של כדורים צבעוניים (במובייל שורה) ----- */
+.index-bar {
+  --column: var(--index-bar-column);
+  --row: var(--index-bar-row);
   display: flex;
-  gap: var(--dots-gap);
+  flex-direction: var(--index-bar-direction);
+  align-items: flex-start;
+  gap: var(--index-bar-gap);
 }
 
-.project-grid .project-dot {
-  width: var(--dot-width);
-  height: var(--dot-height);
+/* כדור סגור. השם כבר בפנים, אבל שקוף וחתוך עד שהכדור נפתח */
+.project-grid .index-ball {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: var(--ball-width);
+  height: var(--ball-height);
   border: none;
   border-radius: var(--pill-radius);
+  color: var(--pill-text-color);
+  font-size: var(--pill-text-size);
+  white-space: nowrap;
+  /* סגירה: חוזר לכדור קצת יותר מהר ממה שנפתח */
+  transition:
+    width var(--bar-close-time) var(--bar-easing),
+    height var(--bar-close-time) var(--bar-easing);
 }
 
-.project-grid .project-dot--blue   { background-color: var(--color-blue); }
-.project-grid .project-dot--pink   { background-color: var(--color-pink); }
-.project-grid .project-dot--orange { background-color: var(--color-orange); }
-.project-grid .project-dot--green  { background-color: var(--color-green); }
+/* כדור פתוח: פס ברוחב השם הארוך מבין שלוש השפות, כדי שלא יקפוץ בזמן ההחלפה */
+.project-grid .index-ball.is-open {
+  width: calc(var(--label-width) + 2 * var(--bar-padding));
+  height: var(--bar-height);
+  transition-duration: var(--bar-open-time);
+}
 
-.project-title-button {
-  --column: var(--title-button-column);
-  --row: var(--title-button-row);
-  width: var(--title-button-width);
-  height: var(--title-button-height);
+.project-grid .index-ball--pink   { background-color: var(--color-pink); }
+.project-grid .index-ball--blue   { background-color: var(--color-blue); }
+.project-grid .index-ball--orange { background-color: var(--color-orange); }
+.project-grid .index-ball--green  { background-color: var(--color-green); }
+
+/* כדורים בלי פרויקט: לא נפתחים, אז גם בלי יד של לחיצה */
+.index-ball:not(button) {
+  cursor: default;
+}
+
+/* השם: ברוחב הטקסט שלו (גם כשהכדור צר), במרכז הפס.
+   יוצא מהר כשהפס נסגר, ונכנס בעדינות מלמטה רק אחרי שהפס כמעט נפתח */
+.index-ball-label {
+  display: block;
+  flex: none;
+  width: max-content;
+  opacity: 0;
+  transform: translateY(var(--label-slide));
+  transition:
+    opacity var(--label-out-time) ease-out,
+    transform var(--label-out-time) ease-out;
+}
+
+.index-ball.is-open .index-ball-label {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--label-in-time) ease-out var(--label-in-delay),
+    transform var(--label-in-time) var(--bar-easing) var(--label-in-delay);
+}
+
+/* מי שביקש במחשב צמצום תנועה: הפס נפתח ונסגר בלי אנימציה */
+@media (prefers-reduced-motion: reduce) {
+  .project-grid .index-ball,
+  .project-grid .index-ball.is-open,
+  .index-ball-label,
+  .index-ball.is-open .index-ball-label {
+    transition: none;
+  }
 }
 
 /* ----- המלבן עם הטקסט: מנטה, מסתיר את הקווים שבתוכו ----- */
@@ -1054,13 +1118,14 @@ body {
   letter-spacing: var(--description-tracking);
 }
 
-/* הריווח מהצדדים מתהפך לבד בעברית ובערבית (start = הצד שבו השורה מתחילה) */
+/* עמודת הטקסט: בצד שמאל של המלבן, כדי שלא תעבור מתחת לכפתור שבצד ימין */
 .project-text {
-  padding-inline-start: var(--text-box-padding-left);
-  padding-inline-end: var(--text-box-padding-right);
+  width: calc(var(--text-box-padding-left) + var(--description-width) + var(--text-box-padding-right));
+  padding-left: var(--text-box-padding-left);
+  padding-right: var(--text-box-padding-right);
 }
 
-/* עברית וערבית: מימין לשמאל ומיושרות לימין (dir="rtl" ב-HTML). אנגלית לשמאל */
+/* עברית וערבית: מימין לשמאל ומיושרות לימין של העמודה (dir="rtl" ב-HTML). אנגלית לשמאל */
 .project-text[dir="rtl"] {
   text-align: right;
 }
@@ -1069,15 +1134,10 @@ body {
   letter-spacing: 0;
 }
 
-/* שורה ריקה בין שתי הפסקאות, כמו בפיגמה */
-.project-text p + p {
-  margin-top: 1lh;
-}
-
-/* הכפתור בתחתית המלבן, בצד שמאל */
+/* הכפתור בצד ימין של המלבן */
 .project-grid .full-project-button {
   position: absolute;
-  left: var(--full-project-left);
+  right: var(--full-project-right);
   bottom: var(--full-project-bottom);
   width: var(--full-project-width);
   height: var(--full-project-height);
@@ -1105,7 +1165,7 @@ body {
   pointer-events: none; /* אי אפשר ללחוץ על הסרטון ולעצור אותו */
 }
 
-/* ----- עיגול "Motion Design": הטקסט במרכז העיגול ----- */
+/* ----- עיגול "Motion Graphic": הטקסט במרכז העיגול ----- */
 .project-tag {
   --column: var(--tag-column);
   --row: var(--tag-row);

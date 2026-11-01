@@ -23,42 +23,25 @@
         <span class="menu-button-line"></span>
       </a>
 
-      <!-- Index והעיגולים הצבעוניים: עוד לא מחוברים לשום מקום -->
-
+      <!-- Index: עוד לא מחובר לשום מקום -->
       <button class="on-grid pill index-button" type="button">Index//אינדקס//فهرس</button>
 
-      <!-- העיגולים הצבעוניים -->
-      <div class="on-grid project-dots">
-        <button class="project-dot project-dot--blue" type="button" aria-label="Blue"></button>
-        <button class="project-dot project-dot--pink" type="button" aria-label="Pink"></button>
-        <button class="project-dot project-dot--orange" type="button" aria-label="Orange"></button>
-        <button class="project-dot project-dot--green" type="button" aria-label="Green"></button>
-        <button class="project-dot project-dot--blue" type="button" aria-label="Blue"></button>
-      </div>
-
-      <!-- שם הפרויקט: בהובר (או בנגיעה בטלפון) מתחלף בין אנגלית, עברית וערבית -->
-      <button class="on-grid pill language-button project-title-button" type="button"
-        data-en="The Perfect Crime" data-he="הפשע המושלם" data-ar="الجريمة الكاملة"><span class="language-button-label">The Perfect Crime</span></button>
-
-      <!-- ----- המלבן עם הטקסט על הפרויקט -----
-           שלוש גרסאות של הטקסט, ורק אחת מוצגת (script.js מחליף לפי ריבועי השם) -->
-      <div class="grid-box project-text-box">
-        <div class="project-text" lang="en" dir="ltr">
-          <p>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
-          <p>An audio-driven animation based on a soundbite from the sitcom The Office</p>
-        </div>
-        <div class="project-text" lang="he" dir="rtl" hidden>
-          <p>מה קורה כשעובד פס ייצור במפעל אריזות מתכנן את הפשע המושלם עד הפרט האחרון?</p>
-          <p>אנימציה שנבנתה סביב קטע אודיו מתוך הסיטקום "המשרד".</p>
-        </div>
-        <div class="project-text" lang="ar" dir="rtl" hidden>
-          <p>ماذا يحدث عندما يخطّط عاملٌ على خط الإنتاج في مصنع تغليف للجريمة الكاملة حتى أدقّ التفاصيل؟</p>
-          <p>رسوم متحركة مبنية على مقطع صوتي من المسلسل الكوميدي "ذا أوفيس".</p>
-        </div>
-
-        <!-- הכפתור לפרויקט המלא. בהובר מתחלף בין השפות. עוד לא מחובר לשום מקום -->
-        <button class="pill language-button full-project-button" type="button"
-          data-en="View full project" data-he="לפרויקט המלא" data-ar="للمشروع الكامل"><span class="language-button-label">View full project</span></button>
+      <!-- ----- בר האינדקס: כל כדור הוא פרויקט -----
+           בכל רגע רק כדור אחד פתוח ומורחב לפס עם שם הפרויקט (script.js).
+           ברירת המחדל: The Perfect Crime (data-default). בפס פתוח השם מתחלף בין השפות.
+           כדור בלי פרויקט (span) נשאר כדור רגיל. הלחיצה עוד לא מובילה לשום מקום -->
+      <div class="on-grid index-bar">
+        <button class="index-ball index-ball--pink language-button" type="button" data-default
+          data-en="The Perfect Crime" data-he="הפשע המושלם" data-ar="الجريمة الكاملة"><span class="language-button-label index-ball-label">The Perfect Crime</span></button>
+        <button class="index-ball index-ball--blue language-button" type="button"
+          data-en="Leftovers*" data-he="שאריות*" data-ar="بقايا*"><span class="language-button-label index-ball-label">Leftovers*</span></button>
+        <button class="index-ball index-ball--orange language-button" type="button"
+          data-en="Touch Grass" data-he="לגעת בדשא" data-ar="لمس العشب"><span class="language-button-label index-ball-label">Touch Grass</span></button>
+        <span class="index-ball index-ball--green" aria-hidden="true"></span>
+        <span class="index-ball index-ball--pink" aria-hidden="true"></span>
+        <span class="index-ball index-ball--blue" aria-hidden="true"></span>
+        <span class="index-ball index-ball--orange" aria-hidden="true"></span>
+        <span class="index-ball index-ball--green" aria-hidden="true"></span>
       </div>
 
       <!-- ----- הדימוי המרכזי: סרטון בלופ, בלי סאונד ובלי כפתורים ----- -->
@@ -67,17 +50,35 @@
           disablepictureinpicture disableremoteplayback aria-label="The Perfect Crime logo animation"></video>
       </div>
 
+      <!-- ----- המלבן עם הטקסט על הפרויקט, מתחת לסרטון -----
+           שלוש גרסאות של הטקסט, ורק אחת מוצגת (script.js מחליף לפי ריבועי השם) -->
+      <div class="grid-box project-text-box">
+        <div class="project-text" lang="en" dir="ltr">
+          <p>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
+        </div>
+        <div class="project-text" lang="he" dir="rtl" hidden>
+          <p>מה קורה כשעובד פס ייצור במפעל אריזות מתכנן את הפשע המושלם עד הפרט האחרון?</p>
+        </div>
+        <div class="project-text" lang="ar" dir="rtl" hidden>
+          <p>ماذا يحدث عندما يخطّط عاملٌ على خط الإنتاج في مصنع تغليف للجريمة الكاملة حتى أدقّ التفاصيل؟</p>
+        </div>
+
+        <!-- הכפתור לפרויקט המלא. בהובר מתחלף בין השפות. עוד לא מחובר לשום מקום -->
+        <button class="pill language-button full-project-button" type="button"
+          data-en="View full project" data-he="לפרויקט המלא" data-ar="للمشروع الكامل"><span class="language-button-label">View full project</span></button>
+      </div>
+
       <!-- ----- שם הפרויקט בשלוש שפות, במשבצות צמודות לדימוי המרכזי -----
            hover מציג את הטקסט בשפה של הריבוע, ולחיצה נועלת אותה -->
       <button class="grid-box project-name project-name--en" type="button" lang="en" dir="ltr" aria-pressed="true"><span>The<br>Perfect<br>Crime</span></button>
       <button class="grid-box project-name project-name--he" type="button" lang="he" dir="rtl" aria-pressed="false"><span>הפשע<br>המושלם</span></button>
       <button class="grid-box project-name project-name--ar" type="button" lang="ar" dir="rtl" aria-pressed="false"><span>الجريمة<br>الكاملة</span></button>
 
-      <!-- עיגול "Motion Design" (על הקצה של הסרטון). אותו עיגול ירוק כמו בעמוד התהליך.
+      <!-- עיגול "Motion Graphic" (על הקצה של הסרטון). אותו עיגול ירוק כמו בעמוד התהליך.
            הוא אחרון ב-HTML כדי שיהיה מעל הסרטון ומעל ריבועי השם -->
       <div class="on-grid project-tag">
         <img class="project-tag-circle" src="Images/process/circle-green.svg" alt="">
-        <p class="project-tag-text">Motion<br>Design</p>
+        <p class="project-tag-text">Motion<br>Graphic</p>
       </div>
     </div>
   </main>
