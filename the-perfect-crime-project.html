@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" class="page-full-project">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Perfect Crime — Project — Ori Kurz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- עמוד פרויקט מלא: הפריים "דף פרוייקט הפשע המושלם" מהפיגמה.
+       במחשב: שתי חמישיות משמאל עם טקסט (סטטי), ושלוש חמישיות מימין עם גריד
+       ותוכן הפרויקט. רק החלק של הגריד נגלל.
+       במובייל: טור אחד, הטקסט ואחריו התוכן, עם גלילה רגילה של העמוד -->
+  <main class="full-project">
+
+    <!-- ===== החלק של הטקסט (בלי גריד, לא נגלל) ===== -->
+    <section class="full-project-info">
+      <!-- ההמבורגר: קישור זמני לעמוד הבית, עד שיהיה תפריט -->
+      <a class="menu-button full-project-menu" href="index.html" aria-label="Menu">
+        <span class="menu-button-line"></span>
+        <span class="menu-button-line"></span>
+        <span class="menu-button-line"></span>
+      </a>
+
+      <h1 class="full-project-title">The Perfect Crime</h1>
+      <p class="full-project-type">Motion Graphic</p>
+
+      <div class="full-project-description">
+        <p>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
+        <p>An audio-driven animation based on a soundbite from the sitcom The Office</p>
+        <p>Created as part of a motion design studio course led by Maayan Tzuriel and Adi Baron</p>
+      </div>
+    </section>
+
+    <!-- ===== החלק של הגריד ===== -->
+    <section class="full-project-panel">
+
+      <!-- רק האזור הזה נגלל (במחשב) -->
+      <div class="full-project-scroll">
+        <div class="full-project-grid grid-lines">
+
+          <!-- ----- הסרטון: כבוי בטעינה (רואים את הפריים הראשון).
+               לחיצה מפעילה עם סאונד, לחיצה נוספת עוצרת (script.js).
+               #t=0.001 גורם לדפדפנים (גם בטלפון) להציג את הפריים הראשון ----- -->
+          <div class="grid-box video-player" role="button" tabindex="0" aria-label="Play / pause video">
+            <video class="video-player-video" src="video/TPC-full.mp4#t=0.001" loop playsinline preload="auto"
+              disablepictureinpicture disableremoteplayback></video>
+
+            <!-- בר ההתקדמות: מופיע כשהעכבר על הסרטון, ואפשר לגרור אותו -->
+            <div class="video-progress" role="slider" tabindex="0" aria-label="Video progress"
+              aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="video-progress-track">
+                <div class="video-progress-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ----- האלמנטים מהאנימציה ----- -->
+          <img class="on-grid shot shot--tree" src="Images/tree.png" alt="">
+          <img class="on-grid shot shot--box-small-1" src="Images/box-small.png" alt="">
+          <img class="on-grid shot shot--car" src="Images/car.png" alt="">
+          <img class="on-grid shot shot--box-long" src="Images/box-long.png" alt="">
+          <img class="on-grid shot shot--box-office" src="Images/box-office.png" alt="">
+          <img class="on-grid shot shot--fire" src="Images/fire.png" alt="">
+          <img class="on-grid shot shot--chandelier" src="Images/chandelier.png" alt="">
+          <img class="on-grid shot shot--gift" src="Images/gift.png" alt="">
+          <img class="on-grid shot shot--lamp" src="Images/lamp.png" alt="">
+          <img class="on-grid shot shot--glass" src="Images/glass.png" alt="">
+          <img class="on-grid shot shot--tape" src="Images/tape.png" alt="">
+          <img class="on-grid shot shot--box-fragile" src="Images/box-fragile.png" alt="">
+          <img class="on-grid shot shot--box-small-2" src="Images/box-small.png" alt="">
+          <img class="on-grid shot shot--siren" src="Images/siren.png" alt="">
+          <img class="on-grid shot shot--axe" src="Images/axe.png" alt="">
+
+          <!-- ----- ארבעה פריימים מהסרטון ----- -->
+          <img class="on-grid shot shot--still-1" src="Images/1.png" alt="Still from The Perfect Crime">
+          <img class="on-grid shot shot--still-2" src="Images/2.png" alt="Still from The Perfect Crime">
+          <img class="on-grid shot shot--still-4" src="Images/4.png" alt="Still from The Perfect Crime">
+          <img class="on-grid shot shot--still-3" src="Images/3.png" alt="Still from The Perfect Crime">
+
+          <!-- ----- פלטת הצבעים: משבצות צבועות ----- -->
+          <p class="on-grid palette-title">Color<br>pallet</p>
+          <div class="grid-box swatch swatch--1"></div>
+          <div class="grid-box swatch swatch--2"></div>
+          <div class="grid-box swatch swatch--3"></div>
+          <div class="grid-box swatch swatch--4"></div>
+          <div class="grid-box swatch swatch--5"></div>
+          <div class="grid-box swatch swatch--6"></div>
+          <div class="grid-box swatch swatch--7"></div>
+          <div class="grid-box swatch swatch--8"></div>
+          <div class="grid-box swatch swatch--9"></div>
+          <div class="grid-box swatch swatch--10"></div>
+          <div class="grid-box swatch swatch--11"></div>
+          <div class="grid-box swatch swatch--12"></div>
+          <div class="grid-box swatch swatch--13"></div>
+          <div class="grid-box swatch swatch--14"></div>
+        </div>
+      </div>
+
+      <!-- ----- השורה העליונה: נשארת במקום כשהגריד נגלל (במחשב) ----- -->
+      <div class="full-project-top-bar">
+        <!-- Index: עוד לא מחובר לשום מקום -->
+        <button class="on-grid full-project-pill full-project-index" type="button">Index//אינדקס//فهرس</button>
+
+        <!-- הכדורים, ואחריהם הפס הוורוד של הפרויקט. הפס מחזיר לעמוד המבואה -->
+        <div class="on-grid full-project-balls">
+          <span class="full-project-ball full-project-ball--blue" aria-hidden="true"></span>
+          <span class="full-project-ball full-project-ball--pink" aria-hidden="true"></span>
+          <span class="full-project-ball full-project-ball--orange" aria-hidden="true"></span>
+          <span class="full-project-ball full-project-ball--green" aria-hidden="true"></span>
+          <span class="full-project-ball full-project-ball--blue" aria-hidden="true"></span>
+          <a class="full-project-pill full-project-back" href="the-perfect-crime.html">The Perfect Crime</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

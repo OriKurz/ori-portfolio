@@ -473,6 +473,141 @@
   }
 }
 
+/* ----- עמוד פרויקט מלא (the-perfect-crime-project.html) -----
+   הפריים בפיגמה: 1440 לרוחב ו-2374 לגובה. החלון מחולק לשניים:
+   שתי חמישיות משמאל עם טקסט (בלי גריד), ושלוש חמישיות מימין עם גריד של 9 משבצות.
+   בפיגמה משבצת = 93.333px (840 / 9). מספרים כמו 212 * var(--u) הם פיקסלים מהפיגמה:
+   --u בחלק של הגריד (גדל עם המשבצת), --px בחלק של הטקסט (גדל עם החלון). */
+:root.page-full-project {
+  --frame-cell: 93.333;
+  --grid-columns: 9;
+  /* אורך הגלילה: כל גובה הפריים בפיגמה, במשבצות */
+  --grid-rows: calc(2374 / var(--frame-cell));
+  /* גודל משבצת בפיקסלים שלמים: 9 משבצות ממלאות שלוש חמישיות מהחלון.
+     ה-0.01px מתקן שגיאת עיגול קטנה של הדפדפן (כמו בעמוד המבואה) */
+  --cell: round(down, 100vw * 3 / 5 / var(--grid-columns) + 0.01px, 1px);
+  --line: 3px;
+  --u: calc(var(--cell) / var(--frame-cell));
+  /* הטקסט בצד שמאל: לפי פריים של 1440x810, כדי שייכנס תמיד בגובה החלון */
+  --px: min(100vw / 1440, 100dvh / 810);
+
+  /* רוחב שני החלקים: הגריד (כולל הקו הימני), והטקסט מקבל את מה שנשאר */
+  --panel-width: calc(var(--grid-columns) * var(--cell) + var(--line));
+  --info-width: calc(100vw - var(--panel-width));
+  --info-height: 100dvh;
+
+  --page-background: var(--color-mint);
+  --grid-line-color: var(--color-pink);
+  --grid-lines-position: 0 0;
+
+  /* ההמבורגר (משמאל למעלה, בחלק של הטקסט) */
+  --menu-left: calc(12 * var(--px));
+  --menu-top: calc(14 * var(--px));
+  --menu-width: calc(30 * var(--px));
+  --menu-line-height: calc(4 * var(--px));
+  --menu-gap: calc(6 * var(--px));
+  --pill-radius: calc(32 * var(--px));
+
+  /* הכותרת, "Motion Graphic" והתיאור */
+  --title-left: calc(71 * var(--px));
+  --title-top: calc(46 * var(--px));
+  --title-width: calc(383 * var(--px));
+  --title-size: calc(80 * var(--px));
+  --type-top: calc(287 * var(--px));
+  --type-size: calc(30 * var(--px));
+  --heading-line-height: 0.955;
+  --heading-tracking: -0.04em;
+  --description-left: calc(64 * var(--px));
+  --description-top: calc(408 * var(--px));
+  --description-width: calc(485 * var(--px));
+  --description-size: calc(25 * var(--px));
+  --description-line-height: calc(28 * var(--px));
+  --description-tracking: 0.02em;
+
+  /* השורה העליונה בחלק של הגריד: Index, הכדורים והפס של הפרויקט */
+  --top-pill-width: calc(212 * var(--u));
+  --top-pill-height: calc(23 * var(--u));
+  --top-pill-radius: calc(32 * var(--u));
+  --index-text-size: calc(16 * var(--u));
+  --pill-text-size: calc(17 * var(--u));
+  --index-column: 0.289;    --index-row: 0.364;
+  --balls-column: 4.671;    --balls-row: 0.386;
+  --ball-width: calc(24 * var(--u));
+  --ball-gap: calc(7 * var(--u));
+
+  /* הסרטון: כל הרוחב, 5 שורות */
+  --video-column: 0;        --video-row: 2;
+  --video-columns: 9;       --video-rows: 5;
+
+  /* בר ההתקדמות של הסרטון: קו דק, ואזור לחיצה גבוה יותר כדי שיהיה קל לתפוס אותו */
+  --progress-height: calc(4 * var(--u));
+  --progress-hover-height: calc(8 * var(--u));
+  --progress-hit-height: calc(24 * var(--u));
+  --progress-track-color: var(--color-pink);
+  --progress-fill-color: var(--color-orange);
+  --progress-fade-time: 0.2s;
+
+  /* האלמנטים מהאנימציה ופריימים מהסרטון: עמודה, שורה, רוחב וגובה (במשבצות) */
+  --tree-column: 0.546;         --tree-row: 7.339;         --tree-columns: 1.339;         --tree-rows: 1.596;
+  --box-small-1-column: 2.4;    --box-small-1-row: 7.671;  --box-small-1-columns: 0.921;  --box-small-1-rows: 0.857;
+  --car-column: 3.836;          --car-row: 7.5;            --car-columns: 1.757;          --car-rows: 1.007;
+  --box-long-column: 6.021;     --box-long-row: 7.671;     --box-long-columns: 2.464;     --box-long-rows: 0.836;
+  --box-office-column: 0.279;   --box-office-row: 9.504;   --box-office-columns: 1.704;   --box-office-rows: 1.061;
+  --fire-column: 2.357;         --fire-row: 9.129;         --fire-columns: 1.5;           --fire-rows: 1.532;
+  --chandelier-column: 3.943;   --chandelier-row: 9.086;   --chandelier-columns: 2.668;   --chandelier-rows: 2.175;
+  --gift-column: 6.879;         --gift-row: 9.011;         --gift-columns: 1.854;         --gift-rows: 2.325;
+  --lamp-column: 0.279;         --lamp-row: 10.779;        --lamp-columns: 1.704;         --lamp-rows: 1.489;
+  --glass-column: 2.357;        --glass-row: 10.907;       --glass-columns: 0.75;         --glass-rows: 0.943;
+  --tape-column: 3.236;         --tape-row: 11.882;        --tape-columns: 1.661;         --tape-rows: 1.768;
+  --box-fragile-column: 5.121;  --box-fragile-row: 11.839; --box-fragile-columns: 1.757;  --box-fragile-rows: 1.854;
+  --box-small-2-column: 0.354;  --box-small-2-row: 12.664; --box-small-2-columns: 1.007;  --box-small-2-rows: 0.921;
+  --siren-column: 1.918;        --siren-row: 12.621;       --siren-columns: 1.018;        --siren-rows: 0.964;
+  --axe-column: 7.532;          --axe-row: 12.107;         --axe-columns: 1.382;          --axe-rows: 1.543;
+  --still-1-column: 0.279;      --still-1-row: 14.421;     --still-1-columns: 4.168;      --still-1-rows: 2.346;
+  --still-2-column: 4.65;       --still-2-row: 14.421;     --still-2-columns: 4.168;      --still-2-rows: 2.346;
+  --still-4-column: 0.3;        --still-4-row: 16.961;     --still-4-columns: 4.146;      --still-4-rows: 2.336;
+  --still-3-column: 4.661;      --still-3-row: 16.961;     --still-3-columns: 4.146;      --still-3-rows: 2.357;
+
+  /* פלטת הצבעים: הכותרת, ואז כל משבצת: עמודה, שורה וצבע */
+  --palette-title-column: 0.129;  --palette-title-row: 20.164;
+  --palette-title-size: calc(30 * var(--u));
+  --swatch-1-column: 1;   --swatch-1-row: 21;   --swatch-1-color: #58a8fc;
+  --swatch-2-column: 3;   --swatch-2-row: 21;   --swatch-2-color: #da472a;
+  --swatch-3-column: 5;   --swatch-3-row: 21;   --swatch-3-color: #f2d257;
+  --swatch-4-column: 7;   --swatch-4-row: 21;   --swatch-4-color: #0fb596;
+  --swatch-5-column: 2;   --swatch-5-row: 22;   --swatch-5-color: #e0fff9;
+  --swatch-6-column: 4;   --swatch-6-row: 22;   --swatch-6-color: #a7fbea;
+  --swatch-7-column: 6;   --swatch-7-row: 22;   --swatch-7-color: #ffb6b4;
+  --swatch-8-column: 1;   --swatch-8-row: 23;   --swatch-8-color: #0f1f2e;
+  --swatch-9-column: 3;   --swatch-9-row: 23;   --swatch-9-color: #265687;
+  --swatch-10-column: 5;  --swatch-10-row: 23;  --swatch-10-color: #99c1ea;
+  --swatch-11-column: 7;  --swatch-11-row: 23;  --swatch-11-color: #ffffff;
+  --swatch-12-column: 2;  --swatch-12-row: 24;  --swatch-12-color: #1b3958;
+  --swatch-13-column: 4;  --swatch-13-row: 24;  --swatch-13-color: #5c85b0;
+  --swatch-14-column: 6;  --swatch-14-row: 24;  --swatch-14-color: #f2dc8b;
+}
+
+/* ----- עמוד פרויקט מלא במובייל -----
+   אין עדיין עיצוב מובייל בפיגמה. בינתיים: טור אחד, הטקסט ואחריו הגריד
+   (9 משבצות לרוחב המסך), עם גלילה רגילה של העמוד. */
+@media (max-width: 767.98px) {
+  :root.page-full-project {
+    --cell: round(down, 100vw / var(--grid-columns), 1px);
+    --line: 2px;
+    /* הטקסט: לפי רוחב החלק השמאלי בפיגמה (600px) */
+    --px: calc(100vw / 600);
+    --info-height: calc(790 * var(--px));
+
+    /* הטקסט בגלולות היה יוצא קטן מדי, אז מגדילים אותו קצת */
+    --index-text-size: calc(var(--cell) * 0.2);
+    --pill-text-size: calc(var(--cell) * 0.22);
+
+    --progress-height: 3px;
+    --progress-hover-height: 6px;
+    --progress-hit-height: 16px;
+  }
+}
+
 /* =========================================
    בסיס
    ========================================= */
@@ -988,6 +1123,7 @@ body {
   background-color: var(--color-pink);
   color: var(--pill-text-color);
   font-size: var(--pill-text-size);
+  text-decoration: none; /* גם כשהגלולה היא קישור */
   white-space: nowrap;
 }
 
@@ -1212,4 +1348,316 @@ body {
 
 .project-grid .project-name--ar {
   line-height: var(--arabic-line-height);
+}
+
+/* =========================================
+   עמוד פרויקט מלא
+   ========================================= */
+
+/* במחשב העמוד עצמו לא נגלל. רק החלק של הגריד (.full-project-scroll) */
+.page-full-project body {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.full-project {
+  font-family: var(--font-text);
+}
+
+/* ----- החלק של הטקסט: משמאל, בלי גריד ----- */
+.full-project-info {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--info-width);
+  height: var(--info-height);
+}
+
+.full-project-menu {
+  position: absolute;
+  left: var(--menu-left);
+  top: var(--menu-top);
+}
+
+.full-project-title,
+.full-project-type {
+  position: absolute;
+  left: var(--title-left);
+  color: var(--color-orange);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-tracking);
+}
+
+.full-project-title {
+  top: var(--title-top);
+  width: var(--title-width);
+  font-weight: 700;
+  font-size: var(--title-size);
+}
+
+.full-project-type {
+  top: var(--type-top);
+  font-weight: 500;
+  font-size: var(--type-size);
+  white-space: nowrap;
+}
+
+.full-project-description {
+  position: absolute;
+  left: var(--description-left);
+  top: var(--description-top);
+  width: var(--description-width);
+  color: var(--color-pink);
+  font-weight: 400;
+  font-size: var(--description-size);
+  line-height: var(--description-line-height);
+  letter-spacing: var(--description-tracking);
+}
+
+/* שורה ריקה בין הפסקאות, כמו בפיגמה */
+.full-project-description p + p {
+  margin-top: var(--description-line-height);
+}
+
+/* ----- החלק של הגריד: מימין, ממלא את גובה החלון ----- */
+.full-project-panel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: var(--panel-width);
+  height: 100dvh;
+}
+
+/* האזור הנגלל. בלי פס גלילה, כדי שלא יזיז את הגריד */
+.full-project-scroll {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.full-project-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* הגריד עצמו: הקווים הם הרקע שלו, והגובה שלו הוא אורך הגלילה */
+.full-project-grid {
+  position: relative;
+  height: calc(var(--grid-rows) * var(--cell));
+}
+
+/* ----- השורה העליונה: מעל הגריד, ולא זזה איתו ----- */
+.full-project-top-bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none; /* גלילה עם העכבר עוברת דרכה לגריד */
+}
+
+.full-project-top-bar > * {
+  pointer-events: auto;
+}
+
+/* גלולה: כפתור מעוגל עם טקסט צהוב באמצע */
+.full-project-pill {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--top-pill-width);
+  height: var(--top-pill-height);
+  border: none;
+  border-radius: var(--top-pill-radius);
+  color: var(--color-yellow);
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: var(--pill-text-size);
+  line-height: var(--line-height);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.full-project-index {
+  --column: var(--index-column);
+  --row: var(--index-row);
+  background-color: var(--color-green);
+  font-size: var(--index-text-size);
+}
+
+.full-project-back {
+  background-color: var(--color-pink);
+}
+
+.full-project-balls {
+  --column: var(--balls-column);
+  --row: var(--balls-row);
+  display: flex;
+  gap: var(--ball-gap);
+}
+
+.full-project-ball {
+  flex: none;
+  width: var(--ball-width);
+  height: var(--top-pill-height);
+  border-radius: var(--top-pill-radius);
+}
+
+.full-project-ball--blue   { background-color: var(--color-blue); }
+.full-project-ball--pink   { background-color: var(--color-pink); }
+.full-project-ball--orange { background-color: var(--color-orange); }
+.full-project-ball--green  { background-color: var(--color-green); }
+
+/* ----- הסרטון ----- */
+.video-player {
+  --column: var(--video-column);
+  --row: var(--video-row);
+  --columns: var(--video-columns);
+  --rows: var(--video-rows);
+  overflow: hidden;
+  background-color: var(--color-mint);
+  border-color: var(--grid-line-color);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.video-player-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* בר ההתקדמות: אזור לחיצה שקוף בתחתית הסרטון, ובתוכו קו דק */
+.video-progress {
+  --progress: 0; /* כמה מהסרטון עבר, מ-0 עד 1 (script.js) */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  height: var(--progress-hit-height);
+  opacity: 0;
+  touch-action: none; /* גרירה באצבע לא גוללת את העמוד */
+  transition: opacity var(--progress-fade-time) ease;
+}
+
+.video-progress-track {
+  width: 100%;
+  height: var(--progress-height);
+  background-color: var(--progress-track-color);
+  transition: height var(--progress-fade-time) ease;
+}
+
+.video-progress-fill {
+  height: 100%;
+  background-color: var(--progress-fill-color);
+  transform: scaleX(var(--progress));
+  transform-origin: left;
+}
+
+/* הבר מופיע כשהעכבר על הסרטון, בזמן גרירה, או בניווט במקלדת */
+.video-player:hover .video-progress,
+.video-player.is-seeking .video-progress,
+.video-player:focus-visible .video-progress,
+.video-progress:focus-visible {
+  opacity: 1;
+}
+
+/* על הבר עצמו (או בזמן גרירה) הקו קצת עבה יותר, שיהיה קל לתפוס */
+.video-progress:hover .video-progress-track,
+.video-player.is-seeking .video-progress-track {
+  height: var(--progress-hover-height);
+}
+
+/* בטלפון אין עכבר, אז הבר מוצג תמיד */
+@media (hover: none) {
+  .video-progress {
+    opacity: 1;
+  }
+}
+
+/* ----- האלמנטים והפריימים (משתמשים ב-.shot של עמוד התהליך) ----- */
+.shot--tree          { --column: var(--tree-column);          --row: var(--tree-row);          --columns: var(--tree-columns);          --rows: var(--tree-rows); }
+.shot--box-small-1   { --column: var(--box-small-1-column);   --row: var(--box-small-1-row);   --columns: var(--box-small-1-columns);   --rows: var(--box-small-1-rows); }
+.shot--car           { --column: var(--car-column);           --row: var(--car-row);           --columns: var(--car-columns);           --rows: var(--car-rows); }
+.shot--box-long      { --column: var(--box-long-column);      --row: var(--box-long-row);      --columns: var(--box-long-columns);      --rows: var(--box-long-rows); }
+.shot--box-office    { --column: var(--box-office-column);    --row: var(--box-office-row);    --columns: var(--box-office-columns);    --rows: var(--box-office-rows); }
+.shot--fire          { --column: var(--fire-column);          --row: var(--fire-row);          --columns: var(--fire-columns);          --rows: var(--fire-rows); }
+.shot--chandelier    { --column: var(--chandelier-column);    --row: var(--chandelier-row);    --columns: var(--chandelier-columns);    --rows: var(--chandelier-rows); }
+.shot--gift          { --column: var(--gift-column);          --row: var(--gift-row);          --columns: var(--gift-columns);          --rows: var(--gift-rows); }
+.shot--lamp          { --column: var(--lamp-column);          --row: var(--lamp-row);          --columns: var(--lamp-columns);          --rows: var(--lamp-rows); }
+.shot--glass         { --column: var(--glass-column);         --row: var(--glass-row);         --columns: var(--glass-columns);         --rows: var(--glass-rows); }
+.shot--tape          { --column: var(--tape-column);          --row: var(--tape-row);          --columns: var(--tape-columns);          --rows: var(--tape-rows); }
+.shot--box-fragile   { --column: var(--box-fragile-column);   --row: var(--box-fragile-row);   --columns: var(--box-fragile-columns);   --rows: var(--box-fragile-rows); }
+.shot--box-small-2   { --column: var(--box-small-2-column);   --row: var(--box-small-2-row);   --columns: var(--box-small-2-columns);   --rows: var(--box-small-2-rows); }
+.shot--siren         { --column: var(--siren-column);         --row: var(--siren-row);         --columns: var(--siren-columns);         --rows: var(--siren-rows); }
+.shot--axe           { --column: var(--axe-column);           --row: var(--axe-row);           --columns: var(--axe-columns);           --rows: var(--axe-rows); }
+.shot--still-1       { --column: var(--still-1-column);       --row: var(--still-1-row);       --columns: var(--still-1-columns);       --rows: var(--still-1-rows); }
+.shot--still-2       { --column: var(--still-2-column);       --row: var(--still-2-row);       --columns: var(--still-2-columns);       --rows: var(--still-2-rows); }
+.shot--still-3       { --column: var(--still-3-column);       --row: var(--still-3-row);       --columns: var(--still-3-columns);       --rows: var(--still-3-rows); }
+.shot--still-4       { --column: var(--still-4-column);       --row: var(--still-4-row);       --columns: var(--still-4-columns);       --rows: var(--still-4-rows); }
+
+/* ----- פלטת הצבעים ----- */
+.palette-title {
+  --column: var(--palette-title-column);
+  --row: var(--palette-title-row);
+  color: var(--color-orange);
+  font-weight: 500;
+  font-size: var(--palette-title-size);
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-tracking);
+}
+
+/* משבצת אחת, צבועה, עם מסגרת בצבע הקו */
+.swatch {
+  --columns: 1;
+  --rows: 1;
+  background-color: var(--swatch-color);
+  border-color: var(--grid-line-color);
+}
+
+.swatch--1  { --column: var(--swatch-1-column);  --row: var(--swatch-1-row);  --swatch-color: var(--swatch-1-color); }
+.swatch--2  { --column: var(--swatch-2-column);  --row: var(--swatch-2-row);  --swatch-color: var(--swatch-2-color); }
+.swatch--3  { --column: var(--swatch-3-column);  --row: var(--swatch-3-row);  --swatch-color: var(--swatch-3-color); }
+.swatch--4  { --column: var(--swatch-4-column);  --row: var(--swatch-4-row);  --swatch-color: var(--swatch-4-color); }
+.swatch--5  { --column: var(--swatch-5-column);  --row: var(--swatch-5-row);  --swatch-color: var(--swatch-5-color); }
+.swatch--6  { --column: var(--swatch-6-column);  --row: var(--swatch-6-row);  --swatch-color: var(--swatch-6-color); }
+.swatch--7  { --column: var(--swatch-7-column);  --row: var(--swatch-7-row);  --swatch-color: var(--swatch-7-color); }
+.swatch--8  { --column: var(--swatch-8-column);  --row: var(--swatch-8-row);  --swatch-color: var(--swatch-8-color); }
+.swatch--9  { --column: var(--swatch-9-column);  --row: var(--swatch-9-row);  --swatch-color: var(--swatch-9-color); }
+.swatch--10 { --column: var(--swatch-10-column); --row: var(--swatch-10-row); --swatch-color: var(--swatch-10-color); }
+.swatch--11 { --column: var(--swatch-11-column); --row: var(--swatch-11-row); --swatch-color: var(--swatch-11-color); }
+.swatch--12 { --column: var(--swatch-12-column); --row: var(--swatch-12-row); --swatch-color: var(--swatch-12-color); }
+.swatch--13 { --column: var(--swatch-13-column); --row: var(--swatch-13-row); --swatch-color: var(--swatch-13-color); }
+.swatch--14 { --column: var(--swatch-14-column); --row: var(--swatch-14-row); --swatch-color: var(--swatch-14-color); }
+
+/* ----- מובייל: טור אחד, והעמוד כולו נגלל ----- */
+@media (max-width: 767.98px) {
+  .page-full-project body {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  .full-project-info,
+  .full-project-panel {
+    position: relative;
+  }
+
+  .full-project-info {
+    width: 100%;
+  }
+
+  .full-project-panel {
+    height: auto;
+  }
+
+  .full-project-scroll {
+    height: auto;
+    overflow: visible;
+  }
 }

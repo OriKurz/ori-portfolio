@@ -459,3 +459,105 @@ if (photo) {
     startAnimation();
   });
 }
+
+// =========================================
+// עמוד פרויקט מלא: הסרטון בראש החלק הנגלל.
+// בטעינה הוא עומד על הפריים הראשון. לחיצה מפעילה אותו עם סאונד,
+// לחיצה נוספת עוצרת, ולחיצה אחרי זה ממשיכה מאותה נקודה. הוא רץ בלופ.
+// בר ההתקדמות בתחתית מראה איפה אנחנו בסרטון, ואפשר לגרור אותו.
+// =========================================
+
+const videoPlayer = document.querySelector(".video-player");
+
+if (videoPlayer) {
+  const video = videoPlayer.querySelector("video");
+  const progressBar = videoPlayer.querySelector(".video-progress");
+  const keyboardStep = 5; // כמה שניות זזים בחץ ימינה / שמאלה על הבר
+  let isSeeking = false;  // האם גוררים עכשיו את הבר
+  let progressFrame = null;
+
+  // מפעיל (עם סאונד) או עוצר
+  function togglePlay() {
+    if (video.paused) {
+      video.muted = false;
+      video.play().catch(function () {});
+    } else {
+      video.pause();
+    }
+  }
+
+  // מעדכן את הבר לפי המיקום בסרטון (ratio: מ-0 עד 1)
+  function showProgress(ratio) {
+    progressBar.style.setProperty("--progress", ratio);
+    progressBar.setAttribute("aria-valuenow", Math.round(ratio * 100));
+  }
+
+  function currentRatio() {
+    return video.duration ? video.currentTime / video.duration : 0;
+  }
+
+  // בזמן שהסרטון רץ: מעדכנים את הבר בכל פריים, כדי שהתנועה תהיה חלקה
+  function followProgress() {
+    if (!isSeeking) showProgress(currentRatio());
+    progressFrame = requestAnimationFrame(followProgress);
+  }
+
+  video.addEventListener("play", function () {
+    if (!progressFrame) followProgress();
+  });
+  video.addEventListener("pause", function () {
+    cancelAnimationFrame(progressFrame);
+    progressFrame = null;
+    showProgress(currentRatio());
+  });
+
+  // לחיצה על הסרטון (אבל לא על הבר)
+  videoPlayer.addEventListener("click", function (event) {
+    if (event.target.closest(".video-progress")) return;
+    togglePlay();
+  });
+
+  // מקלדת: Enter או רווח על הסרטון
+  videoPlayer.addEventListener("keydown", function (event) {
+    if (event.target !== videoPlayer) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      togglePlay();
+    }
+  });
+
+  // קופץ לנקודה בסרטון לפי מיקום העכבר / האצבע על הבר
+  function seekToPointer(event) {
+    const box = progressBar.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
+    if (video.duration) video.currentTime = ratio * video.duration;
+    showProgress(ratio);
+  }
+
+  // גרירה: לוחצים על הבר, וכל עוד לא עוזבים הסרטון זז עם העכבר
+  progressBar.addEventListener("pointerdown", function (event) {
+    isSeeking = true;
+    progressBar.setPointerCapture(event.pointerId);
+    videoPlayer.classList.add("is-seeking");
+    seekToPointer(event);
+  });
+  progressBar.addEventListener("pointermove", function (event) {
+    if (isSeeking) seekToPointer(event);
+  });
+  function stopSeeking() {
+    isSeeking = false;
+    videoPlayer.classList.remove("is-seeking");
+  }
+  progressBar.addEventListener("pointerup", stopSeeking);
+  progressBar.addEventListener("pointercancel", stopSeeking);
+
+  // מקלדת על הבר: חיצים קדימה ואחורה
+  progressBar.addEventListener("keydown", function (event) {
+    if (!video.duration) return;
+    if (event.key === "ArrowRight") video.currentTime = Math.min(video.duration, video.currentTime + keyboardStep);
+    else if (event.key === "ArrowLeft") video.currentTime = Math.max(0, video.currentTime - keyboardStep);
+    else return;
+    event.preventDefault();
+    showProgress(currentRatio());
+  });
+}
