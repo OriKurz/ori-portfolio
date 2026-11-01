@@ -1,0 +1,31 @@
+/* elements-anim.css — hover animations for the illustrated objects */
+
+/* Each object is a div sized by its width; its height follows the drawing. */
+.ea-item, [data-ea] { display: block; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+[data-ea="chandelier"]  { aspect-ratio: 1193 / 974; }
+[data-ea="box-flip"]    { aspect-ratio: 593 / 547; }
+[data-ea="box-small"]   { aspect-ratio: 593 / 547; }
+[data-ea="box-long"]    { aspect-ratio: 1862 / 633; }
+[data-ea="box-office"]  { aspect-ratio: 1826 / 1138; }
+[data-ea="box-fragile"] { aspect-ratio: 1480 / 1563; }
+[data-ea="tree"]        { aspect-ratio: 496 / 592; }
+[data-ea="car"]         { aspect-ratio: 980 / 562; }
+[data-ea="siren"]       { aspect-ratio: 990 / 941; }
+[data-ea="fire"]        { aspect-ratio: 1354 / 1388; }
+[data-ea="gift"]        { aspect-ratio: 1444 / 1812; }
+[data-ea="lamp"]        { aspect-ratio: 2121 / 1858; }
+[data-ea="glass"]       { aspect-ratio: 308 / 390; }
+[data-ea="tape"]        { aspect-ratio: 1600 / 1696; }
+[data-ea="axe"]         { aspect-ratio: 581 / 650; }
+
+/* The still drawing fills the div. Pointer events go to the div itself, so moving
+   parts never change the area that reacts to the mouse. */
+[data-ea] > img.ea-rest {
+  display: block; width: 100%; height: 100%;
+  pointer-events: none; user-select: none; -webkit-user-drag: none;
+  will-change: transform;
+}
+/* The animated layer sits exactly over the still drawing and may move beyond it. */
+[data-ea] > .ea-layer { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+[data-ea] > .ea-layer > svg,
+[data-ea] > .ea-layer > canvas { display: block; width: 100%; height: 100%; overflow: visible; }

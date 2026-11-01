@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elements animation demo</title>
+<link rel="stylesheet" href="elements-anim.css">
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; background: #fff; color: #1b1f1f; }
+  p { max-width: 60ch; margin: 24px auto 0; padding: 0 16px; }
+  .board { display: flex; flex-wrap: wrap; gap: 48px 40px; align-items: flex-end; justify-content: center;
+           max-width: 1100px; margin: 0 auto; padding: 120px 16px 140px; }
+</style>
+</head>
+<body>
+<p>Demo of every object. Hover each one (tap on a phone). This page is only for checking; it does not go into the site.</p>
+<div class="board">
+  <div data-ea="tree"        aria-label="Blue tree"           style="width:110px"></div>
+  <div data-ea="box-flip"    aria-label="Small box"           style="width:130px"></div>
+  <div data-ea="car"         aria-label="Police car"          style="width:230px"></div>
+  <div data-ea="box-long"    aria-label="Long box"            style="width:330px"></div>
+  <div data-ea="box-office"  aria-label="Office box"          style="width:240px"></div>
+  <div data-ea="fire"        aria-label="Fire sign"           style="width:220px"></div>
+  <div data-ea="chandelier"  aria-label="Chandelier"          style="width:380px"></div>
+  <div data-ea="gift"        aria-label="Gift-wrapped building" style="width:220px"></div>
+  <div data-ea="lamp"        aria-label="Lamp with a spider"  style="width:250px"></div>
+  <div data-ea="glass"       aria-label="Cocktail glass"      style="width:70px"></div>
+  <div data-ea="tape"        aria-label="Tape dispenser"      style="width:220px"></div>
+  <div data-ea="box-fragile" aria-label="Fragile box"         style="width:200px"></div>
+  <div data-ea="box-small"   aria-label="Small box"           style="width:130px"></div>
+  <div data-ea="siren"       aria-label="Siren"               style="width:130px"></div>
+  <div data-ea="axe"         aria-label="Box with an axe"     style="width:120px"></div>
+</div>
+<script src="elements-anim.js" defer></script>
+</body>
+</html>

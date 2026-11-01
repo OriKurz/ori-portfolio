@@ -547,22 +547,27 @@
   --progress-fill-color: var(--color-orange);
   --progress-fade-time: 0.2s;
 
-  /* האלמנטים מהאנימציה ופריימים מהסרטון: עמודה, שורה, רוחב וגובה (במשבצות) */
-  --tree-column: 0.546;         --tree-row: 7.339;         --tree-columns: 1.339;         --tree-rows: 1.596;
-  --box-small-1-column: 2.4;    --box-small-1-row: 7.671;  --box-small-1-columns: 0.921;  --box-small-1-rows: 0.857;
-  --car-column: 3.836;          --car-row: 7.5;            --car-columns: 1.757;          --car-rows: 1.007;
-  --box-long-column: 6.021;     --box-long-row: 7.671;     --box-long-columns: 2.464;     --box-long-rows: 0.836;
-  --box-office-column: 0.279;   --box-office-row: 9.504;   --box-office-columns: 1.704;   --box-office-rows: 1.061;
-  --fire-column: 2.357;         --fire-row: 9.129;         --fire-columns: 1.5;           --fire-rows: 1.532;
-  --chandelier-column: 3.943;   --chandelier-row: 9.086;   --chandelier-columns: 2.668;   --chandelier-rows: 2.175;
-  --gift-column: 6.879;         --gift-row: 9.011;         --gift-columns: 1.854;         --gift-rows: 2.325;
-  --lamp-column: 0.279;         --lamp-row: 10.779;        --lamp-columns: 1.704;         --lamp-rows: 1.489;
-  --glass-column: 2.357;        --glass-row: 10.907;       --glass-columns: 0.75;         --glass-rows: 0.943;
-  --tape-column: 3.236;         --tape-row: 11.882;        --tape-columns: 1.661;         --tape-rows: 1.768;
-  --box-fragile-column: 5.121;  --box-fragile-row: 11.839; --box-fragile-columns: 1.757;  --box-fragile-rows: 1.854;
-  --box-small-2-column: 0.354;  --box-small-2-row: 12.664; --box-small-2-columns: 1.007;  --box-small-2-rows: 0.921;
-  --siren-column: 1.918;        --siren-row: 12.621;       --siren-columns: 1.018;        --siren-rows: 0.964;
-  --axe-column: 7.532;          --axe-row: 12.107;         --axe-columns: 1.382;          --axe-rows: 1.543;
+  /* החפצים המאוירים: מיכל ברוחב כל הגריד, משורה 7 עד שורה 14 (7 שורות) */
+  --elements-board-column: 0;   --elements-board-row: 7;
+  --elements-board-columns: 9;  --elements-board-rows: 7;
+  /* כל חפץ: left, top ו-width באחוזים מהמיכל (לפי x, y ו-width בפיגמה) */
+  --ea-tape-left: 35.952%;         --ea-tape-top: 69.745%;         --ea-tape-width: 18.452%;
+  --ea-box-fragile-left: 56.905%;  --ea-box-fragile-top: 69.133%;  --ea-box-fragile-width: 19.524%;
+  --ea-lamp-left: 3.095%;          --ea-lamp-top: 53.98%;          --ea-lamp-width: 18.929%;
+  --ea-tree-left: 6.071%;          --ea-tree-top: 4.847%;          --ea-tree-width: 14.881%;
+  --ea-box-flip-left: 26.667%;     --ea-box-flip-top: 9.592%;      --ea-box-flip-width: 10.238%;
+  --ea-box-small-left: 3.929%;     --ea-box-small-top: 80.918%;    --ea-box-small-width: 11.19%;
+  --ea-glass-left: 26.19%;         --ea-glass-top: 55.816%;        --ea-glass-width: 8.333%;
+  --ea-car-left: 42.619%;          --ea-car-top: 7.143%;           --ea-car-width: 19.524%;
+  --ea-box-long-left: 66.905%;     --ea-box-long-top: 9.592%;      --ea-box-long-width: 27.381%;
+  --ea-box-office-left: 3.095%;    --ea-box-office-top: 35.765%;   --ea-box-office-width: 18.929%;
+  --ea-gift-left: 76.429%;         --ea-gift-top: 28.724%;         --ea-gift-width: 20.595%;
+  --ea-chandelier-left: 43.81%;    --ea-chandelier-top: 29.796%;   --ea-chandelier-width: 29.643%;
+  --ea-fire-left: 26.19%;          --ea-fire-top: 30.408%;         --ea-fire-width: 16.667%;
+  --ea-axe-left: 83.69%;           --ea-axe-top: 72.959%;          --ea-axe-width: 15.357%;
+  --ea-siren-left: 21.31%;         --ea-siren-top: 80.306%;        --ea-siren-width: 11.31%;
+
+  /* פריימים מהסרטון: עמודה, שורה, רוחב וגובה (במשבצות) */
   --still-1-column: 0.279;      --still-1-row: 14.421;     --still-1-columns: 4.168;      --still-1-rows: 2.346;
   --still-2-column: 4.65;       --still-2-row: 14.421;     --still-2-columns: 4.168;      --still-2-rows: 2.346;
   --still-4-column: 0.3;        --still-4-row: 16.961;     --still-4-columns: 4.146;      --still-4-rows: 2.336;
@@ -1580,22 +1585,41 @@ body {
   }
 }
 
-/* ----- האלמנטים והפריימים (משתמשים ב-.shot של עמוד התהליך) ----- */
-.shot--tree          { --column: var(--tree-column);          --row: var(--tree-row);          --columns: var(--tree-columns);          --rows: var(--tree-rows); }
-.shot--box-small-1   { --column: var(--box-small-1-column);   --row: var(--box-small-1-row);   --columns: var(--box-small-1-columns);   --rows: var(--box-small-1-rows); }
-.shot--car           { --column: var(--car-column);           --row: var(--car-row);           --columns: var(--car-columns);           --rows: var(--car-rows); }
-.shot--box-long      { --column: var(--box-long-column);      --row: var(--box-long-row);      --columns: var(--box-long-columns);      --rows: var(--box-long-rows); }
-.shot--box-office    { --column: var(--box-office-column);    --row: var(--box-office-row);    --columns: var(--box-office-columns);    --rows: var(--box-office-rows); }
-.shot--fire          { --column: var(--fire-column);          --row: var(--fire-row);          --columns: var(--fire-columns);          --rows: var(--fire-rows); }
-.shot--chandelier    { --column: var(--chandelier-column);    --row: var(--chandelier-row);    --columns: var(--chandelier-columns);    --rows: var(--chandelier-rows); }
-.shot--gift          { --column: var(--gift-column);          --row: var(--gift-row);          --columns: var(--gift-columns);          --rows: var(--gift-rows); }
-.shot--lamp          { --column: var(--lamp-column);          --row: var(--lamp-row);          --columns: var(--lamp-columns);          --rows: var(--lamp-rows); }
-.shot--glass         { --column: var(--glass-column);         --row: var(--glass-row);         --columns: var(--glass-columns);         --rows: var(--glass-rows); }
-.shot--tape          { --column: var(--tape-column);          --row: var(--tape-row);          --columns: var(--tape-columns);          --rows: var(--tape-rows); }
-.shot--box-fragile   { --column: var(--box-fragile-column);   --row: var(--box-fragile-row);   --columns: var(--box-fragile-columns);   --rows: var(--box-fragile-rows); }
-.shot--box-small-2   { --column: var(--box-small-2-column);   --row: var(--box-small-2-row);   --columns: var(--box-small-2-columns);   --rows: var(--box-small-2-rows); }
-.shot--siren         { --column: var(--siren-column);         --row: var(--siren-row);         --columns: var(--siren-columns);         --rows: var(--siren-rows); }
-.shot--axe           { --column: var(--axe-column);           --row: var(--axe-row);           --columns: var(--axe-columns);           --rows: var(--axe-rows); }
+/* ----- החפצים המאוירים (Images/elements-anim) -----
+   המיכל ביחס של האזור בפיגמה (9x7 משבצות). בלי overflow: hidden, כי האנימציות
+   יוצאות מהגבולות של החפצים (הקופסה קופצת, העכביש יורד, הסלוטייפ יוצא למטה) */
+.elements-board {
+  --column: var(--elements-board-column);
+  --row: var(--elements-board-row);
+  width: calc(var(--elements-board-columns) * var(--cell));
+  aspect-ratio: var(--elements-board-columns) / var(--elements-board-rows);
+}
+
+/* כל חפץ: מיקום ורוחב באחוזים. בלי גובה, הוא נקבע לפי הציור (elements-anim.css) */
+.elements-board-item {
+  position: absolute;
+  left: var(--ea-left);
+  top: var(--ea-top);
+  width: var(--ea-width);
+}
+
+.elements-board-item--tape        { --ea-left: var(--ea-tape-left);        --ea-top: var(--ea-tape-top);        --ea-width: var(--ea-tape-width); }
+.elements-board-item--box-fragile { --ea-left: var(--ea-box-fragile-left); --ea-top: var(--ea-box-fragile-top); --ea-width: var(--ea-box-fragile-width); }
+.elements-board-item--lamp        { --ea-left: var(--ea-lamp-left);        --ea-top: var(--ea-lamp-top);        --ea-width: var(--ea-lamp-width); }
+.elements-board-item--tree        { --ea-left: var(--ea-tree-left);        --ea-top: var(--ea-tree-top);        --ea-width: var(--ea-tree-width); }
+.elements-board-item--box-flip    { --ea-left: var(--ea-box-flip-left);    --ea-top: var(--ea-box-flip-top);    --ea-width: var(--ea-box-flip-width); }
+.elements-board-item--box-small   { --ea-left: var(--ea-box-small-left);   --ea-top: var(--ea-box-small-top);   --ea-width: var(--ea-box-small-width); }
+.elements-board-item--glass       { --ea-left: var(--ea-glass-left);       --ea-top: var(--ea-glass-top);       --ea-width: var(--ea-glass-width); }
+.elements-board-item--car         { --ea-left: var(--ea-car-left);         --ea-top: var(--ea-car-top);         --ea-width: var(--ea-car-width); }
+.elements-board-item--box-long    { --ea-left: var(--ea-box-long-left);    --ea-top: var(--ea-box-long-top);    --ea-width: var(--ea-box-long-width); }
+.elements-board-item--box-office  { --ea-left: var(--ea-box-office-left);  --ea-top: var(--ea-box-office-top);  --ea-width: var(--ea-box-office-width); }
+.elements-board-item--gift        { --ea-left: var(--ea-gift-left);        --ea-top: var(--ea-gift-top);        --ea-width: var(--ea-gift-width); }
+.elements-board-item--chandelier  { --ea-left: var(--ea-chandelier-left);  --ea-top: var(--ea-chandelier-top);  --ea-width: var(--ea-chandelier-width); }
+.elements-board-item--fire        { --ea-left: var(--ea-fire-left);        --ea-top: var(--ea-fire-top);        --ea-width: var(--ea-fire-width); }
+.elements-board-item--axe         { --ea-left: var(--ea-axe-left);         --ea-top: var(--ea-axe-top);         --ea-width: var(--ea-axe-width); }
+.elements-board-item--siren       { --ea-left: var(--ea-siren-left);       --ea-top: var(--ea-siren-top);       --ea-width: var(--ea-siren-width); }
+
+/* ----- פריימים מהסרטון (משתמשים ב-.shot של עמוד התהליך) ----- */
 .shot--still-1       { --column: var(--still-1-column);       --row: var(--still-1-row);       --columns: var(--still-1-columns);       --rows: var(--still-1-rows); }
 .shot--still-2       { --column: var(--still-2-column);       --row: var(--still-2-row);       --columns: var(--still-2-columns);       --rows: var(--still-2-rows); }
 .shot--still-3       { --column: var(--still-3-column);       --row: var(--still-3-row);       --columns: var(--still-3-columns);       --rows: var(--still-3-rows); }
