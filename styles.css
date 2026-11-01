@@ -230,12 +230,12 @@
 }
 
 /* ----- עמוד התהליך -----
-   אזור העיצוב הוא 14 משבצות לרוחב ו-20 לגובה, עם מסגרת קו מסביב
+   אזור העיצוב הוא 14 משבצות לרוחב ו-31 לגובה, עם מסגרת קו מסביב
    ושוליים מנטה בלי קווים (כמו בפיגמה). הרוחב קובע את גודל המשבצת:
    14 משבצות + חצי משבצת שוליים מכל צד = 15. העמוד נגלל לגובה. */
 :root.page-process {
   --grid-columns: 14;
-  --grid-rows: 20;
+  --grid-rows: 31;
   --cell: round(down, 100vw / 15, 1px);
   --grid-top: round(down, var(--cell) * 0.38, 1px);
   --grid-bottom: round(down, var(--cell) * 0.42, 1px);
@@ -266,6 +266,8 @@
   --box-4-row: 6;   --box-4-columns: 13; --box-4-rows: 5;
   --box-5-row: 11;  --box-5-columns: 5;  --box-5-rows: 1;
   --box-6-row: 12;  --box-6-columns: 12; --box-6-rows: 6;
+  --box-7-row: 18;  --box-7-columns: 6;  --box-7-rows: 1;
+  --box-8-row: 19;  --box-8-columns: 12; --box-8-rows: 8;
 
   /* תוויות טקסט: עמודה ושורה */
   --date-1-column: 0.276;          --date-1-row: 1.401;
@@ -273,6 +275,8 @@
   --date-2-column: 0.359;          --date-2-row: 5.38;
   --direction-one-column: 2.276;   --direction-one-row: 5.38;
   --direction-two-column: 0.224;   --direction-two-row: 11.411;
+  --date-3-column: 0.328;          --date-3-row: 18.411;
+  --final-direction-column: 1.953; --final-direction-row: 18.411;
 
   /* תמונות: עמודה, שורה, רוחב וגובה (במשבצות) */
   --coming-soon-column: 0.224;  --coming-soon-row: 2.057;  --coming-soon-columns: 4.062; --coming-soon-rows: 2.885;
@@ -285,12 +289,47 @@
   --option-2-column: 8.13;      --option-2-row: 12.203;    --option-2-columns: 3.76;     --option-2-rows: 1.469;
   --option-3-column: 4.203;     --option-3-row: 13.911;    --option-3-columns: 3.771;    --option-3-rows: 1.448;
   --option-4-column: 8.141;     --option-4-row: 13.911;    --option-4-columns: 3.76;     --option-4-rows: 1.448;
+  --final-desktop-column: 0.37; --final-desktop-row: 19.443; --final-desktop-columns: 7.333; --final-desktop-rows: 3.979;
+  --final-mobile-column: 8.276; --final-mobile-row: 19.443;  --final-mobile-columns: 2.26;   --final-mobile-rows: 4.021;
 
   /* שלושה חיתוכים מאותו צילום מסך (direction-one-board.png), כמו בפיגמה:
      רוחב, גובה, ומיקום התמונה בתוך המסגרת */
   --board-crop-width: 212.01%;  --board-crop-height: 142.09%;  --board-crop-left: -108.1%;  --board-crop-top: -4.38%;
   --green-crop-width: 212.61%;  --green-crop-height: 389.33%;  --green-crop-left: -2.24%;   --green-crop-top: -10.67%;
   --blue-crop-width: 212.61%;   --blue-crop-height: 389.33%;   --blue-crop-left: -2.09%;    --blue-crop-top: -147.37%;
+  /* צילום המסך של הטלפון: נחתך קצת מלמעלה ומלמטה */
+  --final-mobile-crop-width: 100%; --final-mobile-crop-height: 121.5%; --final-mobile-crop-left: 0%; --final-mobile-crop-top: -7.1%;
+
+  /* שלושת הכרטיסים (קצב, צבע, טיפוגרפיה): עמודה, שורה, רוחב וגובה */
+  --card-row: 24.495;
+  --card-rows: 2.156;
+  --rhythm-card-column: 0.276;     --rhythm-card-row: var(--card-row);     --rhythm-card-columns: 2.927;     --rhythm-card-rows: var(--card-rows);
+  --color-card-column: 3.495;      --color-card-row: var(--card-row);      --color-card-columns: 3.667;      --color-card-rows: var(--card-rows);
+  --typography-card-column: 7.443; --typography-card-row: var(--card-row); --typography-card-columns: 4.323; --typography-card-rows: var(--card-rows);
+  /* המרחק מקצה הכרטיס לטקסט (בפיגמה בפיקסלים מתוך משבצת של 96px) */
+  --rhythm-card-padding: calc(var(--cell) * 19 / 96) 0 0;
+  --color-card-padding: calc(var(--cell) * 15 / 96) 0 0;
+  --typography-card-padding: calc(var(--cell) * 17 / 96) calc(var(--cell) * 30 / 96) 0 calc(var(--cell) * 52 / 96);
+  --card-text-align: center;
+  /* בפיגמה יש שורה ריקה בין הכותרת לטקסט שמתחתיה */
+  --card-title-gap: 1lh;
+  /* הרשימה בכרטיס הקצב: הזחה של 36px מצד הנקודות */
+  --card-list-indent: calc(var(--cell) * 36 / 96);
+  /* גובה שורה בכרטיס הטיפוגרפיה (108.835% בפיגמה) */
+  --typography-line-height: 1.08835;
+
+  /* כדורי הצבעים: גודל, רווחים, פינות עגולות וטקסט (בפיגמה: 67x59, טקסט 15px) */
+  --swatch-width: calc(var(--cell) * 67 / 96);
+  --swatch-height: calc(var(--cell) * 59 / 96);
+  --swatch-column-gap: calc(var(--cell) * 15 / 96);
+  --swatch-row-gap: calc(var(--cell) * 8 / 96);
+  --swatch-radius: calc(var(--cell) * 32 / 96);
+  --swatch-border: calc(var(--cell) * 2 / 96);
+  --swatch-text-size: calc(var(--cell) * 15 / 96);
+  /* מיקום הכדורים בתוך כרטיס הצבע (בפיגמה: 75px משמאל ו-64px מלמעלה) */
+  --swatches-position: absolute;
+  --swatches-left: calc(var(--cell) * 75 / 96);
+  --swatches-top: calc(var(--cell) * 64 / 96);
 
   /* עיגולים צבעוניים: קוטר, ועמודה ושורה של כל עיגול */
   --circle-size: 0.76;
@@ -308,6 +347,95 @@
   --circle-12-column: 12.87; --circle-12-row: 16.53;
   --circle-13-column: 12.64; --circle-13-row: 5.23;
   --circle-14-column: 13.26; --circle-14-row: 14.55;
+  --circle-15-column: 11.28; --circle-15-row: 19.27;
+  --circle-16-column: 12.92; --circle-16-row: 19.67;
+  --circle-display: block;
+}
+
+/* ----- עמוד התהליך במובייל (אין עיצוב בפיגמה) -----
+   8 משבצות לרוחב המסך, קו 2px, וכל רשומה בטור: שורת תווית ומתחתיה
+   מלבן שבו התמונות אחת מתחת לשנייה, ברוחב מלא. גלילה רגילה של העמוד.
+   כל מלבן הוא מספר שלם של שורות, והתוכן ממורכז בו לגובה.
+   הגדלים של הטקסט והכפתור כמו בעמוד הבית במובייל. */
+@media (max-width: 767.98px) {
+  :root.page-process {
+    --grid-columns: 8;
+    --grid-rows: 77;
+    --cell: round(down, 100vw / var(--grid-columns), 1px);
+    --line: 2px;
+    --grid-top: var(--grid-left);
+    --grid-bottom: var(--grid-left);
+
+    /* טקסטים: 14px בטלפון ברוחב 390 (משבצת של 48px). הכותרת גבוהה משבצת אחת */
+    --label-size: calc(var(--cell) * 14 / 48);
+
+    /* כפתור HOME, כמו הכפתורים בעמוד הבית במובייל */
+    --text-size: calc(var(--cell) * 17 / 49.06);
+    --text-tracking: calc(var(--cell) * 0.68 / 49.06);
+    --button-padding: calc(var(--cell) * 10 / 49.06);
+    --home-button-column: 6;
+
+    /* מלבנים: כולם ברוחב מלא. תווית בשורה אחת, ומתחתיה מלבן התמונות */
+    --box-1-row: 1;   --box-1-columns: 8; --box-1-rows: 1;
+    --box-2-row: 2;   --box-2-columns: 8; --box-2-rows: 6;
+    --box-3-row: 8;   --box-3-columns: 8; --box-3-rows: 1;
+    --box-4-row: 9;   --box-4-columns: 8; --box-4-rows: 20;
+    --box-5-row: 29;  --box-5-columns: 8; --box-5-rows: 1;
+    --box-6-row: 30;  --box-6-columns: 8; --box-6-rows: 25;
+    --box-7-row: 55;  --box-7-columns: 8; --box-7-rows: 1;
+    --box-8-row: 56;  --box-8-columns: 8; --box-8-rows: 21;
+
+    /* תוויות: אותן עמודות כמו במחשב, באמצע שורת התווית */
+    --date-1-row: 1.38;   --coming-soon-label-row: 1.38;
+    --date-2-row: 8.38;   --direction-one-row: 8.38;
+    --direction-two-row: 29.38;
+    --date-3-row: 55.38;  --final-direction-row: 55.38;
+    /* הטקסט במובייל יחסית גדול יותר, אז התווית זזה כדי לא לעלות על התאריך */
+    --final-direction-column: 2.474;
+
+    /* תמונות: ברוחב מלא (8 משבצות פחות שוליים של 0.224 מכל צד),
+       באותן פרופורציות כמו במחשב, ורווח של 0.224 משבצת ביניהן */
+    --image-column: 0.224;
+    --image-columns: 7.552;
+    --coming-soon-column: var(--image-column); --coming-soon-row: 2.318;  --coming-soon-columns: var(--image-columns); --coming-soon-rows: 5.364;
+    --board-column: var(--image-column);       --board-row: 9.58;         --board-columns: var(--image-columns);       --board-rows: 8.67;
+    --green-column: var(--image-column);       --green-row: 18.474;       --green-columns: var(--image-columns);       --green-rows: 3.173;
+    --blue-column: var(--image-column);        --blue-row: 21.871;        --blue-columns: var(--image-columns);        --blue-rows: 3.173;
+    --pink-column: var(--image-column);        --pink-row: 25.268;        --pink-columns: var(--image-columns);        --pink-rows: 3.152;
+    --moodboard-column: var(--image-column);   --moodboard-row: 30.457;   --moodboard-columns: var(--image-columns);   --moodboard-rows: 11.507;
+    --option-1-column: var(--image-column);    --option-1-row: 42.188;    --option-1-columns: var(--image-columns);    --option-1-rows: 2.925;
+    --option-2-column: var(--image-column);    --option-2-row: 45.337;    --option-2-columns: var(--image-columns);    --option-2-rows: 2.95;
+    --option-3-column: var(--image-column);    --option-3-row: 48.511;    --option-3-columns: var(--image-columns);    --option-3-rows: 2.9;
+    --option-4-column: var(--image-column);    --option-4-row: 51.635;    --option-4-columns: var(--image-columns);    --option-4-rows: 2.908;
+    --final-desktop-column: var(--image-column); --final-desktop-row: 56.417; --final-desktop-columns: var(--image-columns); --final-desktop-rows: 4.098;
+    /* צילום המסך של הטלפון: בחצי רוחב, ממורכז */
+    --final-mobile-column: 2.112; --final-mobile-row: 60.739; --final-mobile-columns: 3.776; --final-mobile-rows: 6.717;
+
+    /* הכרטיסים: אחד מתחת לשני, ברוחב מלא. הטקסט מיושר לימין */
+    --rhythm-card-column: var(--image-column);     --rhythm-card-row: 67.679;     --rhythm-card-columns: var(--image-columns);     --rhythm-card-rows: 2.156;
+    --color-card-column: var(--image-column);      --color-card-row: 70.059;      --color-card-columns: var(--image-columns);      --color-card-rows: 3.4;
+    --typography-card-column: var(--image-column); --typography-card-row: 73.683; --typography-card-columns: var(--image-columns); --typography-card-rows: 2.9;
+    --card-padding: calc(var(--cell) * 0.3);
+    --rhythm-card-padding: var(--card-padding);
+    --color-card-padding: var(--card-padding);
+    --typography-card-padding: var(--card-padding);
+    --card-text-align: right;
+
+    /* כדורי הצבעים: מתחת לכותרת "צבע", מיושרים לימין */
+    --swatch-width: calc(var(--cell) * 1.25);
+    --swatch-height: calc(var(--cell) * 1.1);
+    --swatch-column-gap: calc(var(--cell) * 0.2);
+    --swatch-row-gap: calc(var(--cell) * 0.15);
+    --swatch-radius: calc(var(--cell) * 0.55);
+    --swatch-border: 2px;
+    --swatch-text-size: calc(var(--cell) * 13 / 48);
+    --swatches-position: static;
+    --swatches-left: auto;
+    --swatches-top: auto;
+
+    /* העיגולים הצבעוניים יושבים במחשב על משבצות ריקות, ובמובייל אין כאלה */
+    --circle-display: none;
+  }
 }
 
 /* ----- עמוד מבואה לפרויקט (the-perfect-crime.html) -----
@@ -987,6 +1115,8 @@ body {
 .merge-box--4 { --row: var(--box-4-row); --columns: var(--box-4-columns); --rows: var(--box-4-rows); }
 .merge-box--5 { --row: var(--box-5-row); --columns: var(--box-5-columns); --rows: var(--box-5-rows); }
 .merge-box--6 { --row: var(--box-6-row); --columns: var(--box-6-columns); --rows: var(--box-6-rows); }
+.merge-box--7 { --row: var(--box-7-row); --columns: var(--box-7-columns); --rows: var(--box-7-rows); }
+.merge-box--8 { --row: var(--box-8-row); --columns: var(--box-8-columns); --rows: var(--box-8-rows); }
 
 /* ----- תוויות טקסט (#תאריך ועוד) ----- */
 .process-label {
@@ -1000,6 +1130,8 @@ body {
 .process-label--date-2 { --column: var(--date-2-column); --row: var(--date-2-row); }
 .process-label--direction-one { --column: var(--direction-one-column); --row: var(--direction-one-row); }
 .process-label--direction-two { --column: var(--direction-two-column); --row: var(--direction-two-row); }
+.process-label--date-3 { --column: var(--date-3-column); --row: var(--date-3-row); }
+.process-label--final-direction { --column: var(--final-direction-column); --row: var(--final-direction-row); }
 
 /* ----- תמונות התהליך ----- */
 .shot {
@@ -1027,6 +1159,8 @@ body {
 .shot--option-2    { --column: var(--option-2-column);    --row: var(--option-2-row);    --columns: var(--option-2-columns);    --rows: var(--option-2-rows); }
 .shot--option-3    { --column: var(--option-3-column);    --row: var(--option-3-row);    --columns: var(--option-3-columns);    --rows: var(--option-3-rows); }
 .shot--option-4    { --column: var(--option-4-column);    --row: var(--option-4-row);    --columns: var(--option-4-columns);    --rows: var(--option-4-rows); }
+.shot--final-desktop { --column: var(--final-desktop-column); --row: var(--final-desktop-row); --columns: var(--final-desktop-columns); --rows: var(--final-desktop-rows); }
+.shot--final-mobile  { --column: var(--final-mobile-column);  --row: var(--final-mobile-row);  --columns: var(--final-mobile-columns);  --rows: var(--final-mobile-rows); }
 
 /* חיתוך: מסגרת שמסתירה את מה שבחוץ, והתמונה בפנים גדולה ומוזזת */
 .shot-crop {
@@ -1044,9 +1178,94 @@ body {
 .shot--board { --crop-width: var(--board-crop-width); --crop-height: var(--board-crop-height); --crop-left: var(--board-crop-left); --crop-top: var(--board-crop-top); }
 .shot--green { --crop-width: var(--green-crop-width); --crop-height: var(--green-crop-height); --crop-left: var(--green-crop-left); --crop-top: var(--green-crop-top); }
 .shot--blue  { --crop-width: var(--blue-crop-width);  --crop-height: var(--blue-crop-height);  --crop-left: var(--blue-crop-left);  --crop-top: var(--blue-crop-top); }
+.shot--final-mobile { --crop-width: var(--final-mobile-crop-width); --crop-height: var(--final-mobile-crop-height); --crop-left: var(--final-mobile-crop-left); --crop-top: var(--final-mobile-crop-top); }
+
+/* ----- הכרטיסים: קצב ויחסי חלל, צבע, טיפוגרפיה ----- */
+.process-card {
+  width: calc(var(--columns) * var(--cell));
+  height: calc(var(--rows) * var(--cell));
+  padding: var(--padding);
+  color: var(--color-yellow);
+  font-weight: 500;
+  font-size: var(--label-size);
+  text-align: var(--card-text-align);
+}
+
+.process-card--rhythm     { --column: var(--rhythm-card-column);     --row: var(--rhythm-card-row);     --columns: var(--rhythm-card-columns);     --rows: var(--rhythm-card-rows);     --padding: var(--rhythm-card-padding); }
+.process-card--color      { --column: var(--color-card-column);      --row: var(--color-card-row);      --columns: var(--color-card-columns);      --rows: var(--color-card-rows);      --padding: var(--color-card-padding); }
+.process-card--typography { --column: var(--typography-card-column); --row: var(--typography-card-row); --columns: var(--typography-card-columns); --rows: var(--typography-card-rows); --padding: var(--typography-card-padding); }
+
+/* כרטיסי הקצב והטיפוגרפיה ירוקים. כרטיס הצבע בצבע הרקע, והכותרת שלו כחולה */
+.process-card--rhythm,
+.process-card--typography {
+  background-color: var(--color-green);
+}
+
+.process-card--color {
+  background-color: var(--color-mint);
+  color: var(--color-blue);
+}
+
+.process-card--typography {
+  line-height: var(--typography-line-height);
+}
+
+.process-card-title {
+  margin-bottom: var(--card-title-gap);
+}
+
+/* רשימה עם נקודות (בעברית הנקודות מימין), צמודות לטקסט כמו בפיגמה */
+.process-card-list {
+  list-style: disc inside;
+  margin-inline-start: var(--card-list-indent);
+}
+
+/* שורות באנגלית (dir="ltr") מיושרות כמו שאר הכרטיס */
+.process-card-text p {
+  text-align: var(--card-text-align);
+}
+
+/* ----- כדורי הצבעים: 3 בשורה, 2 שורות ----- */
+.color-swatches {
+  position: var(--swatches-position);
+  left: var(--swatches-left);
+  top: var(--swatches-top);
+  display: grid;
+  grid-template-columns: repeat(3, var(--swatch-width));
+  gap: var(--swatch-row-gap) var(--swatch-column-gap);
+  width: max-content;
+  margin-left: auto; /* במובייל: מיושר לימין, כמו הטקסט */
+  list-style: none;
+}
+
+.color-swatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--swatch-height);
+  border-radius: var(--swatch-radius);
+  background-color: var(--swatch-color);
+  color: var(--color-yellow);
+  font-size: var(--swatch-text-size);
+}
+
+.color-swatch--orange { --swatch-color: var(--color-orange); }
+.color-swatch--green  { --swatch-color: var(--color-green); }
+.color-swatch--pink   { --swatch-color: var(--color-pink); }
+.color-swatch--blue   { --swatch-color: var(--color-blue); }
+
+/* על רקע בהיר הטקסט כחול. לכדור המנטה יש גם מסגרת כחולה */
+.color-swatch--mint,
+.color-swatch--yellow {
+  color: var(--color-blue);
+}
+
+.color-swatch--mint   { --swatch-color: var(--color-mint); border: var(--swatch-border) solid var(--color-blue); }
+.color-swatch--yellow { --swatch-color: var(--color-yellow); }
 
 /* ----- עיגולים צבעוניים ----- */
 .circle {
+  display: var(--circle-display);
   width: calc(var(--circle-size) * var(--cell));
   height: calc(var(--circle-size) * var(--cell));
 }
@@ -1065,6 +1284,8 @@ body {
 .circle--12 { --column: var(--circle-12-column); --row: var(--circle-12-row); }
 .circle--13 { --column: var(--circle-13-column); --row: var(--circle-13-row); }
 .circle--14 { --column: var(--circle-14-column); --row: var(--circle-14-row); }
+.circle--15 { --column: var(--circle-15-column); --row: var(--circle-15-row); }
+.circle--16 { --column: var(--circle-16-column); --row: var(--circle-16-row); }
 
 /* =========================================
    עמוד מבואה לפרויקט
