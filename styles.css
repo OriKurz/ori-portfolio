@@ -112,14 +112,34 @@
   --font-title: "Reisinger Michal", sans-serif;
   --font-text: "TheBasics Corporate", sans-serif;
 
-  /* גובה שורה (99.96% בפיגמה) */
-  --line-height: 0.9996;
+  /* גובה שורה רגיל (100%) */
+  --line-height: 1;
 
-  /* גדלי טקסט (בפיגמה: 25px ו-275px מתוך משבצת של 96px) */
-  --text-size: calc(var(--cell) * 25 / 96);
-  --text-tracking: calc(var(--cell) * 1 / 96);
-  --year-tracking: calc(var(--cell) * 2.25 / 96);
-  --title-size: calc(var(--cell) * 275 / 96);
+  /* סגנונות טקסט: הגודל של כל סגנון בפיקסלים של פריים 1440 בפיגמה.
+     המחלקות עצמן (.text-...) מוגדרות בהמשך, בחלק "סגנונות טקסט" */
+  --text-display-large-size: 275;
+  --text-display-medium-size: 220;
+  --text-display-mobile-size: 70;
+  --text-page-title-size: 80;
+  --text-page-title-process-size: 96;
+  --text-banner-size: 40;
+  --text-button-size: 25;
+  --text-button-strong-size: 25;
+  --text-button-mobile-size: 17;
+  --text-button-mobile-strong-size: 14;
+  --text-section-title-size: 25;
+  --text-subtitle-size: 25;
+  --text-tagline-size: 22;
+  --text-body-size: 20;
+  --text-body-line-height: 28;
+  --text-hint-size: 25;
+  --text-note-size: 24;
+  --text-label-size: 15;
+  --text-contact-ball-size: 17;
+
+  /* פיקסל אחד בפיגמה: כמה הוא שווה במסך. כל עמוד (ולפעמים כל חלק בעמוד)
+     קובע אותו לפי השיטה שבה הוא גדל עם המסך. בעמוד הבית: משבצת = 96px בפיגמה */
+  --type-px: calc(var(--cell) / 96);
 
   /* כפתורים: גודל (במשבצות) */
   --button-columns: 2;
@@ -180,8 +200,6 @@
   --toggle-top: calc(var(--toggle-row) * var(--cell) + var(--line));
   --toggle-width: calc(var(--cell) - var(--line));
   --toggle-height: calc(var(--cell) - var(--line));
-  --toggle-text-size: calc(var(--cell) * 25 / 96);
-  --toggle-tracking: calc(var(--cell) * 1 / 96);
   --toggle-text-color: var(--color-green);
   --toggle-background: var(--color-yellow);
   --toggle-hover-background: var(--color-pink);
@@ -220,15 +238,10 @@
     --toggle-top: calc(var(--toggle-row) * var(--cell));
     --toggle-width: calc(var(--cell) * 48 / 49.06);
     --toggle-height: calc(var(--cell) * 48 / 49.06);
-    --toggle-text-size: calc(var(--cell) * 14 / 49.06);
-    --toggle-tracking: calc(var(--cell) * 0.56 / 49.06);
     --toggle-text-offset: 0px;
 
-    /* גדלי טקסט (בפיגמה: 17px ו-70px מתוך משבצת של 49.06px) */
-    --text-size: calc(var(--cell) * 17 / 49.06);
-    --text-tracking: calc(var(--cell) * 0.68 / 49.06);
-    --year-tracking: calc(var(--cell) * 1.53 / 49.06);
-    --title-size: calc(var(--cell) * 70 / 49.06);
+    /* טקסטים: משבצת = 49.06px בפיגמה */
+    --type-px: calc(var(--cell) / 49.06);
     --button-padding: calc(var(--cell) * 10 / 49.06);
 
     /* כפתורים: עמודה ושורה (שורה 0-1 פנויה לכפתור PEEK / PLAY) */
@@ -276,12 +289,6 @@
 
   --page-background: var(--color-mint);
   --grid-line-color: var(--color-blue);
-
-  /* טקסטים (בפיגמה: 24px, והכותרת 96px) */
-  --label-size: calc(var(--cell) * 24 / 96);
-  --heading-size: var(--cell);
-  --heading-line-height: 0.99355;
-  --heading-tracking: -0.04em;
 
   /* הכותרת Process */
   --heading-column: 0.286;
@@ -347,17 +354,20 @@
   --card-title-gap: 1lh;
   /* הרשימה בכרטיס הקצב: הזחה של 36px מצד הנקודות */
   --card-list-indent: calc(var(--cell) * 36 / 96);
-  /* גובה שורה בכרטיס הטיפוגרפיה (108.835% בפיגמה) */
-  --typography-line-height: 1.08835;
 
-  /* כדורי הצבעים: גודל, רווחים, פינות עגולות וטקסט (בפיגמה: 67x59, טקסט 15px) */
+  /* טקסטים: במחשב כולם לפי משבצת של 96px בפיגמה (--type-px מ-:root).
+     במובייל לכל קבוצה יש יחס משלה (ראו בהמשך) */
+  --label-type-px: var(--type-px);
+  --swatch-type-px: var(--type-px);
+  --button-type-px: var(--type-px);
+
+  /* כדורי הצבעים: גודל, רווחים ופינות עגולות (בפיגמה: 67x59) */
   --swatch-width: calc(var(--cell) * 67 / 96);
   --swatch-height: calc(var(--cell) * 59 / 96);
   --swatch-column-gap: calc(var(--cell) * 15 / 96);
   --swatch-row-gap: calc(var(--cell) * 8 / 96);
   --swatch-radius: calc(var(--cell) * 32 / 96);
   --swatch-border: calc(var(--cell) * 2 / 96);
-  --swatch-text-size: calc(var(--cell) * 15 / 96);
   /* מיקום הכדורים בתוך כרטיס הצבע (בפיגמה: 75px משמאל ו-64px מלמעלה) */
   --swatches-position: absolute;
   --swatches-left: calc(var(--cell) * 75 / 96);
@@ -398,12 +408,14 @@
     --grid-top: var(--grid-left);
     --grid-bottom: var(--grid-left);
 
-    /* טקסטים: 14px בטלפון ברוחב 390 (משבצת של 48px). הכותרת גבוהה משבצת אחת */
-    --label-size: calc(var(--cell) * 14 / 48);
+    /* טקסטים: התוויות והכרטיסים (24px במחשב) הם 14px בטלפון ברוחב 390
+       (משבצת של 48px), וקודי הצבעים (15px במחשב) הם 13px.
+       הכותרת נשארת גבוהה משבצת אחת (--type-px מ-:root) */
+    --label-type-px: calc(var(--cell) * 14 / 48 / 24);
+    --swatch-type-px: calc(var(--cell) * 13 / 48 / 15);
 
-    /* כפתור HOME, כמו הכפתורים בעמוד הבית במובייל */
-    --text-size: calc(var(--cell) * 17 / 49.06);
-    --text-tracking: calc(var(--cell) * 0.68 / 49.06);
+    /* כפתור HOME, כמו הכפתורים בעמוד הבית במובייל (משבצת = 49.06px בפיגמה) */
+    --button-type-px: calc(var(--cell) / 49.06);
     --button-padding: calc(var(--cell) * 10 / 49.06);
     --home-button-column: 6;
 
@@ -460,7 +472,6 @@
     --swatch-row-gap: calc(var(--cell) * 0.15);
     --swatch-radius: calc(var(--cell) * 0.55);
     --swatch-border: 2px;
-    --swatch-text-size: calc(var(--cell) * 13 / 48);
     --swatches-position: static;
     --swatches-left: auto;
     --swatches-top: auto;
@@ -658,6 +669,8 @@
   --wide-px: calc(100vw / 1440);
   --strip-px: var(--wide-px);
   --banner-px: var(--wide-px);
+  /* טקסטים: בגריד לפי --u. בחלק של הטקסט ובבאנר הם מוחלפים (ראו .full-project-info ו-.contact-banner) */
+  --type-px: var(--u);
 
   /* רוחב שני החלקים: הגריד (כולל הקו הימני), והטקסט מקבל את מה שנשאר */
   --panel-width: calc(var(--grid-columns) * var(--cell) + var(--line));
@@ -680,22 +693,12 @@
   --title-left: calc(71 * var(--px));
   --title-top: calc(46 * var(--px));
   --title-width: calc(383 * var(--px));
-  --title-size: calc(80 * var(--px));
   --type-top: calc(287 * var(--px));
-  --type-size: calc(25 * var(--px));
-  --type-line-height: 1.1;
-  --heading-line-height: 0.955;
-  --heading-tracking: -0.04em;
   --description-left: calc(63 * var(--px));
   --description-top: calc(395 * var(--px));
   --description-width: calc(399 * var(--px));
-  --description-size: calc(20 * var(--px));
-  --description-line-height: calc(28 * var(--px));
-  --description-tracking: 0.02em;
 
   /* הכותרות בגריד ("Little Things Magic" וכו'): עמודה ושורה */
-  --section-title-size: calc(25 * var(--u));
-  --section-title-line-height: 1.05;
   --section-title-elements-column: 0.075;  --section-title-elements-row: 7.155;
   --section-title-scenes-column: 0.086;    --section-title-scenes-row: 15.359;
   --section-title-palette-column: 0.118;   --section-title-palette-row: 22.338;
@@ -790,8 +793,6 @@
   /* באנר יצירת קשר */
   --banner-height: calc(76 * var(--banner-px));
   --banner-gap: calc(10 * var(--banner-px));
-  --banner-text-size: calc(40 * var(--banner-px));
-  --banner-tracking: 0.04em;
   /* האותיות הגדולות יושבות בפונט קצת מעל אמצע השורה, אז מורידים את הטקסט
      כדי שיהיה ממורכז לגובה הפס (נמדד בדפדפן) */
   --banner-text-offset: 0.09em;
@@ -867,15 +868,18 @@
   /* במחשב ההמבורגר יושב באזור העיצוב. במובייל הוא נצמד לראש המסך */
   --menu-shift: 0px;
 
+  /* טקסטים: פיקסל בפיגמה = --u */
+  --type-px: var(--u);
+  /* הטקסט במלבנים הוורודים (Tagline). במחשב כמו שאר העמוד */
+  --tagline-type-px: var(--u);
+
   /* שני המלבנים הוורודים: 5 משבצות לרוחב ומשבצת אחת לגובה */
   --say-hi-box-column: 5;
   --say-hi-box-columns: 5;
   --say-hi-top-box-row: 2;
   --say-hi-bottom-box-row: 6;
-  /* הטקסט שבתוכם: גודל, ריווח בין אותיות, והמרחק מהקו העליון של המלבן.
+  /* הטקסט שבתוכם: יישור, והמרחק מהקו העליון של המלבן.
      בפיגמה הטקסט מיושר לימין: המרחק מהקו הימני של המלבן (930px) לסוף הטקסט */
-  --say-hi-text-size: calc(22 * var(--u));
-  --say-hi-text-tracking: calc(0.88 * var(--u));
   --say-hi-text-align: right;
   --say-hi-top-text-offset: calc(41 * var(--u));
   --say-hi-bottom-text-offset: calc(38 * var(--u));
@@ -883,7 +887,6 @@
   --say-hi-bottom-text-right: calc((930 - 867.2) * var(--u));
 
   /* הכותרת Say hi: מיושרת לימין, לנקודה 1037px בפיגמה */
-  --say-hi-title-size: calc(220 * var(--u));
   --say-hi-title-top: calc(246 * var(--u));
   --say-hi-title-right: calc((1440 - 1037.2) * var(--u));
   --say-hi-title-align: right;
@@ -891,7 +894,8 @@
   /* כדורי יצירת הקשר (בפיגמה: קוטר 87px, טקסט 17px ברוחב 65px), מוגדלים ב-15% */
   --contact-ball-scale: 1.15;
   --contact-ball-size: calc(87 * var(--u) * var(--contact-ball-scale));
-  --contact-ball-text-size: calc(17 * var(--u) * var(--contact-ball-scale));
+  /* הטקסט על הכדורים (Contact Ball) מוגדל באותו יחס כמו הכדור */
+  --contact-ball-type-px: calc(var(--u) * var(--contact-ball-scale));
   --contact-ball-text-width: calc(65 * var(--u) * var(--contact-ball-scale));
   --layer-contact-balls: 3;
 }
@@ -915,14 +919,13 @@
 
     --say-hi-box-column: 1;
     --say-hi-box-columns: 6;
-    /* גודל הטקסט: כמו בעמוד הבית במובייל (17px מתוך משבצת של 49.06px),
+    /* גודל הטקסט: כמו הכפתורים בעמוד הבית במובייל (17px מתוך משבצת של 49.06px),
        מוקטן באותו יחס כמו במחשב (22/25). ממורכז לרוחב ולגובה */
-    --say-hi-text-size: calc(var(--cell) * 17 / 49.06 * 22 / 25);
-    --say-hi-text-tracking: calc(var(--say-hi-text-size) * 0.04);
+    --tagline-type-px: calc(var(--cell) * 17 / 49.06 / 25);
     --say-hi-text-align: center;
     --say-hi-top-text-right: 0px;
     --say-hi-bottom-text-right: 0px;
-    --say-hi-top-text-offset: calc((var(--cell) - var(--line) - var(--say-hi-text-size)) / 2);
+    --say-hi-top-text-offset: calc((var(--cell) - var(--line) - var(--text-tagline-size) * var(--tagline-type-px)) / 2);
     --say-hi-bottom-text-offset: var(--say-hi-top-text-offset);
 
     /* הכותרת באותו גודל במשבצות כמו במחשב, ממורכזת לרוחב */
@@ -931,7 +934,7 @@
 
     /* הכדורים בערך בגודל האמיתי שלהם בפיגמה (87px), כדי שיהיה קל לגעת בהם ולקרוא */
     --contact-ball-size: calc(var(--cell) * 1.75 * var(--contact-ball-scale));
-    --contact-ball-text-size: calc(var(--cell) * 17 / 49.06 * var(--contact-ball-scale));
+    --contact-ball-type-px: calc(var(--cell) / 49.06 * var(--contact-ball-scale));
     --contact-ball-text-width: calc(var(--contact-ball-size) * 65 / 87);
   }
 }
@@ -952,6 +955,156 @@
 
 body {
   background-color: var(--page-background);
+}
+
+/* =========================================
+   סגנונות טקסט (כמו בפיגמה)
+   כל טקסט באתר מקבל אחת מהמחלקות האלה. הצבע לא חלק מהסגנון.
+   הגודל = הגודל בפיגמה (משתנה --text-...-size ב-:root) כפול --type-px,
+   כך שהטקסט גדל וקטן עם המסך באותו יחס כמו שאר העמוד.
+   ריווח בין אותיות באחוזים מהגודל (em), כמו בפיגמה.
+   ========================================= */
+
+/* Display: הכותרות הגדולות ב-Reisinger */
+.text-display-large,
+.text-display-medium,
+.text-display-mobile {
+  font-family: var(--font-title);
+  font-weight: 700;
+  line-height: var(--line-height);
+  letter-spacing: 0;
+}
+
+.text-display-large  { font-size: calc(var(--text-display-large-size) * var(--type-px)); }
+.text-display-medium { font-size: calc(var(--text-display-medium-size) * var(--type-px)); }
+.text-display-mobile { font-size: calc(var(--text-display-mobile-size) * var(--type-px)); }
+
+/* Page Title: כותרת עמוד */
+.text-page-title {
+  font-family: var(--font-text);
+  font-weight: 700;
+  font-size: calc(var(--text-page-title-size) * var(--type-px));
+  line-height: 0.955;
+  letter-spacing: -0.04em;
+}
+
+/* Page Title/Process: הכותרת Process בלבד */
+.text-page-title-process {
+  font-family: var(--font-text);
+  font-weight: 900;
+  font-size: calc(var(--text-page-title-process-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: -0.04em;
+}
+
+/* Banner: הבאנר הרץ */
+.text-banner {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: calc(var(--text-banner-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0.04em;
+}
+
+/* Button: כפתורים. Medium, ובגרסת Strong: Bold */
+.text-button,
+.text-button-strong,
+.text-button-mobile,
+.text-button-mobile-strong {
+  font-family: var(--font-text);
+  font-weight: 500;
+  line-height: var(--line-height);
+  letter-spacing: 0.04em;
+}
+
+.text-button-strong,
+.text-button-mobile-strong {
+  font-weight: 700;
+}
+
+.text-button               { font-size: calc(var(--text-button-size) * var(--type-px)); }
+.text-button-strong        { font-size: calc(var(--text-button-strong-size) * var(--type-px)); }
+.text-button-mobile        { font-size: calc(var(--text-button-mobile-size) * var(--type-px)); }
+.text-button-mobile-strong { font-size: calc(var(--text-button-mobile-strong-size) * var(--type-px)); }
+
+/* Section Title: כותרות סעיפים בפרויקט, ורשומות היומן בתהליך */
+.text-section-title {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: calc(var(--text-section-title-size) * var(--type-px));
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+/* Subtitle: "Motion Graphic / Academic project / 2026" */
+.text-subtitle {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: calc(var(--text-subtitle-size) * var(--type-px));
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+/* Tagline: שורות הטקסט ב-Say Hi */
+.text-tagline {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: calc(var(--text-tagline-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0.04em;
+}
+
+/* Body: טקסט רץ. גובה השורה בפיקסלים (28px בפיגמה) */
+.text-body {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: calc(var(--text-body-size) * var(--type-px));
+  line-height: calc(var(--text-body-line-height) * var(--type-px));
+  letter-spacing: 0.02em;
+}
+
+/* Hint: "hover to play" / "tap to play" */
+.text-hint {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: calc(var(--text-hint-size) * var(--type-px));
+  line-height: 0.955;
+  letter-spacing: -0.04em;
+}
+
+/* Note: ההערות בעברית בעמוד התהליך */
+.text-note {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: calc(var(--text-note-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0;
+}
+
+/* Label: קודי הצבעים בעמוד התהליך */
+.text-label {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: calc(var(--text-label-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0;
+}
+
+/* Contact Ball: הטקסט על כדורי יצירת הקשר ב-Say Hi */
+.text-contact-ball {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-size: calc(var(--text-contact-ball-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0;
+}
+
+/* במובייל (צר מ-768px) הסגנונות שיש להם גרסת מובייל עוברים אליה:
+   Display/Large → Display/Mobile, Button → Button/Mobile, Button/Strong → Button/Mobile Strong */
+@media (max-width: 767.98px) {
+  .text-display-large  { font-size: calc(var(--text-display-mobile-size) * var(--type-px)); }
+  .text-button         { font-size: calc(var(--text-button-mobile-size) * var(--type-px)); }
+  .text-button-strong  { font-size: calc(var(--text-button-mobile-strong-size) * var(--type-px)); }
 }
 
 /* =========================================
@@ -1005,11 +1158,6 @@ body {
   background-color: var(--color-blue);
   border-color: var(--grid-line-color);
   color: var(--color-yellow);
-  font-family: var(--font-text);
-  font-weight: 500;
-  font-size: var(--text-size);
-  line-height: var(--line-height);
-  letter-spacing: var(--text-tracking);
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -1129,11 +1277,6 @@ body {
   border: none;
   background-color: var(--toggle-background);
   color: var(--toggle-text-color);
-  font-family: var(--font-text);
-  font-weight: 700;
-  font-size: var(--toggle-text-size);
-  line-height: var(--line-height);
-  letter-spacing: var(--toggle-tracking);
   white-space: nowrap;
   cursor: pointer;
   left: var(--toggle-left);
@@ -1156,9 +1299,6 @@ body {
   width: calc(var(--grid-columns) * var(--cell) + var(--line));
   height: calc(var(--grid-rows) * var(--cell) + var(--line));
   color: var(--color-yellow);
-  font-family: var(--font-text);
-  font-weight: 500;
-  line-height: var(--line-height);
 }
 
 /* ----- "ORI KURZ" ו-"2026" -----
@@ -1170,7 +1310,6 @@ body {
   background-color: var(--color-blue);
   border-color: var(--grid-line-color);
   color: var(--info-text-color);
-  font-size: var(--text-size);
   text-align: center;
   white-space: nowrap;
 }
@@ -1179,14 +1318,12 @@ body {
   --column: var(--name-column);
   --row: var(--name-row);
   --columns: var(--name-columns);
-  letter-spacing: var(--text-tracking);
 }
 
 .year-box {
   --column: var(--year-column);
   --row: var(--year-row);
   --columns: var(--year-columns);
-  letter-spacing: var(--year-tracking);
 }
 
 /* ----- הפולרויד: ממוקם לפי המרכז שלו, ומסובב -----
@@ -1216,10 +1353,6 @@ body {
   right: var(--title-right);
   top: var(--title-top);
   padding-top: var(--title-font-offset);
-  font-family: var(--font-title);
-  font-weight: bold;
-  font-size: var(--title-size);
-  line-height: var(--line-height);
   text-align: var(--title-align);
   white-space: nowrap;
 }
@@ -1273,8 +1406,6 @@ body {
   position: relative;
   height: calc(var(--grid-top) + var(--grid-rows) * var(--cell) + var(--line) + var(--grid-bottom));
   color: var(--color-blue);
-  font-family: var(--font-text);
-  line-height: var(--line-height);
 }
 
 /* אזור העיצוב: 14x20 משבצות, ממורכז לרוחב. הקווים הם הרקע שלו */
@@ -1290,10 +1421,6 @@ body {
 .process-heading {
   --column: var(--heading-column);
   --row: var(--heading-row);
-  font-weight: 900;
-  font-size: var(--heading-size);
-  line-height: var(--heading-line-height);
-  letter-spacing: var(--heading-tracking);
   white-space: nowrap;
 }
 
@@ -1301,6 +1428,7 @@ body {
 .process-home-button {
   --column: var(--home-button-column);
   --row: var(--home-button-row);
+  --type-px: var(--button-type-px);
 }
 
 /* ----- מלבני מנטה שמאחדים משבצות. כולם מתחילים בעמודה 0 ----- */
@@ -1321,8 +1449,7 @@ body {
 
 /* ----- תוויות טקסט (#תאריך ועוד) ----- */
 .process-label {
-  font-weight: 400;
-  font-size: var(--label-size);
+  --type-px: var(--label-type-px);
   white-space: pre; /* שומר על הרווח הכפול שיש בפיגמה ב-"Direction two" */
 }
 
@@ -1383,12 +1510,11 @@ body {
 
 /* ----- הכרטיסים: קצב ויחסי חלל, צבע, טיפוגרפיה ----- */
 .process-card {
+  --type-px: var(--label-type-px);
   width: calc(var(--columns) * var(--cell));
   height: calc(var(--rows) * var(--cell));
   padding: var(--padding);
   color: var(--color-yellow);
-  font-weight: 500;
-  font-size: var(--label-size);
   text-align: var(--card-text-align);
 }
 
@@ -1405,10 +1531,6 @@ body {
 .process-card--color {
   background-color: var(--color-mint);
   color: var(--color-blue);
-}
-
-.process-card--typography {
-  line-height: var(--typography-line-height);
 }
 
 .process-card-title {
@@ -1428,6 +1550,7 @@ body {
 
 /* ----- כדורי הצבעים: 3 בשורה, 2 שורות ----- */
 .color-swatches {
+  --type-px: var(--swatch-type-px);
   position: var(--swatches-position);
   left: var(--swatches-left);
   top: var(--swatches-top);
@@ -1447,7 +1570,6 @@ body {
   border-radius: var(--swatch-radius);
   background-color: var(--swatch-color);
   color: var(--color-yellow);
-  font-size: var(--swatch-text-size);
 }
 
 .color-swatch--orange { --swatch-color: var(--color-orange); }
@@ -1788,10 +1910,6 @@ body {
   overflow: hidden;
 }
 
-.full-project {
-  font-family: var(--font-text);
-}
-
 /* האזור הנגלל: כל החלון. בלי פס גלילה, כדי שלא יזיז את הגריד */
 .full-project-scroll {
   height: 100dvh;
@@ -1812,6 +1930,8 @@ body {
   z-index: 1;
   width: var(--info-width);
   height: var(--info-height);
+  /* הטקסטים כאן גדלים עם החלון (--px), ולא עם המשבצת */
+  --type-px: var(--px);
 }
 
 .full-project-menu {
@@ -1825,22 +1945,15 @@ body {
   position: absolute;
   left: var(--title-left);
   color: var(--color-orange);
-  line-height: var(--heading-line-height);
-  letter-spacing: var(--heading-tracking);
 }
 
 .full-project-title {
   top: var(--title-top);
   width: var(--title-width);
-  font-weight: 700;
-  font-size: var(--title-size);
 }
 
 .full-project-type {
   top: var(--type-top);
-  font-weight: 500;
-  font-size: var(--type-size);
-  line-height: var(--type-line-height);
   white-space: nowrap;
 }
 
@@ -1850,15 +1963,11 @@ body {
   top: var(--description-top);
   width: var(--description-width);
   color: var(--color-pink);
-  font-weight: 400;
-  font-size: var(--description-size);
-  line-height: var(--description-line-height);
-  letter-spacing: var(--description-tracking);
 }
 
-/* שורה ריקה בין הפסקאות, כמו בפיגמה */
+/* שורה ריקה בין הפסקאות, כמו בפיגמה (1lh = גובה שורה אחת) */
 .full-project-description p + p {
-  margin-top: var(--description-line-height);
+  margin-top: 1lh;
 }
 
 /* ----- החלק של הגריד: מימין. עולה למעלה לגובה של הצד השמאלי, כדי לעמוד לידו ----- */
@@ -1878,16 +1987,8 @@ body {
 }
 
 /* ----- הכותרות בגריד ----- */
-.section-title,
-.play-hint {
-  font-weight: 400;
-  font-size: var(--section-title-size);
-  letter-spacing: var(--heading-tracking);
-}
-
 .section-title {
   color: var(--color-orange);
-  line-height: var(--section-title-line-height);
 }
 
 .section-title--elements { --column: var(--section-title-elements-column); --row: var(--section-title-elements-row); }
@@ -1900,7 +2001,6 @@ body {
   --column: var(--play-hint-column);
   --row: var(--play-hint-row);
   color: var(--play-hint-color);
-  line-height: var(--heading-line-height);
 }
 
 .play-hint-touch {
@@ -2215,6 +2315,8 @@ body {
   background-color: var(--color-orange);
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
+  /* הטקסט בבאנר גדל לפי --banner-px */
+  --type-px: var(--banner-px);
 }
 
 /* הפס שזז: שני חצאים זהים זה אחרי זה. הוא זז שמאלה בדיוק חצי מהרוחב שלו,
@@ -2240,10 +2342,6 @@ body {
 
 .contact-banner-text {
   color: var(--color-yellow);
-  font-weight: 500;
-  font-size: var(--banner-text-size);
-  line-height: var(--line-height);
-  letter-spacing: var(--banner-tracking);
   white-space: nowrap;
   transform: translateY(var(--banner-text-offset));
 }
@@ -2322,9 +2420,6 @@ body {
 
 .say-hi-page {
   color: var(--color-yellow);
-  font-family: var(--font-text);
-  font-weight: 500;
-  line-height: var(--line-height);
 }
 
 /* אזור העיצוב מהפיגמה, ממורכז בחלון */
@@ -2372,8 +2467,7 @@ body {
 }
 
 .say-hi-text {
-  font-size: var(--say-hi-text-size);
-  letter-spacing: var(--say-hi-text-tracking);
+  --type-px: var(--tagline-type-px);
   text-align: var(--say-hi-text-align);
   white-space: nowrap;
 }
@@ -2387,10 +2481,6 @@ body {
   right: var(--say-hi-title-right);
   top: var(--say-hi-title-top);
   padding-top: var(--title-font-offset);
-  font-family: var(--font-title);
-  font-weight: bold;
-  font-size: var(--say-hi-title-size);
-  line-height: var(--line-height);
   text-align: var(--say-hi-title-align);
   white-space: pre; /* בפיגמה יש שני רווחים בין Say ל-hi, ו-pre שומר את שניהם */
 }
@@ -2410,11 +2500,8 @@ body {
   height: var(--contact-ball-size);
   border: none;
   border-radius: 50%;
+  --type-px: var(--contact-ball-type-px);
   color: var(--color-yellow);
-  font-family: var(--font-text);
-  font-weight: 500;
-  font-size: var(--contact-ball-text-size);
-  line-height: var(--line-height);
   text-align: center;
   text-decoration: none; /* גם כשהכדור יהיה קישור */
   cursor: pointer;
