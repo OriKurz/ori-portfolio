@@ -1,182 +1,14 @@
 // =========================================
-// כפתורי הניווט: בהובר הטקסט מתחלף בין אנגלית, עברית וערבית
+// האתר כרגע באנגלית בלבד: אין החלפת שפות בכפתורים.
+// ה-hover הוורוד של הכפתורים נעשה ב-CSS, ובטלפון נגיעה אחת מובילה ישר לעמוד.
 // =========================================
 
-// סדר השפות בלולאה. עברית וערבית נכתבות מימין לשמאל
-const languages = [
-  { code: "en", direction: "ltr" },
-  { code: "he", direction: "rtl" },
-  { code: "ar", direction: "rtl" },
-];
-
-// כל כמה זמן מתחלפת השפה (במילישניות)
-const switchEvery = 500;
-
-// מציג בכפתור את המילה בשפה שבמקום index ברשימה
-function showLanguage(button, index) {
-  const language = languages[index];
-  const label = button.querySelector(".nav-button-label, .language-button-label");
-  label.textContent = button.dataset[language.code];
-  button.lang = language.code;
-  button.dir = language.direction;
-}
-
-// הטיימר של כל כפתור שמחליף עכשיו שפות
-const languageTimers = new Map();
-
-// מתחילים להחליף שפה כל חצי שנייה
-function startLanguageLoop(button) {
-  if (languageTimers.has(button)) return;
-  let currentIndex = 0;
-  const timer = setInterval(function () {
-    currentIndex = (currentIndex + 1) % languages.length;
-    showLanguage(button, currentIndex);
-  }, switchEvery);
-  languageTimers.set(button, timer);
-}
-
-// עוצרים וחוזרים לאנגלית
-function stopLanguageLoop(button) {
-  clearInterval(languageTimers.get(button));
-  languageTimers.delete(button);
-  showLanguage(button, 0);
-}
-
-const navButtons = document.querySelectorAll(".nav-button");
-
-// בעמודי הפרויקטים: הכפתורים שמחליפים שפה (שם הפרויקט, View full project)
-const languageButtons = document.querySelectorAll(".language-button");
-
-// מחליף שפות כשהעכבר על הכפתור או כשמגיעים אליו במקלדת
-function loopLanguagesOnHover(button) {
-  // עכבר נכנס / יוצא. נגיעה באצבע מטופלת בנפרד (למטה)
-  button.addEventListener("pointerenter", function (event) {
-    if (event.pointerType === "mouse") startLanguageLoop(button);
-  });
-  button.addEventListener("pointerleave", function (event) {
-    if (event.pointerType === "mouse" && !button.classList.contains("is-active")) stopLanguageLoop(button);
-  });
-
-  // ניווט במקלדת
-  button.addEventListener("focus", function () {
-    if (button.matches(":focus-visible")) startLanguageLoop(button);
-  });
-  button.addEventListener("blur", function () {
-    if (!button.classList.contains("is-active")) stopLanguageLoop(button);
-  });
-}
-
-navButtons.forEach(loopLanguagesOnHover);
-languageButtons.forEach(loopLanguagesOnHover);
-
-// =========================================
-// עמוד הבית בטלפון: נגיעה ראשונה בכפתור מדליקה אותו (רקע ורוד והחלפת שפות),
-// ונגיעה שנייה באותו כפתור עוברת לעמוד שלו.
-// נגיעה בכפתור אחר או מחוץ לכפתורים מכבה אותו. רק כפתור אחד דולק בכל רגע.
-// =========================================
-
-const mobileScreen = window.matchMedia("(max-width: 767.98px)");
-const isHomePage = document.documentElement.classList.contains("page-home");
-let activeButton = null;      // הכפתור הדולק (null = אף אחד)
-let lastPointerType = "mouse"; // האם הלחיצה האחרונה הייתה באצבע או בעכבר
-
-// מדליק כפתור אחד ומכבה את הקודם. null מכבה הכול
-function setActiveButton(button) {
-  if (button === activeButton) return;
-  if (activeButton) {
-    activeButton.classList.remove("is-active");
-    stopLanguageLoop(activeButton);
-  }
-  activeButton = button;
-  if (button) {
-    button.classList.add("is-active");
-    startLanguageLoop(button);
-  }
-}
+// האם הלחיצה האחרונה הייתה באצבע או בעכבר (בר האינדקס משתמש בזה)
+let lastPointerType = "mouse";
 
 window.addEventListener("pointerdown", function (event) {
   lastPointerType = event.pointerType;
 }, true);
-
-if (isHomePage) {
-  navButtons.forEach(function (button) {
-    button.addEventListener("click", function (event) {
-      if (lastPointerType !== "touch" || !mobileScreen.matches) return;
-      // נגיעה שנייה באותו כפתור: הקישור עובד כרגיל
-      if (button === activeButton) return;
-      // נגיעה ראשונה: רק מדליקים, בלי לעבור עמוד
-      event.preventDefault();
-      setActiveButton(button);
-    });
-  });
-
-  // נגיעה מחוץ לכפתורים מכבה את הכפתור הדולק
-  window.addEventListener("pointerup", function (event) {
-    if (event.pointerType === "touch" && !event.target.closest(".nav-button")) {
-      setActiveButton(null);
-    }
-  });
-
-  // חוזרים לעמוד בכפתור "אחורה": מתחילים בלי כפתור דולק
-  window.addEventListener("pageshow", function () {
-    setActiveButton(null);
-  });
-}
-
-// =========================================
-// עמודי הפרויקטים בטלפון: נגיעה בכפתור שמחליף שפה מתחילה את ההחלפה,
-// ונגיעה נוספת בו (או מחוץ לו) עוצרת אותה. רק כפתור אחד מחליף בכל רגע.
-// =========================================
-
-if (languageButtons.length > 0) {
-  languageButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      if (lastPointerType !== "touch") return;
-      setActiveButton(button === activeButton ? null : button);
-    });
-  });
-
-  window.addEventListener("pointerup", function (event) {
-    if (event.pointerType === "touch" && !event.target.closest(".language-button")) {
-      setActiveButton(null);
-    }
-  });
-}
-
-// =========================================
-// עמוד מבואה לפרויקט: שלושת ריבועי השם מחליפים את שפת הטקסט במלבן.
-// hover על ריבוע מציג את הטקסט בשפה שלו, ויציאה מחזירה לשפה שנבחרה.
-// לחיצה על ריבוע נועלת את השפה שלו. בטעינה: אנגלית.
-// =========================================
-
-const nameSquares = document.querySelectorAll(".project-name");
-const projectTexts = document.querySelectorAll(".project-text");
-let chosenLanguage = "en";
-
-// מציג רק את הטקסט בשפה code (en / he / ar)
-function showProjectText(code) {
-  projectTexts.forEach(function (text) {
-    text.hidden = text.lang !== code;
-  });
-}
-
-nameSquares.forEach(function (square) {
-  square.addEventListener("pointerenter", function (event) {
-    if (event.pointerType === "mouse") showProjectText(square.lang);
-  });
-  square.addEventListener("pointerleave", function (event) {
-    if (event.pointerType === "mouse") showProjectText(chosenLanguage);
-  });
-
-  square.addEventListener("click", function () {
-    chosenLanguage = square.lang;
-    showProjectText(chosenLanguage);
-    // לקוראי מסך: איזה ריבוע נבחר
-    nameSquares.forEach(function (other) {
-      other.setAttribute("aria-pressed", other === square ? "true" : "false");
-    });
-  });
-});
 
 // =========================================
 // בר האינדקס בעמוד מבואה לפרויקט: כל כדור הוא פרויקט.
@@ -199,20 +31,11 @@ if (indexBar) {
     });
   }
 
-  // מודד את השם הארוך מבין שלוש השפות של כל כדור, כדי שרוחב הפס יהיה קבוע
+  // מודד את השם של כל כדור, כדי שהפס ייפתח בדיוק לרוחב שלו
   function measureBallNames() {
     projectBalls.forEach(function (ball) {
       const label = ball.querySelector(".index-ball-label");
-      const shownLanguage = Math.max(0, languages.findIndex(function (language) {
-        return language.code === ball.lang;
-      }));
-      let widest = 0;
-      languages.forEach(function (language, index) {
-        showLanguage(ball, index);
-        widest = Math.max(widest, label.getBoundingClientRect().width);
-      });
-      showLanguage(ball, shownLanguage);
-      ball.style.setProperty("--label-width", Math.ceil(widest) + "px");
+      ball.style.setProperty("--label-width", Math.ceil(label.getBoundingClientRect().width) + "px");
     });
   }
 

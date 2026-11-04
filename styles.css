@@ -683,9 +683,9 @@
   --video-columns: 9;       --video-rows: 5;
 
   /* אייקון ה-Play במרכז הסרטון: עיגול חלול (קו בעובי קווי הגריד) ומשולש בתוכו */
-  --play-circle-size: calc(var(--cell) * 2.2);
-  --play-icon-width: calc(var(--cell) * 1.2);
-  --play-icon-height: calc(var(--cell) * 1.4);
+  --play-circle-size: calc(var(--cell) * 1.1);
+  --play-icon-width: calc(var(--cell) * 0.6);
+  --play-icon-height: calc(var(--cell) * 0.7);
   --play-icon-color: var(--color-pink);
 
   /* בר ההתקדמות של הסרטון: קו דק, ואזור לחיצה גבוה יותר כדי שיהיה קל לתפוס אותו */
@@ -756,6 +756,9 @@
   --banner-gap: calc(10 * var(--banner-px));
   --banner-text-size: calc(40 * var(--banner-px));
   --banner-tracking: 0.04em;
+  /* האותיות הגדולות יושבות בפונט קצת מעל אמצע השורה, אז מורידים את הטקסט
+     כדי שיהיה ממורכז לגובה הפס (נמדד בדפדפן) */
+  --banner-text-offset: 0.09em;
   --banner-star-1-width: calc(65 * var(--banner-px));
   --banner-star-1-height: calc(68 * var(--banner-px));
   --banner-star-2-width: calc(78 * var(--banner-px));
@@ -2014,6 +2017,7 @@ body {
   line-height: var(--line-height);
   letter-spacing: var(--banner-tracking);
   white-space: nowrap;
+  transform: translateY(var(--banner-text-offset));
 }
 
 .contact-banner-star--1 {

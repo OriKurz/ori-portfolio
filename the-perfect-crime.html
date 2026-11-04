@@ -24,19 +24,16 @@
       </a>
 
       <!-- Index: עוד לא מחובר לשום מקום -->
-      <button class="on-grid pill index-button" type="button">Index//אינדקס//فهرس</button>
+      <button class="on-grid pill index-button" type="button">Index</button>
 
       <!-- ----- בר האינדקס: כל כדור הוא פרויקט -----
            בכל רגע רק כדור אחד פתוח ומורחב לפס עם שם הפרויקט (script.js).
-           ברירת המחדל: The Perfect Crime (data-default). בפס פתוח השם מתחלף בין השפות.
+           ברירת המחדל: The Perfect Crime (data-default).
            כדור בלי פרויקט (span) נשאר כדור רגיל. הלחיצה עוד לא מובילה לשום מקום -->
       <div class="on-grid index-bar">
-        <button class="index-ball index-ball--pink language-button" type="button" data-default
-          data-en="The Perfect Crime" data-he="הפשע המושלם" data-ar="الجريمة الكاملة"><span class="language-button-label index-ball-label">The Perfect Crime</span></button>
-        <button class="index-ball index-ball--blue language-button" type="button"
-          data-en="Leftovers*" data-he="שאריות*" data-ar="بقايا*"><span class="language-button-label index-ball-label">Leftovers*</span></button>
-        <button class="index-ball index-ball--orange language-button" type="button"
-          data-en="Touch Grass" data-he="לגעת בדשא" data-ar="لمس العشب"><span class="language-button-label index-ball-label">Touch Grass</span></button>
+        <button class="index-ball index-ball--pink" type="button" data-default><span class="index-ball-label">The Perfect Crime</span></button>
+        <button class="index-ball index-ball--blue" type="button"><span class="index-ball-label">Leftovers*</span></button>
+        <button class="index-ball index-ball--orange" type="button"><span class="index-ball-label">Touch Grass</span></button>
         <span class="index-ball index-ball--green" aria-hidden="true"></span>
         <span class="index-ball index-ball--pink" aria-hidden="true"></span>
         <span class="index-ball index-ball--blue" aria-hidden="true"></span>
@@ -50,29 +47,21 @@
           disablepictureinpicture disableremoteplayback aria-label="The Perfect Crime logo animation"></video>
       </div>
 
-      <!-- ----- המלבן עם הטקסט על הפרויקט, מתחת לסרטון -----
-           שלוש גרסאות של הטקסט, ורק אחת מוצגת (script.js מחליף לפי ריבועי השם) -->
+      <!-- ----- המלבן עם הטקסט על הפרויקט, מתחת לסרטון (באנגלית בלבד) ----- -->
       <div class="grid-box project-text-box">
         <div class="project-text" lang="en" dir="ltr">
           <p>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
         </div>
-        <div class="project-text" lang="he" dir="rtl" hidden>
-          <p>מה קורה כשעובד פס ייצור במפעל אריזות מתכנן את הפשע המושלם עד הפרט האחרון?</p>
-        </div>
-        <div class="project-text" lang="ar" dir="rtl" hidden>
-          <p>ماذا يحدث عندما يخطّط عاملٌ على خط الإنتاج في مصنع تغليف للجريمة الكاملة حتى أدقّ التفاصيل؟</p>
-        </div>
 
-        <!-- הכפתור לעמוד הפרויקט המלא. בהובר מתחלף בין השפות -->
-        <a class="pill language-button full-project-button" href="the-perfect-crime-project.html"
-          data-en="View full project" data-he="לפרויקט המלא" data-ar="للمشروع الكامل"><span class="language-button-label">View full project</span></a>
+        <!-- הכפתור לעמוד הפרויקט המלא -->
+        <a class="pill full-project-button" href="the-perfect-crime-project.html"><span>View full project</span></a>
       </div>
 
       <!-- ----- שם הפרויקט בשלוש שפות, במשבצות צמודות לדימוי המרכזי -----
-           hover מציג את הטקסט בשפה של הריבוע, ולחיצה נועלת אותה -->
-      <button class="grid-box project-name project-name--en" type="button" lang="en" dir="ltr" aria-pressed="true"><span>The<br>Perfect<br>Crime</span></button>
-      <button class="grid-box project-name project-name--he" type="button" lang="he" dir="rtl" aria-pressed="false"><span>הפשע<br>המושלם</span></button>
-      <button class="grid-box project-name project-name--ar" type="button" lang="ar" dir="rtl" aria-pressed="false"><span>الجريمة<br>الكاملة</span></button>
+           כרגע הם רק תצוגה, ולא מחליפים את שפת הטקסט (האתר באנגלית בלבד) -->
+      <div class="grid-box project-name project-name--en" lang="en" dir="ltr"><span>The<br>Perfect<br>Crime</span></div>
+      <div class="grid-box project-name project-name--he" lang="he" dir="rtl"><span>הפשע<br>המושלם</span></div>
+      <div class="grid-box project-name project-name--ar" lang="ar" dir="rtl"><span>الجريمة<br>الكاملة</span></div>
 
       <!-- עיגול "Motion Graphic" (על הקצה של הסרטון). אותו עיגול ירוק כמו בעמוד התהליך.
            הוא אחרון ב-HTML כדי שיהיה מעל הסרטון ומעל ריבועי השם -->
