@@ -49,9 +49,10 @@
    ========================================= */
 
 /* ----- עמוד הבית (ברירת המחדל) -----
-   אזור העיצוב הוא 15 משבצות לרוחב ו-9 לגובה, ממורכז בחלון.
+   אזור העיצוב הוא 15 משבצות לרוחב ו-9 לגובה.
    גודל המשבצת נקבע כך שאזור העיצוב ייכנס בחלון, והגריד ממשיך
-   מסביבו עד קצות החלון (גם משבצות חלקיות). */
+   מסביבו עד קצות החלון. הגריד תמיד מתחיל בקצה השמאלי והעליון של החלון
+   במשבצת שלמה, ומשבצות חלקיות יש רק בקצה הימני ובתחתית. */
 :root {
   /* הרשת */
   --grid-columns: 15;
@@ -62,9 +63,10 @@
   --line: max(1px, round(var(--cell) * 3 / 96, 1px));
   /* עובי המסגרת סביב החלון: 6px מתוך 96px */
   --frame-border: calc(var(--line) * 2);
-  /* המיקום של אזור העיצוב, ממורכז בחלון */
-  --grid-left: round(down, (100vw - var(--grid-columns) * var(--cell)) / 2, 1px);
-  --grid-top: round(down, (100dvh - var(--grid-rows) * var(--cell)) / 2, 1px);
+  /* המיקום של אזור העיצוב: ממורכז בחלון ככל האפשר, אבל רק בקפיצות של משבצת שלמה,
+     כדי שקווי הגריד יתחילו בדיוק בקצה השמאלי והעליון של החלון */
+  --grid-left: max(0px, round(down, (100vw - var(--grid-columns) * var(--cell)) / 2, var(--cell)));
+  --grid-top: max(0px, round(down, (100dvh - var(--grid-rows) * var(--cell)) / 2, var(--cell)));
   /* מאיפה מתחילים אריחי הגריד ברקע */
   --grid-lines-position: var(--grid-left) var(--grid-top);
 
@@ -144,12 +146,14 @@
   --ball-color-3: var(--color-green);
   --ball-color-4: var(--color-pink);
 
-  /* הכפתור PEEK / PLAY: עמודה, שורה וגודל (בפיגמה: 100x97 מתוך משבצת של 96px) */
-  --toggle-column: calc(88 / 96);
-  --toggle-row: calc(94 / 96);
-  --toggle-left: calc(var(--toggle-column) * var(--cell));
-  --toggle-width: calc(var(--cell) * 100 / 96);
-  --toggle-height: calc(var(--cell) * 97 / 96);
+  /* הכפתור PEEK / PLAY: במחשב הוא ממלא בדיוק את המשבצת בעמודה 1 ושורה 1,
+     את כל השטח שבין קווי הגריד (מתחיל אחרי הקו, ונגמר בקו הבא) */
+  --toggle-column: 1;
+  --toggle-row: 1;
+  --toggle-left: calc(var(--toggle-column) * var(--cell) + var(--line));
+  --toggle-top: calc(var(--toggle-row) * var(--cell) + var(--line));
+  --toggle-width: calc(var(--cell) - var(--line));
+  --toggle-height: calc(var(--cell) - var(--line));
   --toggle-text-size: calc(var(--cell) * 25 / 96);
   --toggle-tracking: calc(var(--cell) * 1 / 96);
   --toggle-text-color: var(--color-green);
@@ -168,7 +172,7 @@
    ואזור העיצוב הוא 17 שורות. העמוד ממלא בדיוק את המסך, בלי גלילה.
    מסך גבוה: בדיוק 8 משבצות לרוחב, ולמטה נשארת שורה חלקית.
    מסך נמוך (כל 17 השורות לא נכנסות): המשבצות קטנות כדי שהכול ייכנס לגובה,
-   ואזור העיצוב ממורכז לרוחב, עם משבצות חלקיות בצדדים. */
+   והמשבצות החלקיות נשארות בצד ימין (הגריד תמיד מתחיל בקצה השמאלי). */
 @media (max-width: 767.98px) {
   :root.page-home {
     --grid-columns: 8;
@@ -179,15 +183,15 @@
     --cell: round(down, min(100vw / var(--grid-columns), 100dvh / var(--grid-rows)), 1px);
     --line: 2px;
     --frame-border: 3px;
-    /* הגריד מתחיל מלמעלה, וממורכז לרוחב. במסך גבוה נשארים רק כמה פיקסלים
-       בצדדים, והם מתחת למסגרת הוורודה */
-    --grid-left: round(down, (100vw - var(--grid-columns) * var(--cell)) / 2, 1px);
+    /* הגריד מתחיל מלמעלה ומשמאל, במשבצת שלמה (--grid-left מ-:root).
+       במסך גבוה נשארים רק כמה פיקסלים בצד ימין */
     --grid-top: 0px;
 
     /* הכפתור PEEK / PLAY (בפיגמה: ריבוע של 48px, טקסט 14px).
        המרחק מהקצה השמאלי של המסך שווה בדיוק למרחק מהקצה העליון */
     --toggle-row: 0.468;
     --toggle-left: calc(var(--toggle-row) * var(--cell) - var(--grid-left));
+    --toggle-top: calc(var(--toggle-row) * var(--cell));
     --toggle-width: calc(var(--cell) * 48 / 49.06);
     --toggle-height: calc(var(--cell) * 48 / 49.06);
     --toggle-text-size: calc(var(--cell) * 14 / 49.06);
@@ -237,6 +241,8 @@
   --grid-columns: 14;
   --grid-rows: 31;
   --cell: round(down, 100vw / 15, 1px);
+  /* עמוד התהליך לא ממלא את כל המסך (יש שוליים בלי קווים), אז הוא נשאר ממורכז לרוחב */
+  --grid-left: round(down, (100vw - var(--grid-columns) * var(--cell)) / 2, 1px);
   --grid-top: round(down, var(--cell) * 0.38, 1px);
   --grid-bottom: round(down, var(--cell) * 0.42, 1px);
   /* כאן הגריד הוא רקע של אזור העיצוב עצמו, ולכן מתחיל מהפינה שלו */
@@ -438,7 +444,7 @@
   }
 }
 
-/* ----- עמוד מבואה לפרויקט (the-perfect-crime.html) -----
+/* ----- עמוד מבואה לפרויקט (מבוטל: the-perfect-crime.html נמחק, הסגנונות נשארו) -----
    הפריים בפיגמה: 1440x810, משבצת = 93px, והגריד מתחיל בפינה השמאלית העליונה.
    כמו בעמוד הבית: העמוד ממלא תמיד את כל החלון בלי גלילה. המשבצות נשארות ריבועיות,
    אזור העיצוב (1440x810) ממורכז ושלם, וקווי הגריד ממשיכים מסביבו עד קצות החלון.
@@ -821,8 +827,7 @@
   --frame-right: max(var(--frame-border), min(var(--right-gap), max(0px, (var(--edge-snap) - var(--right-gap)) * 1000)));
   --frame-bottom: max(var(--frame-border), min(var(--bottom-gap), max(0px, (var(--edge-snap) - var(--bottom-gap)) * 1000)));
 
-  /* תפריט ההמבורגר: שלושה קווים כתומים (30x24 בפיגמה) */
-  --menu-column: calc(29 / 93);   --menu-row: calc(35 / 93);
+  /* תפריט ההמבורגר: שלושה קווים כתומים (30x24 בפיגמה), במרכז המשבצת הראשונה */
   --menu-width: calc(30 * var(--u));
   --menu-line-height: calc(4 * var(--u));
   --menu-gap: calc(6 * var(--u));
@@ -870,7 +875,6 @@
     --line: 2px;
     --grid-top: max(0px, round(down, (100dvh - var(--grid-rows) * var(--cell)) / 2, var(--cell)));
 
-    --menu-column: 0.25;     --menu-row: 0.3;
     --menu-width: calc(var(--cell) * 0.5);
     --menu-line-height: calc(var(--cell) * 0.07);
     --menu-gap: calc(var(--cell) * 0.1);
@@ -1095,6 +1099,7 @@ body {
   white-space: nowrap;
   cursor: pointer;
   left: var(--toggle-left);
+  top: var(--toggle-top);
   transition: background-color var(--transition-speed) ease;
 }
 
@@ -2221,9 +2226,12 @@ body {
 }
 
 /* ההמבורגר: אותו כפתור כמו בעמודי הפרויקט, בכתום.
-   במובייל הוא עולה בחזרה לראש המסך (--menu-shift) */
+   הוא ממורכז בדיוק בשטח שבין קווי הגריד של המשבצת הראשונה (מהקו בעובי --line
+   ועד הקו הבא), לרוחב ולגובה. במובייל הוא עולה בחזרה לראש המסך (--menu-shift) */
 .say-hi-grid .menu-button {
-  top: calc(var(--menu-row) * var(--cell) - var(--menu-shift));
+  --menu-height: calc(3 * var(--menu-line-height) + 2 * var(--menu-gap));
+  left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
+  top: calc((var(--cell) + var(--line) - var(--menu-height)) / 2 - var(--menu-shift));
 }
 
 .say-hi-grid .menu-button-line {

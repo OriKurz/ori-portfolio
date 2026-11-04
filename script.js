@@ -390,7 +390,7 @@ if (videoPlayer) {
 
 // =========================================
 // עמוד Say Hi: כדורי יצירת הקשר מסתובבים בחלון כל הזמן, לאט וברכות.
-// הם נהדפים בעדינות מקצוות החלון ואחד מהשני.
+// הם נהדפים בעדינות מקצוות החלון, ומתנגשים אחד בשני רק כשהם באמת נוגעים.
 // כשהעכבר מתקרב לכדור (פעם וחצי מהקוטר שלו) הכדור מאט, כדי שיהיה קל לתפוס אותו,
 // וכשהעכבר מתרחק הוא חוזר בהדרגה למהירות הרגילה.
 // כדור שנבחר במקלדת (Tab) עוצר. מי שביקש פחות תנועה: הכדורים עומדים במקום.
@@ -403,19 +403,19 @@ if (contactBalls.length > 0) {
   const mobileScreen = window.matchMedia("(max-width: 767.98px)");
 
   // המהירות: כמה קטרים של כדור בשנייה. במובייל לאט יותר.
-  // פי 2 מהמהירות הקודמת (0.4 ו-0.22) בפיקסלים, ומחולק ב-1.15 כי הכדורים גדלו ב-15%
-  const desktopSpeed = 0.4 * 2 / 1.15;
-  const mobileSpeed = 0.22 * 2 / 1.15;
-  // ההאטה ליד העכבר: באיזה מרחק (בקטרים, ממרכז הכדור) ועד כמה (0.06 = 6% מהמהירות).
-  // 6% מהמהירות הכפולה = אותה מהירות איטית כמו קודם, כך שעדיין קל לתפוס את הכדור
+  // המהירות המקורית (0.4 ו-0.22), פי 2 ועוד 50% (פי 3 בסך הכול),
+  // ומחולקת ב-1.15 כי הכדורים גדלו ב-15% (כדי שהמהירות בפיקסלים תהיה בדיוק פי 3)
+  const desktopSpeed = 0.4 * 3 / 1.15;
+  const mobileSpeed = 0.22 * 3 / 1.15;
+  // ההאטה ליד העכבר: באיזה מרחק (בקטרים, ממרכז הכדור) ועד כמה (0.04 = 4% מהמהירות).
+  // 4% מהמהירות המשולשת = אותה מהירות איטית כמו בהתחלה, כך שעדיין קל לתפוס את הכדור
   const slowRadius = 1.5;
-  const slowSpeed = 0.06;
+  const slowSpeed = 0.04;
   // כמה מהר הכדור מאט כשהעכבר מתקרב, וכמה לאט הוא חוזר למהירות כשהעכבר מתרחק
   const slowDownRate = 6;
   const speedUpRate = 1.2;
-  // הדחיפה מהקצוות ומהכדורים האחרים: מאיזה מרחק (בקטרים) ובאיזה כוח
+  // הדחיפה העדינה מהקצוות: מאיזה מרחק (בקטרים) ובאיזה כוח
   const edgeZone = 0.6;
-  const neighborZone = 0.5;
   const pushStrength = 3;
   // כמה הכיוון "מתפתל" לאט (ברדיאנים לשנייה), כדי שהתנועה לא תהיה בקו ישר
   const wanderStrength = 0.5;
@@ -456,7 +456,7 @@ if (contactBalls.length > 0) {
   // מציב את הכדורים בנקודות ההתחלה
   function placeBalls() {
     const start = mobileScreen.matches ? mobileStart : desktopStart;
-    const radius = contactBalls[0].offsetWidth / 2;
+    const radius = contactBalls[0].getBoundingClientRect().width / 2;
     balls.forEach(function (ball, i) {
       ball.x = start[i % start.length][0] * window.innerWidth;
       ball.y = start[i % start.length][1] * window.innerHeight;
@@ -465,11 +465,25 @@ if (contactBalls.length > 0) {
     });
   }
 
+  // שומר כיוון חדש לכדור (באורך 1). אם התנועה כמעט אפס (כדור שעמד), הוא נהדף בכיוון away
+  function setDirection(ball, x, y, awayX, awayY) {
+    const length = Math.hypot(x, y);
+    if (length > 0.001) {
+      ball.vx = x / length;
+      ball.vy = y / length;
+    } else {
+      ball.vx = awayX;
+      ball.vy = awayY;
+    }
+  }
+
   function step(time) {
     const dt = lastTime === null ? 0 : Math.min(0.05, (time - lastTime) / 1000);
     lastTime = time;
 
-    const size = contactBalls[0].offsetWidth;
+    // הקוטר המדויק של הכדור כפי שהוא נראה (offsetWidth מעגל לפיקסל שלם, ולכן לא משתמשים בו).
+    // זה גם רדיוס ההתנגשות: שני כדורים מתנגשים בדיוק כשהמרחק בין המרכזים שווה לקוטר
+    const size = contactBalls[0].getBoundingClientRect().width;
     const radius = size / 2;
     const bounds = getBounds();
     const speed = (mobileScreen.matches ? mobileSpeed : desktopSpeed) * size;
@@ -495,26 +509,12 @@ if (contactBalls.length > 0) {
       if (gapTop < zone) ball.vy += pushStrength * dt * (1 - gapTop / zone);
       if (gapBottom < zone) ball.vy -= pushStrength * dt * (1 - gapBottom / zone);
 
-      // 3. דחיפה עדינה מהכדורים האחרים
-      balls.forEach(function (other) {
-        if (other === ball) return;
-        const dx = ball.x - other.x;
-        const dy = ball.y - other.y;
-        const distance = Math.hypot(dx, dy) || 1;
-        const reach = size * (1 + neighborZone);
-        if (distance < reach) {
-          const push = pushStrength * dt * (1 - distance / reach) * 2;
-          ball.vx += (dx / distance) * push;
-          ball.vy += (dy / distance) * push;
-        }
-      });
-
-      // 4. הכיוון תמיד באורך 1, כך שהמהירות חוזרת לאט לרגילה אחרי כל דחיפה
+      // 3. הכיוון תמיד באורך 1, כך שהמהירות חוזרת לאט לרגילה אחרי כל דחיפה
       const length = Math.hypot(ball.vx, ball.vy) || 1;
       ball.vx /= length;
       ball.vy /= length;
 
-      // 5. ההאטה: ליד העכבר הכדור מאט מהר, ורחוק ממנו הוא חוזר לאט למהירות מלאה
+      // 4. ההאטה: ליד העכבר הכדור מאט מהר, ורחוק ממנו הוא חוזר לאט למהירות מלאה
       let targetPace = 1;
       if (ball.focused) {
         targetPace = 0;
@@ -524,29 +524,53 @@ if (contactBalls.length > 0) {
       const rate = targetPace < ball.pace ? slowDownRate : speedUpRate;
       ball.pace += (targetPace - ball.pace) * (1 - Math.exp(-rate * dt));
 
-      // 6. התזוזה
+      // 5. התזוזה
       ball.x += ball.vx * speed * ball.pace * dt;
       ball.y += ball.vy * speed * ball.pace * dt;
     });
 
-    // 7. אף כדור לא יוצא מהחלון ולא נכנס לתוך כדור אחר
-    balls.forEach(function (ball, i) {
-      balls.slice(i + 1).forEach(function (other) {
-        const dx = other.x - ball.x;
-        const dy = other.y - ball.y;
-        const distance = Math.hypot(dx, dy) || 1;
-        if (distance < size) {
+    // 6. התנגשויות: רק כששני כדורים באמת נוגעים (המרחק בין המרכזים קטן מהקוטר).
+    // מרחיקים אותם עד שהם רק נוגעים, ואם הם נעים זה לכיוון זה, הם נהדפים
+    // כמו שני כדורי ביליארד באותו משקל: מחליפים ביניהם את התנועה שלאורך קו המגע.
+    // חוזרים על זה כמה פעמים, כי הרחקה מכדור אחד יכולה לדחוף לתוך כדור אחר או לקיר
+    for (let pass = 0; pass < 4; pass++) {
+      balls.forEach(function (ball, i) {
+        balls.slice(i + 1).forEach(function (other) {
+          const dx = other.x - ball.x;
+          const dy = other.y - ball.y;
+          const distance = Math.hypot(dx, dy);
+          if (distance >= size) return;
+
+          // הכיוון מהכדור הראשון לשני (אם הם בדיוק באותה נקודה, בוחרים כיוון כלשהו)
+          const nx = distance > 0 ? dx / distance : 1;
+          const ny = distance > 0 ? dy / distance : 0;
+
+          // מרחיקים את שניהם באותה מידה, עד שהם רק נוגעים
           const overlap = (size - distance) / 2;
-          ball.x -= (dx / distance) * overlap;
-          ball.y -= (dy / distance) * overlap;
-          other.x += (dx / distance) * overlap;
-          other.y += (dy / distance) * overlap;
-        }
+          ball.x -= nx * overlap;
+          ball.y -= ny * overlap;
+          other.x += nx * overlap;
+          other.y += ny * overlap;
+
+          // התנועה האמיתית של כל כדור (כיוון כפול הקצב שלו)
+          const ux = ball.vx * ball.pace, uy = ball.vy * ball.pace;
+          const ox = other.vx * other.pace, oy = other.vy * other.pace;
+          const approach = (ux - ox) * nx + (uy - oy) * ny;
+          if (approach <= 0) return; // כבר מתרחקים זה מזה
+
+          // החלפת התנועה שלאורך קו המגע, ושמירת הכיוון החדש של כל כדור
+          setDirection(ball, ux - approach * nx, uy - approach * ny, -nx, -ny);
+          setDirection(other, ox + approach * nx, oy + approach * ny, nx, ny);
+        });
       });
-    });
+
+      // אף כדור לא יוצא מהחלון
+      balls.forEach(function (ball) {
+        ball.x = Math.max(bounds.left + radius, Math.min(bounds.right - radius, ball.x));
+        ball.y = Math.max(bounds.top + radius, Math.min(bounds.bottom - radius, ball.y));
+      });
+    }
     balls.forEach(function (ball) {
-      ball.x = Math.max(bounds.left + radius, Math.min(bounds.right - radius, ball.x));
-      ball.y = Math.max(bounds.top + radius, Math.min(bounds.bottom - radius, ball.y));
       draw(ball, radius);
     });
 
