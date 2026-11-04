@@ -99,11 +99,11 @@
   --button-padding: calc(var(--cell) * 10 / 96);
 
   /* כפתורים בעמוד הבית: עמודה ושורה */
-  --home-column: 2;      --home-row: 1;
-  --works-column: 5;     --works-row: 1;
-  --about-column: 8;     --about-row: 1;
-  --contact-column: 11;  --contact-row: 1;
-  --process-column: 2;   --process-row: 7;
+  --index-button-column: 3;   --index-button-row: 1;
+  --works-column: 6;          --works-row: 1;
+  --about-column: 9;          --about-row: 1;
+  --say-hi-button-column: 12; --say-hi-button-row: 1;
+  --process-column: 2;        --process-row: 7;
 
   /* בלחיצה הטקסט קטן מ-25px ל-20px, כמו ב-State3 בפיגמה (20/25 = 0.8) */
   --pressed-scale: 0.8;
@@ -145,8 +145,8 @@
   --ball-color-4: var(--color-pink);
 
   /* הכפתור PEEK / PLAY: עמודה, שורה וגודל (בפיגמה: 100x97 מתוך משבצת של 96px) */
-  --toggle-column: 0.49;
-  --toggle-row: 0.505;
+  --toggle-column: calc(88 / 96);
+  --toggle-row: calc(94 / 96);
   --toggle-left: calc(var(--toggle-column) * var(--cell));
   --toggle-width: calc(var(--cell) * 100 / 96);
   --toggle-height: calc(var(--cell) * 97 / 96);
@@ -203,9 +203,9 @@
 
     /* כפתורים: עמודה ושורה (שורה 0-1 פנויה לכפתור PEEK / PLAY) */
     --works-column: 1;    --works-row: 2;
-    --home-column: 5;     --home-row: 3;
+    --index-button-column: 5;   --index-button-row: 3;
     --about-column: 2;    --about-row: 4;
-    --contact-column: 5;  --contact-row: 5;
+    --say-hi-button-column: 5;  --say-hi-button-row: 5;
     --process-column: 3;  --process-row: 15;
 
     /* "ORI KURZ" ו-"2026": ורודים, כל אחד על מלבן שמאחד משבצות */
@@ -1173,9 +1173,9 @@ body {
 }
 
 /* ----- המיקום של כל כפתור על הרשת ----- */
-.nav-button--home {
-  --column: var(--home-column);
-  --row: var(--home-row);
+.nav-button--index {
+  --column: var(--index-button-column);
+  --row: var(--index-button-row);
 }
 
 .nav-button--works {
@@ -1188,9 +1188,9 @@ body {
   --row: var(--about-row);
 }
 
-.nav-button--contact {
-  --column: var(--contact-column);
-  --row: var(--contact-row);
+.nav-button--say-hi {
+  --column: var(--say-hi-button-column);
+  --row: var(--say-hi-button-row);
 }
 
 .nav-button--process {
