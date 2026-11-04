@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" class="page-styleguide">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- כלי עבודה, לא חלק מהפורטפוליו: אף עמוד לא מקשר לכאן, ומנועי חיפוש לא מציגים אותו -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Style Guide — Ori Kurz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- מערכת העיצוב של האתר, מתוך styles.css בלבד.
+       אין כאן ערכים קבועים: הצבעים, הסגנונות והמספרים שמוצגים כטקסט
+       נקראים מ-styles.css בזמן אמת (הסקריפט בסוף העמוד).
+       הרכיבים משתמשים באותן מחלקות כמו באתר. כל "במה" מקבלת את המשתנים
+       של העמוד שהרכיב שייך אליו (vars-...) -->
+  <main class="styleguide">
+
+    <h1 class="text-page-title">Style Guide</h1>
+    <p class="styleguide-intro text-body">Everything on this page is read live from styles.css. Change a variable or a class there and it updates here.</p>
+
+    <!-- בדיקות אוטומטיות (הסקריפט ממלא) -->
+    <ul class="styleguide-checks text-label" id="checks"></ul>
+
+    <!-- ===== 1. צבעים ===== -->
+    <section class="styleguide-section">
+      <h2 class="styleguide-section-title text-section-title">Colors</h2>
+      <!-- הסקריפט מוסיף כאן כרטיס לכל משתנה --color-... ב-:root -->
+      <div class="styleguide-colors" id="colors"></div>
+    </section>
+
+    <!-- ===== 2. גריד ===== -->
+    <section class="styleguide-section">
+      <h2 class="styleguide-section-title text-section-title">Grid</h2>
+      <div class="styleguide-grids">
+        <figure>
+          <figcaption class="styleguide-caption text-label" data-grid-caption="desktop"></figcaption>
+          <div class="styleguide-grid-demo grid-lines" data-grid-demo="desktop"></div>
+        </figure>
+        <figure>
+          <figcaption class="styleguide-caption text-label" data-grid-caption="mobile"></figcaption>
+          <div class="styleguide-grid-demo styleguide-grid-demo--mobile grid-lines" data-grid-demo="mobile"></div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===== 3. סגנונות טקסט ===== -->
+    <section class="styleguide-section">
+      <h2 class="styleguide-section-title text-section-title">Text styles</h2>
+      <!-- הסקריפט מוסיף כאן שורה לכל מחלקה .text-... ב-styles.css -->
+      <div id="text-styles"></div>
+    </section>
+
+    <!-- ===== 4. רכיבים ===== -->
+    <section class="styleguide-section">
+      <h2 class="styleguide-section-title text-section-title">Components</h2>
+
+      <!-- כפתור הניווט (עמוד הבית). השמאלי: hover ולחיצה חיים. הימני: מצב hover קבוע (is-active) -->
+      <p class="styleguide-caption text-label">Button · short · left: live (hover, press and hold) · right: hover state</p>
+      <div class="styleguide-stage styleguide-stage--buttons vars-base vars-home grid-lines">
+        <a class="grid-box nav-button text-button styleguide-place-first" href="#" data-demo-link><span class="nav-button-label">WORK</span></a>
+        <a class="grid-box nav-button text-button styleguide-place-second is-active" href="#" data-demo-link><span class="nav-button-label">WORK</span></a>
+      </div>
+
+      <p class="styleguide-caption text-label">Button · long · left: live (hover, press and hold) · right: hover state</p>
+      <div class="styleguide-stage styleguide-stage--buttons vars-base vars-home grid-lines">
+        <a class="grid-box nav-button text-button styleguide-place-first" href="#" data-demo-link><span class="nav-button-label">LET’S WORK TOGETHER</span></a>
+        <a class="grid-box nav-button text-button styleguide-place-second is-active" href="#" data-demo-link><span class="nav-button-label">LET’S WORK TOGETHER</span></a>
+      </div>
+
+      <!-- PEEK / PLAY (עמוד הבית): ממקום עצמו לפי --toggle-left / --toggle-top, כמו באתר -->
+      <p class="styleguide-caption text-label">PEEK / PLAY · short</p>
+      <div class="styleguide-stage vars-base vars-home grid-lines">
+        <button class="on-grid balls-toggle text-button-strong" type="button">PEEK</button>
+      </div>
+
+      <p class="styleguide-caption text-label">PEEK / PLAY · long</p>
+      <div class="styleguide-stage vars-base vars-home grid-lines">
+        <button class="on-grid balls-toggle text-button-strong" type="button">PEEK-A-BOO</button>
+      </div>
+
+      <!-- הבאנר הרץ (עמוד הפרויקט). המבנה זהה לאתר: שני חצאים זהים -->
+      <p class="styleguide-caption text-label">Banner · short</p>
+      <div class="styleguide-stage styleguide-stage--banner vars-base vars-full-project">
+        <a class="contact-banner" href="#" data-demo-link aria-label="Say hi">
+          <div class="contact-banner-track" aria-hidden="true">
+            <div class="contact-banner-half">
+              <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+              <span class="contact-banner-text text-banner">HI</span>
+            </div>
+            <div class="contact-banner-half">
+              <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+              <span class="contact-banner-text text-banner">HI</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <p class="styleguide-caption text-label">Banner · long</p>
+      <div class="styleguide-stage styleguide-stage--banner vars-base vars-full-project">
+        <a class="contact-banner" href="#" data-demo-link aria-label="Say hi">
+          <div class="contact-banner-track" aria-hidden="true">
+            <div class="contact-banner-half">
+              <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+              <span class="contact-banner-text text-banner">SAY HI</span>
+              <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+              <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER, A FILM, A POSTER, A WEBSITE, OR JUST A COFFEE</span>
+            </div>
+            <div class="contact-banner-half">
+              <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+              <span class="contact-banner-text text-banner">SAY HI</span>
+              <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+              <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER, A FILM, A POSTER, A WEBSITE, OR JUST A COFFEE</span>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- ההמבורגר: בעמוד Say Hi (כתום, במרכז המשבצת) ובעמוד הפרויקט (ורוד, בצד הטקסט).
+           אין לו תוכן, אז אין גרסה ארוכה -->
+      <p class="styleguide-caption text-label">Hamburger · Say Hi (no text, so no long version)</p>
+      <div class="styleguide-stage styleguide-stage--menu vars-base vars-say-hi grid-lines">
+        <div class="say-hi-grid">
+          <a class="on-grid menu-button" href="#" data-demo-link aria-label="Menu">
+            <span class="menu-button-line"></span>
+            <span class="menu-button-line"></span>
+            <span class="menu-button-line"></span>
+          </a>
+        </div>
+      </div>
+
+      <p class="styleguide-caption text-label">Hamburger · project page</p>
+      <div class="styleguide-stage styleguide-stage--menu vars-base vars-full-project">
+        <a class="menu-button full-project-menu" href="#" data-demo-link aria-label="Menu">
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+        </a>
+      </div>
+
+      <!-- כדור יצירת קשר (Say Hi): קצר וארוך -->
+      <p class="styleguide-caption text-label">Contact ball · short · long</p>
+      <div class="styleguide-stage styleguide-stage--balls vars-base vars-say-hi grid-lines">
+        <button class="contact-ball text-contact-ball contact-ball--email is-ready" type="button"><span>E-MAIL</span></button>
+        <button class="contact-ball text-contact-ball contact-ball--instagram is-ready" type="button"><span>LET’S WORK TOGETHER</span></button>
+      </div>
+
+      <!-- אייקון ה-Play על הסרטון (עמוד הפרויקט). פריים מהסרטון במקום הסרטון עצמו.
+           אין לו תוכן, אז אין גרסה ארוכה -->
+      <p class="styleguide-caption text-label">Video play icon (no text, so no long version)</p>
+      <div class="styleguide-stage styleguide-stage--video vars-base vars-full-project grid-lines">
+        <div class="grid-box video-player">
+          <img class="video-player-video" src="Images/1.png" alt="">
+          <span class="video-play-icon" aria-hidden="true"></span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* ===== קריאת מערכת העיצוב מ-styles.css =====
+       שום ערך לא כתוב כאן: הכול נקרא מהגיליון ומהסגנון המחושב של כל אלמנט */
+
+    const root = document.documentElement;
+    const shortSample = "Ori Kurz";
+    const longSample = "What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?";
+
+    // ערך של משתנה CSS (כמו --color-blue) על אלמנט
+    function cssVariable(element, name) {
+      return getComputedStyle(element).getPropertyValue(name).trim();
+    }
+
+    // מספר עם עד ספרה אחת אחרי הנקודה
+    function tidy(number) {
+      return String(Math.round(number * 10) / 10);
+    }
+
+    // יוצר אלמנט עם מחלקות וטקסט
+    function make(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== undefined) element.textContent = text;
+      return element;
+    }
+
+    // הקישורים בדוגמאות לא מובילים לשום מקום
+    document.querySelectorAll("[data-demo-link]").forEach(function (link) {
+      link.addEventListener("click", function (event) { event.preventDefault(); });
+    });
+
+    // ----- הגיליון styles.css: הכללים שלו -----
+    const sheet = Array.from(document.styleSheets).find(function (s) {
+      return s.href && s.href.endsWith("styles.css");
+    });
+    let rules = [];
+    try {
+      rules = Array.from(sheet.cssRules);
+    } catch (error) {
+      // בפתיחה ישירה מהמחשב (file://) הדפדפן חוסם קריאה של הגיליון
+      document.getElementById("checks").append(make("li", "styleguide-check is-failing",
+        "Can’t read styles.css from a file:// page. Open it through a local server or on Vercel."));
+    }
+
+    // משתני הצבע: כל --color-... בבלוק :root
+    const rootRule = rules.find(function (rule) {
+      return rule.selectorText && rule.selectorText.split(",")[0].trim() === ":root";
+    });
+    const colorNames = rootRule
+      ? Array.from(rootRule.style).filter(function (name) { return name.startsWith("--color-"); })
+      : [];
+
+    // מחלקות הטקסט: כל בורר שהוא בדיוק .text-...
+    const textClasses = [];
+    rules.forEach(function (rule) {
+      if (!rule.selectorText) return;
+      rule.selectorText.split(",").forEach(function (selector) {
+        const match = selector.trim().match(/^\.(text-[a-z0-9-]+)$/);
+        if (match && !textClasses.includes(match[1])) textClasses.push(match[1]);
+      });
+    });
+
+    // קבצי הפונטים: משפחה + משקל → שם הקובץ
+    const fontFiles = rules.filter(function (rule) { return rule instanceof CSSFontFaceRule; })
+      .map(function (rule) {
+        const src = rule.style.getPropertyValue("src");
+        return {
+          family: rule.style.getPropertyValue("font-family").replace(/["']/g, "").trim(),
+          weight: rule.style.getPropertyValue("font-weight").trim(),
+          file: (src.match(/url\(["']?([^"')]+)/) || [])[1] || ""
+        };
+      });
+
+    // ----- 1. צבעים -----
+    const colorsBox = document.getElementById("colors");
+    colorNames.forEach(function (name) {
+      const card = make("figure", "styleguide-color");
+      const swatch = make("div", "styleguide-color-swatch");
+      swatch.style.setProperty("--swatch-color", "var(" + name + ")");
+      card.append(swatch,
+        make("figcaption", "styleguide-meta-name text-label", name),
+        make("p", "text-label", cssVariable(root, name)));
+      colorsBox.append(card);
+    });
+
+    // ----- 2. גריד: עובי הקו (--line-desktop / --line-mobile) וגודל המשבצת -----
+    function describeGrids() {
+      document.querySelectorAll("[data-grid-demo]").forEach(function (demo) {
+        const kind = demo.dataset.gridDemo;
+        const caption = document.querySelector('[data-grid-caption="' + kind + '"]');
+        // גודל המשבצת במסך: הגובה של הדוגמה, בלי הקו התחתון, חלקי מספר השורות
+        const line = parseFloat(cssVariable(root, "--line-" + kind));
+        const cell = (demo.getBoundingClientRect().height - line) / parseFloat(cssVariable(demo, "--styleguide-grid-rows"));
+        caption.textContent = (kind === "desktop" ? "Desktop" : "Mobile") +
+          " · line " + line + "px · cell " + tidy(cell) + "px";
+      });
+    }
+    describeGrids();
+
+    // ----- 3. סגנונות טקסט -----
+    const textBox = document.getElementById("text-styles");
+    const textRows = textClasses.map(function (className) {
+      const row = make("article", "styleguide-type-row");
+      const meta = make("ul", "styleguide-meta text-label");
+      const short = make("p", "styleguide-sample " + className, shortSample);
+      const long = make("p", "styleguide-sample " + className, longSample);
+      row.append(meta, short, long);
+      textBox.append(row);
+      return { className: className, meta: meta, sample: short };
+    });
+
+    // הנתונים נקראים אחרי שהפונטים נטענו, מהסגנון המחושב של הדוגמה
+    let fontProblems = [];
+    function describeTextStyles() {
+      fontProblems = [];
+      textRows.forEach(function (row) {
+        const style = getComputedStyle(row.sample);
+        const family = style.fontFamily.split(",")[0].replace(/["']/g, "").trim();
+        const weight = style.fontWeight;
+        const size = parseFloat(style.fontSize);
+        const lineHeight = parseFloat(style.lineHeight);
+        const spacing = parseFloat(style.letterSpacing) || 0;
+        const figmaSize = cssVariable(root, "--" + row.className + "-size");
+
+        // הקובץ של המשקל הזה ב-@font-face, והאם הדפדפן באמת טען אותו
+        const face = fontFiles.find(function (f) { return f.family === family && f.weight === weight; });
+        const weightName = face ? face.file.replace(/^.*-|\.[a-z0-9]+$/gi, "") : "missing";
+        const loaded = Array.from(document.fonts).some(function (f) {
+          return f.family.replace(/["']/g, "") === family && f.weight === weight && f.status === "loaded";
+        });
+        if (!face || !loaded) fontProblems.push(row.className);
+
+        row.meta.replaceChildren(
+          make("li", "styleguide-meta-name", "." + row.className),
+          make("li", "", family),
+          make("li", "", weightName + " " + weight + (loaded ? " ✓ " : " ✗ ") + (face ? face.file : "no @font-face")),
+          make("li", "", "size " + tidy(size) + "px" + (figmaSize ? " (Figma " + figmaSize + ")" : "")),
+          make("li", "", "line height " + tidy(lineHeight) + "px / " + tidy(lineHeight / size * 100) + "%"),
+          make("li", "", "letter spacing " + tidy(spacing / size * 100) + "%")
+        );
+      });
+    }
+
+    // ----- בדיקות -----
+    function check(ok, text) {
+      document.getElementById("checks").append(make("li", "styleguide-check" + (ok ? "" : " is-failing"), (ok ? "✓ " : "✗ ") + text));
+    }
+
+    document.fonts.ready.then(function () {
+      describeTextStyles();
+      if (!rules.length) return;
+      const shownColors = colorsBox.children.length;
+      check(colorNames.length > 0 && shownColors === colorNames.length,
+        colorNames.length + " color variables in :root, " + shownColors + " shown");
+      check(textClasses.length > 0 && textRows.length === textClasses.length,
+        textClasses.length + " text styles in styles.css, " + textRows.length + " shown");
+      check(fontProblems.length === 0, fontProblems.length === 0
+        ? "Every text style loads its weight from its own @font-face file"
+        : "Weight file missing or not loaded: " + fontProblems.join(", "));
+      const base = getComputedStyle(document.body);
+      check(base.fontSynthesis === "none" || base.fontSynthesisWeight === "none", "font-synthesis: " + (base.fontSynthesis || base.fontSynthesisWeight));
+      const smoothing = base.webkitFontSmoothing || base.MozOsxFontSmoothing;
+      check(smoothing === "antialiased" || smoothing === "grayscale", "font smoothing: " + smoothing);
+    });
+
+    // הגדלים תלויים ברוחב החלון (למשל במובייל), אז מחשבים מחדש כשהוא משתנה
+    window.addEventListener("resize", function () {
+      describeTextStyles();
+      describeGrids();
+    });
+  </script>
+</body>
+</html>

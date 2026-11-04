@@ -78,8 +78,12 @@
    אזור העיצוב הוא 15 משבצות לרוחב ו-9 לגובה.
    גודל המשבצת נקבע כך שאזור העיצוב ייכנס בחלון, והגריד ממשיך
    מסביבו עד קצות החלון. הגריד תמיד מתחיל בקצה השמאלי והעליון של החלון
-   במשבצת שלמה, ומשבצות חלקיות יש רק בקצה הימני ובתחתית. */
-:root {
+   במשבצת שלמה, ומשבצות חלקיות יש רק בקצה הימני ובתחתית.
+   .vars-base (וגם .vars-home, .vars-full-project, .vars-say-hi בהמשך):
+   נותנים את המשתנים של עמוד לאלמנט אחד, כדי שרכיב יוצג בעמוד אחר
+   בדיוק כמו בעמוד שלו (משמש את styleguide.html). בעמודים עצמם אין להם השפעה. */
+:root,
+.vars-base {
   /* הרשת */
   --grid-columns: 15;
   --grid-rows: 9;
@@ -87,6 +91,9 @@
   --cell: round(down, min(100vw / var(--grid-columns), 100dvh / var(--grid-rows)), 1px);
   /* עובי קו: 3px מתוך משבצת של 96px */
   --line: max(1px, round(var(--cell) * 3 / 96, 1px));
+  /* עובי הקו הקבוע בשאר העמודים: 3px במחשב ו-2px במובייל */
+  --line-desktop: 3px;
+  --line-mobile: 2px;
   /* עובי המסגרת סביב החלון: 6px מתוך 96px */
   --frame-border: calc(var(--line) * 2);
   /* המיקום של אזור העיצוב: ממורכז בחלון ככל האפשר, אבל רק בקפיצות של משבצת שלמה,
@@ -218,14 +225,15 @@
    מסך נמוך (כל 17 השורות לא נכנסות): המשבצות קטנות כדי שהכול ייכנס לגובה,
    והמשבצות החלקיות נשארות בצד ימין (הגריד תמיד מתחיל בקצה השמאלי). */
 @media (max-width: 767.98px) {
-  :root.page-home {
+  :root.page-home,
+  .vars-home {
     --grid-columns: 8;
     --grid-rows: 17;
     /* 100dvh = הגובה האמיתי של המסך, גם כשסרגלי הדפדפן בטלפון משתנים.
        גודל המשבצת בפיקסלים שלמים (כמו במחשב), כדי שהקווים ברקע והמסגרות
        של הכפתורים והריבועים ייפלו בדיוק על אותם פיקסלים */
     --cell: round(down, min(100vw / var(--grid-columns), 100dvh / var(--grid-rows)), 1px);
-    --line: 2px;
+    --line: var(--line-mobile);
     --frame-border: 3px;
     /* הגריד מתחיל מלמעלה ומשמאל, במשבצת שלמה (--grid-left מ-:root).
        במסך גבוה נשארים רק כמה פיקסלים בצד ימין */
@@ -404,7 +412,7 @@
     --grid-columns: 8;
     --grid-rows: 77;
     --cell: round(down, 100vw / var(--grid-columns), 1px);
-    --line: 2px;
+    --line: var(--line-mobile);
     --grid-top: var(--grid-left);
     --grid-bottom: var(--grid-left);
 
@@ -497,7 +505,7 @@
   /* גודל משבצת בפיקסלים שלמים, כך שכל אזור העיצוב נכנס בחלון.
      ה-0.01px מתקן שגיאת עיגול קטנה של הדפדפן (בלעדיו חלון של 1440x810 נותן 92 במקום 93) */
   --cell: round(down, min(100vw * var(--frame-cell) / var(--frame-width), 100dvh * var(--frame-cell) / var(--frame-height)) + 0.01px, 1px);
-  --line: 3px;
+  --line: var(--line-desktop);
 
   --page-background: var(--color-mint);
   --grid-line-color: var(--color-pink);
@@ -584,7 +592,7 @@
     --grid-columns: 8;
     --grid-rows: 13;
     --cell: round(down, 100vw / var(--grid-columns), 1px);
-    --line: 2px;
+    --line: var(--line-mobile);
     --grid-top: 0px;
 
     /* שורה 0: ההמבורגר משמאל ו-Index מימין */
@@ -653,7 +661,8 @@
    מיקומים על הגריד נמדדו מהקו הקרוב בפיגמה (הקווים שם מצוירים ביד וזזים בכמה פיקסלים).
    --u בחלק של הגריד (גדל עם המשבצת), --px בחלק של הטקסט (גדל עם החלון),
    ו---wide-px בחלקים שברוחב כל החלון. */
-:root.page-full-project {
+:root.page-full-project,
+.vars-full-project {
   --frame-cell: 93.333;
   --grid-columns: 10;
   /* אורך הגריד: עד הקו שבו מתחילים הפרויקטים הנוספים (y=2608 בפיגמה), במשבצות */
@@ -661,7 +670,7 @@
   /* גודל משבצת בפיקסלים שלמים: 10 משבצות ממלאות 933 מתוך 1440 של החלון, כמו בפיגמה.
      ה-0.01px מתקן שגיאת עיגול קטנה של הדפדפן (כמו בעמוד המבואה) */
   --cell: round(down, 100vw * 933 / 1440 / var(--grid-columns) + 0.01px, 1px);
-  --line: 3px;
+  --line: var(--line-desktop);
   --u: calc(var(--cell) / var(--frame-cell));
   /* הטקסט בצד שמאל: לפי פריים של 1440x810, כדי שייכנס תמיד בגובה החלון */
   --px: min(100vw / 1440, 100dvh / 810);
@@ -809,10 +818,11 @@
    אין עדיין עיצוב מובייל בפיגמה. בינתיים: טור אחד, הטקסט ואחריו הגריד
    (10 משבצות לרוחב המסך), עם גלילה רגילה של העמוד. */
 @media (max-width: 767.98px) {
-  :root.page-full-project {
+  :root.page-full-project,
+  .vars-full-project {
     /* הקו הימני של הגריד צריך להיכנס גם הוא ברוחב המסך */
     --cell: round(down, (100vw - var(--line)) / var(--grid-columns), 1px);
-    --line: 2px;
+    --line: var(--line-mobile);
     /* הטקסט: לפי רוחב החלק השמאלי בפיגמה (508px) */
     --px: calc(100vw / 508);
     --info-height: calc(790 * var(--px));
@@ -831,7 +841,8 @@
    הפריים בפיגמה: 1440x810, משבצת = 93px, והגריד מתחיל מהפינה של הפריים.
    אותה שיטה כמו בעמוד מבואה לפרויקט: אזור העיצוב ממורכז ושלם,
    והגריד ממשיך עד קצות החלון. מספרים כמו 25 * var(--u) הם פיקסלים מהפיגמה. */
-:root.page-say-hi {
+:root.page-say-hi,
+.vars-say-hi {
   --frame-width: 1440;
   --frame-height: 810;
   --frame-cell: 93;
@@ -839,7 +850,7 @@
   --grid-rows: calc(var(--frame-height) / var(--frame-cell));
   /* ה-0.01px מתקן שגיאת עיגול קטנה של הדפדפן (כמו בעמוד מבואה לפרויקט) */
   --cell: round(down, min(100vw * var(--frame-cell) / var(--frame-width), 100dvh * var(--frame-cell) / var(--frame-height)) + 0.01px, 1px);
-  --line: 3px;
+  --line: var(--line-desktop);
   /* פיקסל אחד בפיגמה */
   --u: calc(var(--cell) / var(--frame-cell));
 
@@ -905,11 +916,12 @@
    (המלבנים בשורות 2 ו-6, ברוחב 6 משבצות). אזור העיצוב (9 שורות) ממורכז לגובה,
    בקפיצות של משבצת שלמה, כך שהקווים ממשיכים מראש המסך. */
 @media (max-width: 767.98px) {
-  :root.page-say-hi {
+  :root.page-say-hi,
+  .vars-say-hi {
     --grid-columns: 8;
     --grid-rows: 9;
     --cell: round(down, 100vw / var(--grid-columns), 1px);
-    --line: 2px;
+    --line: var(--line-mobile);
     --grid-top: max(0px, round(down, (100dvh - var(--grid-rows) * var(--cell)) / 2, var(--cell)));
 
     --menu-width: calc(var(--cell) * 0.5);
@@ -2526,4 +2538,191 @@ body {
 .contact-ball:focus-visible {
   outline: var(--line) solid var(--color-yellow);
   outline-offset: var(--line);
+}
+
+/* =========================================
+   מערכת העיצוב (styleguide.html)
+   כלי עבודה, לא חלק מהפורטפוליו. כל רכיב מוצג על "במה" (styleguide-stage)
+   שמקבלת את המשתנים של העמוד שלו (vars-base + vars-home / vars-full-project / vars-say-hi),
+   כך שהוא נראה בדיוק כמו באתר באותו גודל חלון.
+   ========================================= */
+:root.page-styleguide {
+  --page-background: var(--color-mint);
+  /* הטקסטים בעמוד ובדוגמאות הסגנונות: בגודל של פיגמה (פיקסל בפיגמה = פיקסל במסך) */
+  --styleguide-type-px: 1px;
+  --styleguide-text-color: var(--color-blue);
+  --styleguide-accent-color: var(--color-orange);
+  --styleguide-rule-color: var(--color-pink);
+  --styleguide-border: var(--line-mobile);
+  --styleguide-gutter: calc(40 * var(--styleguide-type-px));
+  --styleguide-gap: calc(16 * var(--styleguide-type-px));
+  --styleguide-section-gap: calc(96 * var(--styleguide-type-px));
+  --styleguide-swatch-size: calc(140 * var(--styleguide-type-px));
+
+  /* דוגמת הגריד: 3x2 משבצות. משבצת של 96px (מחשב) ושל 49px (iPhone) כמו בפיגמה */
+  --styleguide-grid-columns: 3;
+  --styleguide-grid-rows: 2;
+  --styleguide-grid-cell-desktop: calc(96 * var(--styleguide-type-px));
+  --styleguide-grid-cell-mobile: calc(49 * var(--styleguide-type-px));
+
+  /* הבמות: גובה במשבצות, ומיקום שני הכפתורים (במחשב זה לצד זה) */
+  --styleguide-stage-rows: 3;
+  --styleguide-buttons-rows: 3;
+  --styleguide-first-column: 2;  --styleguide-first-row: 1;
+  --styleguide-second-column: 6; --styleguide-second-row: 1;
+}
+
+/* במובייל: שוליים צרים, ושני הכפתורים אחד מתחת לשני */
+@media (max-width: 767.98px) {
+  :root.page-styleguide {
+    --styleguide-gutter: calc(16 * var(--styleguide-type-px));
+    --styleguide-section-gap: calc(64 * var(--styleguide-type-px));
+    --styleguide-swatch-size: calc(100 * var(--styleguide-type-px));
+    --styleguide-buttons-rows: 5;
+    --styleguide-second-column: 2; --styleguide-second-row: 3;
+  }
+}
+
+.page-styleguide body {
+  overflow-x: clip;
+  color: var(--styleguide-text-color);
+}
+
+.styleguide {
+  --type-px: var(--styleguide-type-px);
+  padding: var(--styleguide-gutter);
+}
+
+.styleguide-intro {
+  max-width: calc(var(--styleguide-swatch-size) * 5);
+  margin-top: var(--styleguide-gap);
+}
+
+/* ----- בדיקות: נקראות מ-styles.css בזמן אמת ----- */
+.styleguide-checks {
+  display: grid;
+  gap: var(--styleguide-gap);
+  margin-top: var(--styleguide-gap);
+  list-style: none;
+}
+
+.styleguide-check.is-failing {
+  color: var(--styleguide-accent-color);
+}
+
+/* ----- סעיף ----- */
+.styleguide-section {
+  margin-top: var(--styleguide-section-gap);
+}
+
+.styleguide-section-title {
+  padding-top: var(--styleguide-gap);
+  border-top: var(--styleguide-border) solid var(--styleguide-rule-color);
+}
+
+.styleguide-caption {
+  margin-block: var(--styleguide-gap);
+  color: var(--styleguide-text-color);
+}
+
+/* ----- צבעים ----- */
+.styleguide-colors {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--styleguide-swatch-size), 1fr));
+  gap: var(--styleguide-gap);
+  margin-top: var(--styleguide-gap);
+}
+
+.styleguide-color-swatch {
+  aspect-ratio: 1;
+  margin-bottom: var(--styleguide-gap);
+  border: var(--styleguide-border) solid var(--styleguide-text-color);
+  background-color: var(--swatch-color);
+}
+
+/* ----- גריד: אותה מחלקה grid-lines כמו באתר ----- */
+.styleguide-grids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--styleguide-section-gap);
+}
+
+.styleguide-grid-demo {
+  --cell: var(--styleguide-grid-cell-desktop);
+  --line: var(--line-desktop);
+  --grid-line-color: var(--color-pink);
+  --grid-lines-position: 0 0;
+  width: calc(var(--styleguide-grid-columns) * var(--cell) + var(--line));
+  height: calc(var(--styleguide-grid-rows) * var(--cell) + var(--line));
+  background-color: var(--color-blue);
+}
+
+.styleguide-grid-demo--mobile {
+  --cell: var(--styleguide-grid-cell-mobile);
+  --line: var(--line-mobile);
+}
+
+/* ----- סגנונות טקסט ----- */
+.styleguide-type-row {
+  padding-block: var(--styleguide-gap);
+  border-top: var(--styleguide-border) solid var(--styleguide-rule-color);
+}
+
+.styleguide-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--styleguide-gap);
+  list-style: none;
+}
+
+.styleguide-meta-name {
+  color: var(--styleguide-accent-color);
+}
+
+/* דוגמה: אם הטקסט רחב מהמסך, גוללים אותה לרוחב (ולא את כל העמוד) */
+.styleguide-sample {
+  margin-top: var(--styleguide-gap);
+  overflow-x: auto;
+}
+
+/* ----- במות לרכיבים: ברוחב כל החלון, והגריד מתחיל בפינה השמאלית העליונה שלהן ----- */
+.styleguide-stage {
+  --grid-left: 0px;
+  --grid-top: 0px;
+  position: relative;
+  height: calc(var(--styleguide-stage-rows) * var(--cell) + var(--line));
+  margin-inline: calc(-1 * var(--styleguide-gutter));
+  overflow: clip;
+  background-color: var(--page-background);
+}
+
+.styleguide-stage--buttons {
+  --styleguide-stage-rows: var(--styleguide-buttons-rows);
+}
+
+.styleguide-stage--menu {
+  --styleguide-stage-rows: 1;
+}
+
+.styleguide-stage--video {
+  --styleguide-stage-rows: calc(var(--video-row) * 2 + var(--video-rows));
+}
+
+.styleguide-stage--banner {
+  height: auto;
+}
+
+.styleguide-stage--balls {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+/* מיקום רכיב על הרשת של הבמה */
+.styleguide-place-first  { --column: var(--styleguide-first-column);  --row: var(--styleguide-first-row); }
+.styleguide-place-second { --column: var(--styleguide-second-column); --row: var(--styleguide-second-row); }
+
+/* כדורי יצירת הקשר עומדים במקום (באתר script.js מזיז אותם בכל החלון) */
+.styleguide-stage .contact-ball {
+  position: relative;
 }
