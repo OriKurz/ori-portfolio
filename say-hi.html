@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" class="page-say-hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Say Hi — Ori Kurz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="grid-lines">
+
+  <!-- עמוד יצירת קשר: הפריים say-hi מהפיגמה (1440x810).
+       קווי הגריד מצוירים ב-CSS על כל החלון (ברקע של body),
+       ואזור העיצוב ממורכז מעליהם -->
+  <main class="say-hi-page">
+
+    <div class="say-hi-grid">
+
+      <!-- ההמבורגר: קישור זמני לעמוד הבית, עד שיהיה תפריט -->
+      <a class="on-grid menu-button" href="index.html" aria-label="Menu">
+        <span class="menu-button-line"></span>
+        <span class="menu-button-line"></span>
+        <span class="menu-button-line"></span>
+      </a>
+
+      <!-- שני מלבנים ורודים שמסתירים את הקווים שמאחורי הטקסט הקטן -->
+      <div class="grid-box say-hi-box say-hi-box--top">
+        <p class="say-hi-text">COFFEE? A PROJECT? BOTH?</p>
+      </div>
+
+      <div class="grid-box say-hi-box say-hi-box--bottom">
+        <p class="say-hi-text">AND LET’S WORK TOGETHER</p>
+      </div>
+
+      <h1 class="say-hi-title">Say hi</h1>
+    </div>
+  </main>
+
+  <!-- כדורי יצירת הקשר: מסתובבים בחלון כל הזמן (script.js).
+       כל כדור הוא כפתור. כדי לחבר לו קישור בעתיד, מחליפים את <button type="button">
+       ב-<a href="..."> (למשל mailto: למייל), ומשאירים את אותה מחלקה -->
+  <div class="contact-balls">
+    <button class="contact-ball contact-ball--instagram" type="button" aria-label="Instagram"><span>INSTA<br>GRAM</span></button>
+    <button class="contact-ball contact-ball--email" type="button" aria-label="E-mail"><span>E-MAIL</span></button>
+    <button class="contact-ball contact-ball--whatsapp" type="button" aria-label="WhatsApp"><span>WHATS<br>APP</span></button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

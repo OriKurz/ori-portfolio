@@ -387,3 +387,199 @@ if (videoPlayer) {
     showProgress(currentRatio());
   });
 }
+
+// =========================================
+// עמוד Say Hi: כדורי יצירת הקשר מסתובבים בחלון כל הזמן, לאט וברכות.
+// הם נהדפים בעדינות מקצוות החלון ואחד מהשני.
+// כשהעכבר מתקרב לכדור (פעם וחצי מהקוטר שלו) הכדור מאט, כדי שיהיה קל לתפוס אותו,
+// וכשהעכבר מתרחק הוא חוזר בהדרגה למהירות הרגילה.
+// כדור שנבחר במקלדת (Tab) עוצר. מי שביקש פחות תנועה: הכדורים עומדים במקום.
+// =========================================
+
+const contactBalls = document.querySelectorAll(".contact-ball");
+
+if (contactBalls.length > 0) {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const mobileScreen = window.matchMedia("(max-width: 767.98px)");
+
+  // המהירות: כמה קטרים של כדור בשנייה. במובייל לאט יותר
+  const desktopSpeed = 0.4;
+  const mobileSpeed = 0.22;
+  // ההאטה ליד העכבר: באיזה מרחק (בקטרים, ממרכז הכדור) ועד כמה (0.12 = 12% מהמהירות)
+  const slowRadius = 1.5;
+  const slowSpeed = 0.12;
+  // כמה מהר הכדור מאט כשהעכבר מתקרב, וכמה לאט הוא חוזר למהירות כשהעכבר מתרחק
+  const slowDownRate = 6;
+  const speedUpRate = 1.2;
+  // הדחיפה מהקצוות ומהכדורים האחרים: מאיזה מרחק (בקטרים) ובאיזה כוח
+  const edgeZone = 0.6;
+  const neighborZone = 0.5;
+  const pushStrength = 3;
+  // כמה הכיוון "מתפתל" לאט (ברדיאנים לשנייה), כדי שהתנועה לא תהיה בקו ישר
+  const wanderStrength = 0.5;
+
+  // נקודות ההתחלה, ביחס לחלון (0 עד 1), מחוץ לטקסט. גם המקום שבו הם עומדים כשאין תנועה
+  const desktopStart = [[0.15, 0.32], [0.86, 0.3], [0.83, 0.76]];
+  const mobileStart = [[0.74, 0.14], [0.26, 0.84], [0.74, 0.9]];
+
+  // העכבר (או האצבע בזמן נגיעה). null = אין עכבר בחלון
+  let pointer = null;
+  let lastTime = null;
+  let frame = null;
+
+  // המצב של כל כדור: מרכז, כיוון התנועה, ועד כמה הוא מואט כרגע (1 = מהירות מלאה)
+  const balls = Array.from(contactBalls).map(function (element) {
+    const angle = Math.random() * Math.PI * 2;
+    const ball = { element: element, x: 0, y: 0, vx: Math.cos(angle), vy: Math.sin(angle), turn: 0, pace: 1, focused: false };
+    element.addEventListener("focus", function () { ball.focused = true; });
+    element.addEventListener("blur", function () { ball.focused = false; });
+    return ball;
+  });
+
+  // הגבולות: החלון, פחות המסגרת הכתומה
+  function getBounds() {
+    const frame = getComputedStyle(document.body, "::after");
+    return {
+      left: parseFloat(frame.borderLeftWidth) || 0,
+      top: parseFloat(frame.borderTopWidth) || 0,
+      right: window.innerWidth - (parseFloat(frame.borderRightWidth) || 0),
+      bottom: window.innerHeight - (parseFloat(frame.borderBottomWidth) || 0)
+    };
+  }
+
+  function draw(ball, radius) {
+    ball.element.style.transform = "translate(" + (ball.x - radius) + "px, " + (ball.y - radius) + "px)";
+  }
+
+  // מציב את הכדורים בנקודות ההתחלה
+  function placeBalls() {
+    const start = mobileScreen.matches ? mobileStart : desktopStart;
+    const radius = contactBalls[0].offsetWidth / 2;
+    balls.forEach(function (ball, i) {
+      ball.x = start[i % start.length][0] * window.innerWidth;
+      ball.y = start[i % start.length][1] * window.innerHeight;
+      draw(ball, radius);
+      ball.element.classList.add("is-ready");
+    });
+  }
+
+  function step(time) {
+    const dt = lastTime === null ? 0 : Math.min(0.05, (time - lastTime) / 1000);
+    lastTime = time;
+
+    const size = contactBalls[0].offsetWidth;
+    const radius = size / 2;
+    const bounds = getBounds();
+    const speed = (mobileScreen.matches ? mobileSpeed : desktopSpeed) * size;
+
+    balls.forEach(function (ball) {
+      // 1. הכיוון מתפתל לאט
+      ball.turn += (Math.random() - 0.5) * wanderStrength * dt * 4;
+      ball.turn = Math.max(-wanderStrength, Math.min(wanderStrength, ball.turn));
+      const turn = ball.turn * dt;
+      const vx = ball.vx * Math.cos(turn) - ball.vy * Math.sin(turn);
+      const vy = ball.vx * Math.sin(turn) + ball.vy * Math.cos(turn);
+      ball.vx = vx;
+      ball.vy = vy;
+
+      // 2. דחיפה עדינה מהקצוות: ככל שהכדור קרוב יותר לקצה, הדחיפה חזקה יותר
+      const zone = edgeZone * size;
+      const gapLeft = ball.x - radius - bounds.left;
+      const gapRight = bounds.right - ball.x - radius;
+      const gapTop = ball.y - radius - bounds.top;
+      const gapBottom = bounds.bottom - ball.y - radius;
+      if (gapLeft < zone) ball.vx += pushStrength * dt * (1 - gapLeft / zone);
+      if (gapRight < zone) ball.vx -= pushStrength * dt * (1 - gapRight / zone);
+      if (gapTop < zone) ball.vy += pushStrength * dt * (1 - gapTop / zone);
+      if (gapBottom < zone) ball.vy -= pushStrength * dt * (1 - gapBottom / zone);
+
+      // 3. דחיפה עדינה מהכדורים האחרים
+      balls.forEach(function (other) {
+        if (other === ball) return;
+        const dx = ball.x - other.x;
+        const dy = ball.y - other.y;
+        const distance = Math.hypot(dx, dy) || 1;
+        const reach = size * (1 + neighborZone);
+        if (distance < reach) {
+          const push = pushStrength * dt * (1 - distance / reach) * 2;
+          ball.vx += (dx / distance) * push;
+          ball.vy += (dy / distance) * push;
+        }
+      });
+
+      // 4. הכיוון תמיד באורך 1, כך שהמהירות חוזרת לאט לרגילה אחרי כל דחיפה
+      const length = Math.hypot(ball.vx, ball.vy) || 1;
+      ball.vx /= length;
+      ball.vy /= length;
+
+      // 5. ההאטה: ליד העכבר הכדור מאט מהר, ורחוק ממנו הוא חוזר לאט למהירות מלאה
+      let targetPace = 1;
+      if (ball.focused) {
+        targetPace = 0;
+      } else if (pointer && Math.hypot(pointer.x - ball.x, pointer.y - ball.y) < slowRadius * size) {
+        targetPace = slowSpeed;
+      }
+      const rate = targetPace < ball.pace ? slowDownRate : speedUpRate;
+      ball.pace += (targetPace - ball.pace) * (1 - Math.exp(-rate * dt));
+
+      // 6. התזוזה
+      ball.x += ball.vx * speed * ball.pace * dt;
+      ball.y += ball.vy * speed * ball.pace * dt;
+    });
+
+    // 7. אף כדור לא יוצא מהחלון ולא נכנס לתוך כדור אחר
+    balls.forEach(function (ball, i) {
+      balls.slice(i + 1).forEach(function (other) {
+        const dx = other.x - ball.x;
+        const dy = other.y - ball.y;
+        const distance = Math.hypot(dx, dy) || 1;
+        if (distance < size) {
+          const overlap = (size - distance) / 2;
+          ball.x -= (dx / distance) * overlap;
+          ball.y -= (dy / distance) * overlap;
+          other.x += (dx / distance) * overlap;
+          other.y += (dy / distance) * overlap;
+        }
+      });
+    });
+    balls.forEach(function (ball) {
+      ball.x = Math.max(bounds.left + radius, Math.min(bounds.right - radius, ball.x));
+      ball.y = Math.max(bounds.top + radius, Math.min(bounds.bottom - radius, ball.y));
+      draw(ball, radius);
+    });
+
+    frame = requestAnimationFrame(step);
+  }
+
+  function start() {
+    cancelAnimationFrame(frame);
+    frame = null;
+    lastTime = null;
+    placeBalls();
+    if (!reducedMotion.matches) frame = requestAnimationFrame(step);
+  }
+
+  // העכבר: איפה הוא בחלון. באצבע: רק בזמן שנוגעים במסך
+  window.addEventListener("pointermove", function (event) {
+    if (event.pointerType === "touch" && event.buttons === 0) return;
+    pointer = { x: event.clientX, y: event.clientY };
+  });
+  window.addEventListener("pointerdown", function (event) {
+    pointer = { x: event.clientX, y: event.clientY };
+  });
+  window.addEventListener("pointerup", function (event) {
+    if (event.pointerType === "touch") pointer = null;
+  });
+  document.documentElement.addEventListener("pointerleave", function () {
+    pointer = null;
+  });
+
+  // כשמשנים את גודל החלון: בלי תנועה מציבים מחדש, ועם תנועה הכדורים נשארים בתוך החלון (שלב 7)
+  window.addEventListener("resize", function () {
+    if (reducedMotion.matches) placeBalls();
+  });
+  reducedMotion.addEventListener("change", start);
+  mobileScreen.addEventListener("change", start);
+
+  document.fonts.ready.then(start);
+}
