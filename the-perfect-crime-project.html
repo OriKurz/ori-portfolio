@@ -10,36 +10,45 @@
 </head>
 <body>
 
-  <!-- עמוד פרויקט מלא: הפריים "דף פרוייקט הפשע המושלם" מהפיגמה.
+  <!-- עמוד פרויקט מלא: הפריים "דף פרוייקט הפשע המושלם" מהפיגמה. העמוד באנגלית בלבד.
        במחשב: שתי חמישיות משמאל עם טקסט (סטטי), ושלוש חמישיות מימין עם גריד
-       ותוכן הפרויקט. רק החלק של הגריד נגלל.
-       במובייל: טור אחד, הטקסט ואחריו התוכן, עם גלילה רגילה של העמוד -->
+       ותוכן הפרויקט. בסוף: הפרויקטים הנוספים ובאנר יצירת הקשר, ברוחב כל המסך.
+       במובייל: טור אחד, עם גלילה רגילה של העמוד -->
   <main class="full-project">
 
-    <!-- ===== החלק של הטקסט (בלי גריד, לא נגלל) ===== -->
-    <section class="full-project-info">
-      <!-- ההמבורגר: קישור זמני לעמוד הבית, עד שיהיה תפריט -->
-      <a class="menu-button full-project-menu" href="index.html" aria-label="Menu">
-        <span class="menu-button-line"></span>
-        <span class="menu-button-line"></span>
-        <span class="menu-button-line"></span>
-      </a>
+    <!-- האזור הנגלל (במחשב). הצד השמאלי "דבוק" בתוכו ולא זז -->
+    <div class="full-project-scroll">
 
-      <h1 class="full-project-title">The Perfect Crime</h1>
-      <p class="full-project-type">Motion Graphic</p>
+      <!-- ===== החלק של הטקסט (בלי גריד, לא נגלל) ===== -->
+      <section class="full-project-info">
+        <!-- ההמבורגר: קישור זמני לעמוד הבית, עד שיהיה תפריט -->
+        <a class="menu-button full-project-menu" href="index.html" aria-label="Menu">
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+        </a>
 
-      <div class="full-project-description">
-        <p>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
-        <p>An audio-driven animation based on a soundbite from the sitcom The Office</p>
-        <p>Created as part of a motion design studio course led by Maayan Tzuriel and Adi Baron</p>
-      </div>
-    </section>
+        <!-- הכדורים (עוד לא מחוברים לשום מקום) -->
+        <div class="full-project-balls" aria-hidden="true">
+          <span class="full-project-ball"></span>
+          <span class="full-project-ball"></span>
+          <span class="full-project-ball"></span>
+          <span class="full-project-ball"></span>
+          <span class="full-project-ball"></span>
+        </div>
 
-    <!-- ===== החלק של הגריד ===== -->
-    <section class="full-project-panel">
+        <h1 class="full-project-title">The Perfect Crime</h1>
+        <p class="full-project-type">Motion Graphic<br>2026</p>
 
-      <!-- רק האזור הזה נגלל (במחשב) -->
-      <div class="full-project-scroll">
+        <div class="full-project-description">
+          <p>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
+          <p>An audio-driven animation based on a soundbite from the sitcom The Office</p>
+          <p>Created as part of a motion design studio course led by Maayan Tzuriel and Adi Baron</p>
+        </div>
+      </section>
+
+      <!-- ===== החלק של הגריד ===== -->
+      <section class="full-project-panel">
         <div class="full-project-grid grid-lines">
 
           <!-- ----- הסרטון: כבוי בטעינה (רואים את הפריים הראשון).
@@ -48,6 +57,9 @@
           <div class="grid-box video-player" role="button" tabindex="0" aria-label="Play / pause video">
             <video class="video-player-video" src="video/TPC-full.mp4#t=0.001" loop playsinline preload="auto"
               disablepictureinpicture disableremoteplayback></video>
+
+            <!-- משולש ה-Play: מופיע כשהסרטון עצור, ונעלם כשהוא רץ -->
+            <span class="video-play-icon" aria-hidden="true"></span>
 
             <!-- בר ההתקדמות: מופיע כשהעכבר על הסרטון, ואפשר לגרור אותו -->
             <div class="video-progress" role="slider" tabindex="0" aria-label="Video progress"
@@ -62,6 +74,12 @@
                כל חפץ הוא div ריק עם data-ea. elements-anim.js מכניס לתוכו את הציור והאנימציה.
                הרוחב קובע את הגודל, והגובה נקבע לפי הציור. הסדר הוא סדר השכבות בפיגמה
                (מה שמאוחר יותר מופיע מעל) -->
+          <h2 class="on-grid section-title section-title--elements">Little<br>Things<br>Magic</h2>
+          <!-- במחשב "hover to play", ובמסך מגע "tap to play" (styles.css) -->
+          <p class="on-grid play-hint">
+            <span class="play-hint-mouse">hover<br>to play</span>
+            <span class="play-hint-touch">tap<br>to play</span>
+          </p>
           <div class="on-grid elements-board">
             <div class="elements-board-item elements-board-item--tape" data-ea="tape" aria-label="Tape dispenser"></div>
             <div class="elements-board-item elements-board-item--box-fragile" data-ea="box-fragile" aria-label="Fragile box"></div>
@@ -81,13 +99,14 @@
           </div>
 
           <!-- ----- ארבעה פריימים מהסרטון ----- -->
+          <h2 class="on-grid section-title section-title--scenes">Main<br>Scenes</h2>
           <img class="on-grid shot shot--still-1" src="Images/1.png" alt="Still from The Perfect Crime">
           <img class="on-grid shot shot--still-2" src="Images/2.png" alt="Still from The Perfect Crime">
           <img class="on-grid shot shot--still-4" src="Images/4.png" alt="Still from The Perfect Crime">
           <img class="on-grid shot shot--still-3" src="Images/3.png" alt="Still from The Perfect Crime">
 
-          <!-- ----- פלטת הצבעים: משבצות צבועות ----- -->
-          <p class="on-grid palette-title">Color<br>pallet</p>
+          <!-- ----- פלטת הצבעים: עיגולים צבועים, כל אחד במשבצת ----- -->
+          <h2 class="on-grid section-title section-title--palette">Color<br>palette</h2>
           <div class="grid-box swatch swatch--1"></div>
           <div class="grid-box swatch swatch--2"></div>
           <div class="grid-box swatch swatch--3"></div>
@@ -102,25 +121,51 @@
           <div class="grid-box swatch swatch--12"></div>
           <div class="grid-box swatch swatch--13"></div>
           <div class="grid-box swatch swatch--14"></div>
-        </div>
-      </div>
 
-      <!-- ----- השורה העליונה: נשארת במקום כשהגריד נגלל (במחשב) ----- -->
-      <div class="full-project-top-bar">
-        <!-- Index: עוד לא מחובר לשום מקום -->
-        <button class="on-grid full-project-pill full-project-index" type="button">Index//אינדקס//فهرس</button>
-
-        <!-- הכדורים, ואחריהם הפס הוורוד של הפרויקט. הפס מחזיר לעמוד המבואה -->
-        <div class="on-grid full-project-balls">
-          <span class="full-project-ball full-project-ball--blue" aria-hidden="true"></span>
-          <span class="full-project-ball full-project-ball--pink" aria-hidden="true"></span>
-          <span class="full-project-ball full-project-ball--orange" aria-hidden="true"></span>
-          <span class="full-project-ball full-project-ball--green" aria-hidden="true"></span>
-          <span class="full-project-ball full-project-ball--blue" aria-hidden="true"></span>
-          <a class="full-project-pill full-project-back" href="the-perfect-crime.html">The Perfect Crime</a>
+          <h2 class="on-grid section-title section-title--next">What’s<br>Next?</h2>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- ===== פרויקטים נוספים: ברוחב כל המסך =====
+           כל דימוי הוא קישור. כרגע בלי href, אז הוא לא מוביל לשום מקום.
+           כדי לחבר עמוד: מוסיפים href, למשל href="leftovers.html" -->
+      <section class="next-projects" aria-label="More projects">
+        <a class="next-project next-project--1"><img src="Images/next-projects/project-1.png" alt="Project preview"></a>
+        <a class="next-project next-project--2"><img src="Images/next-projects/project-2.png" alt="Project preview"></a>
+        <a class="next-project next-project--3"><img src="Images/next-projects/project-3.png" alt="Project preview"></a>
+        <a class="next-project next-project--4"><img src="Images/next-projects/project-4.png" alt="Project preview"></a>
+        <a class="next-project next-project--5"><img src="Images/next-projects/project-5.png" alt="Touch Grass"></a>
+      </section>
+
+      <!-- ===== באנר יצירת קשר: ברוחב כל המסך =====
+           בעתיד יוביל לעמוד יצירת קשר (מוסיפים href). כרגע לא מוביל לשום מקום.
+           הטקסט רץ מימין לשמאל בלופ. יש בו שני חצאים זהים: כשהחצי הראשון יוצא,
+           השני נמצא בדיוק במקום שלו, ולכן אין קפיצה -->
+      <a class="contact-banner" aria-label="Say hi, let’s make things together">
+        <div class="contact-banner-track" aria-hidden="true">
+          <div class="contact-banner-half">
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text">LET’S MAKE THINGS TOGETHER</span>
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text">LET’S MAKE THINGS TOGETHER</span>
+          </div>
+          <div class="contact-banner-half">
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text">LET’S MAKE THINGS TOGETHER</span>
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text">LET’S MAKE THINGS TOGETHER</span>
+          </div>
+        </div>
+      </a>
+    </div>
   </main>
 
   <script src="script.js"></script>

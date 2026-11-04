@@ -602,15 +602,17 @@
 }
 
 /* ----- עמוד פרויקט מלא (the-perfect-crime-project.html) -----
-   הפריים בפיגמה: 1440 לרוחב ו-2374 לגובה. החלון מחולק לשניים:
+   הפריים בפיגמה: 1440 לרוחב ו-2893 לגובה. החלון מחולק לשניים:
    שתי חמישיות משמאל עם טקסט (בלי גריד), ושלוש חמישיות מימין עם גריד של 9 משבצות.
+   בסוף העמוד: הפרויקטים הנוספים ובאנר יצירת הקשר, ברוחב כל החלון.
    בפיגמה משבצת = 93.333px (840 / 9). מספרים כמו 212 * var(--u) הם פיקסלים מהפיגמה:
-   --u בחלק של הגריד (גדל עם המשבצת), --px בחלק של הטקסט (גדל עם החלון). */
+   --u בחלק של הגריד (גדל עם המשבצת), --px בחלק של הטקסט (גדל עם החלון),
+   ו---wide-px בחלקים שברוחב כל החלון. */
 :root.page-full-project {
   --frame-cell: 93.333;
   --grid-columns: 9;
-  /* אורך הגלילה: כל גובה הפריים בפיגמה, במשבצות */
-  --grid-rows: calc(2374 / var(--frame-cell));
+  /* אורך הגריד: עד הקו שבו מתחילים הפרויקטים הנוספים (y=2520 בפיגמה), במשבצות */
+  --grid-rows: 27;
   /* גודל משבצת בפיקסלים שלמים: 9 משבצות ממלאות שלוש חמישיות מהחלון.
      ה-0.01px מתקן שגיאת עיגול קטנה של הדפדפן (כמו בעמוד המבואה) */
   --cell: round(down, 100vw * 3 / 5 / var(--grid-columns) + 0.01px, 1px);
@@ -618,6 +620,10 @@
   --u: calc(var(--cell) / var(--frame-cell));
   /* הטקסט בצד שמאל: לפי פריים של 1440x810, כדי שייכנס תמיד בגובה החלון */
   --px: min(100vw / 1440, 100dvh / 810);
+  /* החלקים שברוחב כל החלון: 1440 בפיגמה = כל רוחב החלון */
+  --wide-px: calc(100vw / 1440);
+  --strip-px: var(--wide-px);
+  --banner-px: var(--wide-px);
 
   /* רוחב שני החלקים: הגריד (כולל הקו הימני), והטקסט מקבל את מה שנשאר */
   --panel-width: calc(var(--grid-columns) * var(--cell) + var(--line));
@@ -636,13 +642,22 @@
   --menu-gap: calc(6 * var(--px));
   --pill-radius: calc(32 * var(--px));
 
-  /* הכותרת, "Motion Graphic" והתיאור */
+  /* הכדורים הכתומים (למעלה, בחלק של הטקסט). נמדדים מהקצה הימני של החלק,
+     כדי שהרווח מהגריד יישאר כמו בפיגמה (28px) */
+  --balls-right: calc(28 * var(--px));
+  --balls-top: calc(22 * var(--px));
+  --ball-width: calc(24 * var(--px));
+  --ball-height: calc(23 * var(--px));
+  --ball-gap: calc(7 * var(--px));
+  --ball-color: var(--color-orange);
+
+  /* הכותרת, "Motion Graphic 2026" והתיאור */
   --title-left: calc(71 * var(--px));
   --title-top: calc(46 * var(--px));
   --title-width: calc(383 * var(--px));
   --title-size: calc(80 * var(--px));
   --type-top: calc(287 * var(--px));
-  --type-size: calc(30 * var(--px));
+  --type-size: calc(25 * var(--px));
   --heading-line-height: 0.955;
   --heading-tracking: -0.04em;
   --description-left: calc(64 * var(--px));
@@ -652,20 +667,25 @@
   --description-line-height: calc(28 * var(--px));
   --description-tracking: 0.02em;
 
-  /* השורה העליונה בחלק של הגריד: Index, הכדורים והפס של הפרויקט */
-  --top-pill-width: calc(212 * var(--u));
-  --top-pill-height: calc(23 * var(--u));
-  --top-pill-radius: calc(32 * var(--u));
-  --index-text-size: calc(16 * var(--u));
-  --pill-text-size: calc(17 * var(--u));
-  --index-column: 0.289;    --index-row: 0.364;
-  --balls-column: 4.671;    --balls-row: 0.386;
-  --ball-width: calc(24 * var(--u));
-  --ball-gap: calc(7 * var(--u));
+  /* הכותרות בגריד ("Little Things Magic" וכו'): עמודה ושורה */
+  --section-title-size: calc(25 * var(--u));
+  --section-title-line-height: 1.05;
+  --section-title-elements-column: 0.086;  --section-title-elements-row: 6.064;
+  --section-title-scenes-column: 0.086;    --section-title-scenes-row: 14.325;
+  --section-title-palette-column: 0.107;   --section-title-palette-row: 21.377;
+  --section-title-next-column: 0.107;      --section-title-next-row: 26.359;
+  /* "hover to play" / "tap to play" */
+  --play-hint-column: 0.118;   --play-hint-row: 7.382;
+  --play-hint-color: var(--color-pink);
 
-  /* הסרטון: כל הרוחב, 5 שורות */
-  --video-column: 0;        --video-row: 2;
+  /* הסרטון: כל הרוחב, משורה 1 עד שורה 6 */
+  --video-column: 0;        --video-row: 1;
   --video-columns: 9;       --video-rows: 5;
+
+  /* משולש ה-Play במרכז הסרטון */
+  --play-icon-width: calc(var(--cell) * 1.2);
+  --play-icon-height: calc(var(--cell) * 1.4);
+  --play-icon-color: var(--color-pink);
 
   /* בר ההתקדמות של הסרטון: קו דק, ואזור לחיצה גבוה יותר כדי שיהיה קל לתפוס אותו */
   --progress-height: calc(4 * var(--u));
@@ -679,45 +699,71 @@
   --elements-board-column: 0;   --elements-board-row: 7;
   --elements-board-columns: 9;  --elements-board-rows: 7;
   /* כל חפץ: left, top ו-width באחוזים מהמיכל (לפי x, y ו-width בפיגמה) */
-  --ea-tape-left: 35.952%;         --ea-tape-top: 69.745%;         --ea-tape-width: 18.452%;
-  --ea-box-fragile-left: 56.905%;  --ea-box-fragile-top: 69.133%;  --ea-box-fragile-width: 19.524%;
-  --ea-lamp-left: 3.095%;          --ea-lamp-top: 53.98%;          --ea-lamp-width: 18.929%;
-  --ea-tree-left: 6.071%;          --ea-tree-top: 4.847%;          --ea-tree-width: 14.881%;
-  --ea-box-flip-left: 26.667%;     --ea-box-flip-top: 9.592%;      --ea-box-flip-width: 10.238%;
-  --ea-box-small-left: 3.929%;     --ea-box-small-top: 80.918%;    --ea-box-small-width: 11.19%;
-  --ea-glass-left: 26.19%;         --ea-glass-top: 55.816%;        --ea-glass-width: 8.333%;
-  --ea-car-left: 42.619%;          --ea-car-top: 7.143%;           --ea-car-width: 19.524%;
-  --ea-box-long-left: 66.905%;     --ea-box-long-top: 9.592%;      --ea-box-long-width: 27.381%;
-  --ea-box-office-left: 3.095%;    --ea-box-office-top: 35.765%;   --ea-box-office-width: 18.929%;
-  --ea-gift-left: 76.429%;         --ea-gift-top: 28.724%;         --ea-gift-width: 20.595%;
-  --ea-chandelier-left: 43.81%;    --ea-chandelier-top: 29.796%;   --ea-chandelier-width: 29.643%;
-  --ea-fire-left: 26.19%;          --ea-fire-top: 30.408%;         --ea-fire-width: 16.667%;
-  --ea-axe-left: 83.69%;           --ea-axe-top: 72.959%;          --ea-axe-width: 15.357%;
-  --ea-siren-left: 21.31%;         --ea-siren-top: 80.306%;        --ea-siren-width: 11.31%;
+  --ea-tape-left: 35.952%;         --ea-tape-top: 67.449%;         --ea-tape-width: 18.452%;
+  --ea-box-fragile-left: 56.905%;  --ea-box-fragile-top: 66.837%;  --ea-box-fragile-width: 19.524%;
+  --ea-lamp-left: 3.095%;          --ea-lamp-top: 51.684%;         --ea-lamp-width: 18.929%;
+  --ea-tree-left: 8.095%;          --ea-tree-top: 3.469%;          --ea-tree-width: 14.881%;
+  --ea-box-flip-left: 26.667%;     --ea-box-flip-top: 7.296%;      --ea-box-flip-width: 10.238%;
+  --ea-box-small-left: 3.929%;     --ea-box-small-top: 78.622%;    --ea-box-small-width: 11.19%;
+  --ea-glass-left: 26.19%;         --ea-glass-top: 53.52%;         --ea-glass-width: 8.333%;
+  --ea-car-left: 42.619%;          --ea-car-top: 4.847%;           --ea-car-width: 19.524%;
+  --ea-box-long-left: 66.905%;     --ea-box-long-top: 7.296%;      --ea-box-long-width: 27.381%;
+  --ea-box-office-left: 3.095%;    --ea-box-office-top: 33.469%;   --ea-box-office-width: 18.929%;
+  --ea-gift-left: 76.429%;         --ea-gift-top: 26.429%;         --ea-gift-width: 20.595%;
+  --ea-chandelier-left: 43.81%;    --ea-chandelier-top: 27.5%;     --ea-chandelier-width: 29.643%;
+  --ea-fire-left: 26.19%;          --ea-fire-top: 28.112%;         --ea-fire-width: 16.667%;
+  --ea-axe-left: 83.69%;           --ea-axe-top: 70.663%;          --ea-axe-width: 15.357%;
+  --ea-siren-left: 21.31%;         --ea-siren-top: 78.01%;         --ea-siren-width: 11.31%;
 
   /* פריימים מהסרטון: עמודה, שורה, רוחב וגובה (במשבצות) */
-  --still-1-column: 0.279;      --still-1-row: 14.421;     --still-1-columns: 4.168;      --still-1-rows: 2.346;
-  --still-2-column: 4.65;       --still-2-row: 14.421;     --still-2-columns: 4.168;      --still-2-rows: 2.346;
-  --still-4-column: 0.3;        --still-4-row: 16.961;     --still-4-columns: 4.146;      --still-4-rows: 2.336;
-  --still-3-column: 4.661;      --still-3-row: 16.961;     --still-3-columns: 4.146;      --still-3-rows: 2.357;
+  --still-1-column: 0.236;      --still-1-row: 15.214;     --still-1-columns: 4.168;      --still-1-rows: 2.346;
+  --still-2-column: 4.607;      --still-2-row: 15.214;     --still-2-columns: 4.168;      --still-2-rows: 2.346;
+  --still-4-column: 0.257;      --still-4-row: 17.754;     --still-4-columns: 4.146;      --still-4-rows: 2.336;
+  --still-3-column: 4.618;      --still-3-row: 17.754;     --still-3-columns: 4.146;      --still-3-rows: 2.357;
 
-  /* פלטת הצבעים: הכותרת, ואז כל משבצת: עמודה, שורה וצבע */
-  --palette-title-column: 0.129;  --palette-title-row: 20.164;
-  --palette-title-size: calc(30 * var(--u));
-  --swatch-1-column: 1;   --swatch-1-row: 21;   --swatch-1-color: #58a8fc;
-  --swatch-2-column: 3;   --swatch-2-row: 21;   --swatch-2-color: #da472a;
-  --swatch-3-column: 5;   --swatch-3-row: 21;   --swatch-3-color: #f2d257;
-  --swatch-4-column: 7;   --swatch-4-row: 21;   --swatch-4-color: #0fb596;
-  --swatch-5-column: 2;   --swatch-5-row: 22;   --swatch-5-color: #e0fff9;
-  --swatch-6-column: 4;   --swatch-6-row: 22;   --swatch-6-color: #a7fbea;
-  --swatch-7-column: 6;   --swatch-7-row: 22;   --swatch-7-color: #ffb6b4;
-  --swatch-8-column: 1;   --swatch-8-row: 23;   --swatch-8-color: #0f1f2e;
-  --swatch-9-column: 3;   --swatch-9-row: 23;   --swatch-9-color: #265687;
-  --swatch-10-column: 5;  --swatch-10-row: 23;  --swatch-10-color: #99c1ea;
-  --swatch-11-column: 7;  --swatch-11-row: 23;  --swatch-11-color: #ffffff;
-  --swatch-12-column: 2;  --swatch-12-row: 24;  --swatch-12-color: #1b3958;
-  --swatch-13-column: 4;  --swatch-13-row: 24;  --swatch-13-color: #5c85b0;
-  --swatch-14-column: 6;  --swatch-14-row: 24;  --swatch-14-color: #f2dc8b;
+  /* פלטת הצבעים: כל עיגול הוא משבצת אחת: עמודה, שורה וצבע */
+  --palette-swatch-radius: 50%;
+  --swatch-1-column: 1;   --swatch-1-row: 22;   --swatch-1-color: #58a8fc;
+  --swatch-2-column: 3;   --swatch-2-row: 22;   --swatch-2-color: #da472a;
+  --swatch-3-column: 5;   --swatch-3-row: 22;   --swatch-3-color: #f2d257;
+  --swatch-4-column: 7;   --swatch-4-row: 22;   --swatch-4-color: #0fb596;
+  --swatch-5-column: 2;   --swatch-5-row: 23;   --swatch-5-color: #e0fff9;
+  --swatch-6-column: 4;   --swatch-6-row: 23;   --swatch-6-color: #a7fbea;
+  --swatch-7-column: 6;   --swatch-7-row: 23;   --swatch-7-color: #ffb6b4;
+  --swatch-8-column: 1;   --swatch-8-row: 24;   --swatch-8-color: #0f1f2e;
+  --swatch-9-column: 3;   --swatch-9-row: 24;   --swatch-9-color: #265687;
+  --swatch-10-column: 5;  --swatch-10-row: 24;  --swatch-10-color: #99c1ea;
+  --swatch-11-column: 7;  --swatch-11-row: 24;  --swatch-11-color: #ffffff;
+  --swatch-12-column: 2;  --swatch-12-row: 25;  --swatch-12-color: #1b3958;
+  --swatch-13-column: 4;  --swatch-13-row: 25;  --swatch-13-color: #5c85b0;
+  --swatch-14-column: 6;  --swatch-14-row: 25;  --swatch-14-color: #f2dc8b;
+
+  /* פרויקטים נוספים: פס ורוד (ורוד בשקיפות 50% מעל רקע המנטה של הפיגמה,
+     כצבע אטום כדי שיסתיר את הצד השמאלי כשהוא עולה מעליו) */
+  --next-projects-background: #f4d3f2;
+  --next-projects-height: calc(284 * var(--strip-px));
+  --next-project-size: calc(258 * var(--strip-px));
+  --next-project-gap: calc(30 * var(--strip-px));
+  /* החיתוך של כל דימוי, כמו בפיגמה: גודל ומיקום התמונה בתוך הריבוע */
+  --next-project-1-fit: fill;
+  --next-project-2-fit: cover;
+  --next-project-3-crop-width: 123.11%;  --next-project-3-crop-height: 153.68%;  --next-project-3-crop-left: -11.36%;  --next-project-3-crop-top: -12.98%;
+  --next-project-4-crop-width: 102.56%;  --next-project-4-crop-height: 152.87%;  --next-project-4-crop-left: -1.07%;   --next-project-4-crop-top: -36.22%;
+  --next-project-5-crop-width: 100%;     --next-project-5-crop-height: 178.2%;   --next-project-5-crop-left: -0.01%;   --next-project-5-crop-top: -46.37%;
+
+  /* באנר יצירת קשר */
+  --banner-height: calc(96 * var(--banner-px));
+  --banner-content-top: calc(12 * var(--banner-px));
+  --banner-content-height: calc(85 * var(--banner-px));
+  --banner-gap: calc(10 * var(--banner-px));
+  --banner-text-size: calc(50 * var(--banner-px));
+  --banner-tracking: 0.04em;
+  --banner-star-1-width: calc(80 * var(--banner-px));
+  --banner-star-1-height: calc(84 * var(--banner-px));
+  --banner-star-2-width: calc(96 * var(--banner-px));
+  --banner-star-2-height: calc(85 * var(--banner-px));
+  /* כמה זמן לוקח לחצי אחד של הטקסט לעבור */
+  --banner-duration: 20s;
 }
 
 /* ----- עמוד פרויקט מלא במובייל -----
@@ -730,10 +776,8 @@
     /* הטקסט: לפי רוחב החלק השמאלי בפיגמה (600px) */
     --px: calc(100vw / 600);
     --info-height: calc(790 * var(--px));
-
-    /* הטקסט בגלולות היה יוצא קטן מדי, אז מגדילים אותו קצת */
-    --index-text-size: calc(var(--cell) * 0.2);
-    --pill-text-size: calc(var(--cell) * 0.22);
+    /* בבאנר הטקסט היה יוצא קטן מדי לפי רוחב המסך, אז הוא גדל עם המשבצת */
+    --banner-px: var(--u);
 
     --progress-height: 3px;
     --progress-hover-height: 6px;
@@ -1580,7 +1624,8 @@ body {
    עמוד פרויקט מלא
    ========================================= */
 
-/* במחשב העמוד עצמו לא נגלל. רק החלק של הגריד (.full-project-scroll) */
+/* במחשב העמוד עצמו לא נגלל. רק האזור .full-project-scroll נגלל,
+   והצד השמאלי "דבוק" בתוכו (sticky), כך שהוא נשאר במקום */
 .page-full-project body {
   height: 100dvh;
   overflow: hidden;
@@ -1590,11 +1635,24 @@ body {
   font-family: var(--font-text);
 }
 
-/* ----- החלק של הטקסט: משמאל, בלי גריד ----- */
+/* האזור הנגלל: כל החלון. בלי פס גלילה, כדי שלא יזיז את הגריד */
+.full-project-scroll {
+  height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.full-project-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ----- החלק של הטקסט: משמאל, בלי גריד, לא זז ----- */
 .full-project-info {
-  position: absolute;
-  left: 0;
+  position: sticky;
   top: 0;
+  z-index: 1;
   width: var(--info-width);
   height: var(--info-height);
 }
@@ -1603,6 +1661,23 @@ body {
   position: absolute;
   left: var(--menu-left);
   top: var(--menu-top);
+}
+
+/* הכדורים הכתומים */
+.full-project-balls {
+  position: absolute;
+  right: var(--balls-right);
+  top: var(--balls-top);
+  display: flex;
+  gap: var(--ball-gap);
+}
+
+.full-project-ball {
+  flex: none;
+  width: var(--ball-width);
+  height: var(--ball-height);
+  border-radius: var(--pill-radius);
+  background-color: var(--ball-color);
 }
 
 .full-project-title,
@@ -1645,26 +1720,12 @@ body {
   margin-top: var(--description-line-height);
 }
 
-/* ----- החלק של הגריד: מימין, ממלא את גובה החלון ----- */
+/* ----- החלק של הגריד: מימין. עולה למעלה לגובה של הצד השמאלי, כדי לעמוד לידו ----- */
 .full-project-panel {
-  position: absolute;
-  right: 0;
-  top: 0;
+  position: relative;
   width: var(--panel-width);
-  height: 100dvh;
-}
-
-/* האזור הנגלל. בלי פס גלילה, כדי שלא יזיז את הגריד */
-.full-project-scroll {
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: none;
-}
-
-.full-project-scroll::-webkit-scrollbar {
-  display: none;
+  margin-top: calc(-1 * var(--info-height));
+  margin-left: var(--info-width);
 }
 
 /* הגריד עצמו: הקווים הם הרקע שלו, והגובה שלו הוא אורך הגלילה */
@@ -1673,68 +1734,40 @@ body {
   height: calc(var(--grid-rows) * var(--cell));
 }
 
-/* ----- השורה העליונה: מעל הגריד, ולא זזה איתו ----- */
-.full-project-top-bar {
-  position: absolute;
-  left: 0;
-  top: 0;
-  pointer-events: none; /* גלילה עם העכבר עוברת דרכה לגריד */
-}
-
-.full-project-top-bar > * {
-  pointer-events: auto;
-}
-
-/* גלולה: כפתור מעוגל עם טקסט צהוב באמצע */
-.full-project-pill {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: var(--top-pill-width);
-  height: var(--top-pill-height);
-  border: none;
-  border-radius: var(--top-pill-radius);
-  color: var(--color-yellow);
-  font-family: var(--font-text);
+/* ----- הכותרות בגריד ----- */
+.section-title,
+.play-hint {
   font-weight: 500;
-  font-size: var(--pill-text-size);
-  line-height: var(--line-height);
-  text-decoration: none;
-  white-space: nowrap;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  font-size: var(--section-title-size);
+  letter-spacing: var(--heading-tracking);
 }
 
-.full-project-index {
-  --column: var(--index-column);
-  --row: var(--index-row);
-  background-color: var(--color-green);
-  font-size: var(--index-text-size);
+.section-title {
+  color: var(--color-orange);
+  line-height: var(--section-title-line-height);
 }
 
-.full-project-back {
-  background-color: var(--color-pink);
+.section-title--elements { --column: var(--section-title-elements-column); --row: var(--section-title-elements-row); }
+.section-title--scenes   { --column: var(--section-title-scenes-column);   --row: var(--section-title-scenes-row); }
+.section-title--palette  { --column: var(--section-title-palette-column);  --row: var(--section-title-palette-row); }
+.section-title--next     { --column: var(--section-title-next-column);     --row: var(--section-title-next-row); }
+
+/* "hover to play": במחשב. במסך מגע (בלי עכבר) מתחלף ל-"tap to play" */
+.play-hint {
+  --column: var(--play-hint-column);
+  --row: var(--play-hint-row);
+  color: var(--play-hint-color);
+  line-height: var(--heading-line-height);
 }
 
-.full-project-balls {
-  --column: var(--balls-column);
-  --row: var(--balls-row);
-  display: flex;
-  gap: var(--ball-gap);
+.play-hint-touch {
+  display: none;
 }
 
-.full-project-ball {
-  flex: none;
-  width: var(--ball-width);
-  height: var(--top-pill-height);
-  border-radius: var(--top-pill-radius);
+@media (hover: none) {
+  .play-hint-mouse { display: none; }
+  .play-hint-touch { display: inline; }
 }
-
-.full-project-ball--blue   { background-color: var(--color-blue); }
-.full-project-ball--pink   { background-color: var(--color-pink); }
-.full-project-ball--orange { background-color: var(--color-orange); }
-.full-project-ball--green  { background-color: var(--color-green); }
 
 /* ----- הסרטון ----- */
 .video-player {
@@ -1754,6 +1787,24 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* משולש ה-Play: במרכז הסרטון. נעלם כשהסרטון רץ (script.js מוסיף is-playing) */
+.video-play-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--play-icon-width);
+  height: var(--play-icon-height);
+  background-color: var(--play-icon-color);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* לחיצה עוברת לסרטון */
+  transition: opacity var(--transition-speed) ease;
+}
+
+.video-player.is-playing .video-play-icon {
+  opacity: 0;
 }
 
 /* בר ההתקדמות: אזור לחיצה שקוף בתחתית הסרטון, ובתוכו קו דק */
@@ -1808,7 +1859,8 @@ body {
 
 /* ----- החפצים המאוירים (Images/elements-anim) -----
    המיכל ביחס של האזור בפיגמה (9x7 משבצות). בלי overflow: hidden, כי האנימציות
-   יוצאות מהגבולות של החפצים (הקופסה קופצת, העכביש יורד, הסלוטייפ יוצא למטה) */
+   יוצאות מהגבולות של החפצים (הקופסה קופצת, העכביש יורד, הסלוטייפ יוצא למטה).
+   במסך מגע, נגיעה בחפץ מפעילה את האנימציה (elements-anim.js) */
 .elements-board {
   --column: var(--elements-board-column);
   --row: var(--elements-board-row);
@@ -1822,6 +1874,7 @@ body {
   left: var(--ea-left);
   top: var(--ea-top);
   width: var(--ea-width);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .elements-board-item--tape        { --ea-left: var(--ea-tape-left);        --ea-top: var(--ea-tape-top);        --ea-width: var(--ea-tape-width); }
@@ -1846,21 +1899,11 @@ body {
 .shot--still-3       { --column: var(--still-3-column);       --row: var(--still-3-row);       --columns: var(--still-3-columns);       --rows: var(--still-3-rows); }
 .shot--still-4       { --column: var(--still-4-column);       --row: var(--still-4-row);       --columns: var(--still-4-columns);       --rows: var(--still-4-rows); }
 
-/* ----- פלטת הצבעים ----- */
-.palette-title {
-  --column: var(--palette-title-column);
-  --row: var(--palette-title-row);
-  color: var(--color-orange);
-  font-weight: 500;
-  font-size: var(--palette-title-size);
-  line-height: var(--heading-line-height);
-  letter-spacing: var(--heading-tracking);
-}
-
-/* משבצת אחת, צבועה, עם מסגרת בצבע הקו */
+/* ----- פלטת הצבעים: עיגול צבוע בכל משבצת, עם מסגרת בצבע הקו ----- */
 .swatch {
   --columns: 1;
   --rows: 1;
+  border-radius: var(--palette-swatch-radius);
   background-color: var(--swatch-color);
   border-color: var(--grid-line-color);
 }
@@ -1880,6 +1923,108 @@ body {
 .swatch--13 { --column: var(--swatch-13-column); --row: var(--swatch-13-row); --swatch-color: var(--swatch-13-color); }
 .swatch--14 { --column: var(--swatch-14-column); --row: var(--swatch-14-row); --swatch-color: var(--swatch-14-color); }
 
+/* ----- פרויקטים נוספים: פס ברוחב כל החלון, מעל הצד השמאלי ----- */
+.next-projects {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--next-project-gap);
+  height: var(--next-projects-height);
+  background-color: var(--next-projects-background);
+}
+
+/* כל דימוי: ריבוע, והתמונה בפנים חתוכה כמו בפיגמה */
+.next-project {
+  position: relative;
+  display: block;
+  flex: none;
+  width: var(--next-project-size);
+  height: var(--next-project-size);
+  overflow: hidden;
+}
+
+.next-project img {
+  position: absolute;
+  left: var(--crop-left, 0);
+  top: var(--crop-top, 0);
+  width: var(--crop-width, 100%);
+  height: var(--crop-height, 100%);
+  object-fit: var(--fit, fill);
+}
+
+.next-project--1 { --fit: var(--next-project-1-fit); }
+.next-project--2 { --fit: var(--next-project-2-fit); }
+.next-project--3 { --crop-width: var(--next-project-3-crop-width); --crop-height: var(--next-project-3-crop-height); --crop-left: var(--next-project-3-crop-left); --crop-top: var(--next-project-3-crop-top); }
+.next-project--4 { --crop-width: var(--next-project-4-crop-width); --crop-height: var(--next-project-4-crop-height); --crop-left: var(--next-project-4-crop-left); --crop-top: var(--next-project-4-crop-top); }
+.next-project--5 { --crop-width: var(--next-project-5-crop-width); --crop-height: var(--next-project-5-crop-height); --crop-left: var(--next-project-5-crop-left); --crop-top: var(--next-project-5-crop-top); }
+
+/* ----- באנר יצירת קשר: פס כתום ברוחב כל החלון, עם טקסט שרץ ----- */
+.contact-banner {
+  position: relative;
+  z-index: 2;
+  display: block;
+  height: var(--banner-height);
+  overflow: hidden;
+  background-color: var(--color-orange);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* הפס שזז: שני חצאים זהים זה אחרי זה. הוא זז שמאלה בדיוק חצי מהרוחב שלו,
+   ואז מתחיל מחדש. ברגע הזה החצי השני נמצא איפה שהראשון היה, אז אין קפיצה */
+.contact-banner-track {
+  display: flex;
+  width: max-content;
+  padding-top: var(--banner-content-top);
+  animation: contact-banner-scroll var(--banner-duration) linear infinite;
+}
+
+.contact-banner-half {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: var(--banner-content-height);
+}
+
+/* הרווח בין הפריטים הוא margin מימין (ולא gap), כדי ששני החצאים יהיו באותו רוחב בדיוק */
+.contact-banner-half > * {
+  flex: none;
+  margin-right: var(--banner-gap);
+}
+
+.contact-banner-text {
+  color: var(--color-yellow);
+  font-weight: 500;
+  font-size: var(--banner-text-size);
+  line-height: var(--line-height);
+  letter-spacing: var(--banner-tracking);
+  white-space: nowrap;
+}
+
+.contact-banner-star--1 {
+  width: var(--banner-star-1-width);
+  height: var(--banner-star-1-height);
+}
+
+.contact-banner-star--2 {
+  width: var(--banner-star-2-width);
+  height: var(--banner-star-2-height);
+}
+
+@keyframes contact-banner-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* מי שביקש פחות תנועה: הבאנר עומד */
+@media (prefers-reduced-motion: reduce) {
+  .contact-banner-track {
+    animation: none;
+  }
+}
+
 /* ----- מובייל: טור אחד, והעמוד כולו נגלל ----- */
 @media (max-width: 767.98px) {
   .page-full-project body {
@@ -1888,21 +2033,18 @@ body {
     overflow-y: visible;
   }
 
-  .full-project-info,
-  .full-project-panel {
-    position: relative;
+  .full-project-scroll {
+    height: auto;
+    overflow: visible;
   }
 
   .full-project-info {
+    position: relative;
     width: 100%;
   }
 
   .full-project-panel {
-    height: auto;
-  }
-
-  .full-project-scroll {
-    height: auto;
-    overflow: visible;
+    margin-top: 0;
+    margin-left: 0;
   }
 }

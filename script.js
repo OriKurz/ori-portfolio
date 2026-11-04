@@ -502,10 +502,13 @@ if (videoPlayer) {
     progressFrame = requestAnimationFrame(followProgress);
   }
 
+  // is-playing מסתיר את משולש ה-Play בזמן שהסרטון רץ
   video.addEventListener("play", function () {
+    videoPlayer.classList.add("is-playing");
     if (!progressFrame) followProgress();
   });
   video.addEventListener("pause", function () {
+    videoPlayer.classList.remove("is-playing");
     cancelAnimationFrame(progressFrame);
     progressFrame = null;
     showProgress(currentRatio());
