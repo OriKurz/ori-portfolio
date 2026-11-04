@@ -402,12 +402,14 @@ if (contactBalls.length > 0) {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const mobileScreen = window.matchMedia("(max-width: 767.98px)");
 
-  // המהירות: כמה קטרים של כדור בשנייה. במובייל לאט יותר
-  const desktopSpeed = 0.4;
-  const mobileSpeed = 0.22;
-  // ההאטה ליד העכבר: באיזה מרחק (בקטרים, ממרכז הכדור) ועד כמה (0.12 = 12% מהמהירות)
+  // המהירות: כמה קטרים של כדור בשנייה. במובייל לאט יותר.
+  // פי 2 מהמהירות הקודמת (0.4 ו-0.22) בפיקסלים, ומחולק ב-1.15 כי הכדורים גדלו ב-15%
+  const desktopSpeed = 0.4 * 2 / 1.15;
+  const mobileSpeed = 0.22 * 2 / 1.15;
+  // ההאטה ליד העכבר: באיזה מרחק (בקטרים, ממרכז הכדור) ועד כמה (0.06 = 6% מהמהירות).
+  // 6% מהמהירות הכפולה = אותה מהירות איטית כמו קודם, כך שעדיין קל לתפוס את הכדור
   const slowRadius = 1.5;
-  const slowSpeed = 0.12;
+  const slowSpeed = 0.06;
   // כמה מהר הכדור מאט כשהעכבר מתקרב, וכמה לאט הוא חוזר למהירות כשהעכבר מתרחק
   const slowDownRate = 6;
   const speedUpRate = 1.2;

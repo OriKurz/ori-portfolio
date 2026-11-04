@@ -834,22 +834,27 @@
   --say-hi-box-columns: 5;
   --say-hi-top-box-row: 2;
   --say-hi-bottom-box-row: 6;
-  /* הטקסט שבתוכם: גודל, ריווח בין אותיות, והמרחק מהקו העליון של המלבן */
-  --say-hi-text-size: calc(25 * var(--u));
-  --say-hi-text-tracking: calc(1 * var(--u));
-  --say-hi-top-text-offset: calc(34 * var(--u));
-  --say-hi-bottom-text-offset: calc(33 * var(--u));
+  /* הטקסט שבתוכם: גודל, ריווח בין אותיות, והמרחק מהקו העליון של המלבן.
+     בפיגמה הטקסט מיושר לימין: המרחק מהקו הימני של המלבן (930px) לסוף הטקסט */
+  --say-hi-text-size: calc(22 * var(--u));
+  --say-hi-text-tracking: calc(0.88 * var(--u));
+  --say-hi-text-align: right;
+  --say-hi-top-text-offset: calc(41 * var(--u));
+  --say-hi-bottom-text-offset: calc(38 * var(--u));
+  --say-hi-top-text-right: calc((930 - 877.2) * var(--u));
+  --say-hi-bottom-text-right: calc((930 - 867.2) * var(--u));
 
-  /* הכותרת Say hi: מיושרת לימין, לנקודה 1010px בפיגמה */
+  /* הכותרת Say hi: מיושרת לימין, לנקודה 1037px בפיגמה */
   --say-hi-title-size: calc(220 * var(--u));
   --say-hi-title-top: calc(246 * var(--u));
-  --say-hi-title-right: calc((1440 - 1010.2) * var(--u));
+  --say-hi-title-right: calc((1440 - 1037.2) * var(--u));
   --say-hi-title-align: right;
 
-  /* כדורי יצירת הקשר (בפיגמה: קוטר 87px, טקסט 17px ברוחב 65px) */
-  --contact-ball-size: calc(87 * var(--u));
-  --contact-ball-text-size: calc(17 * var(--u));
-  --contact-ball-text-width: calc(65 * var(--u));
+  /* כדורי יצירת הקשר (בפיגמה: קוטר 87px, טקסט 17px ברוחב 65px), מוגדלים ב-15% */
+  --contact-ball-scale: 1.15;
+  --contact-ball-size: calc(87 * var(--u) * var(--contact-ball-scale));
+  --contact-ball-text-size: calc(17 * var(--u) * var(--contact-ball-scale));
+  --contact-ball-text-width: calc(65 * var(--u) * var(--contact-ball-scale));
   --layer-contact-balls: 3;
 }
 
@@ -873,9 +878,13 @@
 
     --say-hi-box-column: 1;
     --say-hi-box-columns: 6;
-    /* גודל הטקסט כמו בעמוד הבית במובייל (17px מתוך משבצת של 49.06px), ממורכז לגובה */
-    --say-hi-text-size: calc(var(--cell) * 17 / 49.06);
-    --say-hi-text-tracking: calc(var(--cell) * 0.68 / 49.06);
+    /* גודל הטקסט: כמו בעמוד הבית במובייל (17px מתוך משבצת של 49.06px),
+       מוקטן באותו יחס כמו במחשב (22/25). ממורכז לרוחב ולגובה */
+    --say-hi-text-size: calc(var(--cell) * 17 / 49.06 * 22 / 25);
+    --say-hi-text-tracking: calc(var(--say-hi-text-size) * 0.04);
+    --say-hi-text-align: center;
+    --say-hi-top-text-right: 0px;
+    --say-hi-bottom-text-right: 0px;
     --say-hi-top-text-offset: calc((var(--cell) - var(--line) - var(--say-hi-text-size)) / 2);
     --say-hi-bottom-text-offset: var(--say-hi-top-text-offset);
 
@@ -884,8 +893,8 @@
     --say-hi-title-align: center;
 
     /* הכדורים בערך בגודל האמיתי שלהם בפיגמה (87px), כדי שיהיה קל לגעת בהם ולקרוא */
-    --contact-ball-size: calc(var(--cell) * 1.75);
-    --contact-ball-text-size: calc(var(--cell) * 17 / 49.06);
+    --contact-ball-size: calc(var(--cell) * 1.75 * var(--contact-ball-scale));
+    --contact-ball-text-size: calc(var(--cell) * 17 / 49.06 * var(--contact-ball-scale));
     --contact-ball-text-width: calc(var(--contact-ball-size) * 65 / 87);
   }
 }
@@ -2234,17 +2243,19 @@ body {
 .say-hi-box--top {
   --row: var(--say-hi-top-box-row);
   padding-top: var(--say-hi-top-text-offset);
+  padding-right: var(--say-hi-top-text-right);
 }
 
 .say-hi-box--bottom {
   --row: var(--say-hi-bottom-box-row);
   padding-top: var(--say-hi-bottom-text-offset);
+  padding-right: var(--say-hi-bottom-text-right);
 }
 
 .say-hi-text {
   font-size: var(--say-hi-text-size);
   letter-spacing: var(--say-hi-text-tracking);
-  text-align: center;
+  text-align: var(--say-hi-text-align);
   white-space: nowrap;
 }
 
@@ -2262,7 +2273,7 @@ body {
   font-size: var(--say-hi-title-size);
   line-height: var(--line-height);
   text-align: var(--say-hi-title-align);
-  white-space: nowrap;
+  white-space: pre; /* בפיגמה יש שני רווחים בין Say ל-hi, ו-pre שומר את שניהם */
 }
 
 /* ----- כדורי יצירת הקשר -----
