@@ -52,109 +52,169 @@
       <div id="text-styles"></div>
     </section>
 
-    <!-- ===== 4. רכיבים ===== -->
+    <!-- ===== 4. רכיבים =====
+         לכל רכיב: עותק חי אחד (data-live). הסקריפט משכפל אותו ארבע פעמים, ומוסיף לרכיב
+         (data-state-target) את מחלקת המצב: is-hover / is-pressed / is-focus.
+         העותקים הקבועים הם inert: לא מגיבים לעכבר ולא מקבלים Tab -->
     <section class="styleguide-section">
       <h2 class="styleguide-section-title text-section-title">Components</h2>
+      <p class="styleguide-caption text-body">Default, Hover, Pressed and Focus are shown fixed. Try the Live copy with the mouse and with Tab.</p>
 
-      <!-- כפתור הניווט (עמוד הבית). השמאלי: hover ולחיצה חיים. הימני: מצב hover קבוע (is-active) -->
-      <p class="styleguide-caption text-label">Button · short · left: live (hover, press and hold) · right: hover state</p>
-      <div class="styleguide-stage styleguide-stage--buttons vars-base vars-home grid-lines">
-        <a class="grid-box nav-button text-button styleguide-place-first" href="#" data-demo-link><span class="nav-button-label">WORK</span></a>
-        <a class="grid-box nav-button text-button styleguide-place-second is-active" href="#" data-demo-link><span class="nav-button-label">WORK</span></a>
-      </div>
+      <!-- כפתור הניווט (עמוד הבית) -->
+      <article class="styleguide-component">
+        <h3 class="text-section-title">Button</h3>
+        <div class="styleguide-states">
+          <figure class="styleguide-state" data-live>
+            <figcaption class="styleguide-state-name text-label">Live</figcaption>
+            <div class="styleguide-stage vars-base vars-home grid-lines">
+              <a class="grid-box nav-button text-button styleguide-place" href="#" data-demo-link data-state-target><span class="nav-button-label">WORK</span></a>
+            </div>
+          </figure>
+        </div>
+        <p class="styleguide-caption text-label">Long content</p>
+        <div class="styleguide-stage styleguide-stage--wide vars-base vars-home grid-lines">
+          <a class="grid-box nav-button text-button styleguide-place-long" href="#" data-demo-link><span class="nav-button-label">LET’S WORK TOGETHER</span></a>
+        </div>
+      </article>
 
-      <p class="styleguide-caption text-label">Button · long · left: live (hover, press and hold) · right: hover state</p>
-      <div class="styleguide-stage styleguide-stage--buttons vars-base vars-home grid-lines">
-        <a class="grid-box nav-button text-button styleguide-place-first" href="#" data-demo-link><span class="nav-button-label">LET’S WORK TOGETHER</span></a>
-        <a class="grid-box nav-button text-button styleguide-place-second is-active" href="#" data-demo-link><span class="nav-button-label">LET’S WORK TOGETHER</span></a>
-      </div>
+      <!-- PEEK / PLAY (עמוד הבית): ממקם את עצמו לפי --toggle-left / --toggle-top, כמו באתר -->
+      <article class="styleguide-component">
+        <h3 class="text-section-title">PEEK / PLAY</h3>
+        <div class="styleguide-states">
+          <figure class="styleguide-state" data-live>
+            <figcaption class="styleguide-state-name text-label">Live</figcaption>
+            <div class="styleguide-stage styleguide-stage--toggle vars-base vars-home grid-lines">
+              <button class="on-grid balls-toggle text-button-strong" type="button" data-state-target><span class="balls-toggle-label">PEEK</span></button>
+            </div>
+          </figure>
+        </div>
+        <p class="styleguide-caption text-label">Long content</p>
+        <div class="styleguide-stage styleguide-stage--wide vars-base vars-home grid-lines">
+          <button class="on-grid balls-toggle text-button-strong" type="button"><span class="balls-toggle-label">PEEK-A-BOO</span></button>
+        </div>
+      </article>
 
-      <!-- PEEK / PLAY (עמוד הבית): ממקום עצמו לפי --toggle-left / --toggle-top, כמו באתר -->
-      <p class="styleguide-caption text-label">PEEK / PLAY · short</p>
-      <div class="styleguide-stage vars-base vars-home grid-lines">
-        <button class="on-grid balls-toggle text-button-strong" type="button">PEEK</button>
-      </div>
+      <!-- ההמבורגר, כמו בעמוד Say Hi: במרכז המשבצת הראשונה. אין לו תוכן, אז אין גרסה ארוכה -->
+      <article class="styleguide-component">
+        <h3 class="text-section-title">Hamburger</h3>
+        <div class="styleguide-states">
+          <figure class="styleguide-state" data-live>
+            <figcaption class="styleguide-state-name text-label">Live</figcaption>
+            <div class="styleguide-stage styleguide-stage--menu vars-base vars-say-hi grid-lines">
+              <div class="say-hi-grid">
+                <a class="on-grid menu-button" href="#" data-demo-link aria-label="Menu" data-state-target>
+                  <span class="menu-button-line"></span>
+                  <span class="menu-button-line"></span>
+                  <span class="menu-button-line"></span>
+                </a>
+              </div>
+            </div>
+          </figure>
+        </div>
+      </article>
 
-      <p class="styleguide-caption text-label">PEEK / PLAY · long</p>
-      <div class="styleguide-stage vars-base vars-home grid-lines">
-        <button class="on-grid balls-toggle text-button-strong" type="button">PEEK-A-BOO</button>
-      </div>
+      <!-- כדור יצירת קשר (Say Hi). ההאטה ליד העכבר נעשית ב-script.js, שלא נטען כאן -->
+      <article class="styleguide-component">
+        <h3 class="text-section-title">Contact ball</h3>
+        <div class="styleguide-states">
+          <figure class="styleguide-state" data-live>
+            <figcaption class="styleguide-state-name text-label">Live</figcaption>
+            <div class="styleguide-stage styleguide-stage--balls vars-base vars-say-hi grid-lines">
+              <button class="contact-ball text-contact-ball contact-ball--email is-ready" type="button" data-state-target><span>E-MAIL</span></button>
+            </div>
+          </figure>
+        </div>
+        <p class="styleguide-caption text-label">Long content</p>
+        <div class="styleguide-stage styleguide-stage--balls styleguide-stage--wide vars-base vars-say-hi grid-lines">
+          <button class="contact-ball text-contact-ball contact-ball--instagram is-ready" type="button"><span>LET’S WORK TOGETHER</span></button>
+        </div>
+      </article>
 
       <!-- הבאנר הרץ (עמוד הפרויקט). המבנה זהה לאתר: שני חצאים זהים -->
-      <p class="styleguide-caption text-label">Banner · short</p>
-      <div class="styleguide-stage styleguide-stage--banner vars-base vars-full-project">
-        <a class="contact-banner" href="#" data-demo-link aria-label="Say hi">
-          <div class="contact-banner-track" aria-hidden="true">
-            <div class="contact-banner-half">
-              <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
-              <span class="contact-banner-text text-banner">HI</span>
+      <article class="styleguide-component">
+        <h3 class="text-section-title">Banner</h3>
+        <div class="styleguide-states styleguide-states--stacked">
+          <figure class="styleguide-state" data-live>
+            <figcaption class="styleguide-state-name text-label">Live</figcaption>
+            <div class="styleguide-stage styleguide-stage--wide styleguide-stage--banner vars-base vars-full-project">
+              <a class="contact-banner" href="#" data-demo-link aria-label="Say hi" data-state-target>
+                <div class="contact-banner-track" aria-hidden="true">
+                  <div class="contact-banner-half">
+                    <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+                    <span class="contact-banner-text text-banner">SAY HI</span>
+                    <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+                    <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+                    <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+                    <span class="contact-banner-text text-banner">SAY HI</span>
+                    <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+                    <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+                  </div>
+                  <div class="contact-banner-half">
+                    <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+                    <span class="contact-banner-text text-banner">SAY HI</span>
+                    <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+                    <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+                    <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+                    <span class="contact-banner-text text-banner">SAY HI</span>
+                    <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+                    <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+                  </div>
+                </div>
+              </a>
             </div>
-            <div class="contact-banner-half">
-              <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
-              <span class="contact-banner-text text-banner">HI</span>
+          </figure>
+        </div>
+        <p class="styleguide-caption text-label">Short content</p>
+        <div class="styleguide-stage styleguide-stage--wide styleguide-stage--banner vars-base vars-full-project">
+          <a class="contact-banner" href="#" data-demo-link aria-label="Say hi">
+            <div class="contact-banner-track" aria-hidden="true">
+              <div class="contact-banner-half">
+                <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+                <span class="contact-banner-text text-banner">HI</span>
+              </div>
+              <div class="contact-banner-half">
+                <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+                <span class="contact-banner-text text-banner">HI</span>
+              </div>
             </div>
-          </div>
-        </a>
-      </div>
-
-      <p class="styleguide-caption text-label">Banner · long</p>
-      <div class="styleguide-stage styleguide-stage--banner vars-base vars-full-project">
-        <a class="contact-banner" href="#" data-demo-link aria-label="Say hi">
-          <div class="contact-banner-track" aria-hidden="true">
-            <div class="contact-banner-half">
-              <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
-              <span class="contact-banner-text text-banner">SAY HI</span>
-              <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
-              <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER, A FILM, A POSTER, A WEBSITE, OR JUST A COFFEE</span>
-            </div>
-            <div class="contact-banner-half">
-              <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
-              <span class="contact-banner-text text-banner">SAY HI</span>
-              <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
-              <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER, A FILM, A POSTER, A WEBSITE, OR JUST A COFFEE</span>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <!-- ההמבורגר: בעמוד Say Hi (כתום, במרכז המשבצת) ובעמוד הפרויקט (ורוד, בצד הטקסט).
-           אין לו תוכן, אז אין גרסה ארוכה -->
-      <p class="styleguide-caption text-label">Hamburger · Say Hi (no text, so no long version)</p>
-      <div class="styleguide-stage styleguide-stage--menu vars-base vars-say-hi grid-lines">
-        <div class="say-hi-grid">
-          <a class="on-grid menu-button" href="#" data-demo-link aria-label="Menu">
-            <span class="menu-button-line"></span>
-            <span class="menu-button-line"></span>
-            <span class="menu-button-line"></span>
           </a>
         </div>
-      </div>
-
-      <p class="styleguide-caption text-label">Hamburger · project page</p>
-      <div class="styleguide-stage styleguide-stage--menu vars-base vars-full-project">
-        <a class="menu-button full-project-menu" href="#" data-demo-link aria-label="Menu">
-          <span class="menu-button-line"></span>
-          <span class="menu-button-line"></span>
-          <span class="menu-button-line"></span>
-        </a>
-      </div>
-
-      <!-- כדור יצירת קשר (Say Hi): קצר וארוך -->
-      <p class="styleguide-caption text-label">Contact ball · short · long</p>
-      <div class="styleguide-stage styleguide-stage--balls vars-base vars-say-hi grid-lines">
-        <button class="contact-ball text-contact-ball contact-ball--email is-ready" type="button"><span>E-MAIL</span></button>
-        <button class="contact-ball text-contact-ball contact-ball--instagram is-ready" type="button"><span>LET’S WORK TOGETHER</span></button>
-      </div>
-
-      <!-- אייקון ה-Play על הסרטון (עמוד הפרויקט). פריים מהסרטון במקום הסרטון עצמו.
-           אין לו תוכן, אז אין גרסה ארוכה -->
-      <p class="styleguide-caption text-label">Video play icon (no text, so no long version)</p>
-      <div class="styleguide-stage styleguide-stage--video vars-base vars-full-project grid-lines">
-        <div class="grid-box video-player">
-          <img class="video-player-video" src="Images/1.png" alt="">
-          <span class="video-play-icon" aria-hidden="true"></span>
+        <p class="styleguide-caption text-label">Long content</p>
+        <div class="styleguide-stage styleguide-stage--wide styleguide-stage--banner vars-base vars-full-project">
+          <a class="contact-banner" href="#" data-demo-link aria-label="Say hi">
+            <div class="contact-banner-track" aria-hidden="true">
+              <div class="contact-banner-half">
+                <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+                <span class="contact-banner-text text-banner">SAY HI</span>
+                <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+                <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER, A FILM, A POSTER, A WEBSITE, OR JUST A COFFEE</span>
+              </div>
+              <div class="contact-banner-half">
+                <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+                <span class="contact-banner-text text-banner">SAY HI</span>
+                <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+                <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER, A FILM, A POSTER, A WEBSITE, OR JUST A COFFEE</span>
+              </div>
+            </div>
+          </a>
         </div>
-      </div>
+      </article>
+
+      <!-- הסרטון (עמוד הפרויקט): פריים מהסרטון במקום הסרטון עצמו. אין לו תוכן, אז אין גרסה ארוכה -->
+      <article class="styleguide-component">
+        <h3 class="text-section-title">Video</h3>
+        <div class="styleguide-states">
+          <figure class="styleguide-state" data-live>
+            <figcaption class="styleguide-state-name text-label">Live</figcaption>
+            <div class="styleguide-stage styleguide-stage--video vars-base vars-full-project grid-lines">
+              <div class="grid-box video-player" role="button" tabindex="0" aria-label="Video" data-state-target>
+                <img class="video-player-video" src="Images/1.png" alt="">
+                <span class="video-play-icon" aria-hidden="true"></span>
+              </div>
+            </div>
+          </figure>
+        </div>
+      </article>
     </section>
 
   </main>
@@ -184,6 +244,24 @@
       if (text !== undefined) element.textContent = text;
       return element;
     }
+
+    // ----- מצבי הרכיבים: ארבעה עותקים קבועים לפני העותק החי -----
+    const states = [
+      { name: "Default", className: "" },
+      { name: "Hover", className: "is-hover" },
+      { name: "Pressed", className: "is-pressed" },
+      { name: "Focus", className: "is-focus" }
+    ];
+    document.querySelectorAll("[data-live]").forEach(function (live) {
+      states.forEach(function (state) {
+        const copy = live.cloneNode(true);
+        copy.removeAttribute("data-live");
+        copy.inert = true;
+        copy.querySelector(".styleguide-state-name").textContent = state.name;
+        if (state.className) copy.querySelector("[data-state-target]").classList.add(state.className);
+        live.before(copy);
+      });
+    });
 
     // הקישורים בדוגמאות לא מובילים לשום מקום
     document.querySelectorAll("[data-demo-link]").forEach(function (link) {

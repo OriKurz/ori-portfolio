@@ -55,6 +55,7 @@ if (ballCanvas) {
   const context = ballCanvas.getContext("2d");
   const page = document.documentElement;
   const toggleButton = document.querySelector(".balls-toggle");
+  const toggleLabel = toggleButton.querySelector(".balls-toggle-label");
   const sizeProbe = document.querySelector(".ball-size-probe");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -329,7 +330,7 @@ if (ballCanvas) {
   }
 
   function updateToggleText() {
-    toggleButton.textContent = ballsAtEdges ? "PLAY" : "PEEK";
+    toggleLabel.textContent = ballsAtEdges ? "PLAY" : "PEEK";
   }
 
   toggleButton.addEventListener("click", function () {

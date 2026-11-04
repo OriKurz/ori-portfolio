@@ -163,6 +163,15 @@
   /* בלחיצה הטקסט קטן מ-25px ל-20px, כמו ב-State3 בפיגמה (20/25 = 0.8) */
   --pressed-scale: 0.8;
 
+  /* מצבי רכיבים (ראו "מצבי רכיבים" ב-CLAUDE.md).
+     Focus: מסגרת בעובי קו הגריד (--line), כתומה, ועל רקע כתום צהובה */
+  --focus-color: var(--color-orange);
+  --focus-color-on-orange: var(--color-yellow);
+  /* Pressed: כמה הרכיב קטן ברגע הלחיצה */
+  --menu-pressed-scale: 0.9;
+  --contact-ball-pressed-scale: 0.92;
+  --play-icon-pressed-scale: 0.9;
+
   /* "ORI KURZ" ו-"2026": עמודה, שורה ורוחב (במשבצות) */
   --name-column: 9;
   --name-row: 7;
@@ -1189,19 +1198,28 @@ body {
   }
 }
 
-/* ניווט במקלדת, ו-is-active: כפתור שנבחר בנגיעה ראשונה בטלפון (script.js) */
-.nav-button:focus-visible,
-.nav-button.is-active {
+/* is-hover / is-pressed / is-focus: מציגים מצב באופן קבוע (בעמוד styleguide.html) */
+.nav-button.is-hover {
   background-color: var(--color-pink);
 }
 
 /* אפקט לחיצה */
-.nav-button:active {
+.nav-button:active,
+.nav-button.is-pressed {
   background-color: var(--color-pink);
 }
 
-.nav-button:active .nav-button-label {
+.nav-button:active .nav-button-label,
+.nav-button.is-pressed .nav-button-label {
   transform: scale(var(--pressed-scale));
+}
+
+/* ניווט במקלדת: מסגרת כתומה בתוך המשבצת. המסגרת של הכפתור יושבת על קווי הגריד,
+   אז מזיזים את הפוקוס פנימה בעובי של שני קווים, כדי שלא יכסה אותם */
+.nav-button:focus-visible,
+.nav-button.is-focus {
+  outline: var(--line) solid var(--focus-color);
+  outline-offset: calc(var(--line) * -2);
 }
 
 /* בערבית האותיות מחוברות, אז בלי ריווח בין אותיות */
@@ -1296,11 +1314,34 @@ body {
   transition: background-color var(--transition-speed) ease;
 }
 
+/* הטקסט שבתוך הכפתור (ball-pit.js מחליף אותו בין PEEK ל-PLAY) */
+.balls-toggle-label {
+  display: inline-block; /* כדי שאפשר יהיה להקטין אותו עם transform */
+  transition: transform var(--transition-speed) ease;
+}
+
 /* מעבר עכבר על PEEK / PLAY: רק במחשב (עכבר), לא בטלפון */
 @media (hover: hover) and (pointer: fine) {
   .balls-toggle:hover {
     background-color: var(--toggle-hover-background);
   }
+}
+
+.balls-toggle.is-hover {
+  background-color: var(--toggle-hover-background);
+}
+
+/* אפקט לחיצה: הטקסט קטן, כמו בכפתורי הניווט */
+.balls-toggle:active .balls-toggle-label,
+.balls-toggle.is-pressed .balls-toggle-label {
+  transform: scale(var(--pressed-scale));
+}
+
+/* ניווט במקלדת: מסגרת כתומה בתוך הריבוע (שכבר ממלא את השטח שבין הקווים) */
+.balls-toggle:focus-visible,
+.balls-toggle.is-focus {
+  outline: var(--line) solid var(--focus-color);
+  outline-offset: calc(var(--line) * -1);
 }
 
 /* אזור העיצוב מהפיגמה, ממורכז בחלון */
@@ -1711,6 +1752,35 @@ body {
   height: var(--menu-line-height);
   border-radius: var(--pill-radius);
   background-color: var(--color-pink);
+  transition: background-color var(--transition-speed) ease;
+}
+
+.menu-button {
+  transition: scale var(--transition-speed) ease;
+}
+
+/* מעבר עכבר: הקווים ירוקים (גם בעמוד Say Hi, שבו הם כתומים) */
+@media (hover: hover) and (pointer: fine) {
+  .menu-button:hover .menu-button-line {
+    background-color: var(--color-green);
+  }
+}
+
+.menu-button.is-hover .menu-button-line {
+  background-color: var(--color-green);
+}
+
+/* לחיצה: האייקון קטן מעט */
+.menu-button:active,
+.menu-button.is-pressed {
+  scale: var(--menu-pressed-scale);
+}
+
+/* ניווט במקלדת: מסגרת כתומה סביב האייקון, בתוך המשבצת */
+.menu-button:focus-visible,
+.menu-button.is-focus {
+  outline: var(--line) solid var(--focus-color);
+  outline-offset: var(--menu-gap);
 }
 
 .project-grid .index-button {
@@ -2054,9 +2124,9 @@ body {
   height: var(--play-circle-size);
   border: var(--line) solid var(--play-icon-color);
   border-radius: 50%;
-  transform: translate(-50%, -50%);
+  translate: -50% -50%;
   pointer-events: none; /* לחיצה עוברת לסרטון */
-  transition: opacity var(--transition-speed) ease;
+  transition: opacity var(--transition-speed) ease, scale var(--transition-speed) ease;
 }
 
 /* המשולש: מוזז קצת ימינה, כדי שייראה באמצע העיגול (מרכז הכובד של משולש
@@ -2075,6 +2145,37 @@ body {
 
 .video-player.is-playing .video-play-icon {
   opacity: 0;
+}
+
+/* מעבר עכבר על הסרטון: האייקון כתום */
+@media (hover: hover) and (pointer: fine) {
+  .video-player:hover {
+    --play-icon-color: var(--color-orange);
+  }
+}
+
+.video-player.is-hover {
+  --play-icon-color: var(--color-orange);
+}
+
+/* לחיצה: האייקון קטן מעט */
+.video-player:active .video-play-icon,
+.video-player.is-pressed .video-play-icon {
+  scale: var(--play-icon-pressed-scale);
+}
+
+/* ניווט במקלדת: מסגרת כתומה בתוך המשבצות, בלי לכסות את קווי הגריד.
+   גם על הבר ועל כפתור המסך המלא, שמקבלים פוקוס אחרי הסרטון */
+.video-player:focus-visible,
+.video-player.is-focus {
+  outline: var(--line) solid var(--focus-color);
+  outline-offset: calc(var(--line) * -2);
+}
+
+.video-progress:focus-visible,
+.video-fullscreen-button:focus-visible {
+  outline: var(--line) solid var(--focus-color);
+  outline-offset: calc(var(--line) * -1);
 }
 
 /* בר ההתקדמות: אזור לחיצה שקוף בתחתית הסרטון, ובתוכו קו דק */
@@ -2356,6 +2457,30 @@ body {
   color: var(--color-yellow);
   white-space: nowrap;
   transform: translateY(var(--banner-text-offset));
+  transition: color var(--transition-speed) ease;
+}
+
+/* מעבר עכבר: הטקסט ורוד. לחיצה: הטקסט מנטה */
+@media (hover: hover) and (pointer: fine) {
+  .contact-banner:hover .contact-banner-text {
+    color: var(--color-pink);
+  }
+}
+
+.contact-banner.is-hover .contact-banner-text {
+  color: var(--color-pink);
+}
+
+.contact-banner:active .contact-banner-text,
+.contact-banner.is-pressed .contact-banner-text {
+  color: var(--color-mint);
+}
+
+/* ניווט במקלדת: הרקע כתום, אז המסגרת צהובה. בתוך הפס */
+.contact-banner:focus-visible,
+.contact-banner.is-focus {
+  outline: var(--line) solid var(--focus-color-on-orange);
+  outline-offset: calc(var(--line) * -1);
 }
 
 .contact-banner-star--1 {
@@ -2534,9 +2659,21 @@ body {
 .contact-ball--email     { background-color: var(--color-green); }
 .contact-ball--whatsapp  { background-color: var(--color-orange); }
 
-/* ניווט במקלדת (Tab): טבעת צהובה סביב הכדור. הכדור גם עוצר במקום (script.js) */
-.contact-ball:focus-visible {
-  outline: var(--line) solid var(--color-yellow);
+/* Hover: הכדור מאט ליד העכבר (script.js).
+   לחיצה: הכדור קטן מעט. scale (ולא transform), כי script.js מזיז את הכדור עם transform */
+.contact-ball {
+  transition: scale var(--transition-speed) ease;
+}
+
+.contact-ball:active,
+.contact-ball.is-pressed {
+  scale: var(--contact-ball-pressed-scale);
+}
+
+/* ניווט במקלדת (Tab): טבעת כתומה סביב הכדור. הכדור גם עוצר במקום (script.js) */
+.contact-ball:focus-visible,
+.contact-ball.is-focus {
+  outline: var(--line) solid var(--focus-color);
   outline-offset: var(--line);
 }
 
@@ -2565,11 +2702,16 @@ body {
   --styleguide-grid-cell-desktop: calc(96 * var(--styleguide-type-px));
   --styleguide-grid-cell-mobile: calc(49 * var(--styleguide-type-px));
 
-  /* הבמות: גובה במשבצות, ומיקום שני הכפתורים (במחשב זה לצד זה) */
+  /* הבמות: גובה ורוחב במשבצות, ומיקום הרכיב בבמה */
   --styleguide-stage-rows: 3;
-  --styleguide-buttons-rows: 3;
-  --styleguide-first-column: 2;  --styleguide-first-row: 1;
-  --styleguide-second-column: 6; --styleguide-second-row: 1;
+  --styleguide-stage-columns: 4;
+  --styleguide-place-column: 1;
+  --styleguide-place-row: 1;
+  /* בבמה של הכפתור עם הטקסט הארוך: מקום לטקסט שחורג משני הצדדים */
+  --styleguide-long-column: 2;
+  /* הסרטון בבמות המצבים: 4 משבצות לרוחב, ביחס 16:9 */
+  --styleguide-video-columns: 4;
+  --styleguide-video-rows: calc(var(--styleguide-video-columns) * 9 / 16);
 }
 
 /* במובייל: שוליים צרים, ושני הכפתורים אחד מתחת לשני */
@@ -2578,8 +2720,6 @@ body {
     --styleguide-gutter: calc(16 * var(--styleguide-type-px));
     --styleguide-section-gap: calc(64 * var(--styleguide-type-px));
     --styleguide-swatch-size: calc(100 * var(--styleguide-type-px));
-    --styleguide-buttons-rows: 5;
-    --styleguide-second-column: 2; --styleguide-second-row: 3;
   }
 }
 
@@ -2685,44 +2825,86 @@ body {
   overflow-x: auto;
 }
 
-/* ----- במות לרכיבים: ברוחב כל החלון, והגריד מתחיל בפינה השמאלית העליונה שלהן ----- */
+/* ----- רכיבים: כותרת לכל רכיב, ושורה של מצבים (Default, Hover, Pressed, Focus, Live) ----- */
+.styleguide-component {
+  margin-top: var(--styleguide-section-gap);
+}
+
+.styleguide-states {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--styleguide-gap);
+}
+
+.styleguide-state-name {
+  margin-block: var(--styleguide-gap);
+}
+
+/* ----- במות: הרקע והגריד של העמוד שהרכיב שייך אליו. הגריד מתחיל בפינה השמאלית העליונה ----- */
 .styleguide-stage {
   --grid-left: 0px;
   --grid-top: 0px;
   position: relative;
+  width: calc(var(--styleguide-stage-columns) * var(--cell) + var(--line));
   height: calc(var(--styleguide-stage-rows) * var(--cell) + var(--line));
-  margin-inline: calc(-1 * var(--styleguide-gutter));
   overflow: clip;
   background-color: var(--page-background);
 }
 
-.styleguide-stage--buttons {
-  --styleguide-stage-rows: var(--styleguide-buttons-rows);
-}
-
-.styleguide-stage--menu {
-  --styleguide-stage-rows: 1;
-}
-
-.styleguide-stage--video {
-  --styleguide-stage-rows: calc(var(--video-row) * 2 + var(--video-rows));
+/* במה ברוחב כל החלון (הבאנר, ותוכן ארוך) */
+.styleguide-stage--wide {
+  width: auto;
+  margin-inline: calc(-1 * var(--styleguide-gutter));
 }
 
 .styleguide-stage--banner {
   height: auto;
 }
 
+.styleguide-stage--toggle {
+  --styleguide-stage-columns: 3;
+}
+
+.styleguide-stage--menu {
+  --styleguide-stage-columns: 2;
+  --styleguide-stage-rows: 1;
+}
+
 .styleguide-stage--balls {
+  --styleguide-stage-columns: 3;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
 }
 
+/* הסרטון בבמה: קטן יותר מבאתר (4 משבצות), כדי שחמשת המצבים ייכנסו זה לצד זה.
+   אייקון ה-Play נשאר בגודל שלו באתר (לפי המשבצת) */
+.styleguide-stage--video {
+  --video-column: 0;
+  --video-row: 0;
+  --video-columns: var(--styleguide-video-columns);
+  --video-rows: var(--styleguide-video-rows);
+  --styleguide-stage-columns: var(--styleguide-video-columns);
+  --styleguide-stage-rows: var(--styleguide-video-rows);
+}
+
 /* מיקום רכיב על הרשת של הבמה */
-.styleguide-place-first  { --column: var(--styleguide-first-column);  --row: var(--styleguide-first-row); }
-.styleguide-place-second { --column: var(--styleguide-second-column); --row: var(--styleguide-second-row); }
+.styleguide-place {
+  --column: var(--styleguide-place-column);
+  --row: var(--styleguide-place-row);
+}
+
+.styleguide-place-long {
+  --column: var(--styleguide-long-column);
+  --row: var(--styleguide-place-row);
+}
 
 /* כדורי יצירת הקשר עומדים במקום (באתר script.js מזיז אותם בכל החלון) */
 .styleguide-stage .contact-ball {
   position: relative;
+}
+
+/* רכיב ברוחב כל החלון (הבאנר): המצבים אחד מתחת לשני */
+.styleguide-states--stacked {
+  flex-direction: column;
 }

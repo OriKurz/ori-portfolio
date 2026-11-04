@@ -10,6 +10,9 @@ window.addEventListener("pointerdown", function (event) {
   lastPointerType = event.pointerType;
 }, true);
 
+// בטלפון (Safari באייפון) מצב הלחיצה (:active) מופיע רק אם יש מאזין לנגיעה בעמוד
+document.addEventListener("touchstart", function () {}, { passive: true });
+
 // =========================================
 // בר האינדקס בעמוד מבואה לפרויקט: כל כדור הוא פרויקט.
 // בכל רגע רק כדור אחד פתוח ומורחב לפס עם שם הפרויקט.
