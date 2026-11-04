@@ -634,10 +634,11 @@
 }
 
 /* ----- עמוד פרויקט מלא (the-perfect-crime-project.html) -----
-   הפריים בפיגמה: 1440 לרוחב ו-2893 לגובה. החלון מחולק לשניים:
-   שתי חמישיות משמאל עם טקסט (בלי גריד), ושלוש חמישיות מימין עם גריד של 9 משבצות.
+   הפריים בפיגמה: 1440 לרוחב ו-2869 לגובה. החלון מחולק לשניים, כמו בפיגמה:
+   600 מתוך 1440 משמאל עם טקסט (בלי גריד), ו-840 מימין עם גריד של 9 משבצות.
    בסוף העמוד: הפרויקטים הנוספים ובאנר יצירת הקשר, ברוחב כל החלון.
    בפיגמה משבצת = 93.333px (840 / 9). מספרים כמו 212 * var(--u) הם פיקסלים מהפיגמה:
+   מיקומים על הגריד נמדדו מהקו הקרוב בפיגמה (הקווים שם מצוירים ביד וזזים בכמה פיקסלים).
    --u בחלק של הגריד (גדל עם המשבצת), --px בחלק של הטקסט (גדל עם החלון),
    ו---wide-px בחלקים שברוחב כל החלון. */
 :root.page-full-project {
@@ -645,9 +646,9 @@
   --grid-columns: 9;
   /* אורך הגריד: עד הקו שבו מתחילים הפרויקטים הנוספים (y=2520 בפיגמה), במשבצות */
   --grid-rows: 27;
-  /* גודל משבצת בפיקסלים שלמים: 9 משבצות ממלאות שלוש חמישיות מהחלון.
+  /* גודל משבצת בפיקסלים שלמים: 9 משבצות ממלאות 840 מתוך 1440 של החלון, כמו בפיגמה.
      ה-0.01px מתקן שגיאת עיגול קטנה של הדפדפן (כמו בעמוד המבואה) */
-  --cell: round(down, 100vw * 3 / 5 / var(--grid-columns) + 0.01px, 1px);
+  --cell: round(down, 100vw * 840 / 1440 / var(--grid-columns) + 0.01px, 1px);
   --line: 3px;
   --u: calc(var(--cell) / var(--frame-cell));
   /* הטקסט בצד שמאל: לפי פריים של 1440x810, כדי שייכנס תמיד בגובה החלון */
@@ -674,26 +675,18 @@
   --menu-gap: calc(6 * var(--px));
   --pill-radius: calc(32 * var(--px));
 
-  /* הכדורים הכתומים (למעלה, בחלק של הטקסט). נמדדים מהקצה הימני של החלק,
-     כדי שהרווח מהגריד יישאר כמו בפיגמה (28px) */
-  --balls-right: calc(28 * var(--px));
-  --balls-top: calc(22 * var(--px));
-  --ball-width: calc(24 * var(--px));
-  --ball-height: calc(23 * var(--px));
-  --ball-gap: calc(7 * var(--px));
-  --ball-color: var(--color-orange);
-
-  /* הכותרת, "Motion Graphic 2026" והתיאור */
+  /* הכותרת, "Motion Graphic / Academic project / 2026" והתיאור */
   --title-left: calc(71 * var(--px));
   --title-top: calc(46 * var(--px));
   --title-width: calc(383 * var(--px));
   --title-size: calc(80 * var(--px));
   --type-top: calc(287 * var(--px));
   --type-size: calc(25 * var(--px));
+  --type-line-height: 1.05;
   --heading-line-height: 0.955;
   --heading-tracking: -0.04em;
   --description-left: calc(64 * var(--px));
-  --description-top: calc(408 * var(--px));
+  --description-top: calc(411 * var(--px));
   --description-width: calc(485 * var(--px));
   --description-size: calc(25 * var(--px));
   --description-line-height: calc(28 * var(--px));
@@ -702,12 +695,12 @@
   /* הכותרות בגריד ("Little Things Magic" וכו'): עמודה ושורה */
   --section-title-size: calc(25 * var(--u));
   --section-title-line-height: 1.05;
-  --section-title-elements-column: 0.086;  --section-title-elements-row: 6.064;
-  --section-title-scenes-column: 0.086;    --section-title-scenes-row: 14.325;
-  --section-title-palette-column: 0.107;   --section-title-palette-row: 21.377;
-  --section-title-next-column: 0.107;      --section-title-next-row: 26.359;
+  --section-title-elements-column: 0.075;  --section-title-elements-row: 6.15;
+  --section-title-scenes-column: 0.075;    --section-title-scenes-row: 14.327;
+  --section-title-palette-column: 0.107;   --section-title-palette-row: 21.375;
+  --section-title-next-column: 0.107;      --section-title-next-row: 26.364;
   /* "hover to play" / "tap to play" */
-  --play-hint-column: 0.118;   --play-hint-row: 7.382;
+  --play-hint-column: 0.107;   --play-hint-row: 7.413;
   --play-hint-color: var(--color-pink);
 
   /* הסרטון: כל הרוחב, משורה 1 עד שורה 6 */
@@ -732,27 +725,27 @@
   --elements-board-column: 0;   --elements-board-row: 7;
   --elements-board-columns: 9;  --elements-board-rows: 7;
   /* כל חפץ: left, top ו-width באחוזים מהמיכל (לפי x, y ו-width בפיגמה) */
-  --ea-tape-left: 35.952%;         --ea-tape-top: 67.449%;         --ea-tape-width: 18.452%;
-  --ea-box-fragile-left: 56.905%;  --ea-box-fragile-top: 66.837%;  --ea-box-fragile-width: 19.524%;
-  --ea-lamp-left: 3.095%;          --ea-lamp-top: 51.684%;         --ea-lamp-width: 18.929%;
-  --ea-tree-left: 8.095%;          --ea-tree-top: 3.469%;          --ea-tree-width: 14.881%;
-  --ea-box-flip-left: 26.667%;     --ea-box-flip-top: 7.296%;      --ea-box-flip-width: 10.238%;
-  --ea-box-small-left: 3.929%;     --ea-box-small-top: 78.622%;    --ea-box-small-width: 11.19%;
-  --ea-glass-left: 26.19%;         --ea-glass-top: 53.52%;         --ea-glass-width: 8.333%;
-  --ea-car-left: 42.619%;          --ea-car-top: 4.847%;           --ea-car-width: 19.524%;
-  --ea-box-long-left: 66.905%;     --ea-box-long-top: 7.296%;      --ea-box-long-width: 27.381%;
-  --ea-box-office-left: 3.095%;    --ea-box-office-top: 33.469%;   --ea-box-office-width: 18.929%;
-  --ea-gift-left: 76.429%;         --ea-gift-top: 26.429%;         --ea-gift-width: 20.595%;
-  --ea-chandelier-left: 43.81%;    --ea-chandelier-top: 27.5%;     --ea-chandelier-width: 29.643%;
-  --ea-fire-left: 26.19%;          --ea-fire-top: 28.112%;         --ea-fire-width: 16.667%;
-  --ea-axe-left: 83.69%;           --ea-axe-top: 70.663%;          --ea-axe-width: 15.357%;
-  --ea-siren-left: 21.31%;         --ea-siren-top: 78.01%;         --ea-siren-width: 11.31%;
+  --ea-tape-left: 35.833%;         --ea-tape-top: 67.883%;         --ea-tape-width: 18.452%;
+  --ea-box-fragile-left: 56.786%;  --ea-box-fragile-top: 67.271%;  --ea-box-fragile-width: 19.524%;
+  --ea-lamp-left: 2.976%;          --ea-lamp-top: 52.118%;         --ea-lamp-width: 18.929%;
+  --ea-tree-left: 7.976%;          --ea-tree-top: 3.903%;          --ea-tree-width: 14.881%;
+  --ea-box-flip-left: 26.548%;     --ea-box-flip-top: 7.73%;       --ea-box-flip-width: 10.238%;
+  --ea-box-small-left: 3.81%;      --ea-box-small-top: 79.056%;    --ea-box-small-width: 11.19%;
+  --ea-glass-left: 26.071%;        --ea-glass-top: 53.954%;        --ea-glass-width: 8.333%;
+  --ea-car-left: 42.5%;            --ea-car-top: 5.281%;           --ea-car-width: 19.524%;
+  --ea-box-long-left: 66.786%;     --ea-box-long-top: 7.73%;       --ea-box-long-width: 27.381%;
+  --ea-box-office-left: 2.976%;    --ea-box-office-top: 33.903%;   --ea-box-office-width: 18.929%;
+  --ea-gift-left: 76.31%;          --ea-gift-top: 26.862%;         --ea-gift-width: 20.595%;
+  --ea-chandelier-left: 43.69%;    --ea-chandelier-top: 27.934%;   --ea-chandelier-width: 29.643%;
+  --ea-fire-left: 26.071%;         --ea-fire-top: 28.546%;         --ea-fire-width: 16.667%;
+  --ea-axe-left: 83.571%;          --ea-axe-top: 71.097%;          --ea-axe-width: 15.357%;
+  --ea-siren-left: 21.19%;         --ea-siren-top: 78.444%;        --ea-siren-width: 11.31%;
 
   /* פריימים מהסרטון: עמודה, שורה, רוחב וגובה (במשבצות) */
-  --still-1-column: 0.236;      --still-1-row: 15.214;     --still-1-columns: 4.168;      --still-1-rows: 2.346;
-  --still-2-column: 4.607;      --still-2-row: 15.214;     --still-2-columns: 4.168;      --still-2-rows: 2.346;
-  --still-4-column: 0.257;      --still-4-row: 17.754;     --still-4-columns: 4.146;      --still-4-rows: 2.336;
-  --still-3-column: 4.618;      --still-3-row: 17.754;     --still-3-columns: 4.146;      --still-3-rows: 2.357;
+  --still-1-column: 0.225;      --still-1-row: 15.22;      --still-1-columns: 4.168;      --still-1-rows: 2.346;
+  --still-2-column: 4.6;        --still-2-row: 15.22;      --still-2-columns: 4.168;      --still-2-rows: 2.346;
+  --still-4-column: 0.246;      --still-4-row: 17.788;     --still-4-columns: 4.146;      --still-4-rows: 2.336;
+  --still-3-column: 4.611;      --still-3-row: 17.788;     --still-3-columns: 4.146;      --still-3-rows: 2.357;
 
   /* פלטת הצבעים: כל עיגול הוא משבצת אחת: עמודה, שורה וצבע */
   --palette-swatch-radius: 50%;
@@ -775,6 +768,8 @@
   --next-projects-background: color-mix(in srgb, var(--color-pink) 50%, transparent);
   --next-projects-height: calc(284 * var(--strip-px));
   --next-project-size: calc(258 * var(--strip-px));
+  /* הדימוי השני רחב בפיקסל אחד (259 בפיגמה) */
+  --next-project-2-width: calc(259 * var(--strip-px));
   --next-project-gap: calc(30 * var(--strip-px));
   /* החיתוך של כל דימוי, כמו בפיגמה: גודל ומיקום התמונה בתוך הריבוע */
   --next-project-1-fit: fill;
@@ -1813,23 +1808,6 @@ body {
   top: var(--menu-top);
 }
 
-/* הכדורים הכתומים */
-.full-project-balls {
-  position: absolute;
-  right: var(--balls-right);
-  top: var(--balls-top);
-  display: flex;
-  gap: var(--ball-gap);
-}
-
-.full-project-ball {
-  flex: none;
-  width: var(--ball-width);
-  height: var(--ball-height);
-  border-radius: var(--pill-radius);
-  background-color: var(--ball-color);
-}
-
 .full-project-title,
 .full-project-type {
   position: absolute;
@@ -1850,6 +1828,7 @@ body {
   top: var(--type-top);
   font-weight: 500;
   font-size: var(--type-size);
+  line-height: var(--type-line-height);
   white-space: nowrap;
 }
 
@@ -2126,7 +2105,7 @@ body {
 }
 
 .next-project--1 { --fit: var(--next-project-1-fit); }
-.next-project--2 { --fit: var(--next-project-2-fit); }
+.next-project--2 { --fit: var(--next-project-2-fit); width: var(--next-project-2-width); }
 .next-project--3 { --crop-width: var(--next-project-3-crop-width); --crop-height: var(--next-project-3-crop-height); --crop-left: var(--next-project-3-crop-left); --crop-top: var(--next-project-3-crop-top); }
 .next-project--4 { --crop-width: var(--next-project-4-crop-width); --crop-height: var(--next-project-4-crop-height); --crop-left: var(--next-project-4-crop-left); --crop-top: var(--next-project-4-crop-top); }
 .next-project--5 { --crop-width: var(--next-project-5-crop-width); --crop-height: var(--next-project-5-crop-height); --crop-left: var(--next-project-5-crop-left); --crop-top: var(--next-project-5-crop-top); }
