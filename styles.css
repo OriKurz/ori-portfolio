@@ -1,10 +1,36 @@
 /* =========================================
    פונטים
+   כל קובץ מחובר למשקל שלו: Light=300, Regular=400, Medium=500, Bold=700, Black=900.
+   הדפדפן מוריד קובץ רק כשמשתמשים במשקל שלו
    ========================================= */
 @font-face {
   font-family: "Reisinger Michal";
+  src: url("fonts/Reisinger-Michal-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Reisinger Michal";
+  src: url("fonts/Reisinger-Michal-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Reisinger Michal";
   src: url("fonts/Reisinger-Michal-Bold.otf") format("opentype");
-  font-weight: bold;
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TheBasics Corporate";
+  src: url("fonts/TheBasics_Corporate-Light.otf") format("opentype");
+  font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
@@ -910,6 +936,11 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  /* הדפדפן לא מייצר הדגשה או הטיה מלאכותית: רק המשקלים שיש להם קובץ */
+  font-synthesis: none;
+  /* במק הדפדפן מציג טקסט עבה יותר מפיגמה. ההחלקה הזו מציגה אותו דק, כמו בפיגמה */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -1847,10 +1878,12 @@ body {
   margin-left: var(--info-width);
 }
 
-/* הגריד עצמו: הקווים הם הרקע שלו, והגובה שלו הוא אורך הגלילה */
+/* הגריד עצמו: הקווים הם הרקע שלו, והגובה שלו הוא אורך הגלילה.
+   בפיגמה הגריד ממשיך גם מתחת לפס "What's Next?" (עד הבאנר), ולכן הוא
+   ארוך יותר בגובה של הפס, והפס עולה מעליו (ראו .next-projects) */
 .full-project-grid {
   position: relative;
-  height: calc(var(--grid-rows) * var(--cell));
+  height: calc(var(--grid-rows) * var(--cell) + var(--next-projects-height));
 }
 
 /* ----- הכותרות בגריד ----- */
@@ -2057,10 +2090,14 @@ body {
 .swatch--13 { --column: var(--swatch-13-column); --row: var(--swatch-13-row); --swatch-color: var(--swatch-13-color); }
 .swatch--14 { --column: var(--swatch-14-column); --row: var(--swatch-14-row); --swatch-color: var(--swatch-14-color); }
 
-/* ----- פרויקטים נוספים: פס ברוחב כל החלון, מעל הצד השמאלי ----- */
+/* ----- פרויקטים נוספים: פס אחד ברוחב כל החלון, מעל הצד השמאלי -----
+   הרקע ורוד בשקיפות 50% (רק הרקע, לא כל האלמנט, כדי שהדימויים יישארו מלאים).
+   הפס עולה למעלה בגובה שלו (margin שלילי), כך שהוא יושב מעל סוף הגריד,
+   ורואים דרכו גם את קווי הגריד וגם את הטקסט שבצד שמאל */
 .next-projects {
   position: relative;
   z-index: 2;
+  margin-top: calc(-1 * var(--next-projects-height));
   display: flex;
   align-items: center;
   justify-content: center;
