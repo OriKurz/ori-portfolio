@@ -634,21 +634,22 @@
 }
 
 /* ----- עמוד פרויקט מלא (the-perfect-crime-project.html) -----
-   הפריים בפיגמה: 1440 לרוחב ו-2869 לגובה. החלון מחולק לשניים, כמו בפיגמה:
-   600 מתוך 1440 משמאל עם טקסט (בלי גריד), ו-840 מימין עם גריד של 9 משבצות.
+   הפריים בפיגמה: 1440 לרוחב ו-2965 לגובה. החלון מחולק ל-6 טורים:
+   2 מתוך 6 משמאל עם טקסט (בלי גריד), ו-4 מתוך 6 מימין עם גריד של 10 משבצות.
+   בפיגמה הגריד מתחיל ב-508 ורוחבו 933 מתוך 1440.
    בסוף העמוד: הפרויקטים הנוספים ובאנר יצירת הקשר, ברוחב כל החלון.
-   בפיגמה משבצת = 93.333px (840 / 9). מספרים כמו 212 * var(--u) הם פיקסלים מהפיגמה:
+   בפיגמה משבצת = 93.333px (933 / 10). מספרים כמו 212 * var(--u) הם פיקסלים מהפיגמה:
    מיקומים על הגריד נמדדו מהקו הקרוב בפיגמה (הקווים שם מצוירים ביד וזזים בכמה פיקסלים).
    --u בחלק של הגריד (גדל עם המשבצת), --px בחלק של הטקסט (גדל עם החלון),
    ו---wide-px בחלקים שברוחב כל החלון. */
 :root.page-full-project {
   --frame-cell: 93.333;
-  --grid-columns: 9;
-  /* אורך הגריד: עד הקו שבו מתחילים הפרויקטים הנוספים (y=2520 בפיגמה), במשבצות */
-  --grid-rows: 27;
-  /* גודל משבצת בפיקסלים שלמים: 9 משבצות ממלאות 840 מתוך 1440 של החלון, כמו בפיגמה.
+  --grid-columns: 10;
+  /* אורך הגריד: עד הקו שבו מתחילים הפרויקטים הנוספים (y=2608 בפיגמה), במשבצות */
+  --grid-rows: 28;
+  /* גודל משבצת בפיקסלים שלמים: 10 משבצות ממלאות 933 מתוך 1440 של החלון, כמו בפיגמה.
      ה-0.01px מתקן שגיאת עיגול קטנה של הדפדפן (כמו בעמוד המבואה) */
-  --cell: round(down, 100vw * 840 / 1440 / var(--grid-columns) + 0.01px, 1px);
+  --cell: round(down, 100vw * 933 / 1440 / var(--grid-columns) + 0.01px, 1px);
   --line: 3px;
   --u: calc(var(--cell) / var(--frame-cell));
   /* הטקסט בצד שמאל: לפי פריים של 1440x810, כדי שייכנס תמיד בגובה החלון */
@@ -682,30 +683,30 @@
   --title-size: calc(80 * var(--px));
   --type-top: calc(287 * var(--px));
   --type-size: calc(25 * var(--px));
-  --type-line-height: 1.05;
+  --type-line-height: 1.1;
   --heading-line-height: 0.955;
   --heading-tracking: -0.04em;
-  --description-left: calc(64 * var(--px));
-  --description-top: calc(411 * var(--px));
-  --description-width: calc(485 * var(--px));
-  --description-size: calc(25 * var(--px));
+  --description-left: calc(63 * var(--px));
+  --description-top: calc(395 * var(--px));
+  --description-width: calc(399 * var(--px));
+  --description-size: calc(20 * var(--px));
   --description-line-height: calc(28 * var(--px));
   --description-tracking: 0.02em;
 
   /* הכותרות בגריד ("Little Things Magic" וכו'): עמודה ושורה */
   --section-title-size: calc(25 * var(--u));
   --section-title-line-height: 1.05;
-  --section-title-elements-column: 0.075;  --section-title-elements-row: 6.15;
-  --section-title-scenes-column: 0.075;    --section-title-scenes-row: 14.327;
-  --section-title-palette-column: 0.107;   --section-title-palette-row: 21.375;
-  --section-title-next-column: 0.107;      --section-title-next-row: 26.364;
+  --section-title-elements-column: 0.075;  --section-title-elements-row: 7.155;
+  --section-title-scenes-column: 0.086;    --section-title-scenes-row: 15.359;
+  --section-title-palette-column: 0.118;   --section-title-palette-row: 22.338;
+  --section-title-next-column: 0.064;      --section-title-next-row: 27.423;
   /* "hover to play" / "tap to play" */
-  --play-hint-column: 0.107;   --play-hint-row: 7.413;
+  --play-hint-column: 0.096;   --play-hint-row: 8.396;
   --play-hint-color: var(--color-pink);
 
-  /* הסרטון: כל הרוחב, משורה 1 עד שורה 6 */
+  /* הסרטון: כל הרוחב, משורה 1. בפיגמה הוא 932x524 (16:9), ולכן נגמר באמצע משבצת */
   --video-column: 0;        --video-row: 1;
-  --video-columns: 9;       --video-rows: 5;
+  --video-columns: 10;      --video-rows: 5.582;
 
   /* אייקון ה-Play במרכז הסרטון: עיגול חלול (קו בעובי קווי הגריד) ומשולש בתוכו */
   --play-circle-size: calc(var(--cell) * 1.1);
@@ -720,49 +721,57 @@
   --progress-track-color: var(--color-pink);
   --progress-fill-color: var(--color-orange);
   --progress-fade-time: 0.2s;
+  /* כמה זמן הבר נשאר במסך המלא אחרי שהעכבר הפסיק לזוז (script.js קורא את זה) */
+  --controls-hide-delay: 2000;
 
-  /* החפצים המאוירים: מיכל ברוחב כל הגריד, משורה 7 עד שורה 14 (7 שורות) */
-  --elements-board-column: 0;   --elements-board-row: 7;
-  --elements-board-columns: 9;  --elements-board-rows: 7;
+  /* כפתור המסך המלא: בקצה הימני של הבר, באותם צבעים (ורוד, וכתום ב-hover) */
+  --fullscreen-button-size: calc(32 * var(--u));
+  --fullscreen-icon-size: calc(20 * var(--u));
+  --fullscreen-icon-stroke: 2.5px;
+  --fullscreen-background: #000;
+
+  /* החפצים המאוירים: מיכל ברוחב כל הגריד, משורה 8 עד שורה 15 (7 שורות) */
+  --elements-board-column: 0;   --elements-board-row: 8;
+  --elements-board-columns: 10; --elements-board-rows: 7;
   /* כל חפץ: left, top ו-width באחוזים מהמיכל (לפי x, y ו-width בפיגמה) */
-  --ea-tape-left: 35.833%;         --ea-tape-top: 67.883%;         --ea-tape-width: 18.452%;
-  --ea-box-fragile-left: 56.786%;  --ea-box-fragile-top: 67.271%;  --ea-box-fragile-width: 19.524%;
-  --ea-lamp-left: 2.976%;          --ea-lamp-top: 52.118%;         --ea-lamp-width: 18.929%;
-  --ea-tree-left: 7.976%;          --ea-tree-top: 3.903%;          --ea-tree-width: 14.881%;
-  --ea-box-flip-left: 26.548%;     --ea-box-flip-top: 7.73%;       --ea-box-flip-width: 10.238%;
-  --ea-box-small-left: 3.81%;      --ea-box-small-top: 79.056%;    --ea-box-small-width: 11.19%;
-  --ea-glass-left: 26.071%;        --ea-glass-top: 53.954%;        --ea-glass-width: 8.333%;
-  --ea-car-left: 42.5%;            --ea-car-top: 5.281%;           --ea-car-width: 19.524%;
-  --ea-box-long-left: 66.786%;     --ea-box-long-top: 7.73%;       --ea-box-long-width: 27.381%;
-  --ea-box-office-left: 2.976%;    --ea-box-office-top: 33.903%;   --ea-box-office-width: 18.929%;
-  --ea-gift-left: 76.31%;          --ea-gift-top: 26.862%;         --ea-gift-width: 20.595%;
-  --ea-chandelier-left: 43.69%;    --ea-chandelier-top: 27.934%;   --ea-chandelier-width: 29.643%;
-  --ea-fire-left: 26.071%;         --ea-fire-top: 28.546%;         --ea-fire-width: 16.667%;
-  --ea-axe-left: 83.571%;          --ea-axe-top: 71.097%;          --ea-axe-width: 15.357%;
-  --ea-siren-left: 21.19%;         --ea-siren-top: 78.444%;        --ea-siren-width: 11.31%;
+  --ea-tape-left: 35.786%;         --ea-tape-top: 72.092%;         --ea-tape-width: 18.536%;
+  --ea-box-fragile-left: 56.786%;  --ea-box-fragile-top: 71.48%;   --ea-box-fragile-width: 19.5%;
+  --ea-lamp-left: 3%;              --ea-lamp-top: 54.643%;         --ea-lamp-width: 18.857%;
+  --ea-tree-left: 8.036%;          --ea-tree-top: 1.071%;          --ea-tree-width: 14.786%;
+  --ea-box-flip-left: 26.572%;     --ea-box-flip-top: 5.357%;      --ea-box-flip-width: 10.286%;
+  --ea-box-small-left: 3.857%;     --ea-box-small-top: 84.49%;     --ea-box-small-width: 11.143%;
+  --ea-glass-left: 26.036%;        --ea-glass-top: 56.633%;        --ea-glass-width: 8.357%;
+  --ea-car-left: 42.536%;          --ea-car-top: 2.602%;           --ea-car-width: 19.5%;
+  --ea-box-long-left: 66.75%;      --ea-box-long-top: 5.357%;      --ea-box-long-width: 27.104%;
+  --ea-box-office-left: 3%;        --ea-box-office-top: 34.286%;   --ea-box-office-width: 18.857%;
+  --ea-gift-left: 76.286%;         --ea-gift-top: 26.48%;          --ea-gift-width: 20.572%;
+  --ea-chandelier-left: 43.714%;   --ea-chandelier-top: 27.704%;   --ea-chandelier-width: 29.572%;
+  --ea-fire-left: 26.036%;         --ea-fire-top: 28.469%;         --ea-fire-width: 16.714%;
+  --ea-axe-left: 83.572%;          --ea-axe-top: 75.613%;          --ea-axe-width: 15.321%;
+  --ea-siren-left: 21.214%;        --ea-siren-top: 83.878%;        --ea-siren-width: 11.25%;
 
   /* פריימים מהסרטון: עמודה, שורה, רוחב וגובה (במשבצות) */
-  --still-1-column: 0.225;      --still-1-row: 15.22;      --still-1-columns: 4.168;      --still-1-rows: 2.346;
-  --still-2-column: 4.6;        --still-2-row: 15.22;      --still-2-columns: 4.168;      --still-2-rows: 2.346;
-  --still-4-column: 0.246;      --still-4-row: 17.788;     --still-4-columns: 4.146;      --still-4-rows: 2.336;
-  --still-3-column: 4.611;      --still-3-row: 17.788;     --still-3-columns: 4.146;      --still-3-rows: 2.357;
+  --still-1-column: 0.246;      --still-1-row: 16.182;     --still-1-columns: 4.639;      --still-1-rows: 2.604;
+  --still-2-column: 5.096;      --still-2-row: 16.182;     --still-2-columns: 4.629;      --still-2-rows: 2.604;
+  --still-4-column: 0.311;      --still-4-row: 19.188;     --still-4-columns: 4.607;      --still-4-rows: 2.593;
+  --still-3-column: 5.139;      --still-3-row: 19.188;     --still-3-columns: 4.607;      --still-3-rows: 2.614;
 
   /* פלטת הצבעים: כל עיגול הוא משבצת אחת: עמודה, שורה וצבע */
   --palette-swatch-radius: 50%;
-  --swatch-1-column: 1;   --swatch-1-row: 22;   --swatch-1-color: #58a8fc;
-  --swatch-2-column: 3;   --swatch-2-row: 22;   --swatch-2-color: #da472a;
-  --swatch-3-column: 5;   --swatch-3-row: 22;   --swatch-3-color: #f2d257;
-  --swatch-4-column: 7;   --swatch-4-row: 22;   --swatch-4-color: #0fb596;
-  --swatch-5-column: 2;   --swatch-5-row: 23;   --swatch-5-color: #e0fff9;
-  --swatch-6-column: 4;   --swatch-6-row: 23;   --swatch-6-color: #a7fbea;
-  --swatch-7-column: 6;   --swatch-7-row: 23;   --swatch-7-color: #ffb6b4;
-  --swatch-8-column: 1;   --swatch-8-row: 24;   --swatch-8-color: #0f1f2e;
-  --swatch-9-column: 3;   --swatch-9-row: 24;   --swatch-9-color: #265687;
-  --swatch-10-column: 5;  --swatch-10-row: 24;  --swatch-10-color: #99c1ea;
-  --swatch-11-column: 7;  --swatch-11-row: 24;  --swatch-11-color: #ffffff;
-  --swatch-12-column: 2;  --swatch-12-row: 25;  --swatch-12-color: #1b3958;
-  --swatch-13-column: 4;  --swatch-13-row: 25;  --swatch-13-color: #5c85b0;
-  --swatch-14-column: 6;  --swatch-14-row: 25;  --swatch-14-color: #f2dc8b;
+  --swatch-1-column: 1;   --swatch-1-row: 23;   --swatch-1-color: #58a8fc;
+  --swatch-2-column: 3;   --swatch-2-row: 23;   --swatch-2-color: #da472a;
+  --swatch-3-column: 5;   --swatch-3-row: 23;   --swatch-3-color: #f2d257;
+  --swatch-4-column: 7;   --swatch-4-row: 23;   --swatch-4-color: #0fb596;
+  --swatch-5-column: 2;   --swatch-5-row: 24;   --swatch-5-color: #e0fff9;
+  --swatch-6-column: 4;   --swatch-6-row: 24;   --swatch-6-color: #a7fbea;
+  --swatch-7-column: 6;   --swatch-7-row: 24;   --swatch-7-color: #ffb6b4;
+  --swatch-8-column: 1;   --swatch-8-row: 25;   --swatch-8-color: #0f1f2e;
+  --swatch-9-column: 3;   --swatch-9-row: 25;   --swatch-9-color: #265687;
+  --swatch-10-column: 5;  --swatch-10-row: 25;  --swatch-10-color: #99c1ea;
+  --swatch-11-column: 7;  --swatch-11-row: 25;  --swatch-11-color: #ffffff;
+  --swatch-12-column: 2;  --swatch-12-row: 26;  --swatch-12-color: #1b3958;
+  --swatch-13-column: 4;  --swatch-13-row: 26;  --swatch-13-color: #5c85b0;
+  --swatch-14-column: 6;  --swatch-14-row: 26;  --swatch-14-color: #f2dc8b;
 
   /* פרויקטים נוספים: פס ורוד בשקיפות 50%, כמו בפיגמה. רואים דרכו את שאר העמוד */
   --next-projects-background: color-mix(in srgb, var(--color-pink) 50%, transparent);
@@ -797,13 +806,14 @@
 
 /* ----- עמוד פרויקט מלא במובייל -----
    אין עדיין עיצוב מובייל בפיגמה. בינתיים: טור אחד, הטקסט ואחריו הגריד
-   (9 משבצות לרוחב המסך), עם גלילה רגילה של העמוד. */
+   (10 משבצות לרוחב המסך), עם גלילה רגילה של העמוד. */
 @media (max-width: 767.98px) {
   :root.page-full-project {
-    --cell: round(down, 100vw / var(--grid-columns), 1px);
+    /* הקו הימני של הגריד צריך להיכנס גם הוא ברוחב המסך */
+    --cell: round(down, (100vw - var(--line)) / var(--grid-columns), 1px);
     --line: 2px;
-    /* הטקסט: לפי רוחב החלק השמאלי בפיגמה (600px) */
-    --px: calc(100vw / 600);
+    /* הטקסט: לפי רוחב החלק השמאלי בפיגמה (508px) */
+    --px: calc(100vw / 508);
     --info-height: calc(790 * var(--px));
     /* בבאנר הטקסט היה יוצא קטן מדי לפי רוחב המסך, אז הוא גדל עם המשבצת */
     --banner-px: var(--u);
@@ -811,6 +821,8 @@
     --progress-height: 3px;
     --progress-hover-height: 6px;
     --progress-hit-height: 16px;
+    --fullscreen-button-size: 28px;
+    --fullscreen-icon-size: 16px;
   }
 }
 
@@ -1998,9 +2010,92 @@ body {
 
 /* בטלפון אין עכבר, אז הבר מוצג תמיד */
 @media (hover: none) {
-  .video-progress {
+  .video-progress,
+  .video-fullscreen-button {
     opacity: 1;
   }
+}
+
+/* כפתור המסך המלא: יושב בקצה הימני של הבר. הבר מתקצר כדי לפנות לו מקום */
+.video-progress {
+  right: var(--fullscreen-button-size);
+}
+
+.video-fullscreen-button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--fullscreen-button-size);
+  height: var(--fullscreen-button-size);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--progress-track-color);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--progress-fade-time) ease, color var(--progress-fade-time) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.video-fullscreen-button:hover,
+.video-fullscreen-button:focus-visible {
+  color: var(--progress-fill-color);
+}
+
+/* האייקון: ארבע פינות. במסך המלא מתחלף לפינות שפונות פנימה (יציאה) */
+.video-fullscreen-icon {
+  width: var(--fullscreen-icon-size);
+  height: var(--fullscreen-icon-size);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--fullscreen-icon-stroke);
+  stroke-linecap: square;
+}
+
+.video-fullscreen-icon--exit,
+.video-player.is-fullscreen .video-fullscreen-icon--enter {
+  display: none;
+}
+
+.video-player.is-fullscreen .video-fullscreen-icon--exit {
+  display: block;
+}
+
+/* הכפתור מופיע יחד עם הבר */
+.video-player:hover .video-fullscreen-button,
+.video-player.is-seeking .video-fullscreen-button,
+.video-player:focus-visible .video-fullscreen-button,
+.video-fullscreen-button:focus-visible {
+  opacity: 1;
+}
+
+/* ----- הסרטון במסך מלא (script.js מוסיף is-fullscreen) -----
+   כל המסך, רקע שחור, והסרטון כולו בתוכו בלי חיתוך */
+.video-player.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: var(--fullscreen-background);
+}
+
+.video-player.is-fullscreen .video-player-video {
+  object-fit: contain;
+}
+
+/* במסך מלא הבר והכפתור מופיעים רק כשמזיזים את העכבר (is-active), ובזמן גרירה.
+   גם סמן העכבר נעלם כשהוא לא זז */
+.video-player.is-fullscreen:not(.is-active):not(.is-seeking) {
+  cursor: none;
+}
+
+.video-player.is-fullscreen:not(.is-active):not(.is-seeking) .video-progress,
+.video-player.is-fullscreen:not(.is-active):not(.is-seeking) .video-fullscreen-button {
+  opacity: 0;
 }
 
 /* ----- החפצים המאוירים (Images/elements-anim) -----

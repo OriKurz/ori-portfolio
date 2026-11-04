@@ -337,9 +337,9 @@ if (videoPlayer) {
     showProgress(currentRatio());
   });
 
-  // לחיצה על הסרטון (אבל לא על הבר)
+  // לחיצה על הסרטון (אבל לא על הבר ולא על כפתור המסך המלא)
   videoPlayer.addEventListener("click", function (event) {
-    if (event.target.closest(".video-progress")) return;
+    if (event.target.closest(".video-progress, .video-fullscreen-button")) return;
     togglePlay();
   });
 
@@ -386,6 +386,55 @@ if (videoPlayer) {
     event.preventDefault();
     showProgress(currentRatio());
   });
+
+  // ----- מסך מלא -----
+  // במחשב (ובאנדרואיד) כל הנגן עובר למסך מלא, עם הבר המעוצב שלנו.
+  // זה אותו אלמנט וידאו, אז הסרטון ממשיך מאותה נקודה ובאותו מצב.
+  // באייפון אי אפשר להכניס למסך מלא אלמנט שהוא לא וידאו, אז שם
+  // משתמשים במסך המלא של הנגן המובנה של הדפדפן.
+  const fullscreenButton = videoPlayer.querySelector(".video-fullscreen-button");
+  const controlsHideDelay = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--controls-hide-delay"));
+  let hideControlsTimer = null;
+
+  function fullscreenElement() {
+    return document.fullscreenElement || document.webkitFullscreenElement;
+  }
+
+  function toggleFullscreen() {
+    if (fullscreenElement()) {
+      if (document.exitFullscreen) document.exitFullscreen();
+      else document.webkitExitFullscreen();
+    } else if (videoPlayer.requestFullscreen) {
+      videoPlayer.requestFullscreen().catch(function () {});
+    } else if (videoPlayer.webkitRequestFullscreen) {
+      videoPlayer.webkitRequestFullscreen();
+    } else if (video.webkitEnterFullscreen) {
+      video.webkitEnterFullscreen(); // אייפון
+    }
+  }
+
+  fullscreenButton.addEventListener("click", toggleFullscreen);
+
+  // נכנסים או יוצאים (גם ב-Esc): מעדכנים את המחלקה ואת התווית של הכפתור
+  function onFullscreenChange() {
+    const isFullscreen = fullscreenElement() === videoPlayer;
+    videoPlayer.classList.toggle("is-fullscreen", isFullscreen);
+    fullscreenButton.setAttribute("aria-label", isFullscreen ? "Exit full screen" : "Full screen");
+    showControls();
+  }
+  document.addEventListener("fullscreenchange", onFullscreenChange);
+  document.addEventListener("webkitfullscreenchange", onFullscreenChange);
+
+  // במסך המלא הבר מופיע כשמזיזים את העכבר (או נוגעים), ונעלם אחרי כמה שניות בלי תנועה
+  function showControls() {
+    videoPlayer.classList.add("is-active");
+    clearTimeout(hideControlsTimer);
+    hideControlsTimer = setTimeout(function () {
+      videoPlayer.classList.remove("is-active");
+    }, controlsHideDelay);
+  }
+  videoPlayer.addEventListener("pointermove", showControls);
+  videoPlayer.addEventListener("pointerdown", showControls);
 }
 // =========================================
 // עמוד Say Hi: כדורי יצירת הקשר נעים בחלון כל הזמן.
