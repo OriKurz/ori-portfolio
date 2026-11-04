@@ -682,7 +682,8 @@
   --video-column: 0;        --video-row: 1;
   --video-columns: 9;       --video-rows: 5;
 
-  /* משולש ה-Play במרכז הסרטון */
+  /* אייקון ה-Play במרכז הסרטון: עיגול חלול (קו בעובי קווי הגריד) ומשולש בתוכו */
+  --play-circle-size: calc(var(--cell) * 2.2);
   --play-icon-width: calc(var(--cell) * 1.2);
   --play-icon-height: calc(var(--cell) * 1.4);
   --play-icon-color: var(--color-pink);
@@ -738,9 +739,8 @@
   --swatch-13-column: 4;  --swatch-13-row: 25;  --swatch-13-color: #5c85b0;
   --swatch-14-column: 6;  --swatch-14-row: 25;  --swatch-14-color: #f2dc8b;
 
-  /* פרויקטים נוספים: פס ורוד (ורוד בשקיפות 50% מעל רקע המנטה של הפיגמה,
-     כצבע אטום כדי שיסתיר את הצד השמאלי כשהוא עולה מעליו) */
-  --next-projects-background: #f4d3f2;
+  /* פרויקטים נוספים: פס ורוד בשקיפות 50%, כמו בפיגמה. רואים דרכו את שאר העמוד */
+  --next-projects-background: color-mix(in srgb, var(--color-pink) 50%, transparent);
   --next-projects-height: calc(284 * var(--strip-px));
   --next-project-size: calc(258 * var(--strip-px));
   --next-project-gap: calc(30 * var(--strip-px));
@@ -752,18 +752,17 @@
   --next-project-5-crop-width: 100%;     --next-project-5-crop-height: 178.2%;   --next-project-5-crop-left: -0.01%;   --next-project-5-crop-top: -46.37%;
 
   /* באנר יצירת קשר */
-  --banner-height: calc(96 * var(--banner-px));
-  --banner-content-top: calc(12 * var(--banner-px));
-  --banner-content-height: calc(85 * var(--banner-px));
+  --banner-height: calc(76 * var(--banner-px));
   --banner-gap: calc(10 * var(--banner-px));
-  --banner-text-size: calc(50 * var(--banner-px));
+  --banner-text-size: calc(40 * var(--banner-px));
   --banner-tracking: 0.04em;
-  --banner-star-1-width: calc(80 * var(--banner-px));
-  --banner-star-1-height: calc(84 * var(--banner-px));
-  --banner-star-2-width: calc(96 * var(--banner-px));
-  --banner-star-2-height: calc(85 * var(--banner-px));
-  /* כמה זמן לוקח לחצי אחד של הטקסט לעבור */
-  --banner-duration: 20s;
+  --banner-star-1-width: calc(65 * var(--banner-px));
+  --banner-star-1-height: calc(68 * var(--banner-px));
+  --banner-star-2-width: calc(78 * var(--banner-px));
+  --banner-star-2-height: calc(68 * var(--banner-px));
+  /* כמה זמן לוקח לחצי אחד של הטקסט לעבור (נקבע כך שהמהירות תהיה כמו
+     לפני שהבאנר הוקטן: חצי קצר יותר עובר בפחות זמן) */
+  --banner-duration: 16.2s;
 }
 
 /* ----- עמוד פרויקט מלא במובייל -----
@@ -1737,7 +1736,7 @@ body {
 /* ----- הכותרות בגריד ----- */
 .section-title,
 .play-hint {
-  font-weight: 500;
+  font-weight: 400;
   font-size: var(--section-title-size);
   letter-spacing: var(--heading-tracking);
 }
@@ -1789,8 +1788,25 @@ body {
   object-fit: cover;
 }
 
-/* משולש ה-Play: במרכז הסרטון. נעלם כשהסרטון רץ (script.js מוסיף is-playing) */
+/* אייקון ה-Play: עיגול חלול במרכז הסרטון, ובתוכו משולש.
+   נעלם כשהסרטון רץ (script.js מוסיף is-playing) */
 .video-play-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--play-circle-size);
+  height: var(--play-circle-size);
+  border: var(--line) solid var(--play-icon-color);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none; /* לחיצה עוברת לסרטון */
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* המשולש: מוזז קצת ימינה, כדי שייראה באמצע העיגול (מרכז הכובד של משולש
+   נמצא בשליש הרוחב שלו, ולא בחצי) */
+.video-play-icon::after {
+  content: "";
   position: absolute;
   left: 50%;
   top: 50%;
@@ -1798,9 +1814,7 @@ body {
   height: var(--play-icon-height);
   background-color: var(--play-icon-color);
   clip-path: polygon(0 0, 100% 50%, 0 100%);
-  transform: translate(-50%, -50%);
-  pointer-events: none; /* לחיצה עוברת לסרטון */
-  transition: opacity var(--transition-speed) ease;
+  transform: translate(calc(-50% + var(--play-icon-width) / 6), -50%);
 }
 
 .video-player.is-playing .video-play-icon {
@@ -1977,7 +1991,6 @@ body {
 .contact-banner-track {
   display: flex;
   width: max-content;
-  padding-top: var(--banner-content-top);
   animation: contact-banner-scroll var(--banner-duration) linear infinite;
 }
 
@@ -1985,7 +1998,7 @@ body {
   display: flex;
   flex: none;
   align-items: center;
-  height: var(--banner-content-height);
+  height: var(--banner-height);
 }
 
 /* הרווח בין הפריטים הוא margin מימין (ולא gap), כדי ששני החצאים יהיו באותו רוחב בדיוק */
