@@ -1182,3 +1182,92 @@ locationPhotos.forEach(function (photo) {
   photo.addEventListener("pointerup", endTouch);
   photo.addEventListener("pointercancel", endTouch);
 });
+
+// =========================================
+// עמוד Leftovers*: Source Material, מניפת תצלומי הלוויין.
+// כשהעכבר על תצלום, הוא נשלף מהמניפה לשורה שמתחתיה, מתיישר, והשנה שלו מופיעה מתחתיו.
+// בכל רגע רק תצלום אחד בחוץ. הוא נשאר בחוץ כל עוד העכבר עליו או על המקום שלו
+// במניפה (source-slot), וכשהעכבר יוצא משניהם הוא חוזר למקום.
+// בטלפון: נגיעה מוציאה, ונגיעה נוספת בו (או מחוץ לתצלומים) מחזירה.
+// במקלדת: Focus עובד כמו hover. התנועה עצמה ב-styles.css.
+// =========================================
+const sourceFan = document.querySelector(".source-fan");
+
+if (sourceFan) {
+  const sourceCards = sourceFan.querySelectorAll(".source-card");
+  const sourceYears = sourceFan.querySelectorAll(".source-year");
+  const sourceReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let openCard = null;     // מספר התצלום שבחוץ (או null)
+  let hoveredCard = null;  // מספר התצלום (או המקום שלו) שהעכבר עליו
+
+  // מספר התצלום של האלמנט (התצלום עצמו או המקום שלו במניפה)
+  function cardIndex(target) {
+    const element = target.closest("[data-card]");
+    return element ? Number(element.dataset.card) : null;
+  }
+
+  // מפעיל מחדש את "הנייר באוויר" (ההתרוממות והנחיתה)
+  function flutter(card, className) {
+    if (sourceReducedMotion.matches) return;
+    card.classList.remove("is-flying-out", "is-flying-back");
+    void card.offsetWidth; // כדי שהאנימציה תתחיל מההתחלה
+    card.classList.add(className);
+  }
+
+  sourceCards.forEach(function (card) {
+    card.addEventListener("animationend", function () {
+      card.classList.remove("is-flying-out", "is-flying-back");
+    });
+  });
+
+  function showCard(index) {
+    if (index === openCard) return;
+    hideCard();
+    openCard = index;
+    sourceCards[index].classList.add("is-out");
+    flutter(sourceCards[index], "is-flying-out");
+    sourceYears[index].classList.add("is-visible");
+  }
+
+  function hideCard() {
+    if (openCard === null) return;
+    sourceCards[openCard].classList.remove("is-out");
+    flutter(sourceCards[openCard], "is-flying-back");
+    sourceYears[openCard].classList.remove("is-visible");
+    openCard = null;
+  }
+
+  // ----- עכבר -----
+  sourceFan.addEventListener("pointerover", function (event) {
+    if (event.pointerType !== "mouse") return;
+    hoveredCard = cardIndex(event.target);
+    if (hoveredCard === null) hideCard();
+    else showCard(hoveredCard);
+  });
+  sourceFan.addEventListener("pointerleave", function (event) {
+    if (event.pointerType !== "mouse") return;
+    hoveredCard = null;
+    hideCard();
+  });
+
+  // ----- טלפון: נגיעה -----
+  sourceFan.addEventListener("click", function (event) {
+    if (lastPointerType === "mouse") return;
+    const index = cardIndex(event.target);
+    if (index === null || index === openCard) hideCard();
+    else showCard(index);
+  });
+  document.addEventListener("click", function (event) {
+    if (lastPointerType !== "mouse" && !sourceFan.contains(event.target)) hideCard();
+  });
+
+  // ----- מקלדת: Focus כמו hover -----
+  sourceCards.forEach(function (card, index) {
+    card.addEventListener("focus", function () {
+      if (card.matches(":focus-visible")) showCard(index);
+    });
+    card.addEventListener("blur", function () {
+      if (openCard === index && hoveredCard !== index) hideCard();
+    });
+  });
+}

@@ -189,6 +189,42 @@
               <figcaption class="location-caption text-caption">H. Diagonal san martin</figcaption>
             </figure>
           </div>
+
+          <!-- ----- Source Material: תצלומי הלוויין -----
+               ברקע: האיור (רקע בלבד, לא מגיב). מעליו מניפה של 4 תצלומים.
+               כל המספרים (--fan-*, --out-*, --w, --h) בפיקסלים של הקומפוננטה בפיגמה (777x643):
+               --fan-x/y: מרכז התצלום במניפה, --out-x/y: המרכז בשורה שמתחת, --*-rotate: הסיבוב.
+               source-slot: המקום של התצלום במניפה. נשאר במקום גם כשהתצלום יוצא,
+               כדי שהתצלום יישאר בחוץ כל עוד העכבר עליו או על המקום שלו (script.js).
+               source-year: השנה, מופיעה מתחת לתצלום שיצא -->
+          <div class="grid-box leftovers-label-box leftovers-label-box--source"></div>
+          <img class="on-grid source-background" src="Images/zafon.png" alt="" aria-hidden="true">
+          <p class="on-grid section-title text-section-title leftovers-source-label">Source Material</p>
+
+          <div class="on-grid source-fan">
+            <span class="source-slot" data-card="0" aria-hidden="true" style="--fan-x: 179.15; --fan-y: 176.74; --fan-rotate: 140.31deg; --w: 304.28; --h: 194.4; --z: 11"></span>
+            <span class="source-slot" data-card="1" aria-hidden="true" style="--fan-x: 322.1;  --fan-y: 206.6;  --fan-rotate: 101.53deg; --w: 313.31; --h: 188.9; --z: 12"></span>
+            <span class="source-slot" data-card="2" aria-hidden="true" style="--fan-x: 459.68; --fan-y: 207.79; --fan-rotate: -117.5deg; --w: 314;    --h: 203;   --z: 13"></span>
+            <span class="source-slot" data-card="3" aria-hidden="true" style="--fan-x: 603.93; --fan-y: 148.93; --fan-rotate: -156.39deg; --w: 293;   --h: 197;   --z: 14"></span>
+
+            <button class="source-card" data-card="0" type="button" aria-label="Satellite image, 2011" style="--fan-x: 179.15; --fan-y: 176.74; --fan-rotate: 140.31deg; --out-x: 388.78; --out-y: 512.37; --out-rotate: -0.42deg; --w: 304.28; --h: 194.4; --z: 1; --crop-left: -27.97%; --crop-top: 0%; --crop-width: 144.83%; --crop-height: 100%">
+              <span class="source-card-drop"><span class="source-card-turn"><span class="source-card-photo"><img class="source-card-image" src="Images/1.3.11.png" alt="" loading="lazy"></span></span></span>
+            </button>
+            <button class="source-card" data-card="1" type="button" aria-label="Satellite image, 2003" style="--fan-x: 322.1; --fan-y: 206.6; --fan-rotate: 101.53deg; --out-x: 357.95; --out-y: 472.98; --out-rotate: 180.17deg; --w: 313.31; --h: 188.9; --z: 2">
+              <span class="source-card-drop"><span class="source-card-turn"><span class="source-card-photo"><img class="source-card-image" src="Images/2003.png" alt="" loading="lazy"></span></span></span>
+            </button>
+            <button class="source-card" data-card="2" type="button" aria-label="Satellite image, 2015" style="--fan-x: 459.68; --fan-y: 207.79; --fan-rotate: -117.5deg; --out-x: 389.05; --out-y: 500.6; --out-rotate: 0deg; --w: 314; --h: 203; --z: 3; --crop-left: -28.25%; --crop-top: 0%; --crop-width: 145.81%; --crop-height: 104.47%">
+              <span class="source-card-drop"><span class="source-card-turn"><span class="source-card-photo"><img class="source-card-image" src="Images/2015.png" alt="" loading="lazy"></span></span></span>
+            </button>
+            <button class="source-card" data-card="3" type="button" aria-label="Satellite image, 2022" style="--fan-x: 603.93; --fan-y: 148.93; --fan-rotate: -156.39deg; --out-x: 380.26; --out-y: 514.73; --out-rotate: -0.68deg; --w: 293; --h: 197; --z: 4; --crop-left: -79.73%; --crop-top: -18.6%; --crop-width: 225.19%; --crop-height: 155.66%">
+              <span class="source-card-drop"><span class="source-card-turn"><span class="source-card-photo"><img class="source-card-image" src="Images/2022.png" alt="" loading="lazy"></span></span></span>
+            </button>
+
+            <span class="source-year text-section-title" data-card="0" aria-hidden="true" style="--left: 365; --top: 619">2011</span>
+            <span class="source-year text-section-title" data-card="1" aria-hidden="true" style="--left: 331; --top: 581">2003</span>
+            <span class="source-year text-section-title" data-card="2" aria-hidden="true" style="--left: 362; --top: 613">2015</span>
+            <span class="source-year text-section-title" data-card="3" aria-hidden="true" style="--left: 362; --top: 623">2022</span>
+          </div>
         </div>
       </section>
 

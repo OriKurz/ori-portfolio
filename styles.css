@@ -858,8 +858,8 @@
 :root.page-leftovers {
   --frame-cell: 66.4;
   --grid-columns: 14;
-  /* אורך הגריד: עד הפס של הפרויקטים הנוספים (y=2614 בפיגמה), במשבצות */
-  --grid-rows: 39.37;
+  /* אורך הגריד: עד הפס של הפרויקטים הנוספים (y=3006 בפיגמה), במשבצות */
+  --grid-rows: 45.271;
 
   /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
   --leftovers-navy: #222a33;   /* רקע העמוד והמלבנים של התוויות */
@@ -942,6 +942,31 @@
   /* העיגול: בערך 3 משבצות, מגדיל פי 2.5 */
   --magnifier-lens-size: calc(var(--cell) * 3);
   --magnifier-zoom: 2.5;
+
+  /* Source Material: התווית, האיור שברקע (628x739 בפיגמה) ומניפת התצלומים (בפיגמה מ-x=581, y=2348) */
+  --label-box-source-column: 5;   --label-box-source-row: 35;   --label-box-source-columns: 3;
+  --source-label-column: 5.443;   --source-label-row: 35.356;
+  --source-background-column: 7.295;  --source-background-row: 35.356;
+  --source-background-width: calc(628 * var(--u));
+  --source-background-height: calc(739 * var(--u));
+  --source-fan-column: 1.09;      --source-fan-row: 35.356;
+  --source-fan-width: calc(778 * var(--u));
+  --source-fan-height: calc(643 * var(--u));
+  /* התנועה: התצלום נשלף ומונח כמו כרטיס נייר.
+     לרוחב ולגובה יש קצב שונה, ולכן הוא עף בקשת. הסיבוב מתיישב עם קפיצה קטנה בסוף */
+  --card-out-time: 0.85s;
+  --card-back-time: 0.7s;
+  --card-x-easing: cubic-bezier(0.45, 0, 0.2, 1);
+  --card-y-easing: cubic-bezier(0.2, 0.75, 0.25, 1);
+  --card-turn-easing: cubic-bezier(0.3, 1.12, 0.45, 1);
+  /* כשהוא נשלף, הוא נשאר בין הכרטיסים שמעליו עד שהוא יוצא מהחפיסה, ואז עולה מעל כולם */
+  --card-rise-delay: 0.22s;
+  --card-pressed-scale: 0.96;
+  /* השנה מופיעה רק אחרי שהתצלום נחת */
+  --year-show-time: 0.35s;
+  --year-show-delay: 0.5s;
+  --year-hide-time: 0.15s;
+  --year-rise: calc(10 * var(--u));
 
   /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50%, וקצת נמוך יותר */
   --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
@@ -3233,6 +3258,190 @@ body {
 /* כשהמצב פעיל: גרירה על הפוסטר בטלפון מזיזה את העיגול ולא גוללת */
 .leftovers-map.is-magnifying {
   touch-action: none;
+}
+
+/* ----- Source Material: מניפת תצלומי הלוויין -----
+   כל המיקומים בתוך המניפה בפיקסלים של הקומפוננטה בפיגמה, כפול --u */
+
+/* האיור של Source Material יוצא מימין מהגריד: חותכים אותו בקצה, בלי גלילה לרוחב */
+.page-leftovers .full-project-grid {
+  overflow-x: clip;
+}
+
+.leftovers-label-box--source { --column: var(--label-box-source-column); --row: var(--label-box-source-row); --columns: var(--label-box-source-columns); }
+.leftovers-source-label      { --column: var(--source-label-column);     --row: var(--source-label-row); }
+
+/* האיור שברקע: רק רקע, לא מגיב לכלום. יוצא מימין מהגריד וממשיך מתחת לפס הפרויקטים, כמו בפיגמה */
+.source-background {
+  --column: var(--source-background-column);
+  --row: var(--source-background-row);
+  width: var(--source-background-width);
+  height: var(--source-background-height);
+  max-width: none;
+  pointer-events: none;
+}
+
+.source-fan {
+  --column: var(--source-fan-column);
+  --row: var(--source-fan-row);
+  width: var(--source-fan-width);
+  height: var(--source-fan-height);
+}
+
+/* המקום של התצלום במניפה: שקוף, מעל התצלומים, באותו סדר שכבות שלהם */
+.source-slot {
+  position: absolute;
+  left: calc(var(--fan-x) * var(--u));
+  top: calc(var(--fan-y) * var(--u));
+  z-index: var(--z);
+  width: calc(var(--w) * var(--u));
+  height: calc(var(--h) * var(--u));
+  translate: -50% -50%;
+  rotate: var(--fan-rotate);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* תצלום: שלוש שכבות שזזות כל אחת בקצב שלה.
+   source-card (הכפתור): לרוחב | source-card-drop: לגובה | source-card-turn: הסיבוב.
+   הכפתור עצמו בגודל 0, בנקודת המרכז של התצלום, והתצלום ממורכז סביבה */
+.source-card {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: var(--z);
+  width: 0;
+  height: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  translate: calc(var(--fan-x) * var(--u)) 0;
+  transition: translate var(--card-back-time) var(--card-x-easing), z-index 0s;
+}
+
+.source-card-drop {
+  position: absolute;
+  translate: 0 calc(var(--fan-y) * var(--u));
+  transition: translate var(--card-back-time) var(--card-y-easing);
+}
+
+.source-card-turn {
+  position: absolute;
+  rotate: var(--fan-rotate);
+  transition: rotate var(--card-back-time) var(--card-turn-easing), scale 0.15s ease;
+}
+
+/* התצלום עצמו, חתוך כמו בפיגמה (גודל ומיקום התמונה בתוך המלבן) */
+.source-card-photo {
+  position: absolute;
+  width: calc(var(--w) * var(--u));
+  height: calc(var(--h) * var(--u));
+  translate: -50% -50%;
+  overflow: hidden;
+}
+
+.source-card-image {
+  position: absolute;
+  left: var(--crop-left, 0%);
+  top: var(--crop-top, 0%);
+  width: var(--crop-width, 100%);
+  height: var(--crop-height, 100%);
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* בחוץ (hover, נגיעה או Focus): התצלום עף לשורה שמתחת למניפה ומתיישר */
+.source-card.is-out,
+.source-card.is-hover,
+.source-card.is-focus {
+  z-index: 20;
+  translate: calc(var(--out-x) * var(--u)) 0;
+  transition: translate var(--card-out-time) var(--card-x-easing), z-index 0s var(--card-rise-delay);
+}
+
+.source-card:is(.is-out, .is-hover, .is-focus) .source-card-drop {
+  translate: 0 calc(var(--out-y) * var(--u));
+  transition: translate var(--card-out-time) var(--card-y-easing);
+}
+
+.source-card:is(.is-out, .is-hover, .is-focus) .source-card-turn {
+  rotate: var(--out-rotate);
+  transition: rotate var(--card-out-time) var(--card-turn-easing), scale 0.15s ease;
+}
+
+/* הנייר באוויר: מתרומם, מתכופף קצת לאחור ונוחת על השולחן (script.js מפעיל בכל יציאה וחזרה) */
+.source-card.is-flying-out .source-card-photo {
+  animation: source-card-flutter var(--card-out-time) ease-out;
+}
+
+.source-card.is-flying-back .source-card-photo {
+  animation: source-card-flutter-back var(--card-back-time) ease-out;
+}
+
+@keyframes source-card-flutter {
+  0%   { transform: perspective(900px); }
+  35%  { transform: perspective(900px) rotateX(16deg) rotateY(-8deg) scale(1.08); }
+  75%  { transform: perspective(900px) rotateX(-4deg) rotateY(2deg) scale(0.99); }
+  100% { transform: perspective(900px); }
+}
+
+@keyframes source-card-flutter-back {
+  0%   { transform: perspective(900px); }
+  40%  { transform: perspective(900px) rotateX(-12deg) rotateY(6deg) scale(1.06); }
+  80%  { transform: perspective(900px) rotateX(3deg) scale(0.99); }
+  100% { transform: perspective(900px); }
+}
+
+/* Pressed: התצלום קטן מעט */
+.source-card:active .source-card-turn,
+.source-card.is-pressed .source-card-turn {
+  scale: var(--card-pressed-scale);
+}
+
+/* Focus נראה כמו ה-hover: התצלום בחוץ, בלי קו מתאר */
+.source-card:focus-visible {
+  outline: none;
+}
+
+/* השנה מתחת לתצלום שבחוץ: עולה קצת ומופיעה אחרי שהוא נחת */
+.source-year {
+  position: absolute;
+  left: calc(var(--left) * var(--u));
+  top: calc(var(--top) * var(--u));
+  z-index: 21;
+  color: var(--color-orange);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  translate: 0 var(--year-rise);
+  transition: opacity var(--year-hide-time) ease, translate var(--year-hide-time) ease;
+}
+
+.source-year.is-visible {
+  opacity: 1;
+  translate: 0 0;
+  transition: opacity var(--year-show-time) ease-out var(--year-show-delay), translate var(--year-show-time) var(--card-y-easing) var(--year-show-delay);
+}
+
+/* מי שביקש פחות תנועה: התצלום והשנה עוברים מיד, בלי אנימציה */
+@media (prefers-reduced-motion: reduce) {
+  .source-card,
+  .source-card-drop,
+  .source-card-turn,
+  .source-card:is(.is-out, .is-hover, .is-focus),
+  .source-card:is(.is-out, .is-hover, .is-focus) .source-card-drop,
+  .source-card:is(.is-out, .is-hover, .is-focus) .source-card-turn,
+  .source-year,
+  .source-year.is-visible {
+    transition: none;
+  }
+
+  .source-card:is(.is-flying-out, .is-flying-back) .source-card-photo {
+    animation: none;
+  }
 }
 
 /* =========================================
