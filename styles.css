@@ -930,11 +930,12 @@
   --reveal-close-time: 1.1s;
   --reveal-close-easing: cubic-bezier(0.33, 1, 0.68, 1);
 
-  /* הזכוכית המגדלת: האייקון במשבצת הפנויה בקצה הימני של השורה שמעל המפה */
-  --magnifier-column: 13;   --magnifier-row: 1;
+  /* הזכוכית המגדלת: האייקון במשבצת החמישית משמאל בשורה שמעל המפה, צמוד לתווית של הלוקיישן */
+  --magnifier-column: 4;    --magnifier-row: 1;
   --magnifier-icon-size: calc(var(--cell) * 0.5);
   --magnifier-color: var(--color-orange);
-  --magnifier-hover-color: var(--color-green);
+  /* ירוק לא בפלטה של העמוד, אז במקומו התכלת של הטקסט הרץ */
+  --magnifier-hover-color: var(--leftovers-sky);
   /* העיגול: בערך 3 משבצות, מגדיל פי 2.5 */
   --magnifier-lens-size: calc(var(--cell) * 3);
   --magnifier-zoom: 2.5;
@@ -3118,8 +3119,8 @@ body {
 
 /* ----- הזכוכית המגדלת -----
    האייקון ממורכז בין קווי המשבצת, בקו בעובי קווי הגריד.
-   Hover ו-Focus: ירוק (כמו ההמבורגר). Pressed: קטן מעט.
-   כשהמצב פעיל (aria-pressed="true") הוא נשאר ירוק, כמו הקו הקבוע של העמוד הנוכחי בבר הבחירה */
+   Hover ו-Focus: תכלת. Pressed: תכלת וקטן מעט.
+   כשהמצב פעיל (aria-pressed="true") הוא נשאר תכלת, כמו הקו הקבוע של העמוד הנוכחי בבר הבחירה */
 .magnifier-button {
   --column: var(--magnifier-column);
   --row: var(--magnifier-row);
@@ -3159,6 +3160,8 @@ body {
 }
 
 .magnifier-button.is-hover,
+.magnifier-button:active,
+.magnifier-button.is-pressed,
 .magnifier-button[aria-pressed="true"] {
   color: var(--magnifier-hover-color);
 }
