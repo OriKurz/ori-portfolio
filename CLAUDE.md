@@ -40,6 +40,7 @@
 - כל טקסט בעמוד (גם בעמוד חדש) משתמש באחד מהסגנונות האלה. אם טקסט בפיגמה לא מתאים לאף סגנון, שאל אותי לפני שאתה ממציא סגנון חדש.
 - כל סגנון הוא מחלקה ב-`styles.css` (העמודה "מחלקה"). הצבע לא חלק מהסגנון.
 - הגדלים לפי פריים של 1440 בפיגמה. הגודל במסך = הגודל בטבלה כפול `--type-px` (פיקסל אחד בפיגמה), שכל עמוד קובע לפי השיטה שבה הוא גדל עם המסך.
+- פונט הטקסט הוא PP Telegraf (UltraLight=200, Regular=400, UltraBold=800). סגנונות שעדיין כתוב בהם TheBasics בטבלה מחכים לבחירת ערכים ב-Telegraf, ובינתיים נשארים ב-TheBasics (`--font-text-previous`).
 - במובייל `text-display-large`, `text-button` ו-`text-button-strong` עוברים לבד לגרסת המובייל שלהם.
 
 | סגנון | מחלקה | פונט ומשקל | גודל | גובה שורה | ריווח | איפה |
@@ -47,18 +48,18 @@
 | Display/Large | `text-display-large` | Reisinger Bold | 275 | 100% | 0 | portfolio בבית מחשב |
 | Display/Medium | `text-display-medium` | Reisinger Bold | 220 | 100% | 0 | Say hi |
 | Display/Mobile | `text-display-mobile` | Reisinger Bold | 70 | 100% | 0 | portfolio בבית מובייל |
-| Page Title | `text-page-title` | TheBasics Bold | 80 | 95.5% | -4% | The Perfect Crime, וכל כותרת עמוד בעתיד |
+| Page Title | `text-page-title` | Telegraf UltraBold | 80 | 95.5% | 0 | The Perfect Crime, וכל כותרת עמוד בעתיד |
 | Page Title/Process | `text-page-title-process` | TheBasics Black | 96 | 100% | -4% | Process בלבד |
-| Banner | `text-banner` | TheBasics Medium | 40 | 100% | 4% | הבאנר הרץ |
+| Banner | `text-banner` | Telegraf UltraBold | 40 | 100% | 4% | הבאנר הרץ |
 | Button | `text-button` | TheBasics Medium | 25 | 100% | 4% | כפתורים במחשב, ORI KURZ, 2026 |
 | Button/Strong | `text-button-strong` | TheBasics Bold | 25 | 100% | 4% | PEEK/PLAY במחשב |
 | Button/Mobile | `text-button-mobile` | TheBasics Medium | 17 | 100% | 4% | כפתורים, ORI KURZ ו-2026 במובייל |
 | Button/Mobile Strong | `text-button-mobile-strong` | TheBasics Bold | 14 | 100% | 4% | PEEK/PLAY במובייל |
-| Section Title | `text-section-title` | TheBasics Regular | 25 | 105% | -4% | כותרות סעיפים בפרויקט, ורשומות היומן בתהליך |
-| Subtitle | `text-subtitle` | TheBasics Medium | 25 | 110% | -4% | Motion Graphic Academic project |
+| Section Title | `text-section-title` | Telegraf Regular | 20 | 100% | 0 | כותרות סעיפים בפרויקט, ורשומות היומן בתהליך |
+| Subtitle | `text-subtitle` | Telegraf Regular | 20 | 110% | 0 | Motion Graphic Academic project |
 | Tagline | `text-tagline` | TheBasics Medium | 22 | 100% | 4% | שורות הטקסט ב-Say Hi |
-| Body | `text-body` | TheBasics Regular | 20 | 28px | 2% | טקסט רץ |
-| Hint | `text-hint` | TheBasics Regular | 25 | 95.5% | -4% | hover to play / tap to play |
+| Body | `text-body` | Telegraf Regular | 20 | 28px | 0 | טקסט רץ |
+| Hint | `text-hint` | Telegraf Regular | 20 | 100% | 0 | hover to play / tap to play |
 | Note | `text-note` | TheBasics Medium | 24 | 100% | 0 | ההערות בעברית בתהליך |
 | Label | `text-label` | TheBasics Medium | 15 | 100% | 0 | קודי הצבעים בתהליך |
 | Contact Ball | `text-contact-ball` | TheBasics Medium | 17 | 100% | 0 | הטקסט על כדורי יצירת הקשר ב-Say Hi |

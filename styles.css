@@ -1,6 +1,6 @@
 /* =========================================
    פונטים
-   כל קובץ מחובר למשקל שלו: Light=300, Regular=400, Medium=500, Bold=700, Black=900.
+   כל קובץ מחובר למשקל שלו: UltraLight=200, Light=300, Regular=400, Medium=500, Bold=700, UltraBold=800, Black=900.
    הדפדפן מוריד קובץ רק כשמשתמשים במשקל שלו
    ========================================= */
 @font-face {
@@ -27,6 +27,32 @@
   font-display: swap;
 }
 
+/* PP Telegraf: הפונט של הטקסט */
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-UltraLight.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "PP Telegraf";
+  src: url("fonts/PPTelegraf-UltraBold.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* TheBasics: הפונט הקודם. נשאר רק לסגנונות שעוד לא נבחרו להם ערכים ב-Telegraf */
 @font-face {
   font-family: "TheBasics Corporate";
   src: url("fonts/TheBasics_Corporate-Light.otf") format("opentype");
@@ -117,7 +143,9 @@
 
   /* פונטים */
   --font-title: "Reisinger Michal", sans-serif;
-  --font-text: "TheBasics Corporate", sans-serif;
+  --font-text: "PP Telegraf", sans-serif;
+  /* זמני: הסגנונות שעוד לא הועברו ל-Telegraf */
+  --font-text-previous: "TheBasics Corporate", sans-serif;
 
   /* גובה שורה רגיל (100%) */
   --line-height: 1;
@@ -134,12 +162,12 @@
   --text-button-strong-size: 25;
   --text-button-mobile-size: 17;
   --text-button-mobile-strong-size: 14;
-  --text-section-title-size: 25;
-  --text-subtitle-size: 25;
+  --text-section-title-size: 20;
+  --text-subtitle-size: 20;
   --text-tagline-size: 22;
   --text-body-size: 20;
   --text-body-line-height: 28;
-  --text-hint-size: 25;
+  --text-hint-size: 20;
   --text-note-size: 24;
   --text-label-size: 15;
   --text-contact-ball-size: 17;
@@ -1003,15 +1031,15 @@ body {
 /* Page Title: כותרת עמוד */
 .text-page-title {
   font-family: var(--font-text);
-  font-weight: 700;
+  font-weight: 800;
   font-size: calc(var(--text-page-title-size) * var(--type-px));
   line-height: 0.955;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 /* Page Title/Process: הכותרת Process בלבד */
 .text-page-title-process {
-  font-family: var(--font-text);
+  font-family: var(--font-text-previous);
   font-weight: 900;
   font-size: calc(var(--text-page-title-process-size) * var(--type-px));
   line-height: var(--line-height);
@@ -1021,7 +1049,7 @@ body {
 /* Banner: הבאנר הרץ */
 .text-banner {
   font-family: var(--font-text);
-  font-weight: 500;
+  font-weight: 800;
   font-size: calc(var(--text-banner-size) * var(--type-px));
   line-height: var(--line-height);
   letter-spacing: 0.04em;
@@ -1032,7 +1060,7 @@ body {
 .text-button-strong,
 .text-button-mobile,
 .text-button-mobile-strong {
-  font-family: var(--font-text);
+  font-family: var(--font-text-previous);
   font-weight: 500;
   line-height: var(--line-height);
   letter-spacing: 0.04em;
@@ -1053,22 +1081,22 @@ body {
   font-family: var(--font-text);
   font-weight: 400;
   font-size: calc(var(--text-section-title-size) * var(--type-px));
-  line-height: 1.05;
-  letter-spacing: -0.04em;
+  line-height: var(--line-height);
+  letter-spacing: 0;
 }
 
 /* Subtitle: "Motion Graphic / Academic project / 2026" */
 .text-subtitle {
   font-family: var(--font-text);
-  font-weight: 500;
+  font-weight: 400;
   font-size: calc(var(--text-subtitle-size) * var(--type-px));
   line-height: 1.1;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 /* Tagline: שורות הטקסט ב-Say Hi */
 .text-tagline {
-  font-family: var(--font-text);
+  font-family: var(--font-text-previous);
   font-weight: 500;
   font-size: calc(var(--text-tagline-size) * var(--type-px));
   line-height: var(--line-height);
@@ -1081,7 +1109,7 @@ body {
   font-weight: 400;
   font-size: calc(var(--text-body-size) * var(--type-px));
   line-height: calc(var(--text-body-line-height) * var(--type-px));
-  letter-spacing: 0.02em;
+  letter-spacing: 0;
 }
 
 /* Hint: "hover to play" / "tap to play" */
@@ -1089,13 +1117,13 @@ body {
   font-family: var(--font-text);
   font-weight: 400;
   font-size: calc(var(--text-hint-size) * var(--type-px));
-  line-height: 0.955;
-  letter-spacing: -0.04em;
+  line-height: var(--line-height);
+  letter-spacing: 0;
 }
 
 /* Note: ההערות בעברית בעמוד התהליך */
 .text-note {
-  font-family: var(--font-text);
+  font-family: var(--font-text-previous);
   font-weight: 500;
   font-size: calc(var(--text-note-size) * var(--type-px));
   line-height: var(--line-height);
@@ -1104,7 +1132,7 @@ body {
 
 /* Label: קודי הצבעים בעמוד התהליך */
 .text-label {
-  font-family: var(--font-text);
+  font-family: var(--font-text-previous);
   font-weight: 500;
   font-size: calc(var(--text-label-size) * var(--type-px));
   line-height: var(--line-height);
@@ -1113,7 +1141,7 @@ body {
 
 /* Contact Ball: הטקסט על כדורי יצירת הקשר ב-Say Hi */
 .text-contact-ball {
-  font-family: var(--font-text);
+  font-family: var(--font-text-previous);
   font-weight: 500;
   font-size: calc(var(--text-contact-ball-size) * var(--type-px));
   line-height: var(--line-height);
