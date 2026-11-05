@@ -930,8 +930,8 @@
   --reveal-close-time: 1.1s;
   --reveal-close-easing: cubic-bezier(0.33, 1, 0.68, 1);
 
-  /* הזכוכית המגדלת: האייקון במשבצת החמישית משמאל בשורה שמעל המפה, צמוד לתווית של הלוקיישן */
-  --magnifier-column: 4;    --magnifier-row: 1;
+  /* הזכוכית המגדלת: האייקון במשבצת הראשונה בשורה שמעל המפה, מיד משמאל לתווית של הלוקיישן */
+  --magnifier-column: 0;    --magnifier-row: 1;
   --magnifier-icon-size: calc(var(--cell) * 0.5);
   --magnifier-color: var(--color-orange);
   /* ירוק לא בפלטה של העמוד, אז במקומו התכלת של הטקסט הרץ */
