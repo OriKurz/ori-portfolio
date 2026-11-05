@@ -1015,3 +1015,87 @@ if (leftoversMap) {
   // בטעינה: הקואורדינטות של הכפר
   showCoordinates(village);
 }
+
+// =========================================
+// עמוד Leftovers*: גלריית הלוקיישנים.
+// כל לוקיישן הוא איור, ומעליו תמונה מוסתרת. כשהעכבר על האיור, התמונה נחשפת
+// כמו סורק: מהצד (ימין או שמאל) הקרוב לנקודה שבה העכבר נכנס, ועד העכבר, בקו אנכי.
+// כשהעכבר יוצא, התמונה נסגרת בתנועה רכה חזרה לאותו צד (ב-CSS).
+// בטלפון: גרירה לרוחב חושפת באותה צורה, ובשחרור היא נסגרת. גרירה למעלה ולמטה גוללת.
+// =========================================
+const locations = document.querySelectorAll(".location");
+const dragThreshold = 8; // כמה פיקסלים לרוחב האצבע צריכה לזוז לפני שהחשיפה מתחילה
+
+locations.forEach(function (location) {
+  let side = "left";     // הצד שממנו התמונה נפתחת
+  let touchStartX = null;
+  let dragging = false;
+
+  // מיקום העכבר / האצבע לרוחב, מ-0 (שמאל) עד 1 (ימין)
+  function horizontalPosition(event) {
+    const box = location.getBoundingClientRect();
+    return Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
+  }
+
+  // חושף מהצד שנבחר ועד המיקום, בלי אנימציה
+  function revealTo(event) {
+    const position = horizontalPosition(event) * 100;
+    location.classList.add("is-revealing");
+    if (side === "left") {
+      location.style.setProperty("--hide-left", "0%");
+      location.style.setProperty("--hide-right", (100 - position) + "%");
+    } else {
+      location.style.setProperty("--hide-left", position + "%");
+      location.style.setProperty("--hide-right", "0%");
+    }
+  }
+
+  // התחלה: הצד הקרוב יותר לנקודת הכניסה
+  function start(event) {
+    side = horizontalPosition(event) < 0.5 ? "left" : "right";
+    revealTo(event);
+  }
+
+  // סגירה רכה חזרה לצד שממנו נפתחה
+  function close() {
+    location.classList.remove("is-revealing");
+    location.style.setProperty("--hide-left", side === "left" ? "0%" : "100%");
+    location.style.setProperty("--hide-right", side === "left" ? "100%" : "0%");
+  }
+
+  // ----- עכבר -----
+  location.addEventListener("pointerenter", function (event) {
+    if (event.pointerType === "mouse") start(event);
+  });
+  location.addEventListener("pointermove", function (event) {
+    if (event.pointerType === "mouse") revealTo(event);
+  });
+  location.addEventListener("pointerleave", function (event) {
+    if (event.pointerType === "mouse") close();
+  });
+
+  // ----- טלפון: גרירה לרוחב -----
+  location.addEventListener("pointerdown", function (event) {
+    if (event.pointerType === "mouse") return;
+    touchStartX = event.clientX;
+    dragging = false;
+  });
+  location.addEventListener("pointermove", function (event) {
+    if (event.pointerType === "mouse" || touchStartX === null) return;
+    if (!dragging) {
+      if (Math.abs(event.clientX - touchStartX) < dragThreshold) return;
+      dragging = true;
+      side = horizontalPosition({ clientX: touchStartX }) < 0.5 ? "left" : "right";
+    }
+    revealTo(event);
+  });
+  // שחרור, או שהדפדפן התחיל לגלול: נסגרת
+  function endTouch(event) {
+    if (event.pointerType === "mouse") return;
+    touchStartX = null;
+    if (dragging) close();
+    dragging = false;
+  }
+  location.addEventListener("pointerup", endTouch);
+  location.addEventListener("pointercancel", endTouch);
+});

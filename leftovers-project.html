@@ -66,17 +66,25 @@
       <section class="full-project-panel">
         <div class="full-project-grid grid-lines">
 
-          <!-- ----- שלוש תוויות, כל אחת במלבן של שתי משבצות בצבע הרקע (מסתיר את הקו שבאמצע) ----- -->
+          <!-- ----- התוויות, כל אחת במלבן של כמה משבצות בצבע הרקע (מסתיר את הקו שבאמצע) ----- -->
           <div class="grid-box leftovers-label-box leftovers-label-box--place"></div>
           <div class="grid-box leftovers-label-box leftovers-label-box--coordinates"></div>
           <div class="grid-box leftovers-label-box leftovers-label-box--map"></div>
+          <div class="grid-box leftovers-label-box leftovers-label-box--gallery"></div>
+          <div class="grid-box leftovers-label-box leftovers-label-box--hint"></div>
 
           <p class="on-grid section-title text-section-title leftovers-place">Villa Epecuén,<br>Argentina</p>
           <!-- הקואורדינטות: משתנות לפי מיקום העכבר על המפה (script.js) -->
           <p class="on-grid leftovers-coordinates text-subtitle" aria-label="Coordinates">
             <span class="leftovers-latitude">37°07′51″S</span><br><span class="leftovers-longitude">62°48′27″W</span>
           </p>
-          <p class="on-grid section-title text-section-title leftovers-map-label">Main map,<br>50×70,<br>print</p>
+          <p class="on-grid section-title text-section-title leftovers-map-label">Main map,<br>50×70, print</p>
+          <p class="on-grid text-section-title leftovers-gallery-label">Locations<br>gallery</p>
+          <!-- במחשב "hover to show", במסך מגע "drag to show" -->
+          <p class="on-grid text-hint leftovers-gallery-hint">
+            <span class="play-hint-mouse">hover<br>to show</span>
+            <span class="play-hint-touch">drag<br>to show</span>
+          </p>
 
           <!-- ----- המפה -----
                כל המיקומים (--x, --y, --w, --h) בפיקסלים של קובץ התמונה (1935x2700).
@@ -87,14 +95,14 @@
           <div class="on-grid leftovers-map">
             <img class="leftovers-map-image" src="Images/mape1.png" alt="Leftovers* map of Villa Epecuén, Argentina">
 
-            <button class="map-marker" type="button" data-marker="A" style="--x: 588.6; --y: 2041.3" aria-label="A. The slaughterhouse"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.925" y="74.94">A</text></svg></button>
-            <button class="map-marker" type="button" data-marker="B" style="--x: 1367.3; --y: 1114.4" aria-label="B. Square Rivadavia"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.4375" y="74.94">B</text></svg></button>
-            <button class="map-marker" type="button" data-marker="C" style="--x: 1299.6; --y: 1379.9" aria-label="C. La Luna de Gustavo"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.8125" y="74.98">C</text></svg></button>
-            <button class="map-marker" type="button" data-marker="D" style="--x: 869.8; --y: 1044.1" aria-label="D. The pool complex"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.325" y="74.94">D</text></svg></button>
-            <button class="map-marker" type="button" data-marker="E" style="--x: 981.8; --y: 1103.9" aria-label="E. Playground"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.8125" y="74.94">E</text></svg></button>
-            <button class="map-marker" type="button" data-marker="F" style="--x: 932.3; --y: 1273.2" aria-label="F. The ladder to nowhere"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.5125" y="74.94">F</text></svg></button>
-            <button class="map-marker" type="button" data-marker="G" style="--x: 1104.2; --y: 1356.5" aria-label="G. Av. de Mayo"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="50.6375" y="74.98">G</text></svg></button>
-            <button class="map-marker" type="button" data-marker="H" style="--x: 1403.7; --y: 1005.0" aria-label="H. Diagonal San Martín"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="50.0375" y="74.94">H</text></svg></button>
+            <button class="map-marker" type="button" data-marker="A" style="--x: 591.6; --y: 2044.0" aria-label="A. The slaughterhouse"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.925" y="74.94">A</text></svg></button>
+            <button class="map-marker" type="button" data-marker="B" style="--x: 1366.8; --y: 1110.9" aria-label="B. Square Rivadavia"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.4375" y="74.94">B</text></svg></button>
+            <button class="map-marker" type="button" data-marker="C" style="--x: 1299.7; --y: 1376.3" aria-label="C. La Luna de Gustavo"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.8125" y="74.98">C</text></svg></button>
+            <button class="map-marker" type="button" data-marker="D" style="--x: 865.5; --y: 1046.8" aria-label="D. The pool complex"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.325" y="74.94">D</text></svg></button>
+            <button class="map-marker" type="button" data-marker="E" style="--x: 979.2; --y: 1102.2" aria-label="E. Playground"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.8125" y="74.94">E</text></svg></button>
+            <button class="map-marker" type="button" data-marker="F" style="--x: 935.5; --y: 1271.3" aria-label="F. The ladder to nowhere"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.5125" y="74.94">F</text></svg></button>
+            <button class="map-marker" type="button" data-marker="G" style="--x: 1107.4; --y: 1358.8" aria-label="G. Av. de Mayo"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="50.6375" y="74.98">G</text></svg></button>
+            <button class="map-marker" type="button" data-marker="H" style="--x: 1404.6; --y: 1003.0" aria-label="H. Diagonal San Martín"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="50.0375" y="74.94">H</text></svg></button>
 
             <button class="map-sketch" type="button" data-marker="A" style="--x: 26;  --y: 2352; --w: 206; --h: 155" aria-label="Sketch A. The slaughterhouse"></button>
             <button class="map-sketch" type="button" data-marker="B" style="--x: 264; --y: 2352; --w: 206; --h: 155" aria-label="Sketch B. Square Rivadavia"></button>
@@ -104,6 +112,47 @@
             <button class="map-sketch" type="button" data-marker="F" style="--x: 264; --y: 2515; --w: 206; --h: 162" aria-label="Sketch F. The ladder to nowhere"></button>
             <button class="map-sketch" type="button" data-marker="G" style="--x: 498; --y: 2515; --w: 205; --h: 162" aria-label="Sketch G. Av. de Mayo"></button>
             <button class="map-sketch" type="button" data-marker="H" style="--x: 738; --y: 2515; --w: 205; --h: 162" aria-label="Sketch H. Diagonal San Martín"></button>
+          </div>
+
+          <!-- ----- גלריית לוקיישנים -----
+               רקע בצבע העמוד שמסתיר את קווי הגריד מאחורי הגלריה, ובתוכו 8 לוקיישנים.
+               כל לוקיישן: איור, ומעליו תמונה באותו גודל ובאותו מקום בדיוק.
+               התמונה מוסתרת, ונחשפת כמו סורק מהצד שממנו העכבר נכנס ועד העכבר (script.js).
+               --crop-*: החיתוך של האיור, כמו בפיגמה -->
+          <div class="grid-box leftovers-gallery-box"></div>
+          <div class="on-grid leftovers-gallery">
+            <figure class="location" style="--crop-left: -4.7%;  --crop-top: -6.74%;  --crop-width: 109.49%; --crop-height: 113.81%">
+              <img class="location-sketch" src="Images/Masheta.png" alt="Sketch of the slaughterhouse">
+              <img class="location-photo" src="Images/masheta-photo.png" alt="Photo of the slaughterhouse" loading="lazy">
+            </figure>
+            <figure class="location" style="--crop-left: -7.13%; --crop-top: -12.3%;  --crop-width: 111.8%;  --crop-height: 122.33%">
+              <img class="location-sketch" src="Images/Luna.png" alt="Sketch of La Luna de Gustavo">
+              <img class="location-photo" src="Images/luna-photo.png" alt="Photo of La Luna de Gustavo" loading="lazy">
+            </figure>
+            <figure class="location" style="--crop-left: -8.62%; --crop-top: -6.65%;  --crop-width: 114.8%;  --crop-height: 118.63%">
+              <img class="location-sketch" src="Images/Fan.png" alt="Sketch of a ruin in Villa Epecuén">
+              <img class="location-photo" src="Images/fan-photo.png" alt="Photo of a ruin in Villa Epecuén" loading="lazy">
+            </figure>
+            <figure class="location" style="--crop-left: -8.66%; --crop-top: -14.57%; --crop-width: 116.4%;  --crop-height: 126.77%">
+              <img class="location-sketch" src="Images/Kikar.png" alt="Sketch of the square">
+              <img class="location-photo" src="Images/kikar-photo.png" alt="Photo of the square" loading="lazy">
+            </figure>
+            <figure class="location" style="--crop-left: -9%;    --crop-top: -17.27%; --crop-width: 124.55%; --crop-height: 130.55%">
+              <img class="location-sketch" src="Images/Maglesha.png" alt="Sketch of the playground slide">
+              <img class="location-photo" src="Images/maglesha-photo.png" alt="Photo of the playground slide" loading="lazy">
+            </figure>
+            <figure class="location" style="--crop-left: -7.29%; --crop-top: -12.6%;  --crop-width: 114.58%; --crop-height: 126.5%">
+              <img class="location-sketch" src="Images/Madregot.png" alt="Sketch of the ladder to nowhere">
+              <img class="location-photo" src="Images/madregot-photo.png" alt="Photo of the ladder to nowhere" loading="lazy">
+            </figure>
+            <figure class="location" style="--crop-left: -5.73%; --crop-top: -11.5%;  --crop-width: 109.96%; --crop-height: 122.73%">
+              <img class="location-sketch" src="Images/Up.png" alt="Sketch of a ruin in Villa Epecuén">
+              <img class="location-photo" src="Images/up-photo.png" alt="Photo of a ruin in Villa Epecuén" loading="lazy">
+            </figure>
+            <figure class="location" style="--crop-left: -6.04%; --crop-top: -14.5%;  --crop-width: 116.05%; --crop-height: 129.49%">
+              <img class="location-sketch" src="Images/Rehov.png" alt="Sketch of a flooded street">
+              <img class="location-photo" src="Images/rehov-photo.png" alt="Photo of a flooded street" loading="lazy">
+            </figure>
           </div>
         </div>
       </section>

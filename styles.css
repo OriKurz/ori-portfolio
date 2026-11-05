@@ -852,8 +852,14 @@
 
 /* ----- עמוד הפרויקט Leftovers* (leftovers-project.html) -----
    אותה תבנית כמו עמוד פרויקט מלא, עם הצבעים של הפרויקט.
-   מספרים כמו 418 * var(--px) הם פיקסלים מהפריים "דף פרויקט שאריות" בפיגמה. */
+   מספרים כמו 418 * var(--px) הם פיקסלים מהפריים "דף פרויקט שאריות" בפיגמה.
+   כאן המשבצות קטנות יותר: 14 משבצות של 66.4px (נמדד מהקווים בפיגמה) באותו רוחב של 933. */
 :root.page-leftovers {
+  --frame-cell: 66.4;
+  --grid-columns: 14;
+  /* אורך הגריד: עד הפס של הפרויקטים הנוספים (y=2614 בפיגמה), במשבצות */
+  --grid-rows: 39.37;
+
   /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
   --leftovers-navy: #1b3958;   /* רקע העמוד והמלבנים של התוויות */
   --leftovers-grid: #4a6c8f;   /* קווי הגריד */
@@ -878,17 +884,21 @@
   /* המרווח שנשאר מתחת לשורה האחרונה כשגוללים את התיאור עד הסוף (כמו המרווח בראש העמוד) */
   --description-bottom-space: calc(38 * var(--px));
 
-  /* התוויות בגריד: מלבן של שתי משבצות, והטקסט בתוכו (עמודה ושורה) */
-  --label-box-place-column: 1;        --label-box-place-row: 1;
-  --label-box-coordinates-column: 7;  --label-box-coordinates-row: 1;
-  --label-box-map-column: 1;          --label-box-map-row: 13;
-  --place-column: 1.136;        --place-row: 1.425;
-  --coordinates-column: 7.136;  --coordinates-row: 1.457;
-  --map-label-column: 1.093;    --map-label-row: 13.221;
+  /* התוויות בגריד: מלבן של כמה משבצות (עמודה, שורה ורוחב), והטקסט בתוכו (עמודה ושורה) */
+  --label-box-place-column: 1;        --label-box-place-row: 1;        --label-box-place-columns: 3;
+  --label-box-coordinates-column: 11; --label-box-coordinates-row: 1;  --label-box-coordinates-columns: 2;
+  --label-box-map-column: 2;          --label-box-map-row: 16;         --label-box-map-columns: 2;
+  --label-box-gallery-column: 1;      --label-box-gallery-row: 17;     --label-box-gallery-columns: 2;
+  --label-box-hint-column: 3;         --label-box-hint-row: 17;        --label-box-hint-columns: 2;
+  --place-column: 1.226;          --place-row: 1.217;
+  --coordinates-column: 11.133;   --coordinates-row: 1.232;
+  --map-label-column: 2.151;      --map-label-row: 16.306;
+  --gallery-label-column: 1.09;   --gallery-label-row: 17.327;
+  --gallery-hint-column: 3.167;   --gallery-hint-row: 17.327;
 
-  /* המפה: מיקום וגודל במשבצות (743x1037 בפיגמה) */
-  --map-column: 1.029;    --map-row: 2.014;
-  --map-columns: 7.961;   --map-rows: 11.111;
+  /* המפה: מיקום וגודל במשבצות (664x926 בפיגמה) */
+  --map-column: 2.015;    --map-row: 2.041;
+  --map-columns: 10;      --map-rows: 13.946;
   /* גודל קובץ התמונה בפיקסלים. כל המיקומים על המפה (--x, --y ב-HTML) לפי הגודל הזה */
   --map-image-width: 1935;
   --map-image-height: 2700;
@@ -899,14 +909,26 @@
   /* העיגולים עם האותיות: 8px בפיגמה, ואזור ה-hover סביבם גדול יותר */
   --marker-dot-size: calc(8 * var(--u));
   --marker-hit-size: calc(20 * var(--u));
-  /* הפופ: העיגול קופץ קצת מעבר לגודל הסופי ומתיישב עליו */
+  /* הפופ: העיגול גדל פי 2, בקפיצה קטנה מעבר לגודל הסופי שמתיישבת עליו */
   --marker-hidden-scale: 0.6;
-  --marker-pop-scale: 2.8;
+  --marker-pop-scale: 2;
   /* האות בעיגול: 6px מתוך עיגול של 8px בפיגמה = 75 מתוך 100 ב-SVG */
   --marker-letter-size: 75px;
   --marker-pop-time: 0.45s;
   --marker-pop-easing: cubic-bezier(0.34, 1.8, 0.64, 1);
   --marker-hide-time: 0.15s;
+
+  /* גלריית הלוקיישנים: רקע בצבע העמוד מעמודה 1 עד 13 ומשורה 18 עד 35 (מסתיר את הקווים),
+     ובתוכו 2x4 לוקיישנים של 371.5x245.5 עם רווח של 36 לרוחב ו-29 לגובה (779x1069 בפיגמה) */
+  --gallery-box-column: 1;      --gallery-box-row: 18;
+  --gallery-box-columns: 12;    --gallery-box-rows: 17;
+  --gallery-column: 1.136;      --gallery-row: 18.245;
+  --gallery-columns: 11.732;    --gallery-rows: 16.099;
+  --gallery-column-gap: calc(36 * var(--u));
+  --gallery-row-gap: calc(29 * var(--u));
+  /* כמה זמן לוקח לתמונה להיסגר חזרה כשהעכבר יוצא */
+  --reveal-close-time: 0.45s;
+  --reveal-close-easing: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50%, וקצת נמוך יותר */
   --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
@@ -2870,19 +2892,29 @@ body {
 
 /* ----- התוויות בגריד ----- */
 .leftovers-label-box {
-  --columns: 2;
   --rows: 1;
   background-color: var(--page-background);
   /* הרקע ממלא רק את השטח שבין הקווים, כך שקווי המסגרת נשארים */
   background-clip: padding-box;
 }
 
-.leftovers-label-box--place       { --column: var(--label-box-place-column);       --row: var(--label-box-place-row); }
-.leftovers-label-box--coordinates { --column: var(--label-box-coordinates-column); --row: var(--label-box-coordinates-row); }
-.leftovers-label-box--map         { --column: var(--label-box-map-column);         --row: var(--label-box-map-row); }
+.leftovers-label-box--place       { --column: var(--label-box-place-column);       --row: var(--label-box-place-row);       --columns: var(--label-box-place-columns); }
+.leftovers-label-box--coordinates { --column: var(--label-box-coordinates-column); --row: var(--label-box-coordinates-row); --columns: var(--label-box-coordinates-columns); }
+.leftovers-label-box--map         { --column: var(--label-box-map-column);         --row: var(--label-box-map-row);         --columns: var(--label-box-map-columns); }
+.leftovers-label-box--gallery     { --column: var(--label-box-gallery-column);     --row: var(--label-box-gallery-row);     --columns: var(--label-box-gallery-columns); }
+.leftovers-label-box--hint        { --column: var(--label-box-hint-column);        --row: var(--label-box-hint-row);        --columns: var(--label-box-hint-columns); }
 
 .leftovers-place     { --column: var(--place-column);     --row: var(--place-row); }
 .leftovers-map-label { --column: var(--map-label-column); --row: var(--map-label-row); }
+
+/* "Locations gallery" ו-"hover to show" (במסך מגע "drag to show", כמו ב-play-hint) */
+.leftovers-gallery-label,
+.leftovers-gallery-hint {
+  color: var(--leftovers-sky);
+}
+
+.leftovers-gallery-label { --column: var(--gallery-label-column); --row: var(--gallery-label-row); }
+.leftovers-gallery-hint  { --column: var(--gallery-hint-column);  --row: var(--gallery-hint-row); }
 
 /* הקואורדינטות: כל ספרה ברוחב קבוע, כדי שהשורה לא תזוז כשהמספרים משתנים */
 .leftovers-coordinates {
@@ -2978,6 +3010,77 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .map-marker-dot,
   .map-marker.is-popped .map-marker-dot {
+    transition: none;
+  }
+}
+
+/* ----- גלריית הלוקיישנים ----- */
+
+/* רקע בצבע העמוד, מקו לקו, שמסתיר את הקווים שמאחורי הגלריה */
+.leftovers-gallery-box {
+  --column: var(--gallery-box-column);
+  --row: var(--gallery-box-row);
+  --columns: var(--gallery-box-columns);
+  --rows: var(--gallery-box-rows);
+  background-color: var(--page-background);
+  background-clip: padding-box;
+}
+
+/* 2 טורים ו-4 שורות */
+.leftovers-gallery {
+  --column: var(--gallery-column);
+  --row: var(--gallery-row);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  column-gap: var(--gallery-column-gap);
+  row-gap: var(--gallery-row-gap);
+  width: calc(var(--gallery-columns) * var(--cell));
+  height: calc(var(--gallery-rows) * var(--cell));
+}
+
+/* לוקיישן אחד: האיור והתמונה ממלאים בדיוק את אותו מלבן.
+   גרירה למעלה ולמטה בטלפון עדיין גוללת (pan-y), וגרירה לרוחב חושפת את התמונה */
+.location {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  touch-action: pan-y;
+}
+
+/* האיור: חתוך כמו בפיגמה (גודל ומיקום התמונה בתוך המלבן) */
+.location-sketch {
+  position: absolute;
+  left: var(--crop-left);
+  top: var(--crop-top);
+  width: var(--crop-width);
+  height: var(--crop-height);
+  max-width: none;
+  pointer-events: none;
+}
+
+/* התמונה: ממלאת את כל המלבן, בדיוק מעל האיור.
+   החשיפה בקו ישר ואנכי: --hide-left ו---hide-right הם כמה מוסתר מכל צד (script.js).
+   בטעינה היא מוסתרת לגמרי. הסגירה רכה, ובזמן שהעכבר זז היא עוקבת מיד (.is-revealing) */
+.location-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  clip-path: inset(0 var(--hide-right, 100%) 0 var(--hide-left, 0%));
+  transition: clip-path var(--reveal-close-time) var(--reveal-close-easing);
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.location.is-revealing .location-photo {
+  transition: none;
+}
+
+/* מי שביקש פחות תנועה: החשיפה עדיין עוקבת אחרי העכבר, אבל הסגירה מיידית */
+@media (prefers-reduced-motion: reduce) {
+  .location-photo {
     transition: none;
   }
 }
