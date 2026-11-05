@@ -790,35 +790,6 @@ if (navBar) {
 }
 
 // =========================================
-// עמוד Leftovers*: התיאור בצד השמאלי ארוך מגובה המסך.
-// במחשב הוא עולה עם הגלילה (באותה מהירות) עד שרואים את השורה האחרונה, ואז נעצר.
-// ההמבורגר, הכותרת ושורות המשנה לא זזים. במובייל העמוד כולו נגלל כרגיל.
-// =========================================
-const descriptionClip = document.querySelector(".full-project-description-clip");
-
-if (descriptionClip) {
-  const description = descriptionClip.querySelector(".full-project-description");
-  const scroller = document.querySelector(".full-project-scroll");
-  const mobile = window.matchMedia("(max-width: 767.98px)");
-
-  function moveDescription() {
-    if (mobile.matches) {
-      description.style.setProperty("--description-shift", "0px");
-      return;
-    }
-    // כמה צריך לעלות כדי שהשורה האחרונה (ועוד המרווח שמתחתיה, padding ב-CSS) תיכנס בחלון
-    const overflow = description.offsetTop + description.offsetHeight - descriptionClip.clientHeight;
-    const shift = Math.min(scroller.scrollTop, Math.max(0, overflow));
-    description.style.setProperty("--description-shift", shift + "px");
-  }
-
-  scroller.addEventListener("scroll", moveDescription, { passive: true });
-  window.addEventListener("resize", moveDescription);
-  document.fonts.ready.then(moveDescription);
-  moveDescription();
-}
-
-// =========================================
 // עמוד Leftovers*: המפה.
 // הקואורדינטות בפינה משתנות לפי מיקום העכבר על המפה, כאילו זו מפה אמיתית:
 // - המרכז של map-area הוא הכפר (37°07′51″S 62°48′27″W).

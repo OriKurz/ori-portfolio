@@ -871,12 +871,17 @@
   --title-width: calc(418 * var(--px));
   --type-top: calc(140 * var(--px));
   --type-left: calc(297 * var(--px));
-  /* התיאור נחתך מתחת לקו הזה כשהוא עולה עם הגלילה (y=254 בפיגמה) */
-  --description-clip-top: calc(253 * var(--px));
+  /* גובה אזור הכותרת: התיאור נעלם מתחת לקו הזה כשהוא עולה עם הגלילה (y=254 בפיגמה) */
+  --header-height: calc(253 * var(--px));
   /* השורה הראשונה בתיאור (בפיגמה יש לפניה שורה ריקה) */
   --description-top: calc(281 * var(--px));
+  /* גובה התיאור: 23 שורות של 28px */
+  --description-height: calc(644 * var(--px));
   /* המרווח שנשאר מתחת לשורה האחרונה כשהתיאור מסיים לעלות (כמו המרווח בראש העמוד) */
   --description-bottom-space: calc(38 * var(--px));
+  /* איפה התיאור נעצר: כשהשורה האחרונה שלו במרחק --description-bottom-space מתחתית החלון.
+     אם הוא נכנס כולו בחלון, הוא לא זז בכלל */
+  --description-stop: min(var(--description-top), 100dvh - var(--description-height) - var(--description-bottom-space));
 
   /* התוויות בגריד: מלבן של שתי משבצות, והטקסט בתוכו (עמודה ושורה) */
   --label-box-place-column: 1;        --label-box-place-row: 1;
@@ -898,11 +903,12 @@
 
   /* העיגולים עם האותיות: 8px בפיגמה, ואזור ה-hover סביבם גדול יותר */
   --marker-dot-size: calc(8 * var(--u));
-  --marker-text-size: calc(6 * var(--u));
   --marker-hit-size: calc(20 * var(--u));
   /* הפופ: העיגול קופץ קצת מעבר לגודל הסופי ומתיישב עליו */
   --marker-hidden-scale: 0.6;
-  --marker-pop-scale: 1.4;
+  --marker-pop-scale: 2.8;
+  /* האות בעיגול: 6px מתוך עיגול של 8px בפיגמה = 75 מתוך 100 ב-SVG */
+  --marker-letter-size: 75px;
   --marker-pop-time: 0.45s;
   --marker-pop-easing: cubic-bezier(0.34, 1.8, 0.64, 1);
   --marker-hide-time: 0.15s;
@@ -910,13 +916,6 @@
   /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50%, וקצת נמוך יותר */
   --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
   --next-projects-height: calc(277.79 * var(--strip-px));
-}
-
-/* במובייל הצד של הטקסט גבוה מספיק לכל התיאור, והוא נגלל עם העמוד */
-@media (max-width: 767.98px) {
-  :root.page-leftovers {
-    --info-height: calc(990 * var(--px));
-  }
 }
 
 /* ----- עמוד Say Hi (say-hi.html) -----
@@ -2801,21 +2800,58 @@ body {
   left: var(--type-left);
 }
 
-/* התיאור: חלון שחותך אותו מלמעלה, והתיאור עולה בתוכו עם הגלילה
-   (--description-shift, script.js) עד שרואים את השורה האחרונה */
-.full-project-description-clip {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: var(--description-clip-top);
-  bottom: 0;
-  overflow: hidden;
+/* ----- גלילה אחת לכל העמוד -----
+   שני הטורים זה לצד זה בתוך האזור הנגלל, והטור השמאלי ארוך כמו הימני.
+   הכותרת "דבוקה" לראש החלון, והתיאור זז באותה גלילה עד שהוא נעצר (sticky).
+   הכול נעשה ב-CSS, ולכן התיאור זז בדיוק יחד עם הגריד, בלי עיכוב */
+.full-project-columns {
+  display: flex;
 }
 
-.full-project-description-clip .full-project-description {
-  top: calc(var(--description-top) - var(--description-clip-top));
-  padding-bottom: var(--description-bottom-space);
-  translate: 0 calc(-1 * var(--description-shift, 0px));
+.page-leftovers .full-project-info {
+  position: relative;
+  flex: none;
+  height: auto;
+}
+
+.page-leftovers .full-project-panel {
+  margin-top: 0;
+  margin-left: 0;
+}
+
+/* הכותרת, ההמבורגר ושורות המשנה. הרקע מסתיר את התיאור כשהוא עולה מתחת */
+.full-project-header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: var(--header-height);
+  background-color: var(--page-background);
+}
+
+/* התיאור: עולה עם הגלילה, ונעצר כשהשורה האחרונה שלו נכנסת בחלון */
+.page-leftovers .full-project-description {
+  position: sticky;
+  left: auto;
+  top: var(--description-stop);
+  margin-top: calc(var(--description-top) - var(--header-height));
+  margin-left: var(--description-left);
+}
+
+/* במובייל: טור אחד והעמוד כולו נגלל כרגיל. שום דבר לא נדבק */
+@media (max-width: 767.98px) {
+  .full-project-columns {
+    display: block;
+  }
+
+  .full-project-header,
+  .page-leftovers .full-project-description {
+    position: relative;
+    top: auto;
+  }
+
+  .page-leftovers .full-project-description {
+    margin-bottom: var(--description-bottom-space);
+  }
 }
 
 /* ----- התוויות בגריד ----- */
@@ -2882,32 +2918,36 @@ body {
   translate: -50% -50%;
 }
 
-/* העיגול הנפרד: לא נראה בכלל, עד שהעכבר עליו או על הציור שלו (.is-popped, script.js) */
+/* העיגול הנפרד (SVG): לא נראה בכלל, עד שהעכבר עליו או על הציור שלו (.is-popped, script.js) */
 .map-marker-dot {
   position: absolute;
   left: 50%;
   top: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: var(--marker-dot-size);
   height: var(--marker-dot-size);
+  overflow: visible;
   translate: -50% -50%;
-  border-radius: 50%;
-  background-color: var(--leftovers-lilac);
-  color: var(--leftovers-ink);
-  /* האות היא חלק מהאיור של העיגול, ולא סגנון טקסט */
-  font-family: var(--font-text);
-  font-weight: 400;
-  font-size: var(--marker-text-size);
-  line-height: 1;
   opacity: 0;
   scale: var(--marker-hidden-scale);
   transition: opacity var(--marker-hide-time) ease, scale var(--marker-hide-time) ease-in;
   pointer-events: none;
 }
 
-/* הפופ: גדל בקפיצה רכה ונשאר גדול קצת יותר */
+.map-marker-dot circle {
+  fill: var(--leftovers-lilac);
+}
+
+/* האות היא חלק מהאיור של העיגול, ולא סגנון טקסט. ממורכזת לרוחב לפי x (text-anchor) */
+.map-marker-dot text {
+  fill: var(--leftovers-ink);
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: var(--marker-letter-size);
+  text-anchor: middle;
+  text-rendering: geometricPrecision;
+}
+
+/* הפופ: גדל בקפיצה רכה ונשאר גדול יותר */
 .map-marker.is-popped .map-marker-dot {
   opacity: 1;
   scale: var(--marker-pop-scale);

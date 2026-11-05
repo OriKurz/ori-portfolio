@@ -29,11 +29,15 @@
        יש בו רק מה שיש בפריים. אותה תבנית כמו the-perfect-crime-project.html -->
   <main class="full-project">
 
-    <!-- האזור הנגלל (במחשב). הצד השמאלי "דבוק" בתוכו ולא זז -->
+    <!-- האזור הנגלל (במחשב): גלילה אחת לכל העמוד, בכל מקום שהעכבר נמצא -->
     <div class="full-project-scroll">
+     <!-- שני הטורים זה לצד זה. הטור השמאלי ארוך כמו הימני, כדי שהתיאור יוכל לזוז באותה גלילה -->
+     <div class="full-project-columns">
 
       <!-- ===== החלק של הטקסט (בלי גריד) ===== -->
       <section class="full-project-info">
+       <!-- הכותרת: נשארת במקום ("דבוקה" לראש החלון). הרקע שלה מסתיר את התיאור כשהוא עולה מתחתיה -->
+       <div class="full-project-header">
         <!-- ההמבורגר: פותח וסוגר את בר הבחירה -->
         <button class="menu-button full-project-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
           <span class="menu-button-line"></span>
@@ -44,17 +48,16 @@
         <h1 class="full-project-title text-page-title">Leftovers*</h1>
         <p class="full-project-tagline text-subtitle">*fragments that<br>were never meant<br>to persist, yet<br>somehow endured</p>
         <p class="full-project-type text-subtitle">Graphic Design and<br>Data Visualization<br>Academic project<br>2026</p>
+       </div>
 
-        <!-- התיאור ארוך מגובה המסך: הוא עולה עם הגלילה עד שרואים את השורה האחרונה,
-             ונעלם מתחת לאזור הכותרת (script.js). כל השאר בצד הזה לא זז -->
-        <div class="full-project-description-clip">
+        <!-- התיאור ארוך מגובה המסך: הוא עולה עם אותה גלילה בדיוק עד שרואים את השורה האחרונה,
+             ואז נעצר (position: sticky ב-CSS). הוא נעלם מתחת לכותרת -->
           <div class="full-project-description text-body">
             <p>A map tracing the story of Villa Epecuén,<br>a village in Argentina. In 1985, the neighboring saltwater lake flooded the village, and within a few days the entire village lay under 10 meters of saltwater.<br>It stayed that way for 20 years. In 2009, following a severe drought, the lake began to recede, gradually revealing a ghost town.</p>
             <p>The map tells the town’s story across<br>a 40-year timeline, using the village as a case study of the endless battle between humans and nature.</p>
             <p>Working only with data and hard facts, I had to find a way to tell a powerful story about leftovers, and to bring forward what most people would rather forget, or not see at all.</p>
             <p>The entire project is based on reliable data and satellite imagery, which served as my anchor throughout</p>
           </div>
-        </div>
       </section>
 
       <!-- ===== החלק של הגריד ===== -->
@@ -76,18 +79,20 @@
           <!-- ----- המפה -----
                כל המיקומים (--x, --y, --w, --h) בפיקסלים של קובץ התמונה (1935x2700).
                map-marker: עיגול סגול עם אות, מעל העיגול המקורי שבתמונה. מופיע רק ב-hover.
+               העיגול והאות מצוירים ב-SVG (100x100), כדי שהאות תהיה בדיוק באמצע גם כשהעיגול גדל.
+               x ו-y של האות חושבו מהמידות של הפונט: מרכז הציור של האות = מרכז העיגול
                map-sketch: אזור שקוף מעל הציור התואם במקרא שבתחתית הפוסטר -->
           <div class="on-grid leftovers-map">
             <img class="leftovers-map-image" src="Images/mape1.png" alt="Leftovers* map of Villa Epecuén, Argentina">
 
-            <button class="map-marker" type="button" data-marker="A" style="--x: 588.6; --y: 2041.3" aria-label="A. The slaughterhouse"><span class="map-marker-dot" aria-hidden="true">A</span></button>
-            <button class="map-marker" type="button" data-marker="B" style="--x: 1367.3; --y: 1114.4" aria-label="B. Square Rivadavia"><span class="map-marker-dot" aria-hidden="true">B</span></button>
-            <button class="map-marker" type="button" data-marker="C" style="--x: 1299.6; --y: 1379.9" aria-label="C. La Luna de Gustavo"><span class="map-marker-dot" aria-hidden="true">C</span></button>
-            <button class="map-marker" type="button" data-marker="D" style="--x: 869.8; --y: 1044.1" aria-label="D. The pool complex"><span class="map-marker-dot" aria-hidden="true">D</span></button>
-            <button class="map-marker" type="button" data-marker="E" style="--x: 981.8; --y: 1103.9" aria-label="E. Playground"><span class="map-marker-dot" aria-hidden="true">E</span></button>
-            <button class="map-marker" type="button" data-marker="F" style="--x: 932.3; --y: 1273.2" aria-label="F. The ladder to nowhere"><span class="map-marker-dot" aria-hidden="true">F</span></button>
-            <button class="map-marker" type="button" data-marker="G" style="--x: 1104.2; --y: 1356.5" aria-label="G. Av. de Mayo"><span class="map-marker-dot" aria-hidden="true">G</span></button>
-            <button class="map-marker" type="button" data-marker="H" style="--x: 1403.7; --y: 1005.0" aria-label="H. Diagonal San Martín"><span class="map-marker-dot" aria-hidden="true">H</span></button>
+            <button class="map-marker" type="button" data-marker="A" style="--x: 588.6; --y: 2041.3" aria-label="A. The slaughterhouse"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.925" y="74.94">A</text></svg></button>
+            <button class="map-marker" type="button" data-marker="B" style="--x: 1367.3; --y: 1114.4" aria-label="B. Square Rivadavia"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.4375" y="74.94">B</text></svg></button>
+            <button class="map-marker" type="button" data-marker="C" style="--x: 1299.6; --y: 1379.9" aria-label="C. La Luna de Gustavo"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.8125" y="74.98">C</text></svg></button>
+            <button class="map-marker" type="button" data-marker="D" style="--x: 869.8; --y: 1044.1" aria-label="D. The pool complex"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.325" y="74.94">D</text></svg></button>
+            <button class="map-marker" type="button" data-marker="E" style="--x: 981.8; --y: 1103.9" aria-label="E. Playground"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.8125" y="74.94">E</text></svg></button>
+            <button class="map-marker" type="button" data-marker="F" style="--x: 932.3; --y: 1273.2" aria-label="F. The ladder to nowhere"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="49.5125" y="74.94">F</text></svg></button>
+            <button class="map-marker" type="button" data-marker="G" style="--x: 1104.2; --y: 1356.5" aria-label="G. Av. de Mayo"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="50.6375" y="74.98">G</text></svg></button>
+            <button class="map-marker" type="button" data-marker="H" style="--x: 1403.7; --y: 1005.0" aria-label="H. Diagonal San Martín"><svg class="map-marker-dot" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50"/><text x="50.0375" y="74.94">H</text></svg></button>
 
             <button class="map-sketch" type="button" data-marker="A" style="--x: 26;  --y: 2352; --w: 206; --h: 155" aria-label="Sketch A. The slaughterhouse"></button>
             <button class="map-sketch" type="button" data-marker="B" style="--x: 264; --y: 2352; --w: 206; --h: 155" aria-label="Sketch B. Square Rivadavia"></button>
@@ -100,6 +105,7 @@
           </div>
         </div>
       </section>
+     </div>
 
       <!-- ===== פרויקטים נוספים: ברוחב כל המסך =====
            כל דימוי הוא קישור. דימוי בלי href עוד לא מוביל לשום מקום -->
