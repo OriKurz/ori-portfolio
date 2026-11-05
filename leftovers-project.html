@@ -29,15 +29,23 @@
        יש בו רק מה שיש בפריים. אותה תבנית כמו the-perfect-crime-project.html -->
   <main class="full-project">
 
-    <!-- האזור הנגלל (במחשב): גלילה אחת לכל העמוד, בכל מקום שהעכבר נמצא -->
-    <div class="full-project-scroll">
-     <!-- שני הטורים זה לצד זה. הטור השמאלי ארוך כמו הימני, כדי שהתיאור יוכל לזוז באותה גלילה -->
-     <div class="full-project-columns">
+    <!-- ===== החלק של הטקסט (בלי גריד) =====
+         במחשב יש בעמוד שני אזורי גלילה נפרדים: כאן גוללים רק את התיאור,
+         ומימין גוללים רק את הגריד. אחד לא מזיז את השני -->
+    <section class="full-project-info">
+      <!-- התיאור: אזור גלילה משלו, עד השורה האחרונה. הוא נעלם מתחת לכותרת -->
+      <div class="full-project-description-scroll">
+          <div class="full-project-description text-body">
+            <p>A map tracing the story of Villa Epecuén,<br>a village in Argentina. In 1985, the neighboring saltwater lake flooded the village, and within a few days the entire village lay under 10 meters of saltwater.<br>It stayed that way for 20 years. In 2009, following a severe drought, the lake began to recede, gradually revealing a ghost town.</p>
+            <p>The map tells the town’s story across<br>a 40-year timeline, using the village as a case study of the endless battle between humans and nature.</p>
+            <p>Working only with data and hard facts, I had to find a way to tell a powerful story about leftovers, and to bring forward what most people would rather forget, or not see at all.</p>
+            <p>The entire project is based on reliable data and satellite imagery, which served as my anchor throughout</p>
+          </div>
+      </div>
 
-      <!-- ===== החלק של הטקסט (בלי גריד) ===== -->
-      <section class="full-project-info">
-       <!-- הכותרת: נשארת במקום ("דבוקה" לראש החלון). הרקע שלה מסתיר את התיאור כשהוא עולה מתחתיה -->
-       <div class="full-project-header">
+      <!-- הכותרת: תמיד במקומה, מעל התיאור. הרקע שלה מסתיר את התיאור כשהוא עולה.
+           הגלגלת עוברת דרכה אל התיאור (pointer-events: none ב-CSS) -->
+      <div class="full-project-header">
         <!-- ההמבורגר: פותח וסוגר את בר הבחירה -->
         <button class="menu-button full-project-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
           <span class="menu-button-line"></span>
@@ -48,17 +56,11 @@
         <h1 class="full-project-title text-page-title">Leftovers*</h1>
         <p class="full-project-tagline text-subtitle">*fragments that<br>were never meant<br>to persist, yet<br>somehow endured</p>
         <p class="full-project-type text-subtitle">Graphic Design and<br>Data Visualization<br>Academic project<br>2026</p>
-       </div>
+      </div>
+    </section>
 
-        <!-- התיאור ארוך מגובה המסך: הוא עולה עם אותה גלילה בדיוק עד שרואים את השורה האחרונה,
-             ואז נעצר (position: sticky ב-CSS). הוא נעלם מתחת לכותרת -->
-          <div class="full-project-description text-body">
-            <p>A map tracing the story of Villa Epecuén,<br>a village in Argentina. In 1985, the neighboring saltwater lake flooded the village, and within a few days the entire village lay under 10 meters of saltwater.<br>It stayed that way for 20 years. In 2009, following a severe drought, the lake began to recede, gradually revealing a ghost town.</p>
-            <p>The map tells the town’s story across<br>a 40-year timeline, using the village as a case study of the endless battle between humans and nature.</p>
-            <p>Working only with data and hard facts, I had to find a way to tell a powerful story about leftovers, and to bring forward what most people would rather forget, or not see at all.</p>
-            <p>The entire project is based on reliable data and satellite imagery, which served as my anchor throughout</p>
-          </div>
-      </section>
+    <!-- האזור הנגלל של הגריד (במחשב) -->
+    <div class="full-project-scroll">
 
       <!-- ===== החלק של הגריד ===== -->
       <section class="full-project-panel">
@@ -105,7 +107,6 @@
           </div>
         </div>
       </section>
-     </div>
 
       <!-- ===== פרויקטים נוספים: ברוחב כל המסך =====
            כל דימוי הוא קישור. דימוי בלי href עוד לא מוביל לשום מקום -->

@@ -875,13 +875,8 @@
   --header-height: calc(253 * var(--px));
   /* השורה הראשונה בתיאור (בפיגמה יש לפניה שורה ריקה) */
   --description-top: calc(281 * var(--px));
-  /* גובה התיאור: 23 שורות של 28px */
-  --description-height: calc(644 * var(--px));
-  /* המרווח שנשאר מתחת לשורה האחרונה כשהתיאור מסיים לעלות (כמו המרווח בראש העמוד) */
+  /* המרווח שנשאר מתחת לשורה האחרונה כשגוללים את התיאור עד הסוף (כמו המרווח בראש העמוד) */
   --description-bottom-space: calc(38 * var(--px));
-  /* איפה התיאור נעצר: כשהשורה האחרונה שלו במרחק --description-bottom-space מתחתית החלון.
-     אם הוא נכנס כולו בחלון, הוא לא זז בכלל */
-  --description-stop: min(var(--description-top), 100dvh - var(--description-height) - var(--description-bottom-space));
 
   /* התוויות בגריד: מלבן של שתי משבצות, והטקסט בתוכו (עמודה ושורה) */
   --label-box-place-column: 1;        --label-box-place-row: 1;
@@ -2800,57 +2795,76 @@ body {
   left: var(--type-left);
 }
 
-/* ----- גלילה אחת לכל העמוד -----
-   שני הטורים זה לצד זה בתוך האזור הנגלל, והטור השמאלי ארוך כמו הימני.
-   הכותרת "דבוקה" לראש החלון, והתיאור זז באותה גלילה עד שהוא נעצר (sticky).
-   הכול נעשה ב-CSS, ולכן התיאור זז בדיוק יחד עם הגריד, בלי עיכוב */
-.full-project-columns {
-  display: flex;
-}
-
+/* ----- שני אזורי גלילה נפרדים -----
+   במחשב הצד השמאלי קבוע מעל החלון, מחוץ לאזור הנגלל של הגריד.
+   בתוכו התיאור נגלל לבד, והכותרת יושבת מעליו. הגלילה של הדפדפן עצמו
+   (גם בעכבר וגם בטראקפד), ו-overscroll-behavior: contain מונע מגלילה
+   באזור אחד להמשיך לאזור השני כשמגיעים לסוף */
 .page-leftovers .full-project-info {
-  position: relative;
-  flex: none;
-  height: auto;
+  position: fixed;
+  left: 0;
+  top: 0;
 }
 
 .page-leftovers .full-project-panel {
   margin-top: 0;
-  margin-left: 0;
 }
 
-/* הכותרת, ההמבורגר ושורות המשנה. הרקע מסתיר את התיאור כשהוא עולה מתחת */
+/* אזור הגלילה של התיאור: כל הצד השמאלי, בלי פס גלילה */
+.full-project-description-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  /* השורה הראשונה של התיאור (padding ולא margin, כדי שהמרווח יישאר בתוך האזור) */
+  padding-top: var(--description-top);
+}
+
+.full-project-description-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.page-leftovers .full-project-description {
+  position: relative;
+  left: auto;
+  top: auto;
+  margin-left: var(--description-left);
+  padding-bottom: var(--description-bottom-space);
+}
+
+/* הכותרת, ההמבורגר ושורות המשנה: מעל התיאור. הרקע מסתיר את התיאור כשהוא עולה מתחת.
+   הגלגלת עוברת דרכה אל התיאור, ורק ההמבורגר לחיץ */
 .full-project-header {
-  position: sticky;
+  position: absolute;
+  left: 0;
   top: 0;
+  right: 0;
   z-index: 1;
   height: var(--header-height);
   background-color: var(--page-background);
+  pointer-events: none;
 }
 
-/* התיאור: עולה עם הגלילה, ונעצר כשהשורה האחרונה שלו נכנסת בחלון */
-.page-leftovers .full-project-description {
-  position: sticky;
-  left: auto;
-  top: var(--description-stop);
-  margin-top: calc(var(--description-top) - var(--header-height));
-  margin-left: var(--description-left);
+.full-project-header .menu-button {
+  pointer-events: auto;
 }
 
-/* במובייל: טור אחד והעמוד כולו נגלל כרגיל. שום דבר לא נדבק */
+/* במובייל: טור אחד והעמוד כולו נגלל כרגיל */
 @media (max-width: 767.98px) {
-  .full-project-columns {
-    display: block;
-  }
-
-  .full-project-header,
-  .page-leftovers .full-project-description {
+  .page-leftovers .full-project-info {
     position: relative;
-    top: auto;
+    height: auto;
   }
 
-  .page-leftovers .full-project-description {
-    margin-bottom: var(--description-bottom-space);
+  .full-project-description-scroll {
+    position: relative;
+    overflow: visible;
+  }
+
+  .page-leftovers .full-project-panel {
+    margin-left: 0;
   }
 }
 
