@@ -52,6 +52,26 @@
   font-display: swap;
 }
 
+/* TheBasics: פונט גיבוי לעברית בלבד (unicode-range), כי ב-Telegraf אין אותיות עבריות.
+   Regular לסגנונות ה-Regular, ו-Bold לסגנונות ה-UltraBold (המשקל הקרוב ביותר) */
+@font-face {
+  font-family: "TheBasics Corporate";
+  src: url("fonts/TheBasics_Corporate-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+
+@font-face {
+  font-family: "TheBasics Corporate";
+  src: url("fonts/TheBasics_Corporate-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0590-05FF, U+FB1D-FB4F;
+}
+
 /* =========================================
    משתנים
    כל עמוד בנוי על רשת אחת של משבצות ריבועיות (משבצת = 96px בפיגמה).
@@ -102,7 +122,7 @@
 
   /* פונטים */
   --font-title: "Reisinger Michal", sans-serif;
-  --font-text: "PP Telegraf", sans-serif;
+  --font-text: "PP Telegraf", "TheBasics Corporate", sans-serif; /* עברית מוצגת ב-TheBasics */
 
   /* גובה שורה רגיל (100%) */
   --line-height: 1;
@@ -2609,6 +2629,11 @@ body {
 
 .contact-ball span {
   width: var(--contact-ball-text-width);
+}
+
+/* E-MAIL בשורה אחת, בלי שבירה אחרי המקף */
+.contact-ball--email span {
+  white-space: nowrap;
 }
 
 .contact-ball--instagram { background-color: var(--color-blue); }

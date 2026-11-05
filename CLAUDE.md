@@ -42,7 +42,7 @@
 - הגדלים לפי פריים של 1440 בפיגמה. הגודל במסך = הגודל בטבלה כפול `--type-px` (פיקסל אחד בפיגמה), שכל עמוד קובע לפי השיטה שבה הוא גדל עם המסך.
 - פונט הטקסט הוא PP Telegraf (UltraLight=200, Regular=400, UltraBold=800). כל הסגנונות חוץ מ-Display ב-Telegraf.
 - **ריווח בין אותיות**: יש רק שני ערכים. טקסט באותיות גדולות: 4%. כל שאר הטקסטים: 0.
-- עמוד התהליך זמני, ומשתמש רק בסגנונות הקיימים: הכותרת Process ב-Page Title, ההערות וקודי הצבעים ב-Body, ורשומות היומן ב-Section Title.
+- **עברית**: TheBasics הוא פונט גיבוי אחרי Telegraf (`--font-text`), רק לאותיות עבריות. נשארים ממנו Regular (400) ו-Bold (700, לסגנונות ה-UltraBold).
 - במובייל `text-display-large`, `text-button` ו-`text-button-strong` עוברים לבד לגרסת המובייל שלהם.
 
 | סגנון | מחלקה | פונט ומשקל | גודל | גובה שורה | ריווח | איפה |
@@ -50,18 +50,22 @@
 | Display/Large | `text-display-large` | Reisinger Bold | 275 | 100% | 0 | portfolio בבית מחשב |
 | Display/Medium | `text-display-medium` | Reisinger Bold | 220 | 100% | 0 | Say hi |
 | Display/Mobile | `text-display-mobile` | Reisinger Bold | 70 | 100% | 0 | portfolio בבית מובייל |
-| Page Title | `text-page-title` | Telegraf UltraBold | 80 | 95.5% | 0 | The Perfect Crime, Process, וכל כותרת עמוד בעתיד |
+| Page Title | `text-page-title` | Telegraf UltraBold | 80 | 95.5% | 0 | The Perfect Crime, וכל כותרת עמוד בעתיד |
 | Banner | `text-banner` | Telegraf UltraBold | 40 | 100% | 4% | הבאנר הרץ |
 | Button | `text-button` | Telegraf Regular | 25 | 100% | 4% | כפתורים במחשב, ORI KURZ, 2026 |
 | Button/Strong | `text-button-strong` | Telegraf UltraBold | 25 | 100% | 4% | PEEK/PLAY במחשב |
 | Button/Mobile | `text-button-mobile` | Telegraf Regular | 17 | 100% | 4% | כפתורים, ORI KURZ ו-2026 במובייל |
 | Button/Mobile Strong | `text-button-mobile-strong` | Telegraf UltraBold | 14 | 100% | 4% | PEEK/PLAY במובייל |
-| Section Title | `text-section-title` | Telegraf Regular | 20 | 100% | 0 | כותרות סעיפים בפרויקט, ורשומות היומן בתהליך |
+| Section Title | `text-section-title` | Telegraf Regular | 20 | 100% | 0 | כותרות סעיפים בפרויקט |
 | Subtitle | `text-subtitle` | Telegraf Regular | 20 | 110% | 0 | Motion Graphic Academic project |
 | Tagline | `text-tagline` | Telegraf Regular | 22 | 100% | 4% | שורות הטקסט ב-Say Hi |
-| Body | `text-body` | Telegraf Regular | 20 | 28px | 0 | טקסט רץ, וההערות וקודי הצבעים בתהליך |
+| Body | `text-body` | Telegraf Regular | 20 | 28px | 0 | טקסט רץ |
 | Hint | `text-hint` | Telegraf Regular | 20 | 100% | 0 | hover to play / tap to play |
 | Contact Ball | `text-contact-ball` | Telegraf Regular | 17 | 100% | 4% | הטקסט על כדורי יצירת הקשר ב-Say Hi |
+
+## עמוד התהליך (process.html)
+- עמוד זמני, ולא חלק ממערכת העיצוב.
+- לא כוללים אותו בטבלאות, בכללים, בבדיקות ובדוחות, ולא גוזרים ממנו סגנונות.
 
 ## שפה
 - **האתר כרגע באנגלית בלבד**, בכל העמודים.
