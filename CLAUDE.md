@@ -66,6 +66,7 @@
 | Body | `text-body` | Telegraf Regular | 20 | 28px | 0 | טקסט רץ |
 | Hint | `text-hint` | Telegraf Regular | 20 | 100% | 0 | hover to play / tap to play |
 | Contact Ball | `text-contact-ball` | Telegraf Regular | 17 | 100% | 4% | הטקסט על כדורי יצירת הקשר ב-Say Hi |
+| Caption | `text-caption` | Telegraf Regular | 15 | 100% | 0 | טקסט התיאור מתחת לתמונות בגלריית הלוקיישנים ב-Leftovers |
 | Nav | `text-nav` | Telegraf Regular | 20 | 100% | 4% | הכפתורים בבר הבחירה במחשב |
 | Nav/Mobile | `text-nav` (במובייל) | Telegraf Regular | 14 | 100% | 4% | הכפתורים בבר הבחירה במובייל |
 

@@ -145,6 +145,7 @@
   --text-body-line-height: 28;
   --text-hint-size: 20;
   --text-contact-ball-size: 17;
+  --text-caption-size: 15;
   --text-nav-size: 20;
   --text-nav-mobile-size: 14;
 
@@ -861,7 +862,7 @@
   --grid-rows: 39.37;
 
   /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
-  --leftovers-navy: #1b3958;   /* רקע העמוד והמלבנים של התוויות */
+  --leftovers-navy: #222a33;   /* רקע העמוד והמלבנים של התוויות */
   --leftovers-grid: #4a6c8f;   /* קווי הגריד */
   --leftovers-steel: #5c85b0;  /* ההמבורגר */
   --leftovers-sky: #99c1ea;    /* התיאור */
@@ -929,6 +930,8 @@
   /* הסגירה של התמונה כשהעכבר יוצא: איטית ורכה, ומאטה לקראת הסוף */
   --reveal-close-time: 1.1s;
   --reveal-close-easing: cubic-bezier(0.33, 1, 0.68, 1);
+  /* טקסט התיאור: 5px מתחת ללוקיישן */
+  --caption-gap: calc(5 * var(--u));
 
   /* הזכוכית המגדלת: האייקון בשורה שמעל המפה, במשבצת שמיד משמאל לתיבה של הקואורדינטות */
   --magnifier-column: 10;   --magnifier-row: 1;
@@ -1242,6 +1245,15 @@ body {
   font-size: calc(var(--text-contact-ball-size) * var(--type-px));
   line-height: var(--line-height);
   letter-spacing: 0.04em;
+}
+
+/* Caption: טקסט התיאור מתחת לתמונות בגלריית הלוקיישנים */
+.text-caption {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: calc(var(--text-caption-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0;
 }
 
 /* Nav: הכפתורים בבר הבחירה */
@@ -3053,9 +3065,24 @@ body {
    גרירה למעלה ולמטה בטלפון עדיין גוללת (pan-y), וגרירה לרוחב חושפת את התמונה */
 .location {
   position: relative;
-  overflow: hidden;
   margin: 0;
   touch-action: pan-y;
+}
+
+/* המסגרת של האיור: חותכת אותו בדיוק למלבן של הלוקיישן */
+.location-sketch-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* טקסט התיאור: מתחת ללוקיישן, ברווח שבין השורות */
+.location-caption {
+  position: absolute;
+  left: 0;
+  top: calc(100% + var(--caption-gap));
+  color: var(--leftovers-sky);
+  white-space: nowrap;
 }
 
 /* האיור: חתוך כמו בפיגמה (גודל ומיקום התמונה בתוך המלבן) */
