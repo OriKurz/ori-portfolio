@@ -963,6 +963,49 @@
   }
 }
 
+/* ----- בר הבחירה (התפריט) -----
+   פריים "bar" בפיגמה: 1440x61. הבר תמיד ברוחב המסך, אז פיקסל בפיגמה = 1/1440 מרוחב החלון.
+   אין לבר עיצוב מובייל: במובייל אותה שורה עם טקסט Button/Mobile, והמילים מתפזרות עד הקצה */
+:root {
+  --nav-px: calc(100vw / 1440);
+  --nav-height: calc(61 * var(--nav-px));
+  /* ההמבורגר בבר (30x24) */
+  --nav-menu-left: calc(10 * var(--nav-px));
+  --nav-menu-top: calc(16 * var(--nav-px));
+  --nav-menu-width: calc(30 * var(--nav-px));
+  --nav-menu-line-height: calc(4 * var(--nav-px));
+  --nav-menu-gap: calc(6 * var(--nav-px));
+  /* שורת הכפתורים: מתחילה ב-106, 149 בין מילה למילה */
+  --nav-list-left: calc(106 * var(--nav-px));
+  --nav-list-right: auto;
+  --nav-list-top: calc(16 * var(--nav-px));
+  --nav-list-height: calc(27 * var(--nav-px));
+  --nav-list-gap: calc(149 * var(--nav-px));
+  --nav-list-justify: flex-start;
+  /* הקו מתחת למילה: בעובי קווי הגריד */
+  --nav-line: var(--line-desktop);
+  --nav-underline-offset: calc(4 * var(--nav-px));
+  /* תנועה: הבר מחליק פנימה ברכות, ויוצא באותה תנועה הפוכה */
+  --nav-slide-duration: 0.5s;
+  --nav-ease-in: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-ease-out: cubic-bezier(0.64, 0, 0.78, 0);
+  --nav-underline-duration: 0.3s;
+  /* מעל כל התוכן */
+  --layer-nav-bar: 10;
+}
+
+@media (max-width: 767.98px) {
+  :root {
+    /* 1 פיקסל ברוחב 390, וקטן יותר בטלפונים צרים יותר כדי שהשורה תיכנס */
+    --nav-px: min(1px, 100vw / 390);
+    --nav-list-left: calc(50 * var(--nav-px));
+    --nav-list-right: calc(10 * var(--nav-px));
+    --nav-list-gap: 0px;
+    --nav-list-justify: space-between;
+    --nav-line: var(--line-mobile);
+  }
+}
+
 /* =========================================
    בסיס
    ========================================= */
@@ -1712,7 +1755,7 @@ body {
 
 /* ----- הסרגל העליון ----- */
 
-/* ההמבורגר: קישור זמני לעמוד הבית, עד שיהיה תפריט */
+/* ההמבורגר: פותח וסוגר את בר הבחירה (script.js) */
 .menu-button {
   --column: var(--menu-column);
   --row: var(--menu-row);
@@ -1720,6 +1763,9 @@ body {
   flex-direction: column;
   gap: var(--menu-gap);
   width: var(--menu-width);
+  border: none;
+  background: none;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -1757,6 +1803,133 @@ body {
 .menu-button.is-focus {
   outline: var(--line) solid var(--focus-color);
   outline-offset: var(--menu-gap);
+}
+
+/* ----- בר הבחירה (התפריט) -----
+   סגור: מוסתר מעל המסך. פתוח (.is-open, script.js): מחליק פנימה מלמעלה.
+   visibility מוציא את הכפתורים מסדר ה-Tab כשהבר סגור, אחרי שהתנועה מסתיימת */
+.nav-bar {
+  --type-px: var(--nav-px);
+  --line: var(--nav-line);
+  --menu-width: var(--nav-menu-width);
+  --menu-line-height: var(--nav-menu-line-height);
+  --menu-gap: var(--nav-menu-gap);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--layer-nav-bar);
+  width: 100%;
+  height: var(--nav-height);
+  background-color: var(--color-blue);
+  color: var(--color-yellow);
+  transform: translateY(-100%);
+  visibility: hidden;
+  transition:
+    transform var(--nav-slide-duration) var(--nav-ease-out),
+    visibility 0s var(--nav-slide-duration);
+}
+
+.nav-bar.is-open {
+  transform: none;
+  visibility: visible;
+  transition:
+    transform var(--nav-slide-duration) var(--nav-ease-in),
+    visibility 0s;
+}
+
+/* ההמבורגר של הבר: צהוב (ב-hover ירוק, כמו כל ההמבורגרים) */
+.nav-bar-menu {
+  position: absolute;
+  left: var(--nav-menu-left);
+  top: var(--nav-menu-top);
+}
+
+.nav-bar .menu-button-line {
+  background-color: var(--color-yellow);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-bar .menu-button:hover .menu-button-line {
+    background-color: var(--color-green);
+  }
+}
+
+.nav-bar .menu-button.is-hover .menu-button-line {
+  background-color: var(--color-green);
+}
+
+/* שורת הכפתורים */
+.nav-bar-list {
+  position: absolute;
+  left: var(--nav-list-left);
+  right: var(--nav-list-right);
+  top: var(--nav-list-top);
+  height: var(--nav-list-height);
+  display: flex;
+  align-items: center;
+  justify-content: var(--nav-list-justify);
+  gap: var(--nav-list-gap);
+  list-style: none;
+}
+
+.nav-bar-link {
+  position: relative;
+  display: block;
+  border: none;
+  background: none;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* הקו מתחת למילה: מצטייר משמאל לימין (scaleX מ-0 ל-1), ונאסף חזרה באותה תנועה הפוכה */
+.nav-bar-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + var(--nav-underline-offset));
+  height: var(--nav-line);
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--nav-underline-duration) ease;
+}
+
+/* העמוד הנוכחי: קו קבוע */
+.nav-bar-link[aria-current="page"]::after {
+  transform: none;
+}
+
+/* Hover (רק במחשב): הקו מצטייר ונשאר כל עוד העכבר על המילה */
+@media (hover: hover) and (pointer: fine) {
+  .nav-bar-link:hover::after {
+    transform: none;
+  }
+}
+
+/* לחיצה: הקו מצטייר, ובסוף התנועה עוברים לעמוד (script.js) */
+.nav-bar-link.is-hover::after,
+.nav-bar-link.is-pressed::after {
+  transform: none;
+}
+
+/* ניווט במקלדת: מסגרת כתומה בעובי קו הגריד */
+.nav-bar-link:focus-visible,
+.nav-bar-link.is-focus {
+  outline: var(--nav-line) solid var(--focus-color);
+  outline-offset: var(--nav-underline-offset);
+}
+
+/* צמצום תנועה: הבר והקו מופיעים ונעלמים מיד */
+@media (prefers-reduced-motion: reduce) {
+  .nav-bar,
+  .nav-bar.is-open,
+  .nav-bar-link::after {
+    transition: none;
+  }
 }
 
 .project-grid .index-button {

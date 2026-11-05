@@ -9,6 +9,23 @@
   <link rel="stylesheet" href="Images/elements-anim/elements-anim.css">
 </head>
 <body>
+  <!-- בר הבחירה (התפריט): סגור בטעינה. ההמבורגר פותח אותו, והוא מחליק פנימה מלמעלה (script.js) -->
+  <nav class="nav-bar" id="nav-bar" aria-label="Main">
+    <!-- ההמבורגר של הבר: סוגר אותו -->
+    <button class="menu-button nav-bar-menu" type="button" aria-label="Close menu" aria-controls="nav-bar">
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+    </button>
+    <!-- INDEX ו-ABOUT עוד לא מובילים לשום מקום -->
+    <ul class="nav-bar-list">
+      <li><button class="nav-bar-link text-button" type="button">INDEX</button></li>
+      <li><a class="nav-bar-link text-button" href="the-perfect-crime-project.html" aria-current="page">WORK</a></li>
+      <li><button class="nav-bar-link text-button" type="button">ABOUT</button></li>
+      <li><a class="nav-bar-link text-button" href="say-hi.html">SAY HI :)</a></li>
+      <li><a class="nav-bar-link text-button" href="index.html">HOME</a></li>
+    </ul>
+  </nav>
 
   <!-- עמוד פרויקט מלא: הפריים "דף פרוייקט הפשע המושלם" מהפיגמה. העמוד באנגלית בלבד.
        במחשב: שתי חמישיות משמאל עם טקסט (סטטי), ושלוש חמישיות מימין עם גריד
@@ -21,12 +38,12 @@
 
       <!-- ===== החלק של הטקסט (בלי גריד, לא נגלל) ===== -->
       <section class="full-project-info">
-        <!-- ההמבורגר: קישור זמני לעמוד הבית, עד שיהיה תפריט -->
-        <a class="menu-button full-project-menu" href="index.html" aria-label="Menu">
+        <!-- ההמבורגר: פותח וסוגר את בר הבחירה -->
+        <button class="menu-button full-project-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
           <span class="menu-button-line"></span>
           <span class="menu-button-line"></span>
           <span class="menu-button-line"></span>
-        </a>
+        </button>
 
         <h1 class="full-project-title text-page-title">The Perfect Crime</h1>
         <p class="full-project-type text-subtitle">Motion Graphic<br>Academic project<br>2026</p>

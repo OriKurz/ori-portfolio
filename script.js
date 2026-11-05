@@ -664,3 +664,127 @@ if (contactBalls.length > 0) {
 
   document.fonts.ready.then(start);
 }
+
+// =========================================
+// בר הבחירה (התפריט): בטעינה הוא סגור.
+// לחיצה על ההמבורגר פותחת אותו, והוא מחליק פנימה מלמעלה (התנועה ב-styles.css).
+// הוא נסגר בלחיצה נוספת על ההמבורגר, בלחיצה בכל מקום שהוא לא הבר, או ב-Esc.
+// גלילה לא סוגרת אותו.
+// לחיצה על כפתור בבר: הקו מתחת למילה מצטייר, ובסוף התנועה עוברים לעמוד.
+// =========================================
+
+const navBar = document.querySelector(".nav-bar");
+
+if (navBar) {
+  // ההמבורגר של העמוד (פותח) וההמבורגר שבתוך הבר (סוגר)
+  const pageMenuButtons = document.querySelectorAll('.menu-button[aria-controls="nav-bar"]:not(.nav-bar-menu)');
+  const barMenuButton = navBar.querySelector(".nav-bar-menu");
+  const navLinks = navBar.querySelectorAll(".nav-bar-link");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function isNavOpen() {
+    return navBar.classList.contains("is-open");
+  }
+
+  // fromKeyboard: נפתח במקלדת, אז הפוקוס עובר להמבורגר שבתוך הבר
+  function setNavOpen(open, fromKeyboard) {
+    // אם הפוקוס היה בתוך הבר כשהוא נסגר, מחזירים אותו להמבורגר של העמוד
+    const focusWasInside = navBar.contains(document.activeElement);
+
+    navBar.classList.toggle("is-open", open);
+    pageMenuButtons.forEach(function (button) {
+      button.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    if (open && fromKeyboard) {
+      barMenuButton.focus({ preventScroll: true });
+    } else if (focusWasInside && pageMenuButtons[0]) {
+      pageMenuButtons[0].focus({ preventScroll: true });
+    }
+  }
+
+  pageMenuButtons.forEach(function (button) {
+    button.addEventListener("click", function (event) {
+      // event.detail הוא 0 כשהלחיצה הגיעה מהמקלדת (Enter או רווח)
+      setNavOpen(!isNavOpen(), event.detail === 0);
+    });
+  });
+
+  barMenuButton.addEventListener("click", function () {
+    setNavOpen(false);
+  });
+
+  // לחיצה בכל מקום שהוא לא הבר (וגם לא ההמבורגר, שמטפל בעצמו) סוגרת
+  document.addEventListener("click", function (event) {
+    if (!isNavOpen()) return;
+    if (navBar.contains(event.target)) return;
+    if (event.target.closest('.menu-button[aria-controls="nav-bar"]')) return;
+    setNavOpen(false);
+  });
+
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && isNavOpen()) {
+      setNavOpen(false);
+    }
+  });
+
+  // האם הקו מתחת למילה כבר מצויר עד הסוף (למשל אחרי hover, או בעמוד הנוכחי)
+  function isUnderlineDrawn(link) {
+    const transform = getComputedStyle(link, "::after").transform;
+    return transform === "none" || new DOMMatrix(transform).a === 1;
+  }
+
+  // מחכה שהקו יסיים להצטייר, ואז מריץ את הפעולה
+  function afterUnderlineDrawn(link, action) {
+    if (reduceMotion.matches || isUnderlineDrawn(link)) {
+      action();
+      return;
+    }
+
+    let done = false;
+    function finish() {
+      if (done) return;
+      done = true;
+      link.removeEventListener("transitionend", onTransitionEnd);
+      action();
+    }
+    function onTransitionEnd(event) {
+      if (event.propertyName === "transform") finish();
+    }
+
+    link.addEventListener("transitionend", onTransitionEnd);
+    // גיבוי, אם האירוע לא מגיע: משך התנועה מ-styles.css ועוד קצת
+    const duration = parseFloat(getComputedStyle(link, "::after").transitionDuration) * 1000;
+    setTimeout(finish, duration + 100);
+  }
+
+  navLinks.forEach(function (link) {
+    link.addEventListener("click", function (event) {
+      // Cmd/Ctrl/Shift + לחיצה (פתיחה בלשונית חדשה): כמו קישור רגיל
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      event.preventDefault();
+      link.classList.add("is-pressed");
+
+      afterUnderlineDrawn(link, function () {
+        if (link.href) {
+          window.location.href = link.href;
+        } else {
+          // כפתור שעוד לא מוביל לשום מקום: הקו נאסף חזרה (אלא אם העכבר עליו)
+          link.classList.remove("is-pressed");
+        }
+      });
+    });
+  });
+
+  // חזרה לעמוד בכפתור "אחורה": הבר סגור והקווים במצב הרגיל
+  window.addEventListener("pageshow", function () {
+    navLinks.forEach(function (link) {
+      link.classList.remove("is-pressed");
+    });
+    navBar.classList.remove("is-open");
+    pageMenuButtons.forEach(function (button) {
+      button.setAttribute("aria-expanded", "false");
+    });
+  });
+}
