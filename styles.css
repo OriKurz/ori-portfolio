@@ -1,6 +1,6 @@
 /* =========================================
    פונטים
-   כל קובץ מחובר למשקל שלו: UltraLight=200, Light=300, Regular=400, Medium=500, Bold=700, UltraBold=800, Black=900.
+   כל קובץ מחובר למשקל שלו: UltraLight=200, Light=300, Regular=400, Bold=700, UltraBold=800.
    הדפדפן מוריד קובץ רק כשמשתמשים במשקל שלו
    ========================================= */
 @font-face {
@@ -48,47 +48,6 @@
   font-family: "PP Telegraf";
   src: url("fonts/PPTelegraf-UltraBold.otf") format("opentype");
   font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* TheBasics: הפונט הקודם. נשאר רק לסגנונות שעוד לא נבחרו להם ערכים ב-Telegraf */
-@font-face {
-  font-family: "TheBasics Corporate";
-  src: url("fonts/TheBasics_Corporate-Light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "TheBasics Corporate";
-  src: url("fonts/TheBasics_Corporate-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "TheBasics Corporate";
-  src: url("fonts/TheBasics_Corporate-Medium.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "TheBasics Corporate";
-  src: url("fonts/TheBasics_Corporate-Bold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "TheBasics Corporate";
-  src: url("fonts/TheBasics_Corporate-Black.otf") format("opentype");
-  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
@@ -144,8 +103,6 @@
   /* פונטים */
   --font-title: "Reisinger Michal", sans-serif;
   --font-text: "PP Telegraf", sans-serif;
-  /* זמני: הסגנונות שעוד לא הועברו ל-Telegraf */
-  --font-text-previous: "TheBasics Corporate", sans-serif;
 
   /* גובה שורה רגיל (100%) */
   --line-height: 1;
@@ -156,7 +113,6 @@
   --text-display-medium-size: 220;
   --text-display-mobile-size: 70;
   --text-page-title-size: 80;
-  --text-page-title-process-size: 96;
   --text-banner-size: 40;
   --text-button-size: 25;
   --text-button-strong-size: 25;
@@ -168,8 +124,6 @@
   --text-body-size: 20;
   --text-body-line-height: 28;
   --text-hint-size: 20;
-  --text-note-size: 24;
-  --text-label-size: 15;
   --text-contact-ball-size: 17;
 
   /* פיקסל אחד בפיגמה: כמה הוא שווה במסך. כל עמוד (ולפעמים כל חלק בעמוד)
@@ -396,7 +350,7 @@
   --typography-card-padding: calc(var(--cell) * 17 / 96) calc(var(--cell) * 30 / 96) 0 calc(var(--cell) * 52 / 96);
   --card-text-align: center;
   /* בפיגמה יש שורה ריקה בין הכותרת לטקסט שמתחתיה */
-  --card-title-gap: 1lh;
+  --card-title-gap: 0.5lh; /* חצי שורה, כדי שכל הטקסט ב-Body ייכנס בכרטיס */
   /* הרשימה בכרטיס הקצב: הזחה של 36px מצד הנקודות */
   --card-list-indent: calc(var(--cell) * 36 / 96);
 
@@ -406,8 +360,9 @@
   --swatch-type-px: var(--type-px);
   --button-type-px: var(--type-px);
 
-  /* כדורי הצבעים: גודל, רווחים ופינות עגולות (בפיגמה: 67x59) */
-  --swatch-width: calc(var(--cell) * 67 / 96);
+  /* כדורי הצבעים: גודל, רווחים ופינות עגולות (בפיגמה: 67x59).
+     רחבים מהפיגמה, כדי שקוד הצבע ב-Body ייכנס בכדור */
+  --swatch-width: calc(var(--cell) * 82 / 96);
   --swatch-height: calc(var(--cell) * 59 / 96);
   --swatch-column-gap: calc(var(--cell) * 15 / 96);
   --swatch-row-gap: calc(var(--cell) * 8 / 96);
@@ -415,7 +370,7 @@
   --swatch-border: calc(var(--cell) * 2 / 96);
   /* מיקום הכדורים בתוך כרטיס הצבע (בפיגמה: 75px משמאל ו-64px מלמעלה) */
   --swatches-position: absolute;
-  --swatches-left: calc(var(--cell) * 75 / 96);
+  --swatches-left: calc(var(--cell) * 66 / 96);
   --swatches-top: calc(var(--cell) * 64 / 96);
 
   /* עיגולים צבעוניים: קוטר, ועמודה ושורה של כל עיגול */
@@ -511,7 +466,7 @@
     --card-text-align: right;
 
     /* כדורי הצבעים: מתחת לכותרת "צבע", מיושרים לימין */
-    --swatch-width: calc(var(--cell) * 1.25);
+    --swatch-width: calc(var(--cell) * 1.6);
     --swatch-height: calc(var(--cell) * 1.1);
     --swatch-column-gap: calc(var(--cell) * 0.2);
     --swatch-row-gap: calc(var(--cell) * 0.15);
@@ -1011,7 +966,7 @@ body {
    כל טקסט באתר מקבל אחת מהמחלקות האלה. הצבע לא חלק מהסגנון.
    הגודל = הגודל בפיגמה (משתנה --text-...-size ב-:root) כפול --type-px,
    כך שהטקסט גדל וקטן עם המסך באותו יחס כמו שאר העמוד.
-   ריווח בין אותיות באחוזים מהגודל (em), כמו בפיגמה.
+   ריווח בין אותיות באחוזים מהגודל (em), כמו בפיגמה. יש רק שני ערכים: 4% לטקסט באותיות גדולות, 0 לכל השאר.
    ========================================= */
 
 /* Display: הכותרות הגדולות ב-Reisinger */
@@ -1037,15 +992,6 @@ body {
   letter-spacing: 0;
 }
 
-/* Page Title/Process: הכותרת Process בלבד */
-.text-page-title-process {
-  font-family: var(--font-text-previous);
-  font-weight: 900;
-  font-size: calc(var(--text-page-title-process-size) * var(--type-px));
-  line-height: var(--line-height);
-  letter-spacing: -0.04em;
-}
-
 /* Banner: הבאנר הרץ */
 .text-banner {
   font-family: var(--font-text);
@@ -1055,20 +1001,20 @@ body {
   letter-spacing: 0.04em;
 }
 
-/* Button: כפתורים. Medium, ובגרסת Strong: Bold */
+/* Button: כפתורים. Regular, ובגרסת Strong: UltraBold */
 .text-button,
 .text-button-strong,
 .text-button-mobile,
 .text-button-mobile-strong {
-  font-family: var(--font-text-previous);
-  font-weight: 500;
+  font-family: var(--font-text);
+  font-weight: 400;
   line-height: var(--line-height);
   letter-spacing: 0.04em;
 }
 
 .text-button-strong,
 .text-button-mobile-strong {
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .text-button               { font-size: calc(var(--text-button-size) * var(--type-px)); }
@@ -1096,8 +1042,8 @@ body {
 
 /* Tagline: שורות הטקסט ב-Say Hi */
 .text-tagline {
-  font-family: var(--font-text-previous);
-  font-weight: 500;
+  font-family: var(--font-text);
+  font-weight: 400;
   font-size: calc(var(--text-tagline-size) * var(--type-px));
   line-height: var(--line-height);
   letter-spacing: 0.04em;
@@ -1121,31 +1067,13 @@ body {
   letter-spacing: 0;
 }
 
-/* Note: ההערות בעברית בעמוד התהליך */
-.text-note {
-  font-family: var(--font-text-previous);
-  font-weight: 500;
-  font-size: calc(var(--text-note-size) * var(--type-px));
-  line-height: var(--line-height);
-  letter-spacing: 0;
-}
-
-/* Label: קודי הצבעים בעמוד התהליך */
-.text-label {
-  font-family: var(--font-text-previous);
-  font-weight: 500;
-  font-size: calc(var(--text-label-size) * var(--type-px));
-  line-height: var(--line-height);
-  letter-spacing: 0;
-}
-
 /* Contact Ball: הטקסט על כדורי יצירת הקשר ב-Say Hi */
 .text-contact-ball {
-  font-family: var(--font-text-previous);
-  font-weight: 500;
+  font-family: var(--font-text);
+  font-weight: 400;
   font-size: calc(var(--text-contact-ball-size) * var(--type-px));
   line-height: var(--line-height);
-  letter-spacing: 0;
+  letter-spacing: 0.04em;
 }
 
 /* במובייל (צר מ-768px) הסגנונות שיש להם גרסת מובייל עוברים אליה:
