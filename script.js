@@ -788,3 +788,259 @@ if (navBar) {
     });
   });
 }
+
+// =========================================
+// עמוד Leftovers*: התיאור בצד השמאלי ארוך מגובה המסך.
+// במחשב הוא עולה עם הגלילה (באותה מהירות) עד שרואים את השורה האחרונה, ואז נעצר.
+// ההמבורגר, הכותרת ושורות המשנה לא זזים. במובייל העמוד כולו נגלל כרגיל.
+// =========================================
+const descriptionClip = document.querySelector(".full-project-description-clip");
+
+if (descriptionClip) {
+  const description = descriptionClip.querySelector(".full-project-description");
+  const scroller = document.querySelector(".full-project-scroll");
+  const mobile = window.matchMedia("(max-width: 767.98px)");
+
+  function moveDescription() {
+    if (mobile.matches) {
+      description.style.setProperty("--description-shift", "0px");
+      return;
+    }
+    // כמה צריך לעלות כדי שהשורה האחרונה (ועוד המרווח שמתחתיה, padding ב-CSS) תיכנס בחלון
+    const overflow = description.offsetTop + description.offsetHeight - descriptionClip.clientHeight;
+    const shift = Math.min(scroller.scrollTop, Math.max(0, overflow));
+    description.style.setProperty("--description-shift", shift + "px");
+  }
+
+  scroller.addEventListener("scroll", moveDescription, { passive: true });
+  window.addEventListener("resize", moveDescription);
+  document.fonts.ready.then(moveDescription);
+  moveDescription();
+}
+
+// =========================================
+// עמוד Leftovers*: המפה.
+// הקואורדינטות בפינה משתנות לפי מיקום העכבר על המפה, כאילו זו מפה אמיתית:
+// - המרכז של map-area הוא הכפר (37°07′51″S 62°48′27″W).
+// - הכיוון לפי שושנת הרוחות שבתמונה: מערב למעלה, מזרח למטה, צפון ימינה, דרום שמאלה.
+// - קנה המידה לפי סרגל המרחק בתמונה: 0–400 מטר = 207 פיקסלים בקובץ.
+// כשהעכבר יוצא מ-map-area (או נמצא על המקרא שבתחתית), הקואורדינטות חוזרות לכפר
+// בתנועה מהירה של ספירה.
+// העיגולים עם האותיות: hover על עיגול במפה או על הציור שלו במקרא מקפיץ את העיגול ("פופ").
+// hover על ציור במקרא מקפיץ גם את הקואורדינטות למיקום של העיגול שלו.
+// בטלפון: נגיעה מציגה את הקואורדינטות / הפופ לשנייה וחצי. הנגיעה לא חוסמת גלילה.
+// =========================================
+const leftoversMap = document.querySelector(".leftovers-map");
+
+if (leftoversMap) {
+  const latitudeText = document.querySelector(".leftovers-latitude");
+  const longitudeText = document.querySelector(".leftovers-longitude");
+  const markers = leftoversMap.querySelectorAll(".map-marker");
+  const sketches = leftoversMap.querySelectorAll(".map-sketch");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // הכפר (במעלות עשרוניות: דרום ומערב שליליים)
+  const village = { lat: -(37 + 7 / 60 + 51 / 3600), lon: -(62 + 48 / 60 + 27 / 3600) };
+  const metersPerImagePixel = 400 / 207;
+  const metersPerDegreeLat = 111320;
+  const metersPerDegreeLon = 111320 * Math.cos(village.lat * Math.PI / 180);
+  const countDuration = 450;  // משך הספירה חזרה לכפר (מילישניות)
+  const touchHoldTime = 1500; // כמה זמן נגיעה בטלפון מציגה את התוצאה
+
+  // משתנה CSS מספרי (מיקומים וגדלים בפיקסלים של קובץ התמונה)
+  function cssNumber(element, name) {
+    return parseFloat(getComputedStyle(element).getPropertyValue(name));
+  }
+
+  const image = { width: cssNumber(leftoversMap, "--map-image-width"), height: cssNumber(leftoversMap, "--map-image-height") };
+  const area = {
+    x: cssNumber(leftoversMap, "--map-area-x"),
+    y: cssNumber(leftoversMap, "--map-area-y"),
+    width: cssNumber(leftoversMap, "--map-area-width"),
+    height: cssNumber(leftoversMap, "--map-area-height")
+  };
+  const areaCenter = { x: area.x + area.width / 2, y: area.y + area.height / 2 };
+
+  let shown = { lat: village.lat, lon: village.lon }; // מה שמוצג עכשיו
+  let countFrame = null;
+  let touchTimer = null;
+  let activeSketch = null; // הציור במקרא שהעכבר עליו (אם יש)
+
+  // נקודה בפיקסלים של קובץ התמונה → קו רוחב ואורך
+  function imagePointToCoordinates(x, y) {
+    return {
+      lat: village.lat + (x - areaCenter.x) * metersPerImagePixel / metersPerDegreeLat,
+      lon: village.lon + (y - areaCenter.y) * metersPerImagePixel / metersPerDegreeLon
+    };
+  }
+
+  // מיקום העכבר / האצבע → פיקסלים של קובץ התמונה
+  function eventToImagePoint(event) {
+    const box = leftoversMap.getBoundingClientRect();
+    return {
+      x: (event.clientX - box.left) / box.width * image.width,
+      y: (event.clientY - box.top) / box.height * image.height
+    };
+  }
+
+  function insideArea(point) {
+    return point.x >= area.x && point.x <= area.x + area.width &&
+           point.y >= area.y && point.y <= area.y + area.height;
+  }
+
+  // מעלות עשרוניות → "37°07′51″S"
+  function toDms(value, positive, negative) {
+    let totalSeconds = Math.round(Math.abs(value) * 3600);
+    const degrees = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const pad = function (number) { return String(number).padStart(2, "0"); };
+    return pad(degrees) + "°" + pad(minutes) + "′" + pad(seconds) + "″" + (value < 0 ? negative : positive);
+  }
+
+  function showCoordinates(coordinates) {
+    shown = coordinates;
+    latitudeText.textContent = toDms(coordinates.lat, "N", "S");
+    longitudeText.textContent = toDms(coordinates.lon, "E", "W");
+  }
+
+  function stopCounting() {
+    if (countFrame) cancelAnimationFrame(countFrame);
+    countFrame = null;
+  }
+
+  // מציג מיד (בזמן שהעכבר זז, או קפיצה למיקום של עיגול)
+  function setCoordinates(coordinates) {
+    stopCounting();
+    showCoordinates(coordinates);
+  }
+
+  // ספירה מהירה חזרה לכפר
+  function countBackToVillage() {
+    if (countFrame) return;
+    if (reducedMotion.matches) {
+      showCoordinates(village);
+      return;
+    }
+    const from = shown;
+    const start = performance.now();
+
+    function step(now) {
+      const progress = Math.min(1, (now - start) / countDuration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      showCoordinates({
+        lat: from.lat + (village.lat - from.lat) * eased,
+        lon: from.lon + (village.lon - from.lon) * eased
+      });
+      countFrame = progress < 1 ? requestAnimationFrame(step) : null;
+    }
+    countFrame = requestAnimationFrame(step);
+  }
+
+  function markerFor(letter) {
+    return leftoversMap.querySelector('.map-marker[data-marker="' + letter + '"]');
+  }
+
+  function markerCoordinates(marker) {
+    return imagePointToCoordinates(cssNumber(marker, "--x"), cssNumber(marker, "--y"));
+  }
+
+  function popMarker(letter, popped) {
+    markerFor(letter).classList.toggle("is-popped", popped);
+  }
+
+  // ----- עכבר -----
+  leftoversMap.addEventListener("pointermove", function (event) {
+    if (event.pointerType !== "mouse" || activeSketch) return;
+    const point = eventToImagePoint(event);
+    if (insideArea(point)) {
+      setCoordinates(imagePointToCoordinates(point.x, point.y));
+    } else {
+      countBackToVillage();
+    }
+  });
+
+  leftoversMap.addEventListener("pointerleave", function (event) {
+    if (event.pointerType === "mouse") countBackToVillage();
+  });
+
+  markers.forEach(function (marker) {
+    marker.addEventListener("pointerenter", function (event) {
+      if (event.pointerType === "mouse") marker.classList.add("is-popped");
+    });
+    marker.addEventListener("pointerleave", function (event) {
+      if (event.pointerType === "mouse") marker.classList.remove("is-popped");
+    });
+  });
+
+  sketches.forEach(function (sketch) {
+    const letter = sketch.dataset.marker;
+    sketch.addEventListener("pointerenter", function (event) {
+      if (event.pointerType !== "mouse") return;
+      activeSketch = sketch;
+      popMarker(letter, true);
+      setCoordinates(markerCoordinates(markerFor(letter)));
+    });
+    sketch.addEventListener("pointerleave", function (event) {
+      if (event.pointerType !== "mouse") return;
+      activeSketch = null;
+      popMarker(letter, false);
+      countBackToVillage();
+    });
+  });
+
+  // ----- מקלדת: Focus נראה כמו hover -----
+  markers.forEach(function (marker) {
+    marker.addEventListener("focus", function () {
+      marker.classList.add("is-popped");
+      setCoordinates(markerCoordinates(marker));
+    });
+    marker.addEventListener("blur", function () {
+      marker.classList.remove("is-popped");
+      countBackToVillage();
+    });
+  });
+
+  sketches.forEach(function (sketch) {
+    const letter = sketch.dataset.marker;
+    sketch.addEventListener("focus", function () {
+      popMarker(letter, true);
+      setCoordinates(markerCoordinates(markerFor(letter)));
+    });
+    sketch.addEventListener("blur", function () {
+      popMarker(letter, false);
+      countBackToVillage();
+    });
+  });
+
+  // ----- טלפון: נגיעה (click מגיע רק אחרי נגיעה, לא אחרי גלילה) -----
+  leftoversMap.addEventListener("click", function (event) {
+    if (lastPointerType !== "touch") return;
+
+    clearTimeout(touchTimer);
+    markers.forEach(function (marker) { marker.classList.remove("is-popped"); });
+
+    const target = event.target.closest(".map-marker, .map-sketch");
+    const point = eventToImagePoint(event);
+
+    if (target) {
+      const marker = markerFor(target.dataset.marker);
+      marker.classList.add("is-popped");
+      setCoordinates(target.classList.contains("map-marker") && insideArea(point)
+        ? imagePointToCoordinates(point.x, point.y)
+        : markerCoordinates(marker));
+    } else if (insideArea(point)) {
+      setCoordinates(imagePointToCoordinates(point.x, point.y));
+    } else {
+      return;
+    }
+
+    touchTimer = setTimeout(function () {
+      markers.forEach(function (marker) { marker.classList.remove("is-popped"); });
+      countBackToVillage();
+    }, touchHoldTime);
+  });
+
+  // בטעינה: הקואורדינטות של הכפר
+  showCoordinates(village);
+}

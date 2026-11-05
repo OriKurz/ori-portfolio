@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" class="page-full-project page-leftovers">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leftovers* — Project — Ori Kurz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- בר הבחירה (התפריט): סגור בטעינה. ההמבורגר פותח אותו, והוא מחליק פנימה מלמעלה (script.js) -->
+  <nav class="nav-bar" id="nav-bar" aria-label="Main">
+    <!-- ההמבורגר של הבר: סוגר אותו -->
+    <button class="menu-button nav-bar-menu" type="button" aria-label="Close menu" aria-controls="nav-bar">
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+    </button>
+    <!-- INDEX ו-ABOUT עוד לא מובילים לשום מקום -->
+    <ul class="nav-bar-list">
+      <li><button class="nav-bar-link text-nav" type="button">INDEX</button></li>
+      <li><a class="nav-bar-link text-nav" href="the-perfect-crime-project.html" aria-current="page">WORK</a></li>
+      <li><button class="nav-bar-link text-nav" type="button">ABOUT</button></li>
+      <li><a class="nav-bar-link text-nav" href="say-hi.html">SAY HI :)</a></li>
+      <li><a class="nav-bar-link text-nav" href="index.html">HOME</a></li>
+    </ul>
+  </nav>
+
+  <!-- עמוד פרויקט מלא: הפריים "דף פרויקט שאריות" מהפיגמה. העמוד עוד לא גמור:
+       יש בו רק מה שיש בפריים. אותה תבנית כמו the-perfect-crime-project.html -->
+  <main class="full-project">
+
+    <!-- האזור הנגלל (במחשב). הצד השמאלי "דבוק" בתוכו ולא זז -->
+    <div class="full-project-scroll">
+
+      <!-- ===== החלק של הטקסט (בלי גריד) ===== -->
+      <section class="full-project-info">
+        <!-- ההמבורגר: פותח וסוגר את בר הבחירה -->
+        <button class="menu-button full-project-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+        </button>
+
+        <h1 class="full-project-title text-page-title">Leftovers*</h1>
+        <p class="full-project-tagline text-subtitle">*fragments that<br>were never meant<br>to persist, yet<br>somehow endured</p>
+        <p class="full-project-type text-subtitle">Graphic Design and<br>Data Visualization<br>Academic project<br>2026</p>
+
+        <!-- התיאור ארוך מגובה המסך: הוא עולה עם הגלילה עד שרואים את השורה האחרונה,
+             ונעלם מתחת לאזור הכותרת (script.js). כל השאר בצד הזה לא זז -->
+        <div class="full-project-description-clip">
+          <div class="full-project-description text-body">
+            <p>A map tracing the story of Villa Epecuén,<br>a village in Argentina. In 1985, the neighboring saltwater lake flooded the village, and within a few days the entire village lay under 10 meters of saltwater.<br>It stayed that way for 20 years. In 2009, following a severe drought, the lake began to recede, gradually revealing a ghost town.</p>
+            <p>The map tells the town’s story across<br>a 40-year timeline, using the village as a case study of the endless battle between humans and nature.</p>
+            <p>Working only with data and hard facts, I had to find a way to tell a powerful story about leftovers, and to bring forward what most people would rather forget, or not see at all.</p>
+            <p>The entire project is based on reliable data and satellite imagery, which served as my anchor throughout</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== החלק של הגריד ===== -->
+      <section class="full-project-panel">
+        <div class="full-project-grid grid-lines">
+
+          <!-- ----- שלוש תוויות, כל אחת במלבן של שתי משבצות בצבע הרקע (מסתיר את הקו שבאמצע) ----- -->
+          <div class="grid-box leftovers-label-box leftovers-label-box--place"></div>
+          <div class="grid-box leftovers-label-box leftovers-label-box--coordinates"></div>
+          <div class="grid-box leftovers-label-box leftovers-label-box--map"></div>
+
+          <p class="on-grid section-title text-section-title leftovers-place">Villa Epecuén,<br>Argentina</p>
+          <!-- הקואורדינטות: משתנות לפי מיקום העכבר על המפה (script.js) -->
+          <p class="on-grid leftovers-coordinates text-subtitle" aria-label="Coordinates">
+            <span class="leftovers-latitude">37°07′51″S</span><br><span class="leftovers-longitude">62°48′27″W</span>
+          </p>
+          <p class="on-grid section-title text-section-title leftovers-map-label">Main map,<br>50×70,<br>print</p>
+
+          <!-- ----- המפה -----
+               כל המיקומים (--x, --y, --w, --h) בפיקסלים של קובץ התמונה (1935x2700).
+               map-marker: עיגול סגול עם אות, מעל העיגול המקורי שבתמונה. מופיע רק ב-hover.
+               map-sketch: אזור שקוף מעל הציור התואם במקרא שבתחתית הפוסטר -->
+          <div class="on-grid leftovers-map">
+            <img class="leftovers-map-image" src="Images/mape1.png" alt="Leftovers* map of Villa Epecuén, Argentina">
+
+            <button class="map-marker" type="button" data-marker="A" style="--x: 588.6; --y: 2041.3" aria-label="A. The slaughterhouse"><span class="map-marker-dot" aria-hidden="true">A</span></button>
+            <button class="map-marker" type="button" data-marker="B" style="--x: 1367.3; --y: 1114.4" aria-label="B. Square Rivadavia"><span class="map-marker-dot" aria-hidden="true">B</span></button>
+            <button class="map-marker" type="button" data-marker="C" style="--x: 1299.6; --y: 1379.9" aria-label="C. La Luna de Gustavo"><span class="map-marker-dot" aria-hidden="true">C</span></button>
+            <button class="map-marker" type="button" data-marker="D" style="--x: 869.8; --y: 1044.1" aria-label="D. The pool complex"><span class="map-marker-dot" aria-hidden="true">D</span></button>
+            <button class="map-marker" type="button" data-marker="E" style="--x: 981.8; --y: 1103.9" aria-label="E. Playground"><span class="map-marker-dot" aria-hidden="true">E</span></button>
+            <button class="map-marker" type="button" data-marker="F" style="--x: 932.3; --y: 1273.2" aria-label="F. The ladder to nowhere"><span class="map-marker-dot" aria-hidden="true">F</span></button>
+            <button class="map-marker" type="button" data-marker="G" style="--x: 1104.2; --y: 1356.5" aria-label="G. Av. de Mayo"><span class="map-marker-dot" aria-hidden="true">G</span></button>
+            <button class="map-marker" type="button" data-marker="H" style="--x: 1403.7; --y: 1005.0" aria-label="H. Diagonal San Martín"><span class="map-marker-dot" aria-hidden="true">H</span></button>
+
+            <button class="map-sketch" type="button" data-marker="A" style="--x: 26;  --y: 2352; --w: 206; --h: 155" aria-label="Sketch A. The slaughterhouse"></button>
+            <button class="map-sketch" type="button" data-marker="B" style="--x: 264; --y: 2352; --w: 206; --h: 155" aria-label="Sketch B. Square Rivadavia"></button>
+            <button class="map-sketch" type="button" data-marker="C" style="--x: 498; --y: 2352; --w: 205; --h: 155" aria-label="Sketch C. La Luna de Gustavo"></button>
+            <button class="map-sketch" type="button" data-marker="D" style="--x: 738; --y: 2352; --w: 205; --h: 155" aria-label="Sketch D. The pool complex"></button>
+            <button class="map-sketch" type="button" data-marker="E" style="--x: 26;  --y: 2515; --w: 206; --h: 162" aria-label="Sketch E. Playground"></button>
+            <button class="map-sketch" type="button" data-marker="F" style="--x: 264; --y: 2515; --w: 206; --h: 162" aria-label="Sketch F. The ladder to nowhere"></button>
+            <button class="map-sketch" type="button" data-marker="G" style="--x: 498; --y: 2515; --w: 205; --h: 162" aria-label="Sketch G. Av. de Mayo"></button>
+            <button class="map-sketch" type="button" data-marker="H" style="--x: 738; --y: 2515; --w: 205; --h: 162" aria-label="Sketch H. Diagonal San Martín"></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== פרויקטים נוספים: ברוחב כל המסך =====
+           כל דימוי הוא קישור. דימוי בלי href עוד לא מוביל לשום מקום -->
+      <section class="next-projects" aria-label="More projects">
+        <a class="next-project next-project--1" href="the-perfect-crime-project.html"><img src="Images/next-projects/project-1.png" alt="The Perfect Crime"></a>
+        <a class="next-project next-project--2"><img src="Images/next-projects/project-2.png" alt="Project preview"></a>
+        <a class="next-project next-project--3" href="leftovers-project.html"><img src="Images/next-projects/project-3.png" alt="Leftovers*"></a>
+        <a class="next-project next-project--4"><img src="Images/next-projects/project-4.png" alt="Project preview"></a>
+        <a class="next-project next-project--5"><img src="Images/next-projects/project-5.png" alt="Touch Grass"></a>
+      </section>
+
+      <!-- ===== באנר יצירת קשר: ברוחב כל המסך, מוביל ל-say-hi.html ===== -->
+      <a class="contact-banner" href="say-hi.html" aria-label="Say hi, let’s make things together">
+        <div class="contact-banner-track" aria-hidden="true">
+          <div class="contact-banner-half">
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+          </div>
+          <div class="contact-banner-half">
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

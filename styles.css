@@ -850,6 +850,75 @@
   }
 }
 
+/* ----- עמוד הפרויקט Leftovers* (leftovers-project.html) -----
+   אותה תבנית כמו עמוד פרויקט מלא, עם הצבעים של הפרויקט.
+   מספרים כמו 418 * var(--px) הם פיקסלים מהפריים "דף פרויקט שאריות" בפיגמה. */
+:root.page-leftovers {
+  /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
+  --leftovers-navy: #1b3958;   /* רקע העמוד והמלבנים של התוויות */
+  --leftovers-grid: #4a6c8f;   /* קווי הגריד */
+  --leftovers-steel: #5c85b0;  /* ההמבורגר */
+  --leftovers-sky: #99c1ea;    /* התיאור */
+  --leftovers-lilac: #d9c4f0;  /* העיגולים עם האותיות על המפה */
+  --leftovers-ink: #265687;    /* האותיות בעיגולים */
+
+  --page-background: var(--leftovers-navy);
+  --grid-line-color: var(--leftovers-grid);
+  --menu-line-color: var(--leftovers-steel);
+  --description-color: var(--leftovers-sky);
+
+  /* הכותרת, שתי שורות המשנה והתיאור (ההזזה של 8px בכותרת ובשורות המשנה כמו בעמוד The Perfect Crime) */
+  --title-width: calc(418 * var(--px));
+  --type-top: calc(140 * var(--px));
+  --type-left: calc(297 * var(--px));
+  /* התיאור נחתך מתחת לקו הזה כשהוא עולה עם הגלילה (y=254 בפיגמה) */
+  --description-clip-top: calc(253 * var(--px));
+  /* השורה הראשונה בתיאור (בפיגמה יש לפניה שורה ריקה) */
+  --description-top: calc(281 * var(--px));
+  /* המרווח שנשאר מתחת לשורה האחרונה כשהתיאור מסיים לעלות (כמו המרווח בראש העמוד) */
+  --description-bottom-space: calc(38 * var(--px));
+
+  /* התוויות בגריד: מלבן של שתי משבצות, והטקסט בתוכו (עמודה ושורה) */
+  --label-box-place-column: 1;        --label-box-place-row: 1;
+  --label-box-coordinates-column: 7;  --label-box-coordinates-row: 1;
+  --label-box-map-column: 1;          --label-box-map-row: 13;
+  --place-column: 1.136;        --place-row: 1.425;
+  --coordinates-column: 7.136;  --coordinates-row: 1.457;
+  --map-label-column: 1.093;    --map-label-row: 13.221;
+
+  /* המפה: מיקום וגודל במשבצות (743x1037 בפיגמה) */
+  --map-column: 1.029;    --map-row: 2.014;
+  --map-columns: 7.961;   --map-rows: 11.111;
+  /* גודל קובץ התמונה בפיקסלים. כל המיקומים על המפה (--x, --y ב-HTML) לפי הגודל הזה */
+  --map-image-width: 1935;
+  --map-image-height: 2700;
+  /* map-area: אזור המפה עצמה בתמונה, בלי המקרא שבתחתית (נמדד בקובץ) */
+  --map-area-x: 21;     --map-area-y: 19;
+  --map-area-width: 1891;  --map-area-height: 2317;
+
+  /* העיגולים עם האותיות: 8px בפיגמה, ואזור ה-hover סביבם גדול יותר */
+  --marker-dot-size: calc(8 * var(--u));
+  --marker-text-size: calc(6 * var(--u));
+  --marker-hit-size: calc(20 * var(--u));
+  /* הפופ: העיגול קופץ קצת מעבר לגודל הסופי ומתיישב עליו */
+  --marker-hidden-scale: 0.6;
+  --marker-pop-scale: 1.4;
+  --marker-pop-time: 0.45s;
+  --marker-pop-easing: cubic-bezier(0.34, 1.8, 0.64, 1);
+  --marker-hide-time: 0.15s;
+
+  /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50%, וקצת נמוך יותר */
+  --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
+  --next-projects-height: calc(277.79 * var(--strip-px));
+}
+
+/* במובייל הצד של הטקסט גבוה מספיק לכל התיאור, והוא נגלל עם העמוד */
+@media (max-width: 767.98px) {
+  :root.page-leftovers {
+    --info-height: calc(990 * var(--px));
+  }
+}
+
 /* ----- עמוד Say Hi (say-hi.html) -----
    הפריים בפיגמה: 1440x810, משבצת = 93px, והגריד מתחיל מהפינה של הפריים.
    אותה שיטה כמו בעמוד מבואה לפרויקט: אזור העיצוב ממורכז ושלם,
@@ -1792,7 +1861,8 @@ body {
   display: block;
   height: var(--menu-line-height);
   border-radius: var(--pill-radius);
-  background-color: var(--color-pink);
+  /* ורוד, אלא אם העמוד קובע צבע אחר (--menu-line-color) */
+  background-color: var(--menu-line-color, var(--color-pink));
   transition: background-color var(--transition-speed) ease;
 }
 
@@ -2225,7 +2295,7 @@ body {
   left: var(--description-left);
   top: var(--description-top);
   width: var(--description-width);
-  color: var(--color-pink);
+  color: var(--description-color, var(--color-pink));
 }
 
 /* שורה ריקה בין הפסקאות, כמו בפיגמה (1lh = גובה שורה אחת) */
@@ -2711,6 +2781,150 @@ body {
   .full-project-panel {
     margin-top: 0;
     margin-left: 0;
+  }
+}
+
+/* =========================================
+   עמוד הפרויקט Leftovers*
+   ========================================= */
+
+/* שורת המשנה השמאלית ("*fragments that...") ו-"Graphic Design and..." לידה */
+.full-project-tagline {
+  position: absolute;
+  left: var(--title-left);
+  top: var(--type-top);
+  color: var(--color-orange);
+  white-space: nowrap;
+}
+
+.page-leftovers .full-project-type {
+  left: var(--type-left);
+}
+
+/* התיאור: חלון שחותך אותו מלמעלה, והתיאור עולה בתוכו עם הגלילה
+   (--description-shift, script.js) עד שרואים את השורה האחרונה */
+.full-project-description-clip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: var(--description-clip-top);
+  bottom: 0;
+  overflow: hidden;
+}
+
+.full-project-description-clip .full-project-description {
+  top: calc(var(--description-top) - var(--description-clip-top));
+  padding-bottom: var(--description-bottom-space);
+  translate: 0 calc(-1 * var(--description-shift, 0px));
+}
+
+/* ----- התוויות בגריד ----- */
+.leftovers-label-box {
+  --columns: 2;
+  --rows: 1;
+  background-color: var(--page-background);
+  /* הרקע ממלא רק את השטח שבין הקווים, כך שקווי המסגרת נשארים */
+  background-clip: padding-box;
+}
+
+.leftovers-label-box--place       { --column: var(--label-box-place-column);       --row: var(--label-box-place-row); }
+.leftovers-label-box--coordinates { --column: var(--label-box-coordinates-column); --row: var(--label-box-coordinates-row); }
+.leftovers-label-box--map         { --column: var(--label-box-map-column);         --row: var(--label-box-map-row); }
+
+.leftovers-place     { --column: var(--place-column);     --row: var(--place-row); }
+.leftovers-map-label { --column: var(--map-label-column); --row: var(--map-label-row); }
+
+/* הקואורדינטות: כל ספרה ברוחב קבוע, כדי שהשורה לא תזוז כשהמספרים משתנים */
+.leftovers-coordinates {
+  --column: var(--coordinates-column);
+  --row: var(--coordinates-row);
+  color: var(--color-orange);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ----- המפה ----- */
+.leftovers-map {
+  --column: var(--map-column);
+  --row: var(--map-row);
+  width: calc(var(--map-columns) * var(--cell));
+  height: calc(var(--map-rows) * var(--cell));
+}
+
+.leftovers-map-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* מיקום לפי פיקסלים של קובץ התמונה (--x, --y), באחוזים מגודל המפה */
+.map-marker,
+.map-sketch {
+  position: absolute;
+  left: calc(var(--x) / var(--map-image-width) * 100%);
+  top: calc(var(--y) / var(--map-image-height) * 100%);
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.map-marker:focus-visible,
+.map-sketch:focus-visible {
+  outline: none;
+}
+
+/* אזור ה-hover סביב העיגול המקורי שבתמונה. (x, y) הוא מרכז העיגול */
+.map-marker {
+  width: var(--marker-hit-size);
+  height: var(--marker-hit-size);
+  translate: -50% -50%;
+}
+
+/* העיגול הנפרד: לא נראה בכלל, עד שהעכבר עליו או על הציור שלו (.is-popped, script.js) */
+.map-marker-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--marker-dot-size);
+  height: var(--marker-dot-size);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background-color: var(--leftovers-lilac);
+  color: var(--leftovers-ink);
+  /* האות היא חלק מהאיור של העיגול, ולא סגנון טקסט */
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: var(--marker-text-size);
+  line-height: 1;
+  opacity: 0;
+  scale: var(--marker-hidden-scale);
+  transition: opacity var(--marker-hide-time) ease, scale var(--marker-hide-time) ease-in;
+  pointer-events: none;
+}
+
+/* הפופ: גדל בקפיצה רכה ונשאר גדול קצת יותר */
+.map-marker.is-popped .map-marker-dot {
+  opacity: 1;
+  scale: var(--marker-pop-scale);
+  transition: opacity var(--marker-hide-time) ease, scale var(--marker-pop-time) var(--marker-pop-easing);
+}
+
+/* אזור שקוף מעל ציור במקרא */
+.map-sketch {
+  width: calc(var(--w) / var(--map-image-width) * 100%);
+  height: calc(var(--h) / var(--map-image-height) * 100%);
+}
+
+/* מי שביקש פחות תנועה: העיגול מופיע ונעלם מיד, בלי פופ */
+@media (prefers-reduced-motion: reduce) {
+  .map-marker-dot,
+  .map-marker.is-popped .map-marker-dot {
+    transition: none;
   }
 }
 
