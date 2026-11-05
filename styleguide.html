@@ -58,7 +58,7 @@
          העותקים הקבועים הם inert: לא מגיבים לעכבר ולא מקבלים Tab -->
     <section class="styleguide-section">
       <h2 class="styleguide-section-title text-section-title">Components</h2>
-      <p class="styleguide-caption text-body">Default, Hover, Pressed and Focus are shown fixed. Try the Live copy with the mouse and with Tab.</p>
+      <p class="styleguide-caption text-body">Default, Hover, Pressed and Focus are shown fixed. Focus (keyboard only) looks exactly like Hover. A component with no Hover look gets a thin outline in the page’s grid color. Try the Live copy with the mouse and with Tab.</p>
 
       <!-- כפתור הניווט (עמוד הבית) -->
       <article class="styleguide-component">
@@ -107,6 +107,23 @@
                   <span class="menu-button-line"></span>
                   <span class="menu-button-line"></span>
                 </a>
+              </div>
+            </div>
+          </figure>
+        </div>
+      </article>
+
+      <!-- כפתור בבר הבחירה (התפריט): Hover ו-Focus מציירים קו מתחת למילה -->
+      <article class="styleguide-component">
+        <h3 class="text-section-title">Navigation bar</h3>
+        <div class="styleguide-states">
+          <figure class="styleguide-state" data-live>
+            <figcaption class="styleguide-state-name text-body">Live</figcaption>
+            <div class="styleguide-stage styleguide-stage--nav vars-base">
+              <div class="nav-bar is-open">
+                <ul class="nav-bar-list">
+                  <li><a class="nav-bar-link text-button" href="#" data-demo-link data-state-target>WORK</a></li>
+                </ul>
               </div>
             </div>
           </figure>

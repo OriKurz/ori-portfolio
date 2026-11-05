@@ -166,9 +166,8 @@
   --pressed-scale: 0.8;
 
   /* מצבי רכיבים (ראו "מצבי רכיבים" ב-CLAUDE.md).
-     Focus: מסגרת בעובי קו הגריד (--line), כתומה, ועל רקע כתום צהובה */
-  --focus-color: var(--color-orange);
-  --focus-color-on-orange: var(--color-yellow);
+     Focus (רק במקלדת) נראה בדיוק כמו ה-Hover של הרכיב. לרכיב בלי Hover:
+     קו מתאר בצבע קווי הגריד של העמוד (--grid-line-color), בעובי קו הגריד (--line) */
   /* Pressed: כמה הרכיב קטן ברגע הלחיצה */
   --menu-pressed-scale: 0.9;
   --contact-ball-pressed-scale: 0.92;
@@ -1233,12 +1232,11 @@ body {
   transform: scale(var(--pressed-scale));
 }
 
-/* ניווט במקלדת: מסגרת כתומה בתוך המשבצת. המסגרת של הכפתור יושבת על קווי הגריד,
-   אז מזיזים את הפוקוס פנימה בעובי של שני קווים, כדי שלא יכסה אותם */
+/* ניווט במקלדת: כמו מעבר עכבר, רקע ורוד */
 .nav-button:focus-visible,
 .nav-button.is-focus {
-  outline: var(--line) solid var(--focus-color);
-  outline-offset: calc(var(--line) * -2);
+  outline: none;
+  background-color: var(--color-pink);
 }
 
 /* בערבית האותיות מחוברות, אז בלי ריווח בין אותיות */
@@ -1356,11 +1354,11 @@ body {
   transform: scale(var(--pressed-scale));
 }
 
-/* ניווט במקלדת: מסגרת כתומה בתוך הריבוע (שכבר ממלא את השטח שבין הקווים) */
+/* ניווט במקלדת: כמו מעבר עכבר */
 .balls-toggle:focus-visible,
 .balls-toggle.is-focus {
-  outline: var(--line) solid var(--focus-color);
-  outline-offset: calc(var(--line) * -1);
+  outline: none;
+  background-color: var(--toggle-hover-background);
 }
 
 /* אזור העיצוב מהפיגמה, ממורכז בחלון */
@@ -1798,11 +1796,15 @@ body {
   scale: var(--menu-pressed-scale);
 }
 
-/* ניווט במקלדת: מסגרת כתומה סביב האייקון, בתוך המשבצת */
+/* ניווט במקלדת: כמו מעבר עכבר, הקווים ירוקים */
 .menu-button:focus-visible,
 .menu-button.is-focus {
-  outline: var(--line) solid var(--focus-color);
-  outline-offset: var(--menu-gap);
+  outline: none;
+}
+
+.menu-button:focus-visible .menu-button-line,
+.menu-button.is-focus .menu-button-line {
+  background-color: var(--color-green);
 }
 
 /* ----- בר הבחירה (התפריט) -----
@@ -1854,7 +1856,9 @@ body {
   }
 }
 
-.nav-bar .menu-button.is-hover .menu-button-line {
+.nav-bar .menu-button.is-hover .menu-button-line,
+.nav-bar .menu-button:focus-visible .menu-button-line,
+.nav-bar .menu-button.is-focus .menu-button-line {
   background-color: var(--color-green);
 }
 
@@ -1910,17 +1914,17 @@ body {
   }
 }
 
-/* לחיצה: הקו מצטייר, ובסוף התנועה עוברים לעמוד (script.js) */
+/* לחיצה: הקו מצטייר, ובסוף התנועה עוברים לעמוד (script.js).
+   ניווט במקלדת: כמו מעבר עכבר, הקו מצטייר */
 .nav-bar-link.is-hover::after,
-.nav-bar-link.is-pressed::after {
+.nav-bar-link.is-pressed::after,
+.nav-bar-link:focus-visible::after,
+.nav-bar-link.is-focus::after {
   transform: none;
 }
 
-/* ניווט במקלדת: מסגרת כתומה בעובי קו הגריד */
-.nav-bar-link:focus-visible,
-.nav-bar-link.is-focus {
-  outline: var(--nav-line) solid var(--focus-color);
-  outline-offset: var(--nav-underline-offset);
+.nav-bar-link:focus-visible {
+  outline: none;
 }
 
 /* צמצום תנועה: הבר והקו מופיעים ונעלמים מיד */
@@ -2313,18 +2317,17 @@ body {
   scale: var(--play-icon-pressed-scale);
 }
 
-/* ניווט במקלדת: מסגרת כתומה בתוך המשבצות, בלי לכסות את קווי הגריד.
-   גם על הבר ועל כפתור המסך המלא, שמקבלים פוקוס אחרי הסרטון */
+/* ניווט במקלדת: כמו מעבר עכבר, האייקון כתום.
+   הבר וכפתור המסך המלא מקבלים פוקוס אחרי הסרטון: גם הם כמו ב-hover (בהמשך) */
 .video-player:focus-visible,
 .video-player.is-focus {
-  outline: var(--line) solid var(--focus-color);
-  outline-offset: calc(var(--line) * -2);
+  outline: none;
+  --play-icon-color: var(--color-orange);
 }
 
 .video-progress:focus-visible,
 .video-fullscreen-button:focus-visible {
-  outline: var(--line) solid var(--focus-color);
-  outline-offset: calc(var(--line) * -1);
+  outline: none;
 }
 
 /* בר ההתקדמות: אזור לחיצה שקוף בתחתית הסרטון, ובתוכו קו דק */
@@ -2366,6 +2369,7 @@ body {
 
 /* על הבר עצמו (או בזמן גרירה) הקו קצת עבה יותר, שיהיה קל לתפוס */
 .video-progress:hover .video-progress-track,
+.video-progress:focus-visible .video-progress-track,
 .video-player.is-seeking .video-progress-track {
   height: var(--progress-hover-height);
 }
@@ -2625,11 +2629,15 @@ body {
   color: var(--color-mint);
 }
 
-/* ניווט במקלדת: הרקע כתום, אז המסגרת צהובה. בתוך הפס */
+/* ניווט במקלדת: כמו מעבר עכבר, הטקסט ורוד */
 .contact-banner:focus-visible,
 .contact-banner.is-focus {
-  outline: var(--line) solid var(--focus-color-on-orange);
-  outline-offset: calc(var(--line) * -1);
+  outline: none;
+}
+
+.contact-banner:focus-visible .contact-banner-text,
+.contact-banner.is-focus .contact-banner-text {
+  color: var(--color-pink);
 }
 
 .contact-banner-star--1 {
@@ -2824,10 +2832,11 @@ body {
   scale: var(--contact-ball-pressed-scale);
 }
 
-/* ניווט במקלדת (Tab): טבעת כתומה סביב הכדור. הכדור גם עוצר במקום (script.js) */
+/* ניווט במקלדת (Tab): לכדור אין מראה hover (הוא רק מאט), אז קו מתאר דק
+   בצבע קווי הגריד של העמוד, בעובי קו הגריד. הכדור גם עוצר במקום (script.js) */
 .contact-ball:focus-visible,
 .contact-ball.is-focus {
-  outline: var(--line) solid var(--focus-color);
+  outline: var(--line) solid var(--grid-line-color);
   outline-offset: var(--line);
 }
 
@@ -3022,6 +3031,24 @@ body {
 .styleguide-stage--menu {
   --styleguide-stage-columns: 2;
   --styleguide-stage-rows: 1;
+}
+
+/* כפתור בבר הבחירה: הבר עצמו (פתוח) ממלא את הבמה, והמילה במרכז */
+.styleguide-stage--nav {
+  --styleguide-stage-columns: 2;
+  --styleguide-stage-rows: 1;
+}
+
+.styleguide-stage--nav .nav-bar {
+  position: absolute;
+  inset: 0;
+  height: auto;
+}
+
+.styleguide-stage--nav .nav-bar-list {
+  inset: 0;
+  height: auto;
+  justify-content: center;
 }
 
 .styleguide-stage--balls {
