@@ -926,9 +926,18 @@
   --gallery-columns: 11.732;    --gallery-rows: 16.099;
   --gallery-column-gap: calc(36 * var(--u));
   --gallery-row-gap: calc(29 * var(--u));
-  /* כמה זמן לוקח לתמונה להיסגר חזרה כשהעכבר יוצא */
-  --reveal-close-time: 0.45s;
-  --reveal-close-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  /* הסגירה של התמונה כשהעכבר יוצא: איטית ורכה, ומאטה לקראת הסוף */
+  --reveal-close-time: 1.1s;
+  --reveal-close-easing: cubic-bezier(0.33, 1, 0.68, 1);
+
+  /* הזכוכית המגדלת: האייקון במשבצת הפנויה בקצה הימני של השורה שמעל המפה */
+  --magnifier-column: 13;   --magnifier-row: 1;
+  --magnifier-icon-size: calc(var(--cell) * 0.5);
+  --magnifier-color: var(--color-orange);
+  --magnifier-hover-color: var(--color-green);
+  /* העיגול: בערך 3 משבצות, מגדיל פי 2.5 */
+  --magnifier-lens-size: calc(var(--cell) * 3);
+  --magnifier-zoom: 2.5;
 
   /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50%, וקצת נמוך יותר */
   --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
@@ -3059,30 +3068,141 @@ body {
   pointer-events: none;
 }
 
-/* התמונה: ממלאת את כל המלבן, בדיוק מעל האיור.
-   החשיפה בקו ישר ואנכי: --hide-left ו---hide-right הם כמה מוסתר מכל צד (script.js).
-   בטעינה היא מוסתרת לגמרי. הסגירה רכה, ובזמן שהעכבר זז היא עוקבת מיד (.is-revealing) */
+/* התמונה: בגודל ובמיקום שלה מהפיגמה, באחוזים מהמלבן של הלוקיישן.
+   זה גם האזור שבו העכבר חושף אותה (script.js) */
 .location-photo {
+  --crop-left: 0%;
+  --crop-top: 0%;
+  --crop-width: 100%;
+  --crop-height: 100%;
+  position: absolute;
+  left: var(--photo-left);
+  top: var(--photo-top);
+  width: var(--photo-width);
+  height: var(--photo-height);
+}
+
+/* החשיפה בקו ישר ואנכי: --hide-left ו---hide-right הם כמה מוסתר מכל צד (script.js).
+   בטעינה היא מוסתרת לגמרי. הסגירה רכה, ובזמן שהעכבר זז היא עוקבת מיד (.is-revealing) */
+.location-photo-reveal {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  overflow: hidden;
   clip-path: inset(0 var(--hide-right, 100%) 0 var(--hide-left, 0%));
   transition: clip-path var(--reveal-close-time) var(--reveal-close-easing);
   pointer-events: none;
-  -webkit-user-drag: none;
 }
 
-.location.is-revealing .location-photo {
+.location-photo.is-revealing .location-photo-reveal {
   transition: none;
+}
+
+/* התמונה עצמה: חתוכה כמו בפיגמה */
+.location-photo-image {
+  position: absolute;
+  left: var(--crop-left);
+  top: var(--crop-top);
+  width: var(--crop-width);
+  height: var(--crop-height);
+  max-width: none;
+  object-fit: cover;
+  -webkit-user-drag: none;
 }
 
 /* מי שביקש פחות תנועה: החשיפה עדיין עוקבת אחרי העכבר, אבל הסגירה מיידית */
 @media (prefers-reduced-motion: reduce) {
-  .location-photo {
+  .location-photo-reveal {
     transition: none;
   }
+}
+
+/* ----- הזכוכית המגדלת -----
+   האייקון ממורכז בין קווי המשבצת, בקו בעובי קווי הגריד.
+   Hover ו-Focus: ירוק (כמו ההמבורגר). Pressed: קטן מעט.
+   כשהמצב פעיל (aria-pressed="true") הוא נשאר ירוק, כמו הקו הקבוע של העמוד הנוכחי בבר הבחירה */
+.magnifier-button {
+  --column: var(--magnifier-column);
+  --row: var(--magnifier-row);
+  --columns: 1;
+  --rows: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: none;
+  color: var(--magnifier-color);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.magnifier-icon {
+  width: var(--magnifier-icon-size);
+  height: var(--magnifier-icon-size);
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--line);
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  transition: color var(--transition-speed) ease, scale var(--transition-speed) ease;
+}
+
+.magnifier-icon circle,
+.magnifier-icon line {
+  vector-effect: non-scaling-stroke;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .magnifier-button:hover {
+    color: var(--magnifier-hover-color);
+  }
+}
+
+.magnifier-button.is-hover,
+.magnifier-button[aria-pressed="true"] {
+  color: var(--magnifier-hover-color);
+}
+
+.magnifier-button:active .magnifier-icon,
+.magnifier-button.is-pressed .magnifier-icon {
+  scale: var(--menu-pressed-scale);
+}
+
+.magnifier-button:focus-visible,
+.magnifier-button.is-focus {
+  outline: none;
+  color: var(--magnifier-hover-color);
+}
+
+/* העיגול: מופיע רק כשהמצב פעיל והעכבר על הפוסטר (.is-visible, script.js).
+   הרקע הוא הקובץ המקורי של הפוסטר, מוגדל פי --magnifier-zoom.
+   script.js קובע את המיקום (--lens-x, --lens-y) ואיזה חלק מהפוסטר מוצג (--lens-bg-x, --lens-bg-y) */
+.magnifier-lens {
+  position: absolute;
+  left: var(--lens-x, 0);
+  top: var(--lens-y, 0);
+  z-index: 2;
+  width: var(--magnifier-lens-size);
+  height: var(--magnifier-lens-size);
+  translate: -50% -50%;
+  border: var(--line) solid var(--magnifier-color);
+  border-radius: 50%;
+  background-color: var(--page-background);
+  background-image: url("Images/mape1.png");
+  background-repeat: no-repeat;
+  background-size: var(--lens-bg-width, 0px) auto;
+  background-position: var(--lens-bg-x, 0) var(--lens-bg-y, 0);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.magnifier-lens.is-visible {
+  visibility: visible;
+}
+
+/* כשהמצב פעיל: גרירה על הפוסטר בטלפון מזיזה את העיגול ולא גוללת */
+.leftovers-map.is-magnifying {
+  touch-action: none;
 }
 
 /* =========================================
