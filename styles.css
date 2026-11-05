@@ -145,6 +145,8 @@
   --text-body-line-height: 28;
   --text-hint-size: 20;
   --text-contact-ball-size: 17;
+  --text-nav-size: 20;
+  --text-nav-mobile-size: 14;
 
   /* פיקסל אחד בפיגמה: כמה הוא שווה במסך. כל עמוד (ולפעמים כל חלק בעמוד)
      קובע אותו לפי השיטה שבה הוא גדל עם המסך. בעמוד הבית: משבצת = 96px בפיגמה */
@@ -964,22 +966,20 @@
 
 /* ----- בר הבחירה (התפריט) -----
    פריים "bar" בפיגמה: 1440x61. הבר תמיד ברוחב המסך, אז פיקסל בפיגמה = 1/1440 מרוחב החלון.
-   אין לבר עיצוב מובייל: במובייל אותה שורה עם טקסט Button/Mobile, והמילים מתפזרות עד הקצה */
+   ההמבורגר והכפתורים ממורכזים לגובה הבר (flex ב-.nav-bar) */
 :root {
   --nav-px: calc(100vw / 1440);
   --nav-height: calc(61 * var(--nav-px));
-  /* ההמבורגר בבר (30x24) */
+  /* ההמבורגר בבר (30x24), 10 מהקצה השמאלי */
   --nav-menu-left: calc(10 * var(--nav-px));
-  --nav-menu-top: calc(16 * var(--nav-px));
   --nav-menu-width: calc(30 * var(--nav-px));
   --nav-menu-line-height: calc(4 * var(--nav-px));
   --nav-menu-gap: calc(6 * var(--nav-px));
-  /* שורת הכפתורים: מתחילה ב-106, 149 בין מילה למילה */
-  --nav-list-left: calc(106 * var(--nav-px));
-  --nav-list-right: auto;
-  --nav-list-top: calc(16 * var(--nav-px));
-  --nav-list-height: calc(27 * var(--nav-px));
-  --nav-list-gap: calc(149 * var(--nav-px));
+  /* שורת הכפתורים: מתחילה ב-106 מהקצה (66 אחרי ההמבורגר), 168 בין מילה למילה */
+  --nav-list-start: calc(66 * var(--nav-px));
+  --nav-list-end: 0px;
+  --nav-list-gap: calc(168 * var(--nav-px));
+  --nav-list-grow: 0;
   --nav-list-justify: flex-start;
   /* הקו מתחת למילה: בעובי קווי הגריד */
   --nav-line: var(--line-desktop);
@@ -989,19 +989,30 @@
   --nav-ease-in: cubic-bezier(0.22, 1, 0.36, 1);
   --nav-ease-out: cubic-bezier(0.64, 0, 0.78, 0);
   --nav-underline-duration: 0.3s;
+  /* תיקון אופטי למרכוז האותיות (ראו .nav-bar-link) */
+  --nav-text-optical-shift: 0.055em;
   /* מעל כל התוכן */
   --layer-nav-bar: 10;
 }
 
+/* מובייל (אין עיצוב בפיגמה): בר נמוך יותר, המבורגר בגודל ההמבורגר של העמודים במובייל,
+   טקסט Nav/Mobile (14), והמילים מתפזרות ברווחים שווים עד הקצה הימני.
+   פיקסל אחד עד רוחב 375, וקטן יותר בטלפונים צרים יותר כדי שהשורה תמיד תיכנס */
 @media (max-width: 767.98px) {
   :root {
-    /* 1 פיקסל ברוחב 390, וקטן יותר בטלפונים צרים יותר כדי שהשורה תיכנס */
-    --nav-px: min(1px, 100vw / 390);
-    --nav-list-left: calc(50 * var(--nav-px));
-    --nav-list-right: calc(10 * var(--nav-px));
+    --nav-px: min(1px, 100vw / 375);
+    --nav-height: calc(52 * var(--nav-px));
+    --nav-menu-left: calc(12 * var(--nav-px));
+    --nav-menu-width: calc(24 * var(--nav-px));
+    --nav-menu-line-height: calc(3 * var(--nav-px));
+    --nav-menu-gap: calc(5 * var(--nav-px));
+    --nav-list-start: calc(18 * var(--nav-px));
+    --nav-list-end: calc(12 * var(--nav-px));
     --nav-list-gap: 0px;
+    --nav-list-grow: 1;
     --nav-list-justify: space-between;
     --nav-line: var(--line-mobile);
+    --nav-underline-offset: calc(3 * var(--nav-px));
   }
 }
 
@@ -1138,12 +1149,22 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* Nav: הכפתורים בבר הבחירה */
+.text-nav {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: calc(var(--text-nav-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0.04em;
+}
+
 /* במובייל (צר מ-768px) הסגנונות שיש להם גרסת מובייל עוברים אליה:
-   Display/Large → Display/Mobile, Button → Button/Mobile, Button/Strong → Button/Mobile Strong */
+   Display/Large → Display/Mobile, Button → Button/Mobile, Button/Strong → Button/Mobile Strong, Nav → Nav/Mobile */
 @media (max-width: 767.98px) {
   .text-display-large  { font-size: calc(var(--text-display-mobile-size) * var(--type-px)); }
   .text-button         { font-size: calc(var(--text-button-mobile-size) * var(--type-px)); }
   .text-button-strong  { font-size: calc(var(--text-button-mobile-strong-size) * var(--type-px)); }
+  .text-nav            { font-size: calc(var(--text-nav-mobile-size) * var(--type-px)); }
 }
 
 /* =========================================
@@ -1820,8 +1841,12 @@ body {
   top: 0;
   left: 0;
   z-index: var(--layer-nav-bar);
+  display: flex;
+  align-items: center; /* ההמבורגר והכפתורים במרכז הגובה */
   width: 100%;
   height: var(--nav-height);
+  padding-left: var(--nav-menu-left);
+  padding-right: var(--nav-list-end);
   background-color: var(--color-blue);
   color: var(--color-yellow);
   transform: translateY(-100%);
@@ -1841,9 +1866,7 @@ body {
 
 /* ההמבורגר של הבר: צהוב (ב-hover ירוק, כמו כל ההמבורגרים) */
 .nav-bar-menu {
-  position: absolute;
-  left: var(--nav-menu-left);
-  top: var(--nav-menu-top);
+  flex-shrink: 0;
 }
 
 .nav-bar .menu-button-line {
@@ -1864,20 +1887,25 @@ body {
 
 /* שורת הכפתורים */
 .nav-bar-list {
-  position: absolute;
-  left: var(--nav-list-left);
-  right: var(--nav-list-right);
-  top: var(--nav-list-top);
-  height: var(--nav-list-height);
   display: flex;
+  flex-grow: var(--nav-list-grow);
   align-items: center;
   justify-content: var(--nav-list-justify);
   gap: var(--nav-list-gap);
+  margin-left: var(--nav-list-start);
   list-style: none;
+}
+
+/* כל כפתור בגובה הטקסט בלבד, כדי שהמרכוז יהיה של המילה עצמה */
+.nav-bar-list li {
+  display: flex;
 }
 
 .nav-bar-link {
   position: relative;
+  /* ב-Telegraf האותיות הגדולות יושבות קצת מעל מרכז שורת הטקסט.
+     מורידים אותן כדי שהאותיות עצמן יהיו במרכז הגובה של הבר (נמדד) */
+  top: var(--nav-text-optical-shift);
   display: block;
   border: none;
   background: none;
@@ -3043,12 +3071,12 @@ body {
   position: absolute;
   inset: 0;
   height: auto;
+  justify-content: center;
+  padding: 0;
 }
 
 .styleguide-stage--nav .nav-bar-list {
-  inset: 0;
-  height: auto;
-  justify-content: center;
+  margin: 0;
 }
 
 .styleguide-stage--balls {
