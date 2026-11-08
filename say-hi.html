@@ -53,12 +53,12 @@
   </main>
 
   <!-- כדורי יצירת הקשר: מסתובבים בחלון כל הזמן (script.js).
-       כל כדור הוא כפתור. כדי לחבר לו קישור בעתיד, מחליפים את <button type="button">
-       ב-<a href="..."> (למשל mailto: למייל), ומשאירים את אותה מחלקה -->
+       כל כדור הוא קישור ליעד שלו. אינסטגרם ווטסאפ נפתחים בלשונית חדשה.
+       draggable="false": כדי שגרירה בעכבר לא תתפוס את הקישור כמו כפתור רגיל -->
   <div class="contact-balls">
-    <button class="contact-ball text-contact-ball contact-ball--instagram" type="button" aria-label="Instagram"><span>INSTA<br>GRAM</span></button>
-    <button class="contact-ball text-contact-ball contact-ball--email" type="button" aria-label="E-mail"><span>E-MAIL</span></button>
-    <button class="contact-ball text-contact-ball contact-ball--whatsapp" type="button" aria-label="WhatsApp"><span>WHATS<br>APP</span></button>
+    <a draggable="false" class="contact-ball text-contact-ball contact-ball--instagram" href="https://www.instagram.com/ori_kurz/" target="_blank" rel="noopener" aria-label="Instagram"><span>INSTA<br>GRAM</span></a>
+    <a draggable="false" class="contact-ball text-contact-ball contact-ball--email" href="mailto:orikurz1@gmail.com" aria-label="E-mail"><span>E-MAIL</span></a>
+    <a draggable="false" class="contact-ball text-contact-ball contact-ball--whatsapp" href="https://wa.me/972525014266" target="_blank" rel="noopener" aria-label="WhatsApp"><span>WHATS<br>APP</span></a>
   </div>
 
   <script src="script.js"></script>
