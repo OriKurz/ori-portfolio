@@ -1235,6 +1235,8 @@ locationPhotos.forEach(function (photo) {
 // בטלפון: נגיעה בשנה מציגה ונועלת אותה, ונגיעה בשנה אחרת מחליפה.
 // במקלדת: Focus עובד כמו hover, ו-Enter נועל.
 // כשהתצלום מתחלף, הוא יורד מעט למקום שלו (is-settling, התנועה ב-styles.css).
+// כל תצלום מתחיל בגרסה קלה. בפעם הראשונה שהוא מוצג, נטען הקובץ המקורי (data-full)
+// ומחליף אותה ברגע שהוא מוכן, כך שגם בחיבור איטי רואים תצלום מיד.
 // =========================================
 const sourceTimeline = document.querySelector(".source-timeline");
 
@@ -1244,6 +1246,18 @@ if (sourceTimeline) {
   let lockedYear = null;   // השנה שנבחרה בלחיצה
   let hoveredYear = null;  // השנה שהעכבר (או הפוקוס) עליה
   let shownYear = null;    // השנה שהתצלום שלה מוצג עכשיו
+
+  // טוען את הקובץ המקורי של התצלום ברקע, ומחליף אליו כשהוא מוכן (פעם אחת לכל תצלום)
+  function loadFullPhoto(photo) {
+    const image = photo.querySelector(".timeline-photo-image");
+    if (!image.dataset.full) return;
+    const full = new Image();
+    full.src = image.dataset.full;
+    delete image.dataset.full;
+    full.decode().then(function () {
+      image.src = full.src;
+    }).catch(function () {});
+  }
 
   // מציג את התצלום של השנה שעליה העכבר, ואם אין כזו, של השנה הנעולה
   function updateTimeline() {
@@ -1262,6 +1276,7 @@ if (sourceTimeline) {
       if (index === shownYear) {
         void photo.offsetWidth; // מאפס את האנימציה, כדי שתתחיל מחדש בכל החלפה
         photo.classList.add("is-shown", "is-settling");
+        loadFullPhoto(photo);
       }
     });
   }
