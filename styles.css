@@ -1084,26 +1084,34 @@
 
   /* טקסטים: פיקסל בפיגמה = --u */
   --type-px: var(--u);
-  /* הטקסט במלבנים הוורודים (Tagline). במחשב כמו שאר העמוד */
+  /* הטקסט במלבן הוורוד (Button). במחשב כמו שאר העמוד */
   --tagline-type-px: var(--u);
 
-  /* שני המלבנים הוורודים: 5 משבצות לרוחב ומשבצת אחת לגובה */
+  /* המלבן הוורוד: 5 משבצות לרוחב ומשבצת אחת לגובה, בשורה 3 (279px בפיגמה) */
   --say-hi-box-column: 5;
   --say-hi-box-columns: 5;
-  --say-hi-top-box-row: 2;
-  --say-hi-bottom-box-row: 6;
-  /* הטקסט שבתוכם: יישור, והמרחק מהקו העליון של המלבן.
+  --say-hi-box-row: 3;
+  /* הטקסט שבתוכו: יישור, והמרחק מהקו העליון של המלבן (312px בפיגמה).
      בפיגמה הטקסט מיושר לימין: המרחק מהקו הימני של המלבן (930px) לסוף הטקסט */
   --say-hi-text-align: right;
-  --say-hi-top-text-offset: calc(41 * var(--u));
-  --say-hi-bottom-text-offset: calc(38 * var(--u));
-  --say-hi-top-text-right: calc((930 - 877.2) * var(--u));
-  --say-hi-bottom-text-right: calc((930 - 867.2) * var(--u));
+  --say-hi-text-offset: calc((312 - 279) * var(--u));
+  --say-hi-text-right: calc((930 - 875.2) * var(--u));
 
-  /* הכותרת Say hi: מיושרת לימין, לנקודה 1037px בפיגמה */
-  --say-hi-title-top: calc(246 * var(--u));
-  --say-hi-title-right: calc((1440 - 1037.2) * var(--u));
+  /* הכותרת Say hi: מיושרת לימין, לנקודה 1017px בפיגמה */
+  --say-hi-title-top: calc(4 * var(--u));
+  --say-hi-title-right: calc((1440 - 1017.2) * var(--u));
   --say-hi-title-align: right;
+
+  /* הרצועה הכתומה (עליי): מתחילה ב-414px בפיגמה וממשיכה עד תחתית החלון.
+     שלושת הטקסטים ממוקמים בה לפי הפיגמה (מהפינה של הפריים) */
+  --say-hi-about-top: calc(414 * var(--u));
+  --about-type-px: var(--u);
+  --about-intro-left: calc(46 * var(--u));
+  --about-intro-top: calc((448 - 414) * var(--u));
+  --about-work-left: calc(418.2 * var(--u));
+  --about-work-top: calc((449 - 414) * var(--u));
+  --about-tools-left: calc(1139.8 * var(--u));
+  --about-tools-top: calc((446 - 414) * var(--u));
 
   /* כדורי יצירת הקשר (בפיגמה: קוטר 87px, טקסט 17px ברוחב 65px), מוגדלים ב-15% */
   --contact-ball-scale: 1.15;
@@ -1116,14 +1124,15 @@
 
 /* ----- עמוד Say Hi במובייל -----
    אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב המסך, ואותו סידור כמו במחשב
-   (המלבנים בשורות 2 ו-6, ברוחב 6 משבצות). אזור העיצוב (9 שורות) ממורכז לגובה,
-   בקפיצות של משבצת שלמה, כך שהקווים ממשיכים מראש המסך. */
+   (המלבן בשורה 3, ברוחב 6 משבצות). הגריד מתחיל בראש המסך,
+   והרצועה הכתומה בתחתית: שלושת הטקסטים אחד מתחת לשני, והעמוד נגלל. */
 @media (max-width: 767.98px) {
   :root.page-say-hi,
   .vars-say-hi {
     --grid-columns: 8;
-    --grid-rows: 9;
+    --grid-rows: 5;
     --design-columns: 8;
+    --grid-top: 0px;
     --line: var(--line-mobile);
 
     --menu-width: calc(var(--cell) * 0.5);
@@ -1133,14 +1142,15 @@
 
     --say-hi-box-column: 1;
     --say-hi-box-columns: 6;
-    /* גודל הטקסט: כמו הכפתורים בעמוד הבית במובייל (17px מתוך משבצת של 49.06px),
-       מוקטן באותו יחס כמו במחשב (22/25). ממורכז לרוחב ולגובה */
+    /* גודל הטקסט: כמו הכפתורים בעמוד הבית במובייל (17px מתוך משבצת של 49.06px).
+       ממורכז לרוחב ולגובה */
     --tagline-type-px: calc(var(--cell) * 17 / 49.06 / 25);
     --say-hi-text-align: center;
-    --say-hi-top-text-right: 0px;
-    --say-hi-bottom-text-right: 0px;
-    --say-hi-top-text-offset: calc((var(--cell) - var(--line) - var(--text-tagline-size) * var(--tagline-type-px)) / 2);
-    --say-hi-bottom-text-offset: var(--say-hi-top-text-offset);
+    --say-hi-text-right: 0px;
+    --say-hi-text-offset: calc((var(--cell) - var(--line) - var(--text-button-size) * var(--tagline-type-px)) / 2);
+
+    /* הטקסטים ברצועה הכתומה: 14px מתוך משבצת של 49.06px (כמו Nav/Mobile) */
+    --about-type-px: calc(var(--cell) * 14 / 49.06 / 20);
 
     /* הכותרת באותו גודל במשבצות כמו במחשב, ממורכזת לרוחב */
     --say-hi-title-right: 0px;
@@ -3578,7 +3588,7 @@ body {
    עמוד Say Hi
    ========================================= */
 
-/* עמוד של מסך אחד, בלי גלילה, גם במחשב וגם במובייל (הכדורים נעים בתוך החלון) */
+/* עמוד של מסך אחד, בלי גלילה במחשב (הכדורים נעים בתוך החלון). במובייל נגלל, ראו למטה */
 .page-say-hi,
 .page-say-hi body {
   height: 100%;
@@ -3627,25 +3637,16 @@ body {
   background-color: var(--color-orange);
 }
 
-/* ----- המלבנים הוורודים עם הטקסט הקטן ----- */
+/* ----- המלבן הוורוד עם הטקסט הקטן ----- */
 .say-hi-box {
   --column: var(--say-hi-box-column);
   --columns: var(--say-hi-box-columns);
+  --row: var(--say-hi-box-row);
   --rows: 1;
+  padding-top: var(--say-hi-text-offset);
+  padding-right: var(--say-hi-text-right);
   background-color: var(--color-pink);
   border-color: var(--grid-line-color);
-}
-
-.say-hi-box--top {
-  --row: var(--say-hi-top-box-row);
-  padding-top: var(--say-hi-top-text-offset);
-  padding-right: var(--say-hi-top-text-right);
-}
-
-.say-hi-box--bottom {
-  --row: var(--say-hi-bottom-box-row);
-  padding-top: var(--say-hi-bottom-text-offset);
-  padding-right: var(--say-hi-bottom-text-right);
 }
 
 .say-hi-text {
@@ -3665,6 +3666,51 @@ body {
   padding-top: var(--title-font-offset);
   text-align: var(--say-hi-title-align);
   white-space: pre; /* בפיגמה יש שני רווחים בין Say ל-hi, ו-pre שומר את שניהם */
+}
+
+/* ----- הרצועה הכתומה (עליי) -----
+   ממלאת את כל רוחב החלון, מ---say-hi-about-top ועד תחתית החלון, ומכסה את הקווים.
+   הטקסטים במיקום שלהם בפיגמה, והשורות נשברות בדיוק כמו שם (br) */
+.say-hi-about {
+  position: absolute;
+  left: calc(-1 * var(--grid-left));
+  top: var(--say-hi-about-top);
+  width: 100vw;
+  height: calc(100dvh - var(--grid-top) - var(--say-hi-about-top));
+  background-color: var(--color-orange);
+}
+
+.say-hi-about-text {
+  --type-px: var(--about-type-px);
+  position: absolute;
+  white-space: nowrap;
+}
+
+.say-hi-about-text--intro { left: calc(var(--grid-left) + var(--about-intro-left)); top: var(--about-intro-top); }
+.say-hi-about-text--work  { left: calc(var(--grid-left) + var(--about-work-left));  top: var(--about-work-top); }
+.say-hi-about-text--tools { left: calc(var(--grid-left) + var(--about-tools-left)); top: var(--about-tools-top); }
+
+/* במובייל: העמוד נגלל, והטקסטים יורדים בטור ברצועה, עם משבצת ביניהם */
+@media (max-width: 767.98px) {
+  .page-say-hi,
+  .page-say-hi body {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .say-hi-about {
+    display: flex;
+    flex-direction: column;
+    gap: var(--cell);
+    height: auto;
+    min-height: calc(100dvh - var(--say-hi-about-top));
+    padding: calc(var(--cell) / 2) var(--cell) var(--cell);
+  }
+
+  .say-hi-about-text {
+    position: static;
+  }
 }
 
 /* ----- כדורי יצירת הקשר -----
