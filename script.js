@@ -1325,7 +1325,7 @@ const nextProjectsList = [
   { image: "Images/next-projects/project-1.png", alt: "The Perfect Crime", name: "The\nPerfect\nCrime", href: "the-perfect-crime-project.html", fit: "fill" },
   { image: "Images/next-projects/project-2.png", alt: "Hora", name: "Hora", width: 259, fit: "cover" },
   { image: "Images/next-projects/project-3.png", alt: "Leftovers*", name: "Leftovers*", href: "leftovers-project.html", crop: { width: "123.11%", height: "153.68%", left: "-11.36%", top: "-12.98%" } },
-  { image: "Images/next-projects/project-4.png", alt: "Sunra", name: "Sunra", crop: { width: "102.56%", height: "152.87%", left: "-1.07%", top: "-36.22%" } },
+  { image: "Images/next-projects/project-4.png", alt: "Shunra", name: "Shunra", crop: { width: "102.56%", height: "152.87%", left: "-1.07%", top: "-36.22%" } },
   { image: "Images/next-projects/project-5.png", alt: "Touch Grass", name: "Touch\nGrass", crop: { width: "100%", height: "178.2%", left: "-0.01%", top: "-46.37%" } },
 ];
 
