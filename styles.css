@@ -220,7 +220,15 @@
   --toggle-height: calc(var(--cell) - var(--line));
   --toggle-text-color: var(--color-green);
   --toggle-background: var(--color-yellow);
-  --toggle-hover-background: var(--color-pink);
+  /* Hover ו-Focus: האותיות קופצות בגל משמאל לימין, כמו גל אוהדים.
+     משך סבב אחד של אות, וההשהיה בין אות לאות (ball-pit.js קורא אותם, לכן במילישניות) */
+  --toggle-wave-duration: 900ms;
+  --toggle-wave-stagger: 60ms;
+  /* בנגיעה בטלפון: גל אחד מהיר, ואז הפעולה של הכפתור */
+  --toggle-wave-fast-duration: 420ms;
+  --toggle-wave-fast-stagger: 30ms;
+  /* כמה גבוה כל אות קופצת */
+  --toggle-wave-height: -0.45em;
   --toggle-text-offset: calc(var(--cell) * 5 / 96); /* בפיגמה הטקסט קצת מתחת לאמצע */
 
   /* שכבות: מה מעל מה. הכדורים מעל כל העמוד, והכפתור PEEK / PLAY מעל הכדורים */
@@ -1477,24 +1485,54 @@ body {
   cursor: pointer;
   left: var(--toggle-left);
   top: var(--toggle-top);
-  transition: background-color var(--transition-speed) ease;
 }
 
-/* הטקסט שבתוך הכפתור (ball-pit.js מחליף אותו בין PEEK ל-PLAY) */
+/* הטקסט שבתוך הכפתור (ball-pit.js מחליף אותו בין PEEK ל-LET’S PLAY,
+   ומפרק אותו לאותיות, כל אות ב-span.toggle-letter) */
 .balls-toggle-label {
   display: inline-block; /* כדי שאפשר יהיה להקטין אותו עם transform */
   transition: transform var(--transition-speed) ease;
 }
 
-/* מעבר עכבר על PEEK / PLAY: רק במחשב (עכבר), לא בטלפון */
-@media (hover: hover) and (pointer: fine) {
-  .balls-toggle:hover {
-    background-color: var(--toggle-hover-background);
-  }
+/* כל אות זזה לבד. --letter-index = המקום של האות במילה (0, 1, 2...) */
+.toggle-letter {
+  display: inline-block;
+  white-space: pre; /* כדי שהרווח ב-LET’S PLAY לא ייעלם */
 }
 
-.balls-toggle.is-hover {
-  background-color: var(--toggle-hover-background);
+/* הגל: האות קופצת למעלה, נוחתת עם קפיצה קטנה, ונחה עד הסבב הבא.
+   הסבב מתחיל ונגמר כשהאות במקומה, כך שעצירה בסוף סבב לא קופצת */
+@keyframes toggle-wave {
+  0%   { transform: translateY(0); animation-timing-function: cubic-bezier(0.2, 0.7, 0.4, 1); }
+  22%  { transform: translateY(var(--toggle-wave-height)); animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.4); }
+  42%  { transform: translateY(0); animation-timing-function: ease-out; }
+  50%  { transform: translateY(calc(var(--toggle-wave-height) * 0.15)); animation-timing-function: ease-in; }
+  58%  { transform: translateY(0); }
+  100% { transform: translateY(0); }
+}
+
+/* Hover ו-Focus: גל בלופ. ball-pit.js מוסיף is-jumping לכל אות, עם השהיה משלה
+   (--wave-delay), ומוריד אותו רק כשהאות מסיימת את הסבב שלה.
+   is-hover / is-focus: אותו גל באופן קבוע (בעמוד styleguide.html) */
+.toggle-letter.is-jumping,
+.balls-toggle.is-hover .toggle-letter,
+.balls-toggle.is-focus .toggle-letter {
+  animation: toggle-wave var(--toggle-wave-duration) var(--wave-delay, calc(var(--letter-index) * var(--toggle-wave-stagger))) infinite;
+}
+
+/* נגיעה בטלפון: גל אחד מהיר */
+.toggle-letter.is-jumping-once {
+  animation: toggle-wave var(--toggle-wave-fast-duration) calc(var(--letter-index) * var(--toggle-wave-fast-stagger)) 1;
+}
+
+/* צמצום תנועה: בלי גל */
+@media (prefers-reduced-motion: reduce) {
+  .toggle-letter.is-jumping,
+  .toggle-letter.is-jumping-once,
+  .balls-toggle.is-hover .toggle-letter,
+  .balls-toggle.is-focus .toggle-letter {
+    animation: none;
+  }
 }
 
 /* אפקט לחיצה: הטקסט קטן, כמו בכפתורי הניווט */
@@ -1503,11 +1541,10 @@ body {
   transform: scale(var(--pressed-scale));
 }
 
-/* ניווט במקלדת: כמו מעבר עכבר */
+/* ניווט במקלדת: כמו מעבר עכבר, הגל (ball-pit.js) */
 .balls-toggle:focus-visible,
 .balls-toggle.is-focus {
   outline: none;
-  background-color: var(--toggle-hover-background);
 }
 
 /* אזור העיצוב מהפיגמה, ממורכז בחלון */
@@ -3766,7 +3803,25 @@ body {
   height: auto;
 }
 
-/* PEEK / PLAY בבמה: מתחיל בעמודה 1 ושורה 1 (באתר הוא בתחתית העמוד) */
+/* PEEK / LET’S PLAY בבמה: מתחיל בעמודה 1 ושורה 1 (באתר הוא בתחתית העמוד).
+   כאן ball-pit.js לא נטען, אז הגל בעותק החי רץ ישירות מ-:hover ו-:focus-visible
+   (באתר ball-pit.js מסיים את הסבב ברכות כשהעכבר יוצא) */
+@media (hover: hover) and (pointer: fine) {
+  .styleguide-stage .balls-toggle:hover .toggle-letter {
+    animation: toggle-wave var(--toggle-wave-duration) calc(var(--letter-index) * var(--toggle-wave-stagger)) infinite;
+  }
+}
+
+.styleguide-stage .balls-toggle:focus-visible .toggle-letter {
+  animation: toggle-wave var(--toggle-wave-duration) calc(var(--letter-index) * var(--toggle-wave-stagger)) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .styleguide-stage .balls-toggle .toggle-letter {
+    animation: none !important;
+  }
+}
+
 .styleguide-stage--toggle {
   --styleguide-stage-columns: 5;
 }

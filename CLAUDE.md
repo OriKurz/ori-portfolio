@@ -57,9 +57,9 @@
 | Page Title | `text-page-title` | Telegraf UltraBold | 80 | 95.5% | 0 | The Perfect Crime, וכל כותרת עמוד בעתיד |
 | Banner | `text-banner` | Telegraf UltraBold | 40 | 100% | 4% | הבאנר הרץ |
 | Button | `text-button` | Telegraf Regular | 25 | 100% | 4% | כפתורים במחשב, HI, IM |
-| Button/Strong | `text-button-strong` | Telegraf UltraBold | 25 | 100% | 4% | PEEK/PLAY במחשב |
+| Button/Strong | `text-button-strong` | Telegraf UltraBold | 25 | 100% | 4% | PEEK/LET’S PLAY במחשב |
 | Button/Mobile | `text-button-mobile` | Telegraf Regular | 17 | 100% | 4% | כפתורים ו-HI, IM במובייל |
-| Button/Mobile Strong | `text-button-mobile-strong` | Telegraf UltraBold | 14 | 100% | 4% | PEEK/PLAY במובייל |
+| Button/Mobile Strong | `text-button-mobile-strong` | Telegraf UltraBold | 14 | 100% | 4% | PEEK/LET’S PLAY במובייל |
 | Section Title | `text-section-title` | Telegraf Regular | 20 | 100% | 0 | כותרות סעיפים בפרויקט |
 | Subtitle | `text-subtitle` | Telegraf Regular | 20 | 110% | 0 | Motion Graphic Academic project |
 | Tagline | `text-tagline` | Telegraf Regular | 22 | 100% | 4% | שורות הטקסט ב-Say Hi |
@@ -101,7 +101,7 @@
 - **גודל המשבצת**: יכול להשתנות מעמוד לעמוד, לפי הפיגמה של אותו עמוד. עובי הקו לא משתנה, והמשבצות תמיד ריבועיות.
 - **התחלת הגריד**: בכל עמוד שבו הגריד ממלא את כל המסך (full bleed), הגריד מתחיל מהקצה השמאלי של המסך עם טור שלם, בכל גודל מסך. משבצות חלקיות מותרות רק בקצה הימני (ובתחתית, אם צריך), אף פעם לא בקצה השמאלי. המשבצות תמיד ריבועיות.
 - **כפתור ההמבורגר**: בכל העמודים הוא יושב בדיוק במרכז המשבצת שלו, לרוחב ולגובה (במרכז השטח שבין קווי הגריד).
-- **אלמנט שממלא משבצת** (למשל הכפתור PEEK/PLAY בעמוד הבית במחשב): הרקע שלו ממלא בדיוק את השטח שבין קווי הגריד של המשבצת, בלי לחרוג ובלי חריצים.
+- **אלמנט שממלא משבצת** (למשל הכפתור PEEK/LET’S PLAY בעמוד הבית במחשב): הרקע שלו ממלא בדיוק את השטח שבין קווי הגריד של המשבצת, בלי לחרוג ובלי חריצים.
 
 ## מצבי רכיבים
 לכל רכיב לחיץ באתר יש ארבעה מצבים: Default, Hover, Pressed ו-Focus.
@@ -114,7 +114,7 @@
 
 לפי רכיב:
 1. **כפתורי הניווט (Button)**: Hover: רקע ורוד. Pressed: רקע ורוד והטקסט קטן ל-20 (`--pressed-scale`).
-2. **PEEK/PLAY**: Hover: רקע ורוד וטקסט ירוק. Pressed: הטקסט קטן מעט, כמו בכפתורי הניווט.
+2. **PEEK / LET'S PLAY**: הטקסט PEEK, ובמצב שבו הכדורים בשוליים LET’S PLAY. Hover: בלי רקע ורוד. האותיות קופצות בגל משמאל לימין (כמו גל אוהדים), עם השהיה קלה בין אות לאות, בלופ כל עוד העכבר על הכפתור. כשהעכבר יוצא הגל מסיים את הסבב הנוכחי וכל האותיות נוחתות ברכות. Focus: אותו גל. Pressed: הטקסט קטן מעט, כמו בכפתורי הניווט. בטלפון: נגיעה מריצה גל אחד מהיר, ורק אחריו מתבצעת הפעולה. ב-`prefers-reduced-motion`: בלי גל. התזמונים במשתני `--toggle-wave-...` ב-styles.css.
 3. **כפתור ההמבורגר**: Hover: הקווים בצבע `--color-green`. Pressed: האייקון קטן (scale של 0.9).
 4. **כדורי יצירת הקשר ב-Say Hi**: Hover: הכדור מאט ליד העכבר (script.js). Pressed: הכדור קטן (scale של 0.92). Focus: אין Hover שנראה, אז קו מתאר בצבע קווי הגריד, והכדור עוצר.
 5. **הבאנר הרץ בעמוד הפרויקט**: Hover: הטקסט בצבע `--color-pink`. Pressed: הטקסט בצבע `--color-mint`.

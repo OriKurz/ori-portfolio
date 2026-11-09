@@ -63,7 +63,7 @@ if (ballCanvas) {
   let height = 0;
   let cell = 0;            // גודל משבצת (פיקסלים)
   let colors = [];         // 4 הצבעים מ-styles.css
-  let ballsAtEdges = false; // true = הכדורים בשוליים (הכפתור כתוב PLAY)
+  let ballsAtEdges = false; // true = הכדורים בשוליים (הכפתור כתוב LET’S PLAY)
   let transitionTime = 0;   // כמה זמן עבר מאז הלחיצה האחרונה על הכפתור
   const hands = new Map();  // כל יד (עכבר או אצבע) שנמצאת עכשיו בבריכה
   let focusedRect = null;   // כפתור שנבחר במקלדת: הכדורים זזים ממנו כדי שיראו אותו
@@ -329,11 +329,132 @@ if (ballCanvas) {
     return point.x >= ballRadius && point.x <= width - ballRadius && point.y >= ballRadius && point.y <= height - ballRadius;
   }
 
+  // =========================================
+  // הטקסט של הכפתור PEEK / LET’S PLAY, והגל של האותיות
+  // =========================================
+
+  // מפרקים את הטקסט לאותיות, כל אות ב-span משלה, כדי שכל אות תוכל לקפוץ לבד
+  let toggleLetters = [];
+
   function updateToggleText() {
-    toggleLabel.textContent = ballsAtEdges ? "PLAY" : "PEEK";
+    const text = ballsAtEdges ? "LET’S PLAY" : "PEEK";
+    if (toggleButton.getAttribute("aria-label") === text) return;
+    toggleButton.setAttribute("aria-label", text);
+    toggleLabel.textContent = "";
+    toggleLetters = Array.from(text, function (letter, index) {
+      const span = document.createElement("span");
+      span.className = "toggle-letter";
+      span.textContent = letter;
+      span.style.setProperty("--letter-index", index);
+      span.setAttribute("aria-hidden", "true");
+      toggleLabel.appendChild(span);
+      return span;
+    });
+    // הטקסט התחלף באמצע גל (למשל לחיצה בזמן hover): הגל ממשיך על האותיות החדשות
+    waveStart = null;
+    if (waveWanted) startWave();
   }
 
-  toggleButton.addEventListener("click", function () {
+  // הזמנים של הגל, מ-styles.css (במילישניות)
+  function waveTime(name) {
+    return parseFloat(getComputedStyle(toggleButton).getPropertyValue(name));
+  }
+
+  let waveWanted = false;  // האם העכבר (או הפוקוס במקלדת) על הכפתור
+  let waveStart = null;    // מתי האות הראשונה התחילה את הסבב הראשון
+  let landTimers = [];     // טיימרים שמנחיתים כל אות בסוף הסבב שלה
+
+  // הגל בלופ: כל אות מתחילה את הסבב הראשון שלה --toggle-wave-stagger אחרי האות שלפניה.
+  // אם חלק מהאותיות עוד באמצע הגל הקודם, האותיות שכבר נחתו מצטרפות בתחילת הסבב הבא שלהן
+  function startWave() {
+    waveWanted = true;
+    if (reducedMotion.matches) return;
+    landTimers.forEach(clearTimeout);
+    landTimers = [];
+    const duration = waveTime("--toggle-wave-duration");
+    const stagger = waveTime("--toggle-wave-stagger");
+    const now = performance.now();
+    const stillJumping = toggleLetters.some(function (letter) {
+      return letter.classList.contains("is-jumping");
+    });
+    if (!stillJumping || waveStart === null) waveStart = now;
+    toggleLetters.forEach(function (letter, index) {
+      if (letter.classList.contains("is-jumping")) return;
+      // תחילת הסבב הבא של האות הזאת
+      let nextRound = waveStart + index * stagger;
+      while (nextRound < now) nextRound += duration;
+      letter.style.setProperty("--wave-delay", (nextRound - now) + "ms");
+      letter.classList.remove("is-jumping-once");
+      letter.classList.add("is-jumping");
+    });
+  }
+
+  // העכבר יצא: הגל מסיים את הסבב הנוכחי (של האות הראשונה), וכל אות נוחתת בסוף הסבב שלה
+  function stopWave() {
+    waveWanted = false;
+    if (waveStart === null) return;
+    const duration = waveTime("--toggle-wave-duration");
+    const stagger = waveTime("--toggle-wave-stagger");
+    const now = performance.now();
+    const round = Math.max(0, Math.floor((now - waveStart) / duration));
+    toggleLetters.forEach(function (letter, index) {
+      if (!letter.classList.contains("is-jumping")) return;
+      const roundEnd = waveStart + index * stagger + (round + 1) * duration;
+      landTimers.push(setTimeout(function () {
+        letter.classList.remove("is-jumping");
+      }, roundEnd - now));
+    });
+  }
+
+  // Hover: רק עם עכבר (בטלפון אין hover)
+  toggleButton.addEventListener("pointerenter", function (event) {
+    if (event.pointerType === "mouse") startWave();
+  });
+  toggleButton.addEventListener("pointerleave", function (event) {
+    if (event.pointerType === "mouse" && !toggleButton.matches(":focus-visible")) stopWave();
+  });
+
+  // Focus במקלדת: אותו גל כמו ה-hover
+  toggleButton.addEventListener("focus", function () {
+    if (toggleButton.matches(":focus-visible")) startWave();
+  });
+  toggleButton.addEventListener("blur", function () {
+    if (!toggleButton.matches(":hover")) stopWave();
+  });
+
+  // נגיעה בטלפון: גל אחד מהיר, ורק בסופו הפעולה של הכפתור
+  let lastPointerType = "mouse";
+  let tapWaveRunning = false;
+  toggleButton.addEventListener("pointerdown", function (event) {
+    lastPointerType = event.pointerType;
+  });
+
+  toggleButton.addEventListener("click", function (event) {
+    // event.detail === 0: לחיצה מהמקלדת, שפועלת מיד
+    const isTouch = lastPointerType !== "mouse" && event.detail !== 0;
+    if (!isTouch || reducedMotion.matches) {
+      toggleBalls();
+      return;
+    }
+    if (tapWaveRunning) return;
+    tapWaveRunning = true;
+    toggleLetters.forEach(function (letter) {
+      letter.classList.remove("is-jumping");
+      letter.classList.add("is-jumping-once");
+    });
+    const waveLength = waveTime("--toggle-wave-fast-duration") +
+      (toggleLetters.length - 1) * waveTime("--toggle-wave-fast-stagger");
+    setTimeout(function () {
+      toggleLetters.forEach(function (letter) {
+        letter.classList.remove("is-jumping-once");
+      });
+      tapWaveRunning = false;
+      toggleBalls();
+    }, waveLength);
+  });
+
+  // הפעולה של הכפתור: הכדורים לשוליים (PEEK) או חזרה לכל המסך (LET’S PLAY)
+  function toggleBalls() {
     ballsAtEdges = !ballsAtEdges;
     if (ballsAtEdges) {
       sendBallsToEdges();
@@ -345,7 +466,7 @@ if (ballCanvas) {
     // צמצום תנועה: בלי אנימציה, הכדורים פשוט מופיעים במקום החדש
     if (reducedMotion.matches) placeBallsNow();
     wakeUp();
-  });
+  }
 
   // =========================================
   // הפיזיקה
@@ -803,7 +924,7 @@ if (ballCanvas) {
     measure();
     createBalls();
     if (ballsAtEdges) {
-      // מי שביקש צמצום תנועה: מתחילים כשהכדורים כבר בשוליים (הכפתור כתוב PLAY)
+      // מי שביקש צמצום תנועה: מתחילים כשהכדורים כבר בשוליים (הכפתור כתוב LET’S PLAY)
       sendBallsToEdges();
       placeBallsNow();
     } else {
