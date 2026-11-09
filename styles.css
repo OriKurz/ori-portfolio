@@ -1022,10 +1022,6 @@
   --timeline-color: var(--leftovers-sky);       /* הקו, השנתות והשנה שמוצגת */
   --timeline-year-color: var(--color-orange);   /* שאר השנים */
   --timeline-pressed-scale: 0.9;
-  /* התצלום מתיישב: מופיע קצת מעל המקום שלו ויורד אליו */
-  --timeline-photo-drop: calc(8 * var(--u));
-  --timeline-photo-time: 0.35s;
-  --timeline-photo-easing: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50%, וקצת נמוך יותר */
   --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
@@ -3519,22 +3515,8 @@ body {
   -webkit-user-drag: none;
 }
 
-/* כשהתצלום מתחלף: מופיע מעט מעל המקום שלו ויורד אליו, כאילו הוא מתיישב (script.js) */
-.timeline-photo.is-settling {
-  animation: timeline-photo-settle var(--timeline-photo-time) var(--timeline-photo-easing);
-}
-
-@keyframes timeline-photo-settle {
-  from { translate: 0 calc(-1 * var(--timeline-photo-drop)); }
-  to   { translate: 0 0; }
-}
-
-/* מי שביקש פחות תנועה: התצלום מתחלף מיד, בלי ירידה */
+/* מי שביקש פחות תנועה: בלי ההקטנה בלחיצה */
 @media (prefers-reduced-motion: reduce) {
-  .timeline-photo.is-settling {
-    animation: none;
-  }
-
   .timeline-year-label {
     transition: none;
   }

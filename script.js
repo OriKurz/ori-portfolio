@@ -1234,7 +1234,7 @@ locationPhotos.forEach(function (photo) {
 // משנה, חוזרים לשנה הנעולה.
 // בטלפון: נגיעה בשנה מציגה ונועלת אותה, ונגיעה בשנה אחרת מחליפה.
 // במקלדת: Focus עובד כמו hover, ו-Enter נועל.
-// כשהתצלום מתחלף, הוא יורד מעט למקום שלו (is-settling, התנועה ב-styles.css).
+// התצלום מתחלף במקום, בלי תנועה.
 // כל תצלום מתחיל בגרסה קלה. בפעם הראשונה שהוא מוצג, נטען הקובץ המקורי (data-full)
 // ומחליף אותה ברגע שהוא מוכן, כך שגם בחיבור איטי רואים תצלום מיד.
 // =========================================
@@ -1272,10 +1272,8 @@ if (sourceTimeline) {
     shownYear = nextYear;
 
     timelinePhotos.forEach(function (photo, index) {
-      photo.classList.remove("is-shown", "is-settling");
+      photo.classList.toggle("is-shown", index === shownYear);
       if (index === shownYear) {
-        void photo.offsetWidth; // מאפס את האנימציה, כדי שתתחיל מחדש בכל החלפה
-        photo.classList.add("is-shown", "is-settling");
         loadFullPhoto(photo);
       }
     });
