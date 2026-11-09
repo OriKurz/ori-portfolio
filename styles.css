@@ -297,12 +297,12 @@
 }
 
 /* ----- עמוד התהליך -----
-   אזור העיצוב הוא 14 משבצות לרוחב ו-31 לגובה, עם מסגרת קו מסביב
+   אזור העיצוב הוא 14 משבצות לרוחב ו-51 לגובה, עם מסגרת קו מסביב
    ושוליים מנטה בלי קווים (כמו בפיגמה). הרוחב קובע את גודל המשבצת:
    14 משבצות + חצי משבצת שוליים מכל צד = 15. העמוד נגלל לגובה. */
 :root.page-process {
   --grid-columns: 14;
-  --grid-rows: 31;
+  --grid-rows: 51;
   --cell: round(down, 100vw / 15, 1px);
   /* עמוד התהליך לא ממלא את כל המסך (יש שוליים בלי קווים), אז הוא נשאר ממורכז לרוחב */
   --grid-left: round(down, (100vw - var(--grid-columns) * var(--cell)) / 2, 1px);
@@ -331,6 +331,10 @@
   --box-6-row: 12;  --box-6-columns: 12; --box-6-rows: 6;
   --box-7-row: 18;  --box-7-columns: 6;  --box-7-rows: 1;
   --box-8-row: 19;  --box-8-columns: 12; --box-8-rows: 8;
+  --box-9-row: 27;  --box-9-columns: 11; --box-9-rows: 1;
+  --box-10-row: 28; --box-10-columns: 12; --box-10-rows: 13;
+  --box-11-row: 41; --box-11-columns: 11; --box-11-rows: 1;
+  --box-12-row: 42; --box-12-columns: 14; --box-12-rows: 8;
 
   /* תוויות טקסט: עמודה ושורה */
   --date-1-column: 0.276;          --date-1-row: 1.401;
@@ -340,6 +344,11 @@
   --direction-two-column: 0.224;   --direction-two-row: 11.411;
   --date-3-column: 0.328;          --date-3-row: 18.411;
   --final-direction-column: 1.953; --final-direction-row: 18.411;
+  --date-4-column: 0.307;          --date-4-row: 27.401;
+  --date-5-column: 0.276;          --date-5-row: 41.411;
+  /* תיאורים ארוכים: נשברים לשורות, ברוחב מתוך הפיגמה */
+  --entry-4-column: 1.964; --entry-4-row: 27.37; --entry-4-columns: 9.188;
+  --entry-5-column: 1.932; --entry-5-row: 41.38; --entry-5-columns: 8.906;
 
   /* תמונות: עמודה, שורה, רוחב וגובה (במשבצות) */
   --coming-soon-column: 0.224;  --coming-soon-row: 2.057;  --coming-soon-columns: 4.062; --coming-soon-rows: 2.885;
@@ -354,6 +363,18 @@
   --option-4-column: 8.141;     --option-4-row: 13.911;    --option-4-columns: 3.76;     --option-4-rows: 1.448;
   --final-desktop-column: 0.37; --final-desktop-row: 19.443; --final-desktop-columns: 7.333; --final-desktop-rows: 3.979;
   --final-mobile-column: 8.276; --final-mobile-row: 19.443;  --final-mobile-columns: 2.26;   --final-mobile-rows: 4.021;
+  /* 04/11 ו-09/11 */
+  --project-full-column: 0.682; --project-full-row: 28.224; --project-full-columns: 3.521; --project-full-rows: 7.042;
+  --contact-balls-column: 4.63; --contact-balls-row: 28.411; --contact-balls-columns: 1.135; --contact-balls-rows: 2.896;
+  --say-hi-column: 6.005; --say-hi-row: 28.411; --say-hi-columns: 5.396; --say-hi-rows: 2.896;
+  --project-desktop-column: 4.63; --project-desktop-row: 31.609; --project-desktop-columns: 6.781; --project-desktop-rows: 3.656;
+  --type-rules-column: 0.453; --type-rules-row: 35.734; --type-rules-columns: 6.188; --type-rules-rows: 4.812;
+  --system-rules-column: 6.641; --system-rules-row: 35.734; --system-rules-columns: 4.906; --system-rules-rows: 4.812;
+  --leftovers-page-column: 0.318; --leftovers-page-row: 42.224; --leftovers-page-columns: 6.688; --leftovers-page-rows: 3.583;
+  --home-page-column: 7.203; --home-page-row: 42.224; --home-page-columns: 6.615; --home-page-rows: 3.583;
+  --leftovers-gallery-column: 0.276; --leftovers-gallery-row: 46.026; --leftovers-gallery-columns: 6.729; --leftovers-gallery-rows: 3.625;
+  --banner-strip-column: 7.693; --banner-strip-row: 46.276; --banner-strip-columns: 5.646; --banner-strip-rows: 0.25;
+  --next-projects-column: 7.193; --next-projects-row: 47.005; --next-projects-columns: 6.646; --next-projects-rows: 1.667;
 
   /* שלושה חיתוכים מאותו צילום מסך (direction-one-board.png), כמו בפיגמה:
      רוחב, גובה, ומיקום התמונה בתוך המסגרת */
@@ -416,6 +437,15 @@
   --circle-14-column: 13.26; --circle-14-row: 14.55;
   --circle-15-column: 11.28; --circle-15-row: 19.27;
   --circle-16-column: 12.92; --circle-16-row: 19.67;
+  --circle-17-column: 13.24; --circle-17-row: 30.92;
+  --circle-18-column: 12.87; --circle-18-row: 24.4;
+  --circle-19-column: 9.62; --circle-19-row: 37.76;
+  --circle-20-column: 12.27; --circle-20-row: 26.56;
+  --circle-21-column: 12.93; --circle-21-row: 36.78;
+  --circle-22-column: 11.66; --circle-22-row: 22.25;
+  --circle-23-column: 11.57; --circle-23-row: 33.67;
+  --circle-24-column: 12.55; --circle-24-row: 28.54;
+  --circle-25-column: 8.14; --circle-25-row: 36.2;
   --circle-display: block;
 }
 
@@ -427,7 +457,7 @@
 @media (max-width: 767.98px) {
   :root.page-process {
     --grid-columns: 8;
-    --grid-rows: 77;
+    --grid-rows: 136;
     --cell: round(down, 100vw / var(--grid-columns), 1px);
     --line: var(--line-mobile);
     --grid-top: var(--grid-left);
@@ -453,12 +483,19 @@
     --box-6-row: 30;  --box-6-columns: 8; --box-6-rows: 25;
     --box-7-row: 55;  --box-7-columns: 8; --box-7-rows: 1;
     --box-8-row: 56;  --box-8-columns: 8; --box-8-rows: 21;
+    /* 04/11 ו-09/11: התיאור ארוך, אז שורת התווית גבוהה 3 שורות (התאריך, ומתחתיו התיאור) */
+    --box-9-row: 77;  --box-9-columns: 8; --box-9-rows: 3;
+    --box-10-row: 80; --box-10-columns: 8; --box-10-rows: 37;
+    --box-11-row: 117; --box-11-columns: 8; --box-11-rows: 3;
+    --box-12-row: 120; --box-12-columns: 8; --box-12-rows: 16;
 
     /* תוויות: אותן עמודות כמו במחשב, באמצע שורת התווית */
     --date-1-row: 1.38;   --coming-soon-label-row: 1.38;
     --date-2-row: 8.38;   --direction-one-row: 8.38;
     --direction-two-row: 29.38;
     --date-3-row: 55.38;  --final-direction-row: 55.38;
+    --date-4-row: 77.38;  --entry-4-column: 0.276; --entry-4-row: 77.9; --entry-4-columns: 7.448;
+    --date-5-row: 117.38; --entry-5-column: 0.276; --entry-5-row: 117.9; --entry-5-columns: 7.448;
     /* הטקסט במובייל יחסית גדול יותר, אז התווית זזה כדי לא לעלות על התאריך */
     --final-direction-column: 2.474;
 
@@ -479,6 +516,18 @@
     --final-desktop-column: var(--image-column); --final-desktop-row: 56.417; --final-desktop-columns: var(--image-columns); --final-desktop-rows: 4.098;
     /* צילום המסך של הטלפון: בחצי רוחב, ממורכז */
     --final-mobile-column: 2.112; --final-mobile-row: 60.739; --final-mobile-columns: 3.776; --final-mobile-rows: 6.717;
+    /* 04/11 ו-09/11: ברוחב מלא, חוץ משתי התמונות הצרות (בחצי רוחב ופחות, ממורכזות) */
+    --project-full-column: 2.112; --project-full-row: 80.655; --project-full-columns: 3.776; --project-full-rows: 7.552;
+    --contact-balls-column: 2.9; --contact-balls-row: 88.431; --contact-balls-columns: 2.2; --contact-balls-rows: 5.613;
+    --say-hi-column: 0.224; --say-hi-row: 94.268; --say-hi-columns: 7.552; --say-hi-rows: 4.053;
+    --project-desktop-column: 0.224; --project-desktop-row: 98.545; --project-desktop-columns: 7.552; --project-desktop-rows: 4.072;
+    --type-rules-column: 0.224; --type-rules-row: 102.841; --type-rules-columns: 7.552; --type-rules-rows: 5.873;
+    --system-rules-column: 0.224; --system-rules-row: 108.938; --system-rules-columns: 7.552; --system-rules-rows: 7.407;
+    --leftovers-page-column: 0.224; --leftovers-page-row: 120.336; --leftovers-page-columns: 7.552; --leftovers-page-rows: 4.046;
+    --home-page-column: 0.224; --home-page-row: 124.606; --home-page-columns: 7.552; --home-page-rows: 4.091;
+    --leftovers-gallery-column: 0.224; --leftovers-gallery-row: 128.921; --leftovers-gallery-columns: 7.552; --leftovers-gallery-rows: 4.068;
+    --banner-strip-column: 0.224; --banner-strip-row: 133.213; --banner-strip-columns: 7.552; --banner-strip-rows: 0.334;
+    --next-projects-column: 0.224; --next-projects-row: 133.771; --next-projects-columns: 7.552; --next-projects-rows: 1.894;
 
     /* הכרטיסים: אחד מתחת לשני, ברוחב מלא. הטקסט מיושר לימין */
     --rhythm-card-column: var(--image-column);     --rhythm-card-row: 67.679;     --rhythm-card-columns: var(--image-columns);     --rhythm-card-rows: 2.156;
@@ -1644,14 +1693,14 @@ body {
   overflow-x: hidden;
 }
 
-/* גובה העמוד: שוליים + 20 שורות + שוליים */
+/* גובה העמוד: שוליים + כל השורות + שוליים */
 .process-page {
   position: relative;
   height: calc(var(--grid-top) + var(--grid-rows) * var(--cell) + var(--line) + var(--grid-bottom));
   color: var(--color-blue);
 }
 
-/* אזור העיצוב: 14x20 משבצות, ממורכז לרוחב. הקווים הם הרקע שלו */
+/* אזור העיצוב: 14 משבצות לרוחב, ממורכז. הקווים הם הרקע שלו */
 .process-grid {
   position: absolute;
   left: var(--grid-left);
@@ -1689,6 +1738,10 @@ body {
 .merge-box--6 { --row: var(--box-6-row); --columns: var(--box-6-columns); --rows: var(--box-6-rows); }
 .merge-box--7 { --row: var(--box-7-row); --columns: var(--box-7-columns); --rows: var(--box-7-rows); }
 .merge-box--8 { --row: var(--box-8-row); --columns: var(--box-8-columns); --rows: var(--box-8-rows); }
+.merge-box--9 { --row: var(--box-9-row); --columns: var(--box-9-columns); --rows: var(--box-9-rows); }
+.merge-box--10 { --row: var(--box-10-row); --columns: var(--box-10-columns); --rows: var(--box-10-rows); }
+.merge-box--11 { --row: var(--box-11-row); --columns: var(--box-11-columns); --rows: var(--box-11-rows); }
+.merge-box--12 { --row: var(--box-12-row); --columns: var(--box-12-columns); --rows: var(--box-12-rows); }
 
 /* ----- תוויות טקסט (#תאריך ועוד) ----- */
 .process-label {
@@ -1703,6 +1756,17 @@ body {
 .process-label--direction-two { --column: var(--direction-two-column); --row: var(--direction-two-row); }
 .process-label--date-3 { --column: var(--date-3-column); --row: var(--date-3-row); }
 .process-label--final-direction { --column: var(--final-direction-column); --row: var(--final-direction-row); }
+.process-label--date-4 { --column: var(--date-4-column); --row: var(--date-4-row); }
+.process-label--date-5 { --column: var(--date-5-column); --row: var(--date-5-row); }
+
+/* תיאור ארוך: נשבר לשורות ברוחב קבוע */
+.process-label--entry {
+  width: calc(var(--columns) * var(--cell));
+  white-space: normal;
+}
+
+.process-label--entry-4 { --column: var(--entry-4-column); --row: var(--entry-4-row); --columns: var(--entry-4-columns); }
+.process-label--entry-5 { --column: var(--entry-5-column); --row: var(--entry-5-row); --columns: var(--entry-5-columns); }
 
 /* ----- תמונות התהליך ----- */
 .shot {
@@ -1732,6 +1796,22 @@ body {
 .shot--option-4    { --column: var(--option-4-column);    --row: var(--option-4-row);    --columns: var(--option-4-columns);    --rows: var(--option-4-rows); }
 .shot--final-desktop { --column: var(--final-desktop-column); --row: var(--final-desktop-row); --columns: var(--final-desktop-columns); --rows: var(--final-desktop-rows); }
 .shot--final-mobile  { --column: var(--final-mobile-column);  --row: var(--final-mobile-row);  --columns: var(--final-mobile-columns);  --rows: var(--final-mobile-rows); }
+.shot--project-full { --column: var(--project-full-column); --row: var(--project-full-row); --columns: var(--project-full-columns); --rows: var(--project-full-rows); }
+.shot--contact-balls { --column: var(--contact-balls-column); --row: var(--contact-balls-row); --columns: var(--contact-balls-columns); --rows: var(--contact-balls-rows); }
+.shot--say-hi { --column: var(--say-hi-column); --row: var(--say-hi-row); --columns: var(--say-hi-columns); --rows: var(--say-hi-rows); }
+.shot--project-desktop { --column: var(--project-desktop-column); --row: var(--project-desktop-row); --columns: var(--project-desktop-columns); --rows: var(--project-desktop-rows); }
+.shot--type-rules { --column: var(--type-rules-column); --row: var(--type-rules-row); --columns: var(--type-rules-columns); --rows: var(--type-rules-rows); }
+.shot--system-rules { --column: var(--system-rules-column); --row: var(--system-rules-row); --columns: var(--system-rules-columns); --rows: var(--system-rules-rows); }
+.shot--leftovers-page { --column: var(--leftovers-page-column); --row: var(--leftovers-page-row); --columns: var(--leftovers-page-columns); --rows: var(--leftovers-page-rows); }
+.shot--home-page { --column: var(--home-page-column); --row: var(--home-page-row); --columns: var(--home-page-columns); --rows: var(--home-page-rows); }
+.shot--leftovers-gallery { --column: var(--leftovers-gallery-column); --row: var(--leftovers-gallery-row); --columns: var(--leftovers-gallery-columns); --rows: var(--leftovers-gallery-rows); }
+.shot--banner-strip { --column: var(--banner-strip-column); --row: var(--banner-strip-row); --columns: var(--banner-strip-columns); --rows: var(--banner-strip-rows); }
+.shot--next-projects { --column: var(--next-projects-column); --row: var(--next-projects-row); --columns: var(--next-projects-columns); --rows: var(--next-projects-rows); }
+
+/* צילומי מסך עם מסגרת כחולה, כמו בפיגמה */
+.shot--framed {
+  border: var(--line) solid var(--grid-line-color);
+}
 
 /* חיתוך: מסגרת שמסתירה את מה שבחוץ, והתמונה בפנים גדולה ומוזזת */
 .shot-crop {
@@ -1852,6 +1932,15 @@ body {
 .circle--14 { --column: var(--circle-14-column); --row: var(--circle-14-row); }
 .circle--15 { --column: var(--circle-15-column); --row: var(--circle-15-row); }
 .circle--16 { --column: var(--circle-16-column); --row: var(--circle-16-row); }
+.circle--17 { --column: var(--circle-17-column); --row: var(--circle-17-row); }
+.circle--18 { --column: var(--circle-18-column); --row: var(--circle-18-row); }
+.circle--19 { --column: var(--circle-19-column); --row: var(--circle-19-row); }
+.circle--20 { --column: var(--circle-20-column); --row: var(--circle-20-row); }
+.circle--21 { --column: var(--circle-21-column); --row: var(--circle-21-row); }
+.circle--22 { --column: var(--circle-22-column); --row: var(--circle-22-row); }
+.circle--23 { --column: var(--circle-23-column); --row: var(--circle-23-row); }
+.circle--24 { --column: var(--circle-24-column); --row: var(--circle-24-row); }
+.circle--25 { --column: var(--circle-25-column); --row: var(--circle-25-row); }
 
 /* =========================================
    עמוד מבואה לפרויקט
