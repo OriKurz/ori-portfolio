@@ -126,10 +126,9 @@
   --page-background: var(--color-blue);
   --grid-line-color: var(--color-pink);
 
-  /* סמן העכבר (במחשב): עיגול צהוב, וכחול מעל צהוב */
-  --cursor-size: 16px;
-  --cursor-color: var(--color-yellow);
-  --cursor-color-on-yellow: var(--color-blue);
+  /* סמן העכבר מעל אלמנט לחיץ (במחשב): כדור קטן בצבע מהפלטה */
+  --cursor-size: 14px;
+  --cursor-pop-duration: 0.18s;
 
   /* פונטים */
   --font-title: "Reisinger Michal", sans-serif;
@@ -4004,11 +4003,11 @@ body {
 }
 
 /* =========================================
-   סמן העכבר: עיגול צהוב במקום החץ, במחשב בלבד (cursor.js).
-   cursor.js מוסיף את has-custom-cursor רק במחשב, אז בלי הסקריפט החץ הרגיל נשאר
+   סמן העכבר מעל אלמנט לחיץ: כדור קטן במקום החץ, במחשב בלבד (cursor.js).
+   במצב רגיל החץ של המערכת נשאר. cursor.js מסמן את האלמנט שהעכבר עליו ב-has-ball-cursor
    ========================================= */
-.has-custom-cursor,
-.has-custom-cursor * {
+.has-ball-cursor,
+.has-ball-cursor * {
   cursor: none !important;
 }
 
@@ -4017,22 +4016,27 @@ body {
   top: 0;
   left: 0;
   z-index: 2147483647; /* תמיד מעל כל השכבות */
-  width: var(--cursor-size);
-  height: var(--cursor-size);
-  margin: calc(var(--cursor-size) / -2) 0 0 calc(var(--cursor-size) / -2); /* המרכז בנקודת העכבר */
-  border-radius: 50%;
-  background: var(--cursor-color);
   pointer-events: none; /* לא חוסם לחיצות */
   will-change: transform;
 }
 
-/* מעל משהו צהוב העיגול כחול */
-.custom-cursor.is-on-yellow {
-  background: var(--cursor-color-on-yellow);
+/* הכדור עצמו: מרכזו בנקודת העכבר. הצבע נקבע ב-cursor.js */
+.custom-cursor-ball {
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+  margin: calc(var(--cursor-size) / -2) 0 0 calc(var(--cursor-size) / -2);
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform var(--cursor-pop-duration) ease-in;
 }
 
-/* לפני התזוזה הראשונה וכשהעכבר מחוץ לחלון */
-.custom-cursor.is-hidden,
+/* מופיע בגדילה קפיצית, ונעלם בהתכווצות */
+.custom-cursor.is-visible .custom-cursor-ball {
+  transform: scale(1);
+  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* במסך מלא של הסרטון, כשהבר מוסתר, גם הכדור מוסתר */
 .video-player.is-fullscreen:not(.is-active):not(.is-seeking) .custom-cursor {
   opacity: 0;
 }

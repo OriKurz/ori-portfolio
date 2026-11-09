@@ -1,64 +1,137 @@
 // =========================================
-// סמן העכבר: עיגול צהוב שעוקב אחרי העכבר בדיוק, במחשב בלבד.
-// כשמרכז העיגול מעל משהו צהוב (טקסט, רקע או צורה) הוא הופך לכחול.
+// סמן העכבר, במחשב בלבד: במצב רגיל החץ של המערכת.
+// מעל אלמנט לחיץ החץ מתחלף בכדור קטן בצבע אקראי מהפלטה, מתוך הצבעים
+// שלא מופיעים באלמנט ובמה שסביבו (טקסט, רקע, צבע ה-hover, רקע העמוד וקווי הגריד).
+// הצבע נשאר כל עוד העכבר על אותו אלמנט, ומוגרל מחדש בכניסה הבאה.
 // בטלפון ובטאבלט אין סמן, אז לא עושים כלום.
 // =========================================
 
 if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+  const paletteNames = ["blue", "pink", "yellow", "orange", "mint", "green"];
+  const rootStyle = getComputedStyle(document.documentElement);
+
   const cursor = document.createElement("div");
-  cursor.className = "custom-cursor is-hidden";
+  cursor.className = "custom-cursor";
   cursor.setAttribute("aria-hidden", "true");
+  cursor.innerHTML = '<div class="custom-cursor-ball"></div>';
+  const ball = cursor.firstChild;
   document.body.appendChild(cursor);
-  document.documentElement.classList.add("has-custom-cursor");
 
-  // הצהוב כפי שהדפדפן כותב אותו (למשל "rgb(255, 255, 5)"), נלקח מהעיגול עצמו
-  const yellow = getComputedStyle(cursor).backgroundColor;
+  // מה נחשב לחיץ
+  const clickableSelector = 'a[href], button, [role="button"], [role="link"], [tabindex]:not([tabindex="-1"]), label, summary, select, input';
 
-  let mouseX = 0;
-  let mouseY = 0;
-  let checkPending = false;
+  let mouseX = -100;
+  let mouseY = -100;
+  let currentElement = null;
 
-  // האם הנקודה נמצאת על טקסט (ולא סתם בתוך הקופסה של האלמנט)
-  function isOverText(element, x, y) {
-    const range = document.createRange();
-    for (const node of element.childNodes) {
-      if (node.nodeType !== Node.TEXT_NODE || !node.textContent.trim()) continue;
-      range.selectNodeContents(node);
-      for (const rect of range.getClientRects()) {
-        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) return true;
+  // צבע (בכל כתיב של הדפדפן) → מספרי RGB, או null אם הוא שקוף לגמרי
+  function parseColor(text) {
+    let match = text.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+    if (match) return [parseInt(match[1], 16), parseInt(match[2], 16), parseInt(match[3], 16)];
+    match = text.match(/color\(srgb ([\d.]+) ([\d.]+) ([\d.]+)(?: \/ ([\d.]+))?/);
+    if (match) {
+      if (match[4] === "0") return null;
+      return [match[1] * 255, match[2] * 255, match[3] * 255];
+    }
+    match = text.match(/rgba?\(([\d.]+),? ([\d.]+),? ([\d.]+)(?:[,/] ?([\d.]+))?/);
+    if (!match || match[4] === "0") return null;
+    return [+match[1], +match[2], +match[3]];
+  }
+
+  // ששת צבעי הפלטה כמספרים
+  const palette = paletteNames.map(function (name) {
+    const probe = document.createElement("div");
+    probe.style.color = "var(--color-" + name + ")";
+    document.body.appendChild(probe);
+    const rgb = parseColor(getComputedStyle(probe).color);
+    probe.remove();
+    return { name: name, rgb: rgb };
+  });
+
+  // איזה צבע בפלטה זה (אם בכלל)
+  function paletteNameOf(text) {
+    const rgb = parseColor(text || "");
+    if (!rgb) return null;
+    for (const color of palette) {
+      if (color.rgb && color.rgb.every(function (value, i) { return Math.abs(value - rgb[i]) < 3; })) return color.name;
+    }
+    return null;
+  }
+
+  // אוסף את צבעי הפלטה שמופיעים באלמנט, בצאצאים שלו ובשכבות ה-::before / ::after שלהם
+  function collectColors(element, used) {
+    const parts = [element].concat(Array.from(element.querySelectorAll("*")).slice(0, 60));
+    for (const part of parts) {
+      for (const pseudo of [null, "::before", "::after"]) {
+        const style = getComputedStyle(part, pseudo);
+        ["color", "backgroundColor", "fill", "stroke", "borderTopColor", "outlineColor"].forEach(function (property) {
+          used.add(paletteNameOf(style[property]));
+        });
       }
     }
-    return false;
-  }
-
-  // עוברים על השכבות מתחת לנקודה מלמעלה למטה, עד שמגיעים למשהו אטום
-  function isYellowAt(x, y) {
-    for (const element of document.elementsFromPoint(x, y)) {
-      const style = getComputedStyle(element);
-      if (element instanceof SVGElement && element.tagName !== "svg") {
-        if (style.fill === yellow || style.stroke === yellow) return true;
-        continue;
+    // צבע ה-hover: היעד של המעברים שרצים עכשיו (הם מתחילים ברגע שהעכבר נכנס)
+    for (const animation of element.getAnimations({ subtree: true })) {
+      if (!animation.effect || !animation.effect.getKeyframes) continue;
+      for (const keyframe of animation.effect.getKeyframes()) {
+        for (const key in keyframe) used.add(paletteNameOf(String(keyframe[key])));
       }
-      if (style.color === yellow && isOverText(element, x, y)) return true;
-      if (style.backgroundColor === yellow) return true;
-      // רקע אטום, תמונה או וידאו: מה שמתחת לא נראה
-      if (style.backgroundColor !== "rgba(0, 0, 0, 0)" || style.backgroundImage !== "none" ||
-          /^(IMG|VIDEO|CANVAS|IFRAME)$/.test(element.tagName)) return false;
     }
-    return false;
   }
 
-  // בודקים את הצבע פעם אחת בפריים, גם כשהעכבר עומד והדף זז מתחתיו
-  function checkColor() {
-    checkPending = false;
-    cursor.classList.toggle("is-on-yellow", isYellowAt(mouseX, mouseY));
+  // אוסף את צבע הרקע שמתחת לאלמנט: ההורים שלו והשכבות שמתחת לעכבר
+  function collectBackground(element, used) {
+    const layers = document.elementsFromPoint(mouseX, mouseY);
+    for (let parent = element.parentElement; parent; parent = parent.parentElement) layers.push(parent);
+    for (const layer of layers) {
+      if (element.contains(layer) || cursor.contains(layer)) continue;
+      used.add(paletteNameOf(getComputedStyle(layer).backgroundColor));
+    }
+    used.add(paletteNameOf(rootStyle.backgroundColor));
+    used.add(paletteNameOf(getComputedStyle(document.body).backgroundColor));
+    // קווי הגריד של העמוד
+    used.add(paletteNameOf(getComputedStyle(element).getPropertyValue("--grid-line-color").trim()));
   }
 
-  function requestCheck() {
-    if (!checkPending) {
-      checkPending = true;
-      requestAnimationFrame(checkColor);
+  // מגריל צבע מתוך הצבעים שלא מופיעים באלמנט ובסביבה שלו
+  function pickColor(element) {
+    const used = new Set();
+    collectColors(element, used);
+    collectBackground(element, used);
+    let options = palette.filter(function (color) { return !used.has(color.name); });
+    if (!options.length) options = palette;
+    return "var(--color-" + options[Math.floor(Math.random() * options.length)].name + ")";
+  }
+
+  // האלמנט הלחיץ שמתחת לעכבר (או null). בזכוכית המגדלת הפעילה אין כדור
+  function clickableAt(target) {
+    if (!target || !target.closest) return null;
+    if (target.closest(".is-magnifying")) return null;
+    for (let element = target; element && element !== document.body; element = element.parentElement) {
+      if (element.classList.contains("has-ball-cursor")) return element;
+      if (element.matches(clickableSelector) || getComputedStyle(element).cursor === "pointer") return element;
     }
+    return null;
+  }
+
+  function setCurrent(element) {
+    if (element === currentElement) return;
+    if (currentElement) currentElement.classList.remove("has-ball-cursor");
+    currentElement = element;
+    if (element) {
+      element.classList.add("has-ball-cursor");
+      // ממתינים פריים, כדי שמעברי ה-hover כבר יתחילו ונוכל לקרוא את הצבע שלהם
+      requestAnimationFrame(function () {
+        if (currentElement !== element) return;
+        ball.style.backgroundColor = pickColor(element);
+        cursor.classList.add("is-visible");
+      });
+    } else {
+      cursor.classList.remove("is-visible");
+    }
+  }
+
+  function update() {
+    setCurrent(clickableAt(document.elementFromPoint(mouseX, mouseY)));
   }
 
   document.addEventListener("pointermove", function (event) {
@@ -66,18 +139,22 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
     mouseX = event.clientX;
     mouseY = event.clientY;
     cursor.style.transform = "translate(" + mouseX + "px, " + mouseY + "px)";
-    cursor.classList.remove("is-hidden");
-    requestCheck();
+    setCurrent(clickableAt(event.target));
   }, { passive: true });
 
-  document.addEventListener("scroll", requestCheck, { capture: true, passive: true });
-  setInterval(requestCheck, 150); // דברים שזזים לבד (כדורים, באנר) מתחת לעכבר שעומד
+  // הדף זז מתחת לעכבר שעומד: גלילה, או אלמנטים שזזים לבד (כדורים)
+  document.addEventListener("scroll", update, { capture: true, passive: true });
+  setInterval(update, 150);
 
+  // העכבר יצא מהחלון
   document.addEventListener("mouseout", function (event) {
-    if (!event.relatedTarget) cursor.classList.add("is-hidden");
+    if (!event.relatedTarget) {
+      mouseX = mouseY = -100;
+      setCurrent(null);
+    }
   });
 
-  // במסך מלא רק האלמנט שבמסך המלא נראה, אז העיגול עובר לתוכו
+  // במסך מלא רק האלמנט שבמסך המלא נראה, אז הכדור עובר לתוכו
   function placeCursor() {
     const fullscreen = document.fullscreenElement || document.webkitFullscreenElement;
     (fullscreen || document.body).appendChild(cursor);
