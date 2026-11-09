@@ -67,8 +67,8 @@
 | Hint | `text-hint` | Telegraf Regular | 20 | 100% | 0 | hover to play / tap to play |
 | Contact Ball | `text-contact-ball` | Telegraf Regular | 17 | 100% | 4% | הטקסט על כדורי יצירת הקשר ב-Say Hi |
 | Timeline Year | `text-timeline-year` | Telegraf UltraBold | 20 | 100% | 0 | השנים בציר הזמן ב-Leftovers |
-| About | `text-about` | Telegraf Regular | 20 | 22px | 4% | הטקסט ברצועה הכתומה ב-Say Hi |
-| About Strong | `text-about-strong` | Telegraf UltraBold | 20 | 22px | 4% | המילים המודגשות ברצועה הכתומה ב-Say Hi |
+| About | `text-about` | Telegraf Regular | 20 | 22.5px | 4% | הטקסט ברצועה הכתומה ב-Say Hi |
+| About Strong | `text-about-strong` | Telegraf UltraBold | 20 | 22.5px | 4% | המילים המודגשות ברצועה הכתומה ב-Say Hi |
 | Caption | `text-caption` | Telegraf Regular | 15 | 100% | 0 | טקסט התיאור מתחת לתמונות בגלריית הלוקיישנים ב-Leftovers |
 | Nav | `text-nav` | Telegraf Regular | 20 | 100% | 4% | הכפתורים בבר הבחירה במחשב |
 | Nav/Mobile | `text-nav` (במובייל) | Telegraf Regular | 14 | 100% | 4% | הכפתורים בבר הבחירה במובייל |
@@ -125,7 +125,7 @@
 1. **כפתורי הניווט (Button)**: Hover: רקע ורוד. Pressed: רקע ורוד והטקסט קטן ל-20 (`--pressed-scale`).
 2. **PEEK / LET'S PLAY**: הטקסט PEEK, ובמצב שבו הכדורים בשוליים LET’S PLAY. Hover: בלי רקע ורוד. האותיות קופצות בגל משמאל לימין (כמו גל אוהדים), עם השהיה קלה בין אות לאות, בלופ כל עוד העכבר על הכפתור. כשהעכבר יוצא הגל מסיים את הסבב הנוכחי וכל האותיות נוחתות ברכות. Focus: אותו גל. Pressed: הטקסט קטן מעט, כמו בכפתורי הניווט. בטלפון: נגיעה מריצה גל אחד מהיר, ורק אחריו מתבצעת הפעולה. ב-`prefers-reduced-motion`: בלי גל. התזמונים במשתני `--toggle-wave-...` ב-styles.css.
 3. **כפתור ההמבורגר**: Hover: הקווים בצבע `--color-green`. Pressed: האייקון קטן (scale של 0.9).
-4. **כדורי יצירת הקשר ב-Say Hi**: כולם `--color-green`, ונעים רק באזור הוורוד (הקו של החלק הכתום הוא קיר). Hover: הכדור הופך ל-`--color-blue` והטקסט ל-UltraBold במעבר רך, והכדור מאט ליד העכבר (script.js). Pressed: הכדור קטן (scale של 0.92). Focus: כמו Hover, והכדור עוצר.
+4. **כדורי יצירת הקשר ב-Say Hi**: כולם `--color-green`, ונעים רק באזור הוורוד (הקו של החלק הכתום הוא קיר). Hover: הכדור הופך ל-`--color-blue` במעבר רך (הטקסט נשאר במשקל הרגיל), והכדור מאט ליד העכבר (script.js). Pressed: הכדור קטן (scale של 0.92). Focus: כמו Hover, והכדור עוצר.
 5. **הבאנר הרץ בעמוד הפרויקט**: Hover: הטקסט בצבע `--color-pink`, והאותיות והכוכבים קופצים בגל סביב העכבר: מה שמתחת לעכבר קופץ ראשון, והקפיצה מתפשטת לשני הצדדים עם השהיה קלה ונחלשת עם המרחק (תזמונים כמו הגל של LET’S PLAY). הגל עוקב אחרי העכבר, ממשיך לפעום כשהוא עוצר, וכשהוא יוצא האותיות נוחתות ברכות. הבאנר ממשיך לרוץ. Focus: ורוד וגל ממרכז הבאנר, בלי קו מתאר. Pressed: הטקסט בצבע `--color-mint`. בטלפון: נגיעה מריצה גל אחד מהיר מנקודת הנגיעה, ואז עוברים ל-`say-hi.html`. ב-`prefers-reduced-motion`: בלי גל (script.js).
 6. **הסרטון בעמוד הפרויקט**: Hover: אייקון ה-Play בצבע `--color-orange`. Pressed: האייקון קטן מעט (scale של 0.9). הבר שמתחת לסרטון: Hover ו-Focus מעבים את הקו. כפתור המסך המלא: Hover ו-Focus בצבע המילוי.
 7. **הכפתורים בבר הבחירה**: Hover: קו מצטייר מתחת למילה. Pressed: הקו מצטייר ואז עוברים לעמוד.

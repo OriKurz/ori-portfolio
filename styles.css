@@ -160,7 +160,7 @@
   --text-nav-size: 20;
   --text-nav-mobile-size: 14;
   --text-about-size: 20;
-  --text-about-line-height: 22;
+  --text-about-line-height: 22.5;
 
   /* פיקסל אחד בפיגמה: כמה הוא שווה במסך. כל עמוד (ולפעמים כל חלק בעמוד)
      קובע אותו לפי השיטה שבה הוא גדל עם המסך. בעמוד הבית: משבצת = 96px בפיגמה */
@@ -1107,7 +1107,7 @@
   --say-hi-title-align: right;
 
   /* הגובה: הרצועה הכתומה תמיד בגובה שלה בפיגמה (342px: המרווח 33 מעל הטקסט,
-     13 שורות טקסט של 22, ו-23 מתחת), צמודה לתחתית החלון, ומתחילה בדיוק על קו של הגריד.
+     והטקסט בשורות של 22.5), צמודה לתחתית החלון, ומתחילה בדיוק על קו של הגריד.
      כל השאר הוא הגריד הוורוד, שנגמר בשורה שלמה מעל הכתום: 5 השורות של העיצוב,
      שורות שלמות עודפות שמתחלקות מעליהן ומתחתיהן (אי-זוגית למטה),
      ומה שקטן ממשבצת הוא שורה חלקית בראש החלון */
@@ -3811,17 +3811,6 @@ body {
 
 .contact-ball-label {
   width: var(--contact-ball-text-width);
-  transition: opacity var(--transition-speed) ease;
-}
-
-/* התווית ב-UltraBold: מונחת בדיוק על הרגילה, שקופה עד ה-hover */
-.contact-ball-label--bold {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  font-weight: 800;
-  opacity: 0;
 }
 
 /* E-MAIL בשורה אחת, בלי שבירה אחרי המקף */
@@ -3834,7 +3823,7 @@ body {
   background-color: var(--color-green);
 }
 
-/* Hover: הכדור הופך לכחול והטקסט ל-UltraBold, במעבר רך. הכדור גם מאט ליד העכבר (script.js).
+/* Hover: הכדור הופך לכחול, במעבר רך. הטקסט נשאר במשקל הרגיל. הכדור גם מאט ליד העכבר (script.js).
    Focus (מקלדת) נראה כמו hover, והכדור עוצר במקום (script.js).
    לחיצה: הכדור קטן מעט. scale (ולא transform), כי script.js מזיז את הכדור עם transform */
 .contact-ball {
@@ -3845,14 +3834,6 @@ body {
   .contact-ball:hover {
     background-color: var(--color-blue);
   }
-
-  .contact-ball:hover .contact-ball-label {
-    opacity: 0;
-  }
-
-  .contact-ball:hover .contact-ball-label--bold {
-    opacity: 1;
-  }
 }
 
 .contact-ball:focus-visible,
@@ -3860,18 +3841,6 @@ body {
 .contact-ball.is-focus {
   outline: none;
   background-color: var(--color-blue);
-}
-
-.contact-ball:focus-visible .contact-ball-label,
-.contact-ball.is-hover .contact-ball-label,
-.contact-ball.is-focus .contact-ball-label {
-  opacity: 0;
-}
-
-.contact-ball:focus-visible .contact-ball-label--bold,
-.contact-ball.is-hover .contact-ball-label--bold,
-.contact-ball.is-focus .contact-ball-label--bold {
-  opacity: 1;
 }
 
 .contact-ball:active,
