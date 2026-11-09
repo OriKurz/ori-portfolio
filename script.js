@@ -1228,90 +1228,72 @@ locationPhotos.forEach(function (photo) {
 });
 
 // =========================================
-// עמוד Leftovers*: Source Material, מניפת תצלומי הלוויין.
-// כשהעכבר על תצלום, הוא נשלף מהמניפה לשורה שמתחתיה, מתיישר, והשנה שלו מופיעה מתחתיו.
-// בכל רגע רק תצלום אחד בחוץ. הוא נשאר בחוץ כל עוד העכבר עליו או על המקום שלו
-// במניפה (source-slot), וכשהעכבר יוצא משניהם הוא חוזר למקום.
-// בטלפון: נגיעה מוציאה, ונגיעה נוספת בו (או מחוץ לתצלומים) מחזירה.
-// במקלדת: Focus עובד כמו hover. התנועה עצמה ב-styles.css.
+// עמוד Leftovers*: Source Material, ציר הזמן של תצלומי הלוויין.
+// כל שנה בציר מציגה את התצלום שלה. בטעינה אף שנה לא מוצגת (הווריאנט Default בפיגמה).
+// במחשב: hover על שנה מציג את התצלום שלה, ולחיצה נועלת אותה. כשהעכבר יוצא
+// משנה, חוזרים לשנה הנעולה.
+// בטלפון: נגיעה בשנה מציגה ונועלת אותה, ונגיעה בשנה אחרת מחליפה.
+// במקלדת: Focus עובד כמו hover, ו-Enter נועל.
+// כשהתצלום מתחלף, הוא יורד מעט למקום שלו (is-settling, התנועה ב-styles.css).
 // =========================================
-const sourceFan = document.querySelector(".source-fan");
+const sourceTimeline = document.querySelector(".source-timeline");
 
-if (sourceFan) {
-  const sourceCards = sourceFan.querySelectorAll(".source-card");
-  const sourceYears = sourceFan.querySelectorAll(".source-year");
-  const sourceReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  let openCard = null;     // מספר התצלום שבחוץ (או null)
-  let hoveredCard = null;  // מספר התצלום (או המקום שלו) שהעכבר עליו
+if (sourceTimeline) {
+  const timelineYears = sourceTimeline.querySelectorAll(".timeline-year");
+  const timelinePhotos = sourceTimeline.querySelectorAll(".timeline-photo");
+  let lockedYear = null;   // השנה שנבחרה בלחיצה
+  let hoveredYear = null;  // השנה שהעכבר (או הפוקוס) עליה
+  let shownYear = null;    // השנה שהתצלום שלה מוצג עכשיו
 
-  // מספר התצלום של האלמנט (התצלום עצמו או המקום שלו במניפה)
-  function cardIndex(target) {
-    const element = target.closest("[data-card]");
-    return element ? Number(element.dataset.card) : null;
-  }
+  // מציג את התצלום של השנה שעליה העכבר, ואם אין כזו, של השנה הנעולה
+  function updateTimeline() {
+    const nextYear = hoveredYear !== null ? hoveredYear : lockedYear;
 
-  // מפעיל מחדש את "הנייר באוויר" (ההתרוממות והנחיתה)
-  function flutter(card, className) {
-    if (sourceReducedMotion.matches) return;
-    card.classList.remove("is-flying-out", "is-flying-back");
-    void card.offsetWidth; // כדי שהאנימציה תתחיל מההתחלה
-    card.classList.add(className);
-  }
-
-  sourceCards.forEach(function (card) {
-    card.addEventListener("animationend", function () {
-      card.classList.remove("is-flying-out", "is-flying-back");
+    timelineYears.forEach(function (year, index) {
+      year.classList.toggle("is-shown", index === nextYear);
+      year.setAttribute("aria-pressed", String(index === lockedYear));
     });
-  });
 
-  function showCard(index) {
-    if (index === openCard) return;
-    hideCard();
-    openCard = index;
-    sourceCards[index].classList.add("is-out");
-    flutter(sourceCards[index], "is-flying-out");
-    sourceYears[index].classList.add("is-visible");
-  }
+    if (nextYear === shownYear) return;
+    shownYear = nextYear;
 
-  function hideCard() {
-    if (openCard === null) return;
-    sourceCards[openCard].classList.remove("is-out");
-    flutter(sourceCards[openCard], "is-flying-back");
-    sourceYears[openCard].classList.remove("is-visible");
-    openCard = null;
-  }
-
-  // ----- עכבר -----
-  sourceFan.addEventListener("pointerover", function (event) {
-    if (event.pointerType !== "mouse") return;
-    hoveredCard = cardIndex(event.target);
-    if (hoveredCard === null) hideCard();
-    else showCard(hoveredCard);
-  });
-  sourceFan.addEventListener("pointerleave", function (event) {
-    if (event.pointerType !== "mouse") return;
-    hoveredCard = null;
-    hideCard();
-  });
-
-  // ----- טלפון: נגיעה -----
-  sourceFan.addEventListener("click", function (event) {
-    if (lastPointerType === "mouse") return;
-    const index = cardIndex(event.target);
-    if (index === null || index === openCard) hideCard();
-    else showCard(index);
-  });
-  document.addEventListener("click", function (event) {
-    if (lastPointerType !== "mouse" && !sourceFan.contains(event.target)) hideCard();
-  });
-
-  // ----- מקלדת: Focus כמו hover -----
-  sourceCards.forEach(function (card, index) {
-    card.addEventListener("focus", function () {
-      if (card.matches(":focus-visible")) showCard(index);
+    timelinePhotos.forEach(function (photo, index) {
+      photo.classList.remove("is-shown", "is-settling");
+      if (index === shownYear) {
+        void photo.offsetWidth; // מאפס את האנימציה, כדי שתתחיל מחדש בכל החלפה
+        photo.classList.add("is-shown", "is-settling");
+      }
     });
-    card.addEventListener("blur", function () {
-      if (openCard === index && hoveredCard !== index) hideCard();
+  }
+
+  timelineYears.forEach(function (year, index) {
+    year.addEventListener("pointerenter", function (event) {
+      if (event.pointerType !== "mouse") return;
+      hoveredYear = index;
+      updateTimeline();
+    });
+    year.addEventListener("pointerleave", function (event) {
+      if (event.pointerType !== "mouse" || hoveredYear !== index) return;
+      hoveredYear = null;
+      updateTimeline();
+    });
+
+    // לחיצה, נגיעה או Enter: נועלים את השנה
+    year.addEventListener("click", function () {
+      lockedYear = index;
+      updateTimeline();
+    });
+
+    // מקלדת: Focus כמו hover
+    year.addEventListener("focus", function () {
+      if (!year.matches(":focus-visible")) return;
+      hoveredYear = index;
+      updateTimeline();
+    });
+    year.addEventListener("blur", function () {
+      if (hoveredYear !== index || year.matches(":hover")) return;
+      hoveredYear = null;
+      updateTimeline();
     });
   });
 }

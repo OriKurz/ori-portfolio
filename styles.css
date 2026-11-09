@@ -145,6 +145,7 @@
   --text-button-mobile-size: 17;
   --text-button-mobile-strong-size: 14;
   --text-section-title-size: 20;
+  --text-timeline-year-size: 20;
   --text-subtitle-size: 20;
   --text-tagline-size: 22;
   --text-body-size: 20;
@@ -910,8 +911,8 @@
 :root.page-leftovers {
   --frame-cell: 66.4;
   --grid-columns: 14;
-  /* אורך הגריד: עד הפס של הפרויקטים הנוספים (y=3006 בפיגמה), במשבצות */
-  --grid-rows: 45.271;
+  /* אורך הגריד: עד הפס של הפרויקטים הנוספים (y=2917 בפיגמה), במשבצות */
+  --grid-rows: 43.931;
 
   /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
   --leftovers-navy: #222a33;   /* רקע העמוד והמלבנים של התוויות */
@@ -995,30 +996,36 @@
   --magnifier-lens-size: calc(var(--cell) * 3.45);
   --magnifier-zoom: 2;
 
-  /* Source Material: התווית, האיור שברקע (628x739 בפיגמה) ומניפת התצלומים (בפיגמה מ-x=581, y=2348) */
-  --label-box-source-column: 5;   --label-box-source-row: 35;   --label-box-source-columns: 3;
-  --source-label-column: 5.443;   --source-label-row: 35.356;
-  --source-background-column: 7.295;  --source-background-row: 35.356;
-  --source-background-width: calc(628 * var(--u));
-  --source-background-height: calc(739 * var(--u));
-  --source-fan-column: 1.09;      --source-fan-row: 35.356;
-  --source-fan-width: calc(778 * var(--u));
-  --source-fan-height: calc(643 * var(--u));
-  /* התנועה: התצלום נשלף ומונח כמו כרטיס נייר.
-     לרוחב ולגובה יש קצב שונה, ולכן הוא עף בקשת. הסיבוב מתיישב עם קפיצה קטנה בסוף */
-  --card-out-time: 0.85s;
-  --card-back-time: 0.7s;
-  --card-x-easing: cubic-bezier(0.45, 0, 0.2, 1);
-  --card-y-easing: cubic-bezier(0.2, 0.75, 0.25, 1);
-  --card-turn-easing: cubic-bezier(0.3, 1.12, 0.45, 1);
-  /* כשהוא נשלף, הוא נשאר בין הכרטיסים שמעליו עד שהוא יוצא מהחפיסה, ואז עולה מעל כולם */
-  --card-rise-delay: 0.22s;
-  --card-pressed-scale: 0.96;
-  /* השנה מופיעה רק אחרי שהתצלום נחת */
-  --year-show-time: 0.35s;
-  --year-show-delay: 0.5s;
-  --year-hide-time: 0.15s;
-  --year-rise: calc(10 * var(--u));
+  /* Source Material: התווית מעל ציר הזמן (בפיגמה מ-x=845, y=2326, ממורכזת מעל הציר) */
+  --label-box-source-column: 5;   --label-box-source-row: 35;   --label-box-source-columns: 4;
+  --source-label-column: 5.934;   --source-label-row: 35.377;
+  /* האיור שברקע (359x423 בפיגמה): פעמיים, אחד חתוך בקצה השמאלי של הגריד ואחד בקצה הימני */
+  --source-background-width: calc(359 * var(--u));
+  --source-background-height: calc(423 * var(--u));
+  --source-background-left-column: -1.283;  --source-background-left-row: 37.515;
+  --source-background-right-column: 9.910;  --source-background-right-row: 37.530;
+
+  /* ציר הזמן של תצלומי הלוויין: הקומפוננטה בפיגמה (878 רוחב), מ-x=538, y=2408.
+     כל המספרים בתוך הציר בפיקסלים של הקומפוננטה, כפול --u */
+  --timeline-column: 0.452;   --timeline-row: 36.266;
+  --timeline-width: 878;
+  --timeline-step: 103;          /* המרחק בין שנתה לשנתה */
+  --timeline-year-top: 11;       /* השנים */
+  --timeline-tick-top: 37;       /* השנתות (22 גובה) */
+  --timeline-tick-height: 22;
+  --timeline-axis-left: 23;      /* הקו של הציר */
+  --timeline-axis-top: 49;
+  --timeline-axis-width: 823;
+  /* האזור של כל שנה: חצי הדרך לשנה הסמוכה מכל צד, ו-16 מעל השנה ומתחת לשנתה */
+  --timeline-hit-top: -5;
+  --timeline-hit-height: 80;
+  --timeline-color: var(--leftovers-sky);       /* הקו, השנתות והשנה שמוצגת */
+  --timeline-year-color: var(--color-orange);   /* שאר השנים */
+  --timeline-pressed-scale: 0.9;
+  /* התצלום מתיישב: מופיע קצת מעל המקום שלו ויורד אליו */
+  --timeline-photo-drop: calc(8 * var(--u));
+  --timeline-photo-time: 0.35s;
+  --timeline-photo-easing: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50%, וקצת נמוך יותר */
   --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
@@ -1245,6 +1252,15 @@ body {
   font-weight: 800;
   font-size: calc(var(--text-page-title-size) * var(--type-px));
   line-height: 0.955;
+  letter-spacing: 0;
+}
+
+/* Timeline Year: השנים בציר הזמן של Leftovers* */
+.text-timeline-year {
+  font-family: var(--font-text);
+  font-weight: 800;
+  font-size: calc(var(--text-timeline-year-size) * var(--type-px));
+  line-height: var(--line-height);
   letter-spacing: 0;
 }
 
@@ -3378,10 +3394,10 @@ body {
   user-select: none;
 }
 
-/* ----- Source Material: מניפת תצלומי הלוויין -----
-   כל המיקומים בתוך המניפה בפיקסלים של הקומפוננטה בפיגמה, כפול --u */
+/* ----- Source Material: ציר הזמן של תצלומי הלוויין -----
+   כל המיקומים בתוך הציר בפיקסלים של הקומפוננטה בפיגמה, כפול --u */
 
-/* האיור של Source Material יוצא מימין מהגריד: חותכים אותו בקצה, בלי גלילה לרוחב */
+/* האיור של Source Material יוצא מהגריד משני הצדדים: חותכים אותו בקצה, בלי גלילה לרוחב */
 .page-leftovers .full-project-grid {
   overflow-x: clip;
 }
@@ -3389,77 +3405,110 @@ body {
 .leftovers-label-box--source { --column: var(--label-box-source-column); --row: var(--label-box-source-row); --columns: var(--label-box-source-columns); }
 .leftovers-source-label      { --column: var(--source-label-column);     --row: var(--source-label-row); }
 
-/* האיור שברקע: רק רקע, לא מגיב לכלום. יוצא מימין מהגריד וממשיך מתחת לפס הפרויקטים, כמו בפיגמה */
+/* האיור שברקע: רק רקע, לא מגיב לכלום */
 .source-background {
-  --column: var(--source-background-column);
-  --row: var(--source-background-row);
   width: var(--source-background-width);
   height: var(--source-background-height);
   max-width: none;
   pointer-events: none;
 }
 
-.source-fan {
-  --column: var(--source-fan-column);
-  --row: var(--source-fan-row);
-  width: var(--source-fan-width);
-  height: var(--source-fan-height);
+.source-background--left  { --column: var(--source-background-left-column);  --row: var(--source-background-left-row); }
+.source-background--right { --column: var(--source-background-right-column); --row: var(--source-background-right-row); }
+
+.source-timeline {
+  --column: var(--timeline-column);
+  --row: var(--timeline-row);
+  width: calc(var(--timeline-width) * var(--u));
 }
 
-/* המקום של התצלום במניפה: שקוף, מעל התצלומים, באותו סדר שכבות שלהם */
-.source-slot {
+/* הקו של הציר */
+.timeline-axis {
   position: absolute;
-  left: calc(var(--fan-x) * var(--u));
-  top: calc(var(--fan-y) * var(--u));
-  z-index: var(--z);
-  width: calc(var(--w) * var(--u));
-  height: calc(var(--h) * var(--u));
-  translate: -50% -50%;
-  rotate: var(--fan-rotate);
-  -webkit-tap-highlight-color: transparent;
+  left: calc(var(--timeline-axis-left) * var(--u));
+  top: calc(var(--timeline-axis-top) * var(--u));
+  width: calc(var(--timeline-axis-width) * var(--u));
+  height: var(--line);
+  translate: 0 -50%;
+  background-color: var(--timeline-color);
 }
 
-/* תצלום: שלוש שכבות שזזות כל אחת בקצב שלה.
-   source-card (הכפתור): לרוחב | source-card-drop: לגובה | source-card-turn: הסיבוב.
-   הכפתור עצמו בגודל 0, בנקודת המרכז של התצלום, והתצלום ממורכז סביבה */
-.source-card {
+/* כל שנה היא כפתור: האזור שלה מגיע עד חצי הדרך לשנה הסמוכה, בלי חורים ובלי חפיפה.
+   --tick: איפה השנתה, --year-left: איפה מתחיל מספר השנה (שניהם מ-HTML) */
+.timeline-year {
   position: absolute;
-  left: 0;
-  top: 0;
-  z-index: var(--z);
-  width: 0;
-  height: 0;
+  left: calc((var(--tick) - var(--timeline-step) / 2) * var(--u));
+  top: calc(var(--timeline-hit-top) * var(--u));
+  z-index: 1;
+  width: calc(var(--timeline-step) * var(--u));
+  height: calc(var(--timeline-hit-height) * var(--u));
   padding: 0;
   border: none;
   background: none;
-  cursor: default;
+  cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  translate: calc(var(--fan-x) * var(--u)) 0;
-  transition: translate var(--card-back-time) var(--card-x-easing), z-index 0s;
 }
 
-.source-card-drop {
+.timeline-year-label {
   position: absolute;
-  translate: 0 calc(var(--fan-y) * var(--u));
-  transition: translate var(--card-back-time) var(--card-y-easing);
+  left: calc((var(--year-left) - var(--tick) + var(--timeline-step) / 2) * var(--u));
+  top: calc((var(--timeline-year-top) - var(--timeline-hit-top)) * var(--u));
+  color: var(--timeline-year-color);
+  white-space: nowrap;
+  transition: scale 0.15s ease;
 }
 
-.source-card-turn {
+.timeline-tick {
   position: absolute;
-  rotate: var(--fan-rotate);
-  transition: rotate var(--card-back-time) var(--card-turn-easing), scale 0.15s ease;
+  left: 50%;
+  top: calc((var(--timeline-tick-top) - var(--timeline-hit-top)) * var(--u));
+  width: var(--line);
+  height: calc(var(--timeline-tick-height) * var(--u));
+  translate: -50% 0;
+  background-color: var(--timeline-color);
 }
 
-/* התצלום עצמו, חתוך כמו בפיגמה (גודל ומיקום התמונה בתוך המלבן) */
-.source-card-photo {
+/* השנה שהתצלום שלה מוצג (hover, Focus או נעולה): בתכלת, כמו בווריאנט שלה בפיגמה */
+.timeline-year.is-shown .timeline-year-label,
+.timeline-year.is-hover .timeline-year-label,
+.timeline-year.is-focus .timeline-year-label {
+  color: var(--timeline-color);
+}
+
+/* Focus נראה כמו ה-hover: השנה בתכלת והתצלום שלה מוצג, בלי קו מתאר */
+.timeline-year:focus-visible {
+  outline: none;
+}
+
+/* Pressed: מספר השנה קטן מעט */
+.timeline-year:active .timeline-year-label,
+.timeline-year.is-pressed .timeline-year-label {
+  scale: var(--timeline-pressed-scale);
+}
+
+/* התצלום של כל שנה: הגודל והמיקום מהווריאנט שלה בפיגמה. מוסתר עד שהשנה מוצגת */
+.timeline-photo {
   position: absolute;
+  left: calc(var(--left) * var(--u));
+  top: calc(var(--top) * var(--u));
   width: calc(var(--w) * var(--u));
   height: calc(var(--h) * var(--u));
-  translate: -50% -50%;
   overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
 }
 
-.source-card-image {
+/* בחלק מהווריאנטים התצלום הפוך (סובב ב-180 מעלות בפיגמה) */
+.timeline-photo--turned {
+  rotate: 180deg;
+}
+
+.timeline-photo.is-shown {
+  visibility: visible;
+}
+
+/* התמונה בתוך המסגרת, חתוכה כמו בפיגמה */
+.timeline-photo-image {
   position: absolute;
   left: var(--crop-left, 0%);
   top: var(--crop-top, 0%);
@@ -3467,98 +3516,27 @@ body {
   height: var(--crop-height, 100%);
   max-width: none;
   object-fit: cover;
-  pointer-events: none;
   -webkit-user-drag: none;
 }
 
-/* בחוץ (hover, נגיעה או Focus): התצלום עף לשורה שמתחת למניפה ומתיישר */
-.source-card.is-out,
-.source-card.is-hover,
-.source-card.is-focus {
-  z-index: 20;
-  translate: calc(var(--out-x) * var(--u)) 0;
-  transition: translate var(--card-out-time) var(--card-x-easing), z-index 0s var(--card-rise-delay);
+/* כשהתצלום מתחלף: מופיע מעט מעל המקום שלו ויורד אליו, כאילו הוא מתיישב (script.js) */
+.timeline-photo.is-settling {
+  animation: timeline-photo-settle var(--timeline-photo-time) var(--timeline-photo-easing);
 }
 
-.source-card:is(.is-out, .is-hover, .is-focus) .source-card-drop {
-  translate: 0 calc(var(--out-y) * var(--u));
-  transition: translate var(--card-out-time) var(--card-y-easing);
+@keyframes timeline-photo-settle {
+  from { translate: 0 calc(-1 * var(--timeline-photo-drop)); }
+  to   { translate: 0 0; }
 }
 
-.source-card:is(.is-out, .is-hover, .is-focus) .source-card-turn {
-  rotate: var(--out-rotate);
-  transition: rotate var(--card-out-time) var(--card-turn-easing), scale 0.15s ease;
-}
-
-/* הנייר באוויר: מתרומם, מתכופף קצת לאחור ונוחת על השולחן (script.js מפעיל בכל יציאה וחזרה) */
-.source-card.is-flying-out .source-card-photo {
-  animation: source-card-flutter var(--card-out-time) ease-out;
-}
-
-.source-card.is-flying-back .source-card-photo {
-  animation: source-card-flutter-back var(--card-back-time) ease-out;
-}
-
-@keyframes source-card-flutter {
-  0%   { transform: perspective(900px); }
-  35%  { transform: perspective(900px) rotateX(16deg) rotateY(-8deg) scale(1.08); }
-  75%  { transform: perspective(900px) rotateX(-4deg) rotateY(2deg) scale(0.99); }
-  100% { transform: perspective(900px); }
-}
-
-@keyframes source-card-flutter-back {
-  0%   { transform: perspective(900px); }
-  40%  { transform: perspective(900px) rotateX(-12deg) rotateY(6deg) scale(1.06); }
-  80%  { transform: perspective(900px) rotateX(3deg) scale(0.99); }
-  100% { transform: perspective(900px); }
-}
-
-/* Pressed: התצלום קטן מעט */
-.source-card:active .source-card-turn,
-.source-card.is-pressed .source-card-turn {
-  scale: var(--card-pressed-scale);
-}
-
-/* Focus נראה כמו ה-hover: התצלום בחוץ, בלי קו מתאר */
-.source-card:focus-visible {
-  outline: none;
-}
-
-/* השנה מתחת לתצלום שבחוץ: עולה קצת ומופיעה אחרי שהוא נחת */
-.source-year {
-  position: absolute;
-  left: calc(var(--left) * var(--u));
-  top: calc(var(--top) * var(--u));
-  z-index: 21;
-  color: var(--color-orange);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  translate: 0 var(--year-rise);
-  transition: opacity var(--year-hide-time) ease, translate var(--year-hide-time) ease;
-}
-
-.source-year.is-visible {
-  opacity: 1;
-  translate: 0 0;
-  transition: opacity var(--year-show-time) ease-out var(--year-show-delay), translate var(--year-show-time) var(--card-y-easing) var(--year-show-delay);
-}
-
-/* מי שביקש פחות תנועה: התצלום והשנה עוברים מיד, בלי אנימציה */
+/* מי שביקש פחות תנועה: התצלום מתחלף מיד, בלי ירידה */
 @media (prefers-reduced-motion: reduce) {
-  .source-card,
-  .source-card-drop,
-  .source-card-turn,
-  .source-card:is(.is-out, .is-hover, .is-focus),
-  .source-card:is(.is-out, .is-hover, .is-focus) .source-card-drop,
-  .source-card:is(.is-out, .is-hover, .is-focus) .source-card-turn,
-  .source-year,
-  .source-year.is-visible {
-    transition: none;
+  .timeline-photo.is-settling {
+    animation: none;
   }
 
-  .source-card:is(.is-flying-out, .is-flying-back) .source-card-photo {
-    animation: none;
+  .timeline-year-label {
+    transition: none;
   }
 }
 
