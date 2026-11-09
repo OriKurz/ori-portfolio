@@ -2428,7 +2428,9 @@ body {
    ========================================= */
 
 /* במחשב העמוד עצמו לא נגלל. רק האזור .full-project-scroll נגלל,
-   והצד השמאלי "דבוק" בתוכו (sticky), כך שהוא נשאר במקום */
+   והצד השמאלי "דבוק" בתוכו (sticky), כך שהוא נשאר במקום.
+   ה-sticky מחזיק רק עד סוף .full-project-body, שנגמרת בדיוק מעל What's Next:
+   בסוף העמוד הרצועה והבאנר נכנסים מלמטה ודוחפים את הצד השמאלי למעלה, בלי לכסות אותו */
 .page-full-project body {
   height: 100dvh;
   overflow: hidden;
@@ -2445,6 +2447,13 @@ body {
 
 .full-project-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* העמודה השמאלית והגריד יחד. flow-root: ה-margin השלילי של הגריד נשאר בפנים,
+   כך שהקופסה נגמרת בדיוק מעל What's Next */
+.full-project-body {
+  position: relative;
+  display: flow-root;
 }
 
 /* ----- החלק של הטקסט: משמאל, בלי גריד, לא זז ----- */
@@ -2504,10 +2513,12 @@ body {
 
 /* הגריד עצמו: הקווים הם הרקע שלו, והגובה שלו הוא אורך הגלילה.
    בפיגמה הגריד ממשיך גם מתחת לפס "What's Next?" (עד הבאנר), ולכן הוא
-   ארוך יותר בגובה של הפס, והפס עולה מעליו (ראו .next-projects) */
+   ארוך יותר בגובה של הפס. ה-margin השלילי מסיים את .full-project-body
+   בדיוק מעל הפס, והגריד ממשיך מתחתיו (הפס מעליו, ראו .next-projects) */
 .full-project-grid {
   position: relative;
   height: calc(var(--grid-rows) * var(--cell) + var(--next-projects-height));
+  margin-bottom: calc(-1 * var(--next-projects-height));
 }
 
 /* ----- הכותרות בגריד ----- */
@@ -2819,16 +2830,15 @@ body {
 .swatch--13 { --column: var(--swatch-13-column); --row: var(--swatch-13-row); --swatch-color: var(--swatch-13-color); }
 .swatch--14 { --column: var(--swatch-14-column); --row: var(--swatch-14-row); --swatch-color: var(--swatch-14-color); }
 
-/* ----- פרויקטים נוספים: רולר ברוחב כל החלון, מעל הצד השמאלי -----
+/* ----- פרויקטים נוספים: רולר ברוחב כל החלון -----
    הרקע ורוד בשקיפות 50% (רק הרקע, לא כל האלמנט, כדי שהדימויים יישארו מלאים).
-   הפס עולה למעלה בגובה שלו (margin שלילי), כך שהוא יושב מעל סוף הגריד,
-   ורואים דרכו גם את קווי הגריד וגם את הטקסט שבצד שמאל.
+   הפס יושב מעל סוף הגריד, ורואים דרכו את קווי הגריד.
+   את הצד השמאלי הוא לא מכסה: הוא דוחף אותו למעלה (ראו .full-project-body).
    script.js בונה את הדימויים מהרשימה nextProjectsList, ומזיז את next-projects-track
    מימין לשמאל בלופ. overflow: clip (ולא hidden), כדי שפוקוס במקלדת לא יגלול את הפס */
 .next-projects {
   position: relative;
   z-index: 2;
-  margin-top: calc(-1 * var(--next-projects-height));
   height: var(--next-projects-height);
   overflow: clip;
   background-color: var(--next-projects-background);
@@ -3038,19 +3048,10 @@ body {
 }
 
 /* ----- שני אזורי גלילה נפרדים -----
-   במחשב הצד השמאלי קבוע מעל החלון, מחוץ לאזור הנגלל של הגריד.
+   במחשב הצד השמאלי "דבוק" (sticky) כמו בכל עמוד פרויקט, ולא זז עם הגריד.
    בתוכו התיאור נגלל לבד, והכותרת יושבת מעליו. הגלילה של הדפדפן עצמו
    (גם בעכבר וגם בטראקפד), ו-overscroll-behavior: contain מונע מגלילה
    באזור אחד להמשיך לאזור השני כשמגיעים לסוף */
-.page-leftovers .full-project-info {
-  position: fixed;
-  left: 0;
-  top: 0;
-}
-
-.page-leftovers .full-project-panel {
-  margin-top: 0;
-}
 
 /* אזור הגלילה של התיאור: כל הצד השמאלי, בלי פס גלילה */
 .full-project-description-scroll {
