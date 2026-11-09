@@ -1139,6 +1139,8 @@
   --about-tools-right: calc(53 * var(--u));
   --about-tools-width: calc(249 * var(--u));
   --about-tools-top: calc(31 * var(--u));
+  /* השוליים מתחת לטור הארוך ביותר: 27.5px בפיגמה. הכתום גדל לפי הטקסט והשוליים */
+  --about-bottom-gap: calc(27.5 * var(--u));
 
   /* כדורי יצירת הקשר (בפיגמה: קוטר 87px, טקסט 17px ברוחב 65px), מוגדלים ב-15% */
   --contact-ball-scale: 1.15;
@@ -3654,16 +3656,15 @@ body {
    עמוד Say Hi
    ========================================= */
 
-/* עמוד של מסך אחד, בלי גלילה במחשב (הכדורים נעים בתוך החלון). במובייל נגלל, ראו למטה */
-.page-say-hi,
-.page-say-hi body {
-  height: 100%;
-  overflow: hidden;
+/* עמוד של מסך אחד. נגלל רק כשהחלק הכתום גבוה מהמסך (הטקסט והשוליים שמתחתיו) */
+.page-say-hi {
+  overflow-x: hidden;
+  overflow-y: auto;
   overscroll-behavior: none;
 }
 
 .page-say-hi body {
-  height: 100dvh;
+  min-height: 100dvh;
 }
 
 /* המסגרת הכתומה סביב החלון, כמו בפריים בפיגמה. הכדורים נהדפים ממנה */
@@ -3744,18 +3745,22 @@ body {
   left: calc(-1 * var(--grid-left));
   top: var(--say-hi-about-top);
   width: 100vw;
-  height: var(--say-hi-about-height);
+  min-height: var(--say-hi-about-height);
+  /* שלושת הטורים באותו תא: הגובה לפי הטור הארוך ביותר, ומתחתיו השוליים */
+  display: grid;
+  align-items: start;
+  padding-bottom: var(--about-bottom-gap);
   background-color: var(--color-orange);
 }
 
 .say-hi-about-text {
   --type-px: var(--about-type-px);
-  position: absolute;
+  grid-area: 1 / 1;
 }
 
-.say-hi-about-text--intro { left: var(--about-intro-left); top: var(--about-intro-top); width: var(--about-intro-width); }
-.say-hi-about-text--work  { left: calc(var(--grid-left) + var(--about-work-left));  top: var(--about-work-top);  width: var(--about-work-width); }
-.say-hi-about-text--tools { right: var(--about-tools-right); top: var(--about-tools-top); width: var(--about-tools-width); }
+.say-hi-about-text--intro { margin-left: var(--about-intro-left); margin-top: var(--about-intro-top); width: var(--about-intro-width); }
+.say-hi-about-text--work  { margin-left: calc(var(--grid-left) + var(--about-work-left)); margin-top: var(--about-work-top); width: var(--about-work-width); }
+.say-hi-about-text--tools { justify-self: end; margin-right: var(--about-tools-right); margin-top: var(--about-tools-top); width: var(--about-tools-width); }
 
 /* במובייל: העמוד נגלל, והטקסטים יורדים בטור ברצועה, עם משבצת ביניהם */
 @media (max-width: 767.98px) {
@@ -3775,8 +3780,8 @@ body {
   }
 
   .say-hi-about-text {
-    position: static;
     width: auto;
+    margin: 0;
   }
 }
 
