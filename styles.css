@@ -1190,19 +1190,24 @@
 
 /* ----- בר הבחירה (התפריט) -----
    פריים "bar" בפיגמה: 1440x61. הבר תמיד ברוחב המסך, אז פיקסל בפיגמה = 1/1440 מרוחב החלון.
-   ההמבורגר והכפתורים ממורכזים לגובה הבר (flex ב-.nav-bar) */
+   הכפתורים ממורכזים לגובה הבר (flex ב-.nav-bar). ההמבורגר במרחק שווה מהקצה העליון ומהשמאלי */
 :root {
   --nav-px: calc(100vw / 1440);
   --nav-height: calc(61 * var(--nav-px));
-  /* ההמבורגר בבר (30x24), 10 מהקצה השמאלי */
-  --nav-menu-left: calc(10 * var(--nav-px));
+  /* ההמבורגר בבר (30x24): 19 מהקצה העליון ו-19 מהקצה השמאלי */
+  --nav-menu-inset: calc(19 * var(--nav-px));
   --nav-menu-width: calc(30 * var(--nav-px));
   --nav-menu-line-height: calc(4 * var(--nav-px));
   --nav-menu-gap: calc(6 * var(--nav-px));
-  /* שורת הכפתורים: מתחילה ב-106 מהקצה (66 אחרי ההמבורגר), 168 בין מילה למילה */
-  --nav-list-start: calc(66 * var(--nav-px));
+  /* שורת הכפתורים: מתחילה ב-106 מהקצה (57 אחרי ההמבורגר), 168 בין מילה למילה */
+  --nav-list-start: calc((106 - 19 - 30) * var(--nav-px));
   --nav-list-end: 0px;
   --nav-list-gap: calc(168 * var(--nav-px));
+  /* הרוחב של כל מילה בפיגמה (HOME, INDEX, SAY HI :)), כדי שכל אחת תתחיל בדיוק
+     במקום שלה: 106, 333, 565. בדפדפן המילים קצת רחבות יותר מבפיגמה */
+  --nav-item-1-width: calc(59 * var(--nav-px));
+  --nav-item-2-width: calc(64 * var(--nav-px));
+  --nav-item-3-width: calc(79 * var(--nav-px));
   --nav-list-grow: 0;
   --nav-list-justify: flex-start;
   /* הקו מתחת למילה: בעובי קווי הגריד */
@@ -1228,13 +1233,18 @@
   :root {
     --nav-px: min(1px, 100vw / 375);
     --nav-height: calc(52 * var(--nav-px));
-    --nav-menu-left: calc(12 * var(--nav-px));
+    /* ההמבורגר (24x19) במרחק שווה מלמעלה ומשמאל: במרכז הגובה של הבר */
+    --nav-menu-inset: calc((52 - 19) / 2 * var(--nav-px));
     --nav-menu-width: calc(24 * var(--nav-px));
     --nav-menu-line-height: calc(3 * var(--nav-px));
     --nav-menu-gap: calc(5 * var(--nav-px));
-    --nav-list-start: calc(18 * var(--nav-px));
+    /* המילים מתחילות באותו מקום כמו קודם: 54 מהקצה */
+    --nav-list-start: calc((54 - 16.5 - 24) * var(--nav-px));
     --nav-list-end: calc(12 * var(--nav-px));
     --nav-list-gap: 0px;
+    --nav-item-1-width: auto;
+    --nav-item-2-width: auto;
+    --nav-item-3-width: auto;
     --nav-list-grow: 1;
     --nav-list-justify: space-between;
     --nav-line: var(--line-mobile);
@@ -2182,7 +2192,7 @@ body {
   align-items: center; /* ההמבורגר והכפתורים במרכז הגובה */
   width: 100%;
   height: var(--nav-height);
-  padding-left: var(--nav-menu-left);
+  padding-left: var(--nav-menu-inset);
   padding-right: var(--nav-list-end);
   background-color: var(--color-blue);
   color: var(--color-yellow);
@@ -2201,9 +2211,12 @@ body {
     visibility 0s;
 }
 
-/* ההמבורגר של הבר: צהוב (ב-hover ירוק, כמו כל ההמבורגרים) */
+/* ההמבורגר של הבר: צהוב (ב-hover ירוק, כמו כל ההמבורגרים).
+   יושב ב---nav-menu-inset מהקצה העליון, כמו המרחק מהקצה השמאלי */
 .nav-bar-menu {
   flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: var(--nav-menu-inset);
 }
 
 .nav-bar .menu-button-line {
@@ -2237,6 +2250,10 @@ body {
 .nav-bar-list li {
   display: flex;
 }
+
+.nav-bar-list li:nth-child(1) { width: var(--nav-item-1-width); }
+.nav-bar-list li:nth-child(2) { width: var(--nav-item-2-width); }
+.nav-bar-list li:nth-child(3) { width: var(--nav-item-3-width); }
 
 .nav-bar-link {
   position: relative;
