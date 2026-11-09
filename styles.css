@@ -185,6 +185,8 @@
      Focus (רק במקלדת) נראה בדיוק כמו ה-Hover של הרכיב. לרכיב בלי Hover:
      קו מתאר בצבע קווי הגריד של העמוד (--grid-line-color), בעובי קו הגריד (--line) */
   /* Pressed: כמה הרכיב קטן ברגע הלחיצה */
+  /* ברירת המחדל של Pressed לכל כפתור וקישור: התכווצות קלה */
+  --pressed-default-scale: 0.9;
   --menu-pressed-scale: 0.9;
   --contact-ball-pressed-scale: 0.92;
   --play-icon-pressed-scale: 0.9;
@@ -1460,6 +1462,26 @@ body {
   position: absolute;
   left: calc(var(--column) * var(--cell));
   top: calc(var(--row) * var(--cell));
+}
+
+/* =========================================
+   Pressed כברירת מחדל: כל כפתור וקישור (וכל role="button") מתכווץ קצת בלחיצה,
+   גם רכיב לחיץ חדש שעוד לא הגדרנו לו כלום.
+   :where = בלי משקל ב-CSS, כך שכל רכיב שמגדיר scale או transition משלו גובר על זה.
+   scale (ולא transform), כדי לא לדרוס תזוזה שרכיב עושה עם transform.
+   ========================================= */
+:where(a, button, [role="button"]) {
+  transition: scale var(--transition-speed) ease;
+}
+
+:where(a, button, [role="button"]):where(:active, .is-pressed) {
+  scale: var(--pressed-default-scale);
+}
+
+/* רכיבים שיש להם מצב Pressed משלהם (לא התכווצות של כל הרכיב): בלי ההתכווצות הכללית.
+   כשמוסיפים רכיב עם Pressed משלו, מוסיפים אותו לרשימה */
+:where(.nav-button, .balls-toggle, .nav-bar-link, .video-player, .contact-banner, .magnifier-button, .timeline-year):where(:active, .is-pressed) {
+  scale: none;
 }
 
 /* =========================================
