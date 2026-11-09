@@ -841,20 +841,20 @@
 
   /* פלטת הצבעים: כל עיגול הוא משבצת אחת: עמודה, שורה וצבע */
   --palette-swatch-radius: 50%;
-  --swatch-1-column: 1;   --swatch-1-row: 23;   --swatch-1-color: #58a8fc;
-  --swatch-2-column: 3;   --swatch-2-row: 23;   --swatch-2-color: #da472a;
-  --swatch-3-column: 5;   --swatch-3-row: 23;   --swatch-3-color: #f2d257;
-  --swatch-4-column: 7;   --swatch-4-row: 23;   --swatch-4-color: #0fb596;
-  --swatch-5-column: 2;   --swatch-5-row: 24;   --swatch-5-color: #e0fff9;
-  --swatch-6-column: 4;   --swatch-6-row: 24;   --swatch-6-color: #a7fbea;
-  --swatch-7-column: 6;   --swatch-7-row: 24;   --swatch-7-color: #ffb6b4;
-  --swatch-8-column: 1;   --swatch-8-row: 25;   --swatch-8-color: #0f1f2e;
-  --swatch-9-column: 3;   --swatch-9-row: 25;   --swatch-9-color: #265687;
-  --swatch-10-column: 5;  --swatch-10-row: 25;  --swatch-10-color: #99c1ea;
-  --swatch-11-column: 7;  --swatch-11-row: 25;  --swatch-11-color: #ffffff;
-  --swatch-12-column: 2;  --swatch-12-row: 26;  --swatch-12-color: #1b3958;
-  --swatch-13-column: 4;  --swatch-13-row: 26;  --swatch-13-color: #5c85b0;
-  --swatch-14-column: 6;  --swatch-14-row: 26;  --swatch-14-color: #f2dc8b;
+  --swatch-1-column: 2;   --swatch-1-row: 23;   --swatch-1-color: #58a8fc;
+  --swatch-2-column: 4;   --swatch-2-row: 23;   --swatch-2-color: #da472a;
+  --swatch-3-column: 6;   --swatch-3-row: 23;   --swatch-3-color: #f2d257;
+  --swatch-4-column: 8;   --swatch-4-row: 23;   --swatch-4-color: #0fb596;
+  --swatch-5-column: 3;   --swatch-5-row: 24;   --swatch-5-color: #e0fff9;
+  --swatch-6-column: 5;   --swatch-6-row: 24;   --swatch-6-color: #a7fbea;
+  --swatch-7-column: 7;   --swatch-7-row: 24;   --swatch-7-color: #ffb6b4;
+  --swatch-8-column: 2;   --swatch-8-row: 25;   --swatch-8-color: #0f1f2e;
+  --swatch-9-column: 4;   --swatch-9-row: 25;   --swatch-9-color: #265687;
+  --swatch-10-column: 6;  --swatch-10-row: 25;  --swatch-10-color: #99c1ea;
+  --swatch-11-column: 8;  --swatch-11-row: 25;  --swatch-11-color: #ffffff;
+  --swatch-12-column: 3;  --swatch-12-row: 26;  --swatch-12-color: #1b3958;
+  --swatch-13-column: 5;  --swatch-13-row: 26;  --swatch-13-color: #5c85b0;
+  --swatch-14-column: 7;  --swatch-14-row: 26;  --swatch-14-color: #f2dc8b;
 
   /* פרויקטים נוספים: פס ורוד בשקיפות 50%, כמו בפיגמה. רואים דרכו את שאר העמוד */
   --next-projects-background: color-mix(in srgb, var(--color-pink) 50%, transparent);
