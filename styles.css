@@ -991,9 +991,9 @@
   --magnifier-color: var(--color-orange);
   /* ירוק לא בפלטה של העמוד, אז במקומו התכלת של הטקסט הרץ */
   --magnifier-hover-color: var(--leftovers-sky);
-  /* העיגול: 4.2 משבצות במחשב (6 בטלפון, למטה), מגדיל פי 2.5 */
-  --magnifier-lens-size: calc(var(--cell) * 4.2);
-  --magnifier-zoom: 2.5;
+  /* העיגול: 3.45 משבצות במחשב, מגדיל פי 2 (בטלפון 6 משבצות ופי 2.5, למטה) */
+  --magnifier-lens-size: calc(var(--cell) * 3.45);
+  --magnifier-zoom: 2;
 
   /* Source Material: התווית, האיור שברקע (628x739 בפיגמה) ומניפת התצלומים (בפיגמה מ-x=581, y=2348) */
   --label-box-source-column: 5;   --label-box-source-row: 35;   --label-box-source-columns: 3;
@@ -1025,10 +1025,11 @@
   --next-projects-height: calc(277.79 * var(--strip-px));
 }
 
-/* הזכוכית המגדלת בטלפון: עיגול של 6 משבצות */
+/* הזכוכית המגדלת בטלפון: עיגול של 6 משבצות, מגדיל פי 2.5 */
 @media (max-width: 767.98px) {
   :root.page-leftovers {
     --magnifier-lens-size: calc(var(--cell) * 6);
+    --magnifier-zoom: 2.5;
   }
 }
 
