@@ -478,6 +478,14 @@ if (contactBalls.length > 0) {
   // הקיר התחתון: הקו שבו מתחיל החלק הכתום (אם יש כזה בעמוד)
   const bottomWall = document.querySelector(".say-hi-about");
 
+  // הגובה של החלק הכתום (לפי הטקסט) נשמר ב---say-hi-about-height,
+  // כדי שהגריד הוורוד יחלק את השורות העודפות לפי המקום שבאמת נשאר מעליו
+  if (bottomWall && "ResizeObserver" in window) {
+    new ResizeObserver(function () {
+      document.documentElement.style.setProperty("--say-hi-about-height", bottomWall.offsetHeight + "px");
+    }).observe(bottomWall);
+  }
+
   // העכבר (או האצבע בזמן נגיעה). null = אין עכבר בחלון
   let pointer = null;
   let lastTime = null;

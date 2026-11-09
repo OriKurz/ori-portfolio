@@ -1106,23 +1106,18 @@
   --say-hi-title-right: calc((1440 - 1017.2) * var(--u));
   --say-hi-title-align: right;
 
-  /* הגובה: הרצועה הכתומה תמיד בגובה שלה בפיגמה (342px: המרווח 33 מעל הטקסט,
-     והטקסט בשורות של 22.5), צמודה לתחתית החלון, ומתחילה בדיוק על קו של הגריד.
-     כל השאר הוא הגריד הוורוד, שנגמר בשורה שלמה מעל הכתום: 5 השורות של העיצוב,
-     שורות שלמות עודפות שמתחלקות מעליהן ומתחתיהן (אי-זוגית למטה),
-     ומה שקטן ממשבצת הוא שורה חלקית בראש החלון */
+  /* הגובה: העמוד תמיד בגובה המסך, בלי גלילה. הגריד הוורוד מתחיל בשורה שלמה בראש המסך.
+     הרצועה הכתומה צמודה לתחתית, בגובה שהטקסט צריך (המרווח מעליו, הטור הארוך והשוליים),
+     ומכסה את מה שמתחתיה: השורה הוורודה התחתונה יכולה להיות חתוכה.
+     5 השורות של העיצוב, ושורות שלמות עודפות שמתחלקות מעליהן ומתחתיהן (אי-זוגית למטה).
+     --say-hi-about-height: הגובה של הכתום. script.js מודד אותו, וזו הערכה עד אז
+     (33 מעל, 14 שורות של 22.5, ו-27.5 מתחת) */
   --say-hi-pink-rows: 5;
-  /* שורה חלקית דקה מ---edge-snap בראש החלון נצמדת לקו העליון ולא נראית:
-     הכתום גדל בה (כמה פיקסלים בתחתית), והקו העליון נשאר בעובי רגיל */
-  --say-hi-top-sliver: mod(100dvh - 342 * var(--u), var(--cell));
-  --say-hi-about-height: calc(342 * var(--u) + min(var(--say-hi-top-sliver), max(0px, (var(--edge-snap) - var(--say-hi-top-sliver)) * 1000)));
+  --say-hi-about-height: calc(375.5 * var(--u));
   --say-hi-pink-height: calc(100dvh - var(--say-hi-about-height));
-  /* השורות העודפות השלמות (+0.01px: תיקון לשגיאת חישוב), וכמה מהן מתחת לעיצוב */
-  --say-hi-extra-rows: round(down, var(--say-hi-pink-height) - var(--say-hi-pink-rows) * var(--cell) + 0.01px, var(--cell));
-  --say-hi-extra-below: round(up, var(--say-hi-extra-rows) / 2 - 0.01px, var(--cell));
-  --grid-top: max(0px, var(--say-hi-pink-height) - var(--say-hi-pink-rows) * var(--cell) - var(--say-hi-extra-below));
-  /* מראש אזור העיצוב (--grid-top) עד הקו שבו מתחיל הכתום */
-  --say-hi-about-top: calc(var(--say-hi-pink-height) - var(--grid-top));
+  /* השורות העודפות השלמות (+0.01px: תיקון לשגיאת חישוב), וכמה מהן מעל העיצוב */
+  --say-hi-extra-rows: max(0px, round(down, var(--say-hi-pink-height) - var(--say-hi-pink-rows) * var(--cell) + 0.01px, var(--cell)));
+  --grid-top: round(down, var(--say-hi-extra-rows) / 2 + 0.01px, var(--cell));
 
   /* הטקסט בכתום: גודל לפי פיקסל בפיגמה, כמו שאר העמוד */
   --about-type-px: var(--u);
@@ -1164,7 +1159,6 @@
     --grid-top: 0px;
     /* במובייל העמוד נגלל: הכתום מתחיל אחרי 5 שורות ורודות */
     --say-hi-about-top: calc(var(--say-hi-pink-rows) * var(--cell));
-    --say-hi-about-height: auto;
     --line: var(--line-mobile);
 
     --menu-width: calc(var(--cell) * 0.5);
@@ -3656,15 +3650,16 @@ body {
    עמוד Say Hi
    ========================================= */
 
-/* עמוד של מסך אחד. נגלל רק כשהחלק הכתום גבוה מהמסך (הטקסט והשוליים שמתחתיו) */
-.page-say-hi {
-  overflow-x: hidden;
-  overflow-y: auto;
+/* עמוד של מסך אחד, בלי גלילה במחשב (הכדורים נעים בתוך החלון). במובייל נגלל, ראו למטה */
+.page-say-hi,
+.page-say-hi body {
+  height: 100%;
+  overflow: hidden;
   overscroll-behavior: none;
 }
 
 .page-say-hi body {
-  min-height: 100dvh;
+  height: 100dvh;
 }
 
 /* המסגרת הכתומה סביב החלון, כמו בפריים בפיגמה. הכדורים נהדפים ממנה */
@@ -3741,11 +3736,10 @@ body {
    ממלאת את כל רוחב החלון, מהקו של השורה הוורודה האחרונה ועד תחתית החלון, ומכסה את הקווים.
    כל טור במיקום וברוחב שלו בפיגמה, והשורות נשברות לפי הרוחב */
 .say-hi-about {
-  position: absolute;
-  left: calc(-1 * var(--grid-left));
-  top: var(--say-hi-about-top);
+  position: fixed;
+  left: 0;
+  bottom: 0;
   width: 100vw;
-  min-height: var(--say-hi-about-height);
   /* שלושת הטורים באותו תא: הגובה לפי הטור הארוך ביותר, ומתחתיו השוליים */
   display: grid;
   align-items: start;
@@ -3772,6 +3766,10 @@ body {
   }
 
   .say-hi-about {
+    position: absolute;
+    left: calc(-1 * var(--grid-left));
+    top: var(--say-hi-about-top);
+    bottom: auto;
     display: flex;
     flex-direction: column;
     gap: var(--cell);
