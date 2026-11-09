@@ -1453,3 +1453,174 @@ if (nextProjectsStrip) {
     buildStrip();
   });
 }
+
+// =========================================
+// עמודי הפרויקטים: הבאנר הרץ (SAY HI / LET’S MAKE THINGS TOGETHER).
+// Hover: בלי שינוי צבע. האותיות והכוכבים קופצים בגל סביב העכבר: מה שמתחת לעכבר
+// קופץ ראשון, והקפיצה מתפשטת לשני הצדדים עם השהיה קלה בין אות לאות, ונחלשת
+// ככל שהיא מתרחקת. כל עוד העכבר על הבאנר נשלח גל חדש מהמקום שלו, כך שהגל עוקב
+// אחריו וממשיך לפעום כשהוא עוצר. כשהעכבר יוצא, הגלים שכבר יצאו מסתיימים והאותיות נוחתות.
+// הבאנר ממשיך לרוץ כל הזמן (CSS). בטלפון: נגיעה מריצה גל אחד מהיר ואז עוברים לעמוד.
+// Focus במקלדת: גל ממרכז הבאנר. ב-prefers-reduced-motion: בלי גל.
+// =========================================
+const contactBanners = document.querySelectorAll(".contact-banner");
+
+contactBanners.forEach(function (banner) {
+  const track = banner.querySelector(".contact-banner-track");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // התזמונים כמו בגל של LET’S PLAY בעמוד הבית
+  const waveDuration = 900;     // משך קפיצה של אות אחת (מילישניות)
+  const waveStagger = 60;       // ההשהיה בין אות לאות
+  const fastDuration = 420;     // בנגיעה בטלפון: גל אחד מהיר
+  const fastStagger = 30;
+  const waveHeight = 0.45;      // כמה גבוה קופצים (חלק מגודל הטקסט)
+  const waveReach = 5;          // כמה אותיות לכל צד הגל עדיין חזק (אחר כך הוא נחלש)
+  const followDistance = 2;     // כמה אותיות העכבר צריך לזוז כדי שגל חדש ייצא מהמקום החדש
+  const followGap = 150;        // הזמן המינימלי בין שני גלים כשהעכבר זז
+
+  // מפצלים כל טקסט לאותיות, כדי שכל אות תקפוץ לבד
+  banner.querySelectorAll(".contact-banner-text").forEach(function (text) {
+    const letters = Array.from(text.textContent);
+    text.textContent = "";
+    letters.forEach(function (letter) {
+      const span = document.createElement("span");
+      span.className = "contact-banner-letter";
+      span.textContent = letter;
+      text.appendChild(span);
+    });
+  });
+
+  // כל מה שקופץ: האותיות והכוכבים
+  const items = Array.from(banner.querySelectorAll(".contact-banner-letter, .contact-banner-star"));
+  let centers = [];   // מרכז כל פריט, ביחס לתחילת הפס שזז
+  let letterStep = 0; // הרוחב הממוצע של אות (לחישוב ההשהיה בין אות לאות)
+
+  function measure() {
+    const trackLeft = track.getBoundingClientRect().left;
+    centers = items.map(function (item) {
+      const box = item.getBoundingClientRect();
+      return box.left - trackLeft + box.width / 2;
+    });
+    const fontSize = parseFloat(getComputedStyle(banner.querySelector(".contact-banner-text")).fontSize);
+    letterStep = fontSize * 0.65;
+  }
+
+  // צורת הקפיצה של אות (0 = במקום, 1 = למעלה), כמו ב-@keyframes toggle-wave:
+  // קופצת, נוחתת, קפיצה קטנה, ונחה
+  function bounce(progress) {
+    const easeOut = function (t) { return 1 - (1 - t) * (1 - t); };
+    const easeIn = function (t) { return t * t; };
+    if (progress <= 0 || progress >= 0.58) return 0;
+    if (progress < 0.22) return easeOut(progress / 0.22);
+    if (progress < 0.42) return 1 - easeIn((progress - 0.22) / 0.2);
+    if (progress < 0.5) return 0.15 * easeOut((progress - 0.42) / 0.08);
+    return 0.15 * (1 - easeIn((progress - 0.5) / 0.08));
+  }
+
+  let waves = [];          // הגלים שיצאו: { x: איפה (ביחס לבאנר), start, duration, stagger }
+  let source = null;       // מאיפה יוצאים הגלים עכשיו (העכבר או מרכז הבאנר), או null
+  let lastWave = null;     // הגל האחרון שיצא מ-source
+  let running = false;
+
+  function sendWave(x, duration, stagger) {
+    const wave = { x: x, start: performance.now(), duration: duration, stagger: stagger };
+    waves.push(wave);
+    return wave;
+  }
+
+  function animate() {
+    const now = performance.now();
+    // כל עוד יש source: גל חדש בכל סבב, או כשהעכבר זז מספיק
+    if (source !== null) {
+      const sinceLast = lastWave ? now - lastWave.start : Infinity;
+      const moved = lastWave ? Math.abs(source - lastWave.x) / letterStep : Infinity;
+      if (sinceLast >= waveDuration || (moved >= followDistance && sinceLast >= followGap)) {
+        lastWave = sendWave(source, waveDuration, waveStagger);
+      }
+    }
+
+    const bannerLeft = banner.getBoundingClientRect().left;
+    const trackShift = track.getBoundingClientRect().left - bannerLeft;
+    const fontSize = letterStep / 0.65;
+    const reachPx = waveReach * letterStep;
+
+    // גל נגמר כשהקפיצה הגיעה לאותיות הרחוקות וגם הן סיימו
+    waves = waves.filter(function (wave) {
+      return now - wave.start < wave.duration + (3 * reachPx / letterStep) * wave.stagger;
+    });
+
+    items.forEach(function (item, index) {
+      const x = centers[index] + trackShift;
+      let lift = 0;
+      waves.forEach(function (wave) {
+        const distance = Math.abs(x - wave.x);
+        if (distance > 3 * reachPx) return;
+        const delay = (distance / letterStep) * wave.stagger;
+        const strength = Math.exp(-Math.pow(distance / reachPx, 2));
+        lift = Math.max(lift, strength * bounce((now - wave.start - delay) / wave.duration));
+      });
+      item.style.translate = lift > 0.001 ? "0 " + (-lift * waveHeight * fontSize).toFixed(2) + "px" : "";
+    });
+
+    if (source !== null || waves.length > 0) {
+      requestAnimationFrame(animate);
+    } else {
+      running = false;
+    }
+  }
+
+  function start() {
+    if (running) return;
+    running = true;
+    requestAnimationFrame(animate);
+  }
+
+  function pointerX(event) {
+    return event.clientX - banner.getBoundingClientRect().left;
+  }
+
+  // העכבר על הבאנר: הגל עוקב אחריו
+  banner.addEventListener("pointermove", function (event) {
+    if (event.pointerType !== "mouse" || reducedMotion.matches) return;
+    source = pointerX(event);
+    start();
+  });
+  banner.addEventListener("pointerleave", function (event) {
+    if (event.pointerType !== "mouse") return;
+    source = null;
+    lastWave = null;
+  });
+
+  // מקלדת: גל ממרכז הבאנר, כל עוד יש עליו פוקוס
+  banner.addEventListener("focus", function () {
+    if (!banner.matches(":focus-visible") || reducedMotion.matches) return;
+    source = banner.clientWidth / 2;
+    lastWave = null;
+    start();
+  });
+  banner.addEventListener("blur", function () {
+    if (banner.matches(":hover")) return;
+    source = null;
+    lastWave = null;
+  });
+
+  // בטלפון: נגיעה מריצה גל אחד מהיר מנקודת הנגיעה, ורק אחריו עוברים לעמוד
+  let touchX = null;
+  banner.addEventListener("pointerdown", function (event) {
+    touchX = event.pointerType === "mouse" ? null : pointerX(event);
+  });
+  banner.addEventListener("click", function (event) {
+    if (touchX === null || reducedMotion.matches || event.detail === 0) return;
+    event.preventDefault();
+    sendWave(touchX, fastDuration, fastStagger);
+    start();
+    const href = banner.href;
+    touchX = null;
+    setTimeout(function () { window.location.href = href; }, fastDuration + 4 * fastStagger);
+  });
+
+  measure();
+  if (document.fonts) document.fonts.ready.then(measure);
+  window.addEventListener("resize", measure);
+});

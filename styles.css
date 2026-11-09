@@ -2904,34 +2904,25 @@ body {
   color: var(--color-yellow);
   white-space: nowrap;
   transform: translateY(var(--banner-text-offset));
-  transition: color var(--transition-speed) ease;
 }
 
-/* מעבר עכבר: הטקסט ורוד. לחיצה: הטקסט מנטה */
-@media (hover: hover) and (pointer: fine) {
-  .contact-banner:hover .contact-banner-text {
-    color: var(--color-pink);
-  }
+/* Hover: בלי שינוי צבע. האותיות והכוכבים קופצים בגל סביב העכבר (script.js מפצל
+   את הטקסט לאותיות, ומזיז כל אות וכל כוכב עם translate). Focus: גל ממרכז הבאנר */
+.contact-banner-letter {
+  display: inline-block;
+  white-space: pre; /* כדי שהרווחים בין המילים לא ייעלמו */
 }
 
-.contact-banner.is-hover .contact-banner-text {
-  color: var(--color-pink);
-}
-
+/* לחיצה: הטקסט מנטה */
 .contact-banner:active .contact-banner-text,
 .contact-banner.is-pressed .contact-banner-text {
   color: var(--color-mint);
 }
 
-/* ניווט במקלדת: כמו מעבר עכבר, הטקסט ורוד */
+/* ניווט במקלדת: בלי קו מתאר, הגל ממרכז הבאנר מסמן את הפוקוס */
 .contact-banner:focus-visible,
 .contact-banner.is-focus {
   outline: none;
-}
-
-.contact-banner:focus-visible .contact-banner-text,
-.contact-banner.is-focus .contact-banner-text {
-  color: var(--color-pink);
 }
 
 .contact-banner-star--1 {
