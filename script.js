@@ -987,6 +987,8 @@ if (leftoversMap) {
   // ----- טלפון: נגיעה (click מגיע רק אחרי נגיעה, לא אחרי גלילה) -----
   leftoversMap.addEventListener("click", function (event) {
     if (lastPointerType !== "touch") return;
+    // אחרי נגיעה ארוכה עם הזכוכית המגדלת זו לא נגיעה רגילה
+    if (lensWasShown) return;
 
     clearTimeout(touchTimer);
     markers.forEach(function (marker) { marker.classList.remove("is-popped"); });
@@ -1013,18 +1015,32 @@ if (leftoversMap) {
   });
 
   // ----- הזכוכית המגדלת -----
-  // לחיצה על האייקון (או Esc) מפעילה ומכבה. כשהמצב פעיל, עיגול סביב העכבר מציג
-  // את הפוסטר מוגדל, מהקובץ המקורי. הקואורדינטות ממשיכות להתעדכן (pointermove למעלה).
-  // בטלפון: גרירת האצבע על הפוסטר מזיזה את העיגול, והוא מופיע מעט מעל האצבע.
+  // פעילה כבר בטעינה. לחיצה על האייקון (או Esc) מכבה ומפעילה. כשהמצב פעיל, עיגול סביב העכבר
+  // מציג את הפוסטר מוגדל, מהקובץ המקורי. הקואורדינטות ממשיכות להתעדכן (pointermove למעלה).
+  // בטלפון: החלקה מהירה גוללת כרגיל. נגיעה ארוכה (lensHoldTime) מציגה את העיגול מעט מעל האצבע,
+  // גרירה מזיזה אותו, ובשחרור הוא נעלם.
   const magnifierButton = document.querySelector(".magnifier-button");
   const lens = leftoversMap.querySelector(".magnifier-lens");
-  let magnifying = false;
+  const lensHoldTime = 300;     // כמה זמן מחזיקים את האצבע לפני שהעיגול מופיע
+  const lensMoveTolerance = 10; // כמה פיקסלים האצבע יכולה לזוז בזמן ההחזקה (יותר מזה = גלילה)
+  let magnifying = true;
+  let lensHeld = false;         // בטלפון: העיגול מוצג אחרי נגיעה ארוכה
+  let lensHoldTimer = null;
+  let lensStart = null;         // איפה האצבע נגעה
+  let lastLensEvent = null;     // המיקום האחרון של האצבע
+  let lensWasShown = false;     // הנגיעה הנוכחית הציגה את העיגול (אז היא לא נחשבת לחיצה)
 
   function setMagnifying(on) {
     magnifying = on;
     magnifierButton.setAttribute("aria-pressed", String(on));
     leftoversMap.classList.toggle("is-magnifying", on);
-    if (!on) lens.classList.remove("is-visible");
+    if (!on) hideLens();
+  }
+
+  function hideLens() {
+    clearTimeout(lensHoldTimer);
+    lensHeld = false;
+    lens.classList.remove("is-visible");
   }
 
   // מזיז את העיגול ומציג בו את הנקודה שמתחת לעכבר / לאצבע
@@ -1059,29 +1075,57 @@ if (leftoversMap) {
 
   leftoversMap.addEventListener("pointermove", function (event) {
     if (!magnifying) return;
-    moveLens(event);
-    // גרירה בטלפון: גם הקואורדינטות זזות עם האצבע
-    if (event.pointerType !== "mouse") {
-      const point = eventToImagePoint(event);
-      if (insideArea(point)) setCoordinates(imagePointToCoordinates(point.x, point.y));
+    if (event.pointerType === "mouse") {
+      moveLens(event);
+      return;
     }
+    lastLensEvent = event;
+    if (!lensHeld) {
+      // האצבע זזה לפני סוף ההחזקה: זו גלילה, אז העיגול לא יופיע
+      if (lensStart && Math.hypot(event.clientX - lensStart.x, event.clientY - lensStart.y) > lensMoveTolerance) {
+        clearTimeout(lensHoldTimer);
+        lensStart = null;
+      }
+      return;
+    }
+    // גרירה בטלפון: העיגול והקואורדינטות זזים עם האצבע
+    moveLens(event);
+    const point = eventToImagePoint(event);
+    if (insideArea(point)) setCoordinates(imagePointToCoordinates(point.x, point.y));
   });
 
   leftoversMap.addEventListener("pointerdown", function (event) {
-    if (magnifying && event.pointerType !== "mouse") moveLens(event);
+    if (!magnifying || event.pointerType === "mouse") return;
+    lensStart = { x: event.clientX, y: event.clientY };
+    lastLensEvent = event;
+    lensWasShown = false;
+    clearTimeout(lensHoldTimer);
+    lensHoldTimer = setTimeout(function () {
+      lensHeld = true;
+      lensWasShown = true;
+      moveLens(lastLensEvent);
+    }, lensHoldTime);
   });
 
-  leftoversMap.addEventListener("pointerleave", function () {
-    lens.classList.remove("is-visible");
+  // אחרי נגיעה ארוכה: גרירת האצבע מזיזה את העיגול ולא גוללת את העמוד
+  leftoversMap.addEventListener("touchmove", function (event) {
+    if (lensHeld) event.preventDefault();
+  }, { passive: false });
+
+  // נגיעה ארוכה לא פותחת את התפריט של הדפדפן
+  leftoversMap.addEventListener("contextmenu", function (event) {
+    if (magnifying && lastPointerType !== "mouse") event.preventDefault();
+  });
+
+  leftoversMap.addEventListener("pointerleave", function (event) {
+    if (event.pointerType === "mouse") lens.classList.remove("is-visible");
   });
 
   leftoversMap.addEventListener("pointerup", function (event) {
-    if (event.pointerType !== "mouse") lens.classList.remove("is-visible");
+    if (event.pointerType !== "mouse") hideLens();
   });
 
-  leftoversMap.addEventListener("pointercancel", function () {
-    lens.classList.remove("is-visible");
-  });
+  leftoversMap.addEventListener("pointercancel", hideLens);
 
   // בטעינה: הקואורדינטות של הכפר
   showCoordinates(village);

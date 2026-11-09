@@ -991,8 +991,8 @@
   --magnifier-color: var(--color-orange);
   /* ירוק לא בפלטה של העמוד, אז במקומו התכלת של הטקסט הרץ */
   --magnifier-hover-color: var(--leftovers-sky);
-  /* העיגול: בערך 3 משבצות, מגדיל פי 2.5 */
-  --magnifier-lens-size: calc(var(--cell) * 3);
+  /* העיגול: 4.2 משבצות במחשב (6 בטלפון, למטה), מגדיל פי 2.5 */
+  --magnifier-lens-size: calc(var(--cell) * 4.2);
   --magnifier-zoom: 2.5;
 
   /* Source Material: התווית, האיור שברקע (628x739 בפיגמה) ומניפת התצלומים (בפיגמה מ-x=581, y=2348) */
@@ -1023,6 +1023,13 @@
   /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50%, וקצת נמוך יותר */
   --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
   --next-projects-height: calc(277.79 * var(--strip-px));
+}
+
+/* הזכוכית המגדלת בטלפון: עיגול של 6 משבצות */
+@media (max-width: 767.98px) {
+  :root.page-leftovers {
+    --magnifier-lens-size: calc(var(--cell) * 6);
+  }
 }
 
 /* ----- עמוד Say Hi (say-hi.html) -----
@@ -3364,9 +3371,10 @@ body {
   visibility: visible;
 }
 
-/* כשהמצב פעיל: גרירה על הפוסטר בטלפון מזיזה את העיגול ולא גוללת */
+/* בטלפון: נגיעה ארוכה מציגה את הזכוכית, אז בלי התפריט של הדפדפן ובלי סימון */
 .leftovers-map.is-magnifying {
-  touch-action: none;
+  -webkit-touch-callout: none;
+  user-select: none;
 }
 
 /* ----- Source Material: מניפת תצלומי הלוויין -----
