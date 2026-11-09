@@ -1106,12 +1106,15 @@
      שלושת הטקסטים ממוקמים בה לפי הפיגמה (מהפינה של הפריים) */
   --say-hi-about-top: calc(414 * var(--u));
   --about-type-px: var(--u);
+  /* המרווח מסוף הטקסט הצהוב (השורה האחרונה של הטור הראשון) ועד תחתית החלון:
+     49px בפיגמה = 0.53 משבצת, כך שהוא נשמר בכל גודל חלון */
+  --about-bottom-gap: calc(var(--cell) * 49 / 93);
+  /* המיקום לרוחב של כל טור, והגובה של הטורים האחרים ביחס לטור הראשון */
   --about-intro-left: calc(46 * var(--u));
-  --about-intro-top: calc((448 - 414) * var(--u));
   --about-work-left: calc(418.2 * var(--u));
-  --about-work-top: calc((449 - 414) * var(--u));
+  --about-work-top: calc((449 - 448) * var(--u));
   --about-tools-left: calc(1139.8 * var(--u));
-  --about-tools-top: calc((446 - 414) * var(--u));
+  --about-tools-top: calc((446 - 448) * var(--u));
 
   /* כדורי יצירת הקשר (בפיגמה: קוטר 87px, טקסט 17px ברוחב 65px), מוגדלים ב-15% */
   --contact-ball-scale: 1.15;
@@ -3680,13 +3683,22 @@ body {
   background-color: var(--color-orange);
 }
 
+/* שלושת הטורים יושבים על תחתית הרצועה: הטור הראשון (הארוך) קובע את הגובה,
+   והשורה האחרונה שלו נגמרת --about-bottom-gap מעל תחתית החלון */
+.say-hi-about-texts {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--about-bottom-gap);
+}
+
 .say-hi-about-text {
   --type-px: var(--about-type-px);
   position: absolute;
   white-space: nowrap;
 }
 
-.say-hi-about-text--intro { left: calc(var(--grid-left) + var(--about-intro-left)); top: var(--about-intro-top); }
+.say-hi-about-text--intro { position: relative; margin-left: calc(var(--grid-left) + var(--about-intro-left)); }
 .say-hi-about-text--work  { left: calc(var(--grid-left) + var(--about-work-left));  top: var(--about-work-top); }
 .say-hi-about-text--tools { left: calc(var(--grid-left) + var(--about-tools-left)); top: var(--about-tools-top); }
 
@@ -3700,16 +3712,21 @@ body {
   }
 
   .say-hi-about {
+    height: auto;
+    min-height: calc(100dvh - var(--say-hi-about-top));
+    padding: calc(var(--cell) / 2) var(--cell) var(--about-bottom-gap);
+  }
+
+  .say-hi-about-texts {
+    position: static;
     display: flex;
     flex-direction: column;
     gap: var(--cell);
-    height: auto;
-    min-height: calc(100dvh - var(--say-hi-about-top));
-    padding: calc(var(--cell) / 2) var(--cell) var(--cell);
   }
 
   .say-hi-about-text {
     position: static;
+    margin-left: 0;
   }
 }
 
@@ -3753,7 +3770,8 @@ body {
 
 .contact-ball--instagram { background-color: var(--color-blue); }
 .contact-ball--email     { background-color: var(--color-green); }
-.contact-ball--whatsapp  { background-color: var(--color-orange); }
+.contact-ball--whatsapp  { background-color: var(--color-blue); }
+.contact-ball--cv        { background-color: var(--color-green); }
 
 /* Hover: הכדור מאט ליד העכבר (script.js).
    לחיצה: הכדור קטן מעט. scale (ולא transform), כי script.js מזיז את הכדור עם transform */

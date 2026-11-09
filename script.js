@@ -472,8 +472,8 @@ if (contactBalls.length > 0) {
   const maxStepDistance = 1;
 
   // נקודות ההתחלה, ביחס לחלון (0 עד 1), מחוץ לטקסט. גם המקום שבו הם עומדים כשאין תנועה
-  const desktopStart = [[0.15, 0.32], [0.86, 0.3], [0.83, 0.76]];
-  const mobileStart = [[0.74, 0.14], [0.26, 0.84], [0.74, 0.9]];
+  const desktopStart = [[0.15, 0.32], [0.86, 0.3], [0.83, 0.76], [0.6, 0.8]];
+  const mobileStart = [[0.74, 0.14], [0.26, 0.84], [0.74, 0.9], [0.74, 0.55]];
 
   // העכבר (או האצבע בזמן נגיעה). null = אין עכבר בחלון
   let pointer = null;
@@ -498,6 +498,10 @@ if (contactBalls.length > 0) {
     const ball = { element: element, x: 0, y: 0, dx: Math.cos(angle), dy: Math.sin(angle), pace: 1, focused: false };
     element.addEventListener("focus", function () { ball.focused = true; });
     element.addEventListener("blur", function () { ball.focused = false; });
+    // כדור שעוד לא מחובר לשום קובץ (href="#", כמו CV): הלחיצה לא עושה כלום
+    element.addEventListener("click", function (event) {
+      if (element.getAttribute("href") === "#") event.preventDefault();
+    });
     return ball;
   });
 
