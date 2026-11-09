@@ -1082,8 +1082,6 @@
   --menu-width: calc(30 * var(--u));
   --menu-line-height: calc(4 * var(--u));
   --menu-gap: calc(6 * var(--u));
-  /* במחשב ההמבורגר יושב באזור העיצוב. במובייל הוא נצמד לראש המסך */
-  --menu-shift: 0px;
 
   /* טקסטים: פיקסל בפיגמה = --u */
   --type-px: var(--u);
@@ -1167,7 +1165,6 @@
     --menu-width: calc(var(--cell) * 0.5);
     --menu-line-height: calc(var(--cell) * 0.07);
     --menu-gap: calc(var(--cell) * 0.1);
-    --menu-shift: var(--grid-top);
 
     --say-hi-box-column: 1;
     --say-hi-box-columns: 6;
@@ -1221,6 +1218,8 @@
   --nav-text-optical-shift: 0.055em;
   /* מעל כל התוכן */
   --layer-nav-bar: 10;
+  /* ההמבורגר מעל כל שכבה בעמוד (כותרות, כדורים), ומתחת לבר הבחירה */
+  --layer-menu: 9;
 }
 
 /* מובייל (אין עיצוב בפיגמה): בר נמוך יותר, המבורגר בגודל ההמבורגר של העמודים במובייל,
@@ -2115,6 +2114,7 @@ body {
 .menu-button {
   --column: var(--menu-column);
   --row: var(--menu-row);
+  z-index: var(--layer-menu);
   display: flex;
   flex-direction: column;
   gap: var(--menu-gap);
@@ -3687,12 +3687,14 @@ body {
 }
 
 /* ההמבורגר: אותו כפתור כמו בעמודי הפרויקט, בכתום.
-   הוא ממורכז בדיוק בשטח שבין קווי הגריד של המשבצת הראשונה (מהקו בעובי --line
-   ועד הקו הבא), לרוחב ולגובה. במובייל הוא עולה בחזרה לראש המסך (--menu-shift) */
+   הוא תמיד במשבצת השלמה הראשונה בפינה השמאלית העליונה של המסך (לא של אזור העיצוב),
+   ממורכז בדיוק בשטח שבין קווי הגריד שלה (מהקו בעובי --line ועד הקו הבא), לרוחב ולגובה.
+   המיקום ביחס לאזור העיצוב, ולכן מחסירים את --grid-left ואת --grid-top.
+   הקו הראשון מלמעלה הוא ב---top-gap (כשיש שורה חלקית בראש המסך, ההמבורגר מתחתיה) */
 .say-hi-grid .menu-button {
   --menu-height: calc(3 * var(--menu-line-height) + 2 * var(--menu-gap));
-  left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
-  top: calc((var(--cell) + var(--line) - var(--menu-height)) / 2 - var(--menu-shift));
+  left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2 - var(--grid-left));
+  top: calc(var(--top-gap) + (var(--cell) + var(--line) - var(--menu-height)) / 2 - var(--grid-top));
 }
 
 .say-hi-grid .menu-button-line {
