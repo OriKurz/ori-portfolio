@@ -1633,3 +1633,53 @@ contactBanners.forEach(function (banner) {
   if (document.fonts) document.fonts.ready.then(measure);
   window.addEventListener("resize", measure);
 });
+
+// =========================================
+// עמודי פרויקט שבהם לתיאור יש גלילה משלו (כמו Leftovers):
+// כשהגלילה של העמוד מתקרבת ל-What's Next, התיאור נגלל בעצמו עד השורה האחרונה,
+// יחד עם הגלילה של העמוד, כך שכשהאזור התחתון מגיע כל הטקסט כבר גלוי
+// והשורה האחרונה יושבת מעל What's Next. כשגוללים חזרה למעלה, התיאור חוזר
+// למקום שבו הוא היה, והגלילה שלו פועלת כרגיל.
+// =========================================
+const descriptionScroll = document.querySelector(".full-project-description-scroll");
+const projectPageScroll = document.querySelector(".full-project-scroll");
+const bottomArea = document.querySelector(".next-projects");
+
+if (descriptionScroll && projectPageScroll && bottomArea) {
+  const minimumZone = 200;  // לפחות כמה פיקסלים של גלילת העמוד התיאור נגלל לאורכם
+  let savedPosition = descriptionScroll.scrollTop;  // איפה התיאור היה לפני שהתחיל לרדת בעצמו
+  let following = false;    // האם התיאור עכשיו נגלל יחד עם העמוד
+
+  // גלילה רגילה של התיאור (לא בזמן שהוא נגלל בעצמו): זוכרים איפה הוא
+  descriptionScroll.addEventListener("scroll", function () {
+    if (!following) savedPosition = descriptionScroll.scrollTop;
+  });
+
+  function followPageScroll() {
+    const maxPosition = descriptionScroll.scrollHeight - descriptionScroll.clientHeight;
+    const remaining = maxPosition - savedPosition;
+    if (maxPosition <= 0 || remaining <= 0) {
+      following = false;
+      return;
+    }
+
+    // האזור: מרגע שהרצועה נמצאת במרחק הזה מתחתית החלון, ועד שהיא מגיעה אליה
+    const zone = Math.min(Math.max(remaining, minimumZone), window.innerHeight);
+    const distance = bottomArea.getBoundingClientRect().top - window.innerHeight;
+    const progress = Math.min(Math.max(1 - distance / zone, 0), 1);
+
+    if (progress > 0) {
+      following = true;
+      // התחלה וסוף רכים
+      const eased = progress * progress * (3 - 2 * progress);
+      descriptionScroll.scrollTop = savedPosition + remaining * eased;
+    } else if (following) {
+      following = false;
+      descriptionScroll.scrollTop = savedPosition;
+    }
+  }
+
+  projectPageScroll.addEventListener("scroll", followPageScroll, { passive: true });
+  window.addEventListener("resize", followPageScroll);
+  followPageScroll();
+}
