@@ -1310,3 +1310,146 @@ if (sourceTimeline) {
     });
   });
 }
+
+// =========================================
+// עמודי הפרויקטים: רצועת What's Next (פרויקטים נוספים), רולר שזז כל הזמן.
+//
+// הרשימה של הפרויקטים ברצועה: מקום אחד לכל עמודי הפרויקט.
+// כדי להוסיף פרויקט, מוסיפים אותו לרשימה:
+//   image: התמונה | alt: תיאור התמונה | href: העמוד שלו (בלי href: עוד לא מוביל לשום מקום)
+//   width: הרוחב בפיגמה, אם הוא לא 258 | fit: "cover" או "fill"
+//   crop: גודל ומיקום התמונה בתוך הריבוע, כמו בפיגמה (width, height, left, top באחוזים)
+// =========================================
+const nextProjectsList = [
+  { image: "Images/next-projects/project-1.png", alt: "The Perfect Crime", href: "the-perfect-crime-project.html", fit: "fill" },
+  { image: "Images/next-projects/project-2.png", alt: "Project preview", width: 259, fit: "cover" },
+  { image: "Images/next-projects/project-3.png", alt: "Leftovers*", href: "leftovers-project.html", crop: { width: "123.11%", height: "153.68%", left: "-11.36%", top: "-12.98%" } },
+  { image: "Images/next-projects/project-4.png", alt: "Project preview", crop: { width: "102.56%", height: "152.87%", left: "-1.07%", top: "-36.22%" } },
+  { image: "Images/next-projects/project-5.png", alt: "Touch Grass", crop: { width: "100%", height: "178.2%", left: "-0.01%", top: "-46.37%" } },
+];
+
+// התנועה: הרצועה זזה לאט מימין לשמאל, בלופ בלי קפיצה (הרשימה חוזרת על עצמה ברצף).
+// העכבר דוחף: ככל שהוא קרוב יותר לקצה השמאלי של הרצועה, היא מהירה יותר,
+// וכל שינוי מהירות רך. פוקוס במקלדת על תמונה עוצר את הרצועה עד שהפוקוס יוצא.
+// ב-prefers-reduced-motion הרצועה לא זזה.
+const nextProjectsStrip = document.querySelector(".next-projects");
+
+if (nextProjectsStrip) {
+  const track = nextProjectsStrip.querySelector(".next-projects-track");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const secondsPerProject = 7;  // המהירות הרגילה: כמה שניות לוקח לפרויקט אחד לעבור
+  const maxPush = 5;            // כמה מהר יותר (פי) כשהעכבר צמוד לקצה השמאלי
+  const pushArea = 0.5;         // החלק השמאלי של הרצועה שבו העכבר דוחף (חצי מהרוחב)
+  const easeTime = 0.6;         // כמה רך שינוי המהירות (בשניות)
+
+  let setWidth = 0;    // הרוחב של סבב אחד של הרשימה
+  let offset = 0;      // כמה הרצועה זזה שמאלה (בתוך סבב אחד)
+  let speed = 0;       // המהירות עכשיו (פיקסלים לשנייה)
+  let push = 0;        // כמה העכבר דוחף (0 עד 1)
+  let paused = false;  // פוקוס במקלדת על אחת התמונות
+  let lastTime = null;
+
+  // דימוי אחד: קישור עם התמונה, חתוכה כמו בפיגמה
+  function createProject(project) {
+    const link = document.createElement("a");
+    link.className = "next-project";
+    if (project.href) link.href = project.href;
+    if (project.width) link.style.setProperty("--w", project.width);
+    if (project.fit) link.style.setProperty("--fit", project.fit);
+    if (project.crop) {
+      link.style.setProperty("--crop-width", project.crop.width);
+      link.style.setProperty("--crop-height", project.crop.height);
+      link.style.setProperty("--crop-left", project.crop.left);
+      link.style.setProperty("--crop-top", project.crop.top);
+    }
+    const image = document.createElement("img");
+    image.src = project.image;
+    image.alt = project.alt;
+    image.draggable = false;
+    link.appendChild(image);
+    return link;
+  }
+
+  // בונה את הרצועה: הרשימה חוזרת כמה פעמים שצריך כדי למלא את החלון, ועוד סבב זהה אחריה,
+  // כך שכשסבב אחד יוצא משמאל, הסבב הבא כבר נמצא בדיוק במקומו
+  function buildStrip() {
+    track.textContent = "";
+    let copies = 0;
+    do {
+      nextProjectsList.forEach(function (project) { track.appendChild(createProject(project)); });
+      copies += 1;
+    } while (track.scrollWidth < nextProjectsStrip.clientWidth && copies < 20);
+
+    const firstRound = Array.from(track.children);
+    setWidth = track.scrollWidth;
+    firstRound.forEach(function (link) { track.appendChild(link.cloneNode(true)); });
+
+    // בהתחלה הסבב הראשון ממורכז בחלון, כמו הפס הקבוע בפיגמה
+    const usedWidth = setWidth - parseFloat(getComputedStyle(firstRound[0]).marginRight);
+    offset = wrap((usedWidth - nextProjectsStrip.clientWidth) / 2);
+    track.style.transform = "translateX(" + (-offset) + "px)";
+  }
+
+  // שומר את ההזזה בתוך סבב אחד (לופ)
+  function wrap(value) {
+    return ((value % setWidth) + setWidth) % setWidth;
+  }
+
+  function baseSpeed() {
+    const firstProject = track.firstElementChild;
+    const step = firstProject.offsetWidth + parseFloat(getComputedStyle(firstProject).marginRight);
+    return step / secondsPerProject;
+  }
+
+  function moveStrip(time) {
+    if (lastTime === null) lastTime = time;
+    const seconds = Math.min((time - lastTime) / 1000, 0.1);
+    lastTime = time;
+
+    const targetSpeed = paused || reducedMotion.matches ? 0 : baseSpeed() * (1 + (maxPush - 1) * push * push);
+    // המהירות מתקרבת בהדרגה למהירות היעד, בלי קפיצות
+    speed += (targetSpeed - speed) * (1 - Math.exp(-seconds / easeTime));
+    if (paused || reducedMotion.matches) speed = 0;
+
+    offset = wrap(offset + speed * seconds);
+    track.style.transform = "translateX(" + (-offset) + "px)";
+    requestAnimationFrame(moveStrip);
+  }
+
+  // העכבר דוחף: 1 בקצה השמאלי, 0 מאמצע הרצועה והלאה
+  nextProjectsStrip.addEventListener("pointermove", function (event) {
+    if (event.pointerType !== "mouse") return;
+    const box = nextProjectsStrip.getBoundingClientRect();
+    const fromLeft = (event.clientX - box.left) / box.width;
+    push = Math.max(0, 1 - fromLeft / pushArea);
+  });
+  nextProjectsStrip.addEventListener("pointerleave", function () {
+    push = 0;
+  });
+
+  // מקלדת: פוקוס על תמונה עוצר את הרצועה. אם התמונה חתוכה בקצה, מזיזים אותה פנימה
+  nextProjectsStrip.addEventListener("focusin", function (event) {
+    paused = true;
+    speed = 0;
+    const box = nextProjectsStrip.getBoundingClientRect();
+    const linkBox = event.target.getBoundingClientRect();
+    if (linkBox.left < box.left) offset = wrap(offset - (box.left - linkBox.left));
+    else if (linkBox.right > box.right) offset = wrap(offset + (linkBox.right - box.right));
+    track.style.transform = "translateX(" + (-offset) + "px)";
+  });
+  nextProjectsStrip.addEventListener("focusout", function (event) {
+    if (!nextProjectsStrip.contains(event.relatedTarget)) paused = false;
+  });
+
+  buildStrip();
+  speed = reducedMotion.matches ? 0 : baseSpeed();
+  requestAnimationFrame(moveStrip);
+
+  // כשרוחב החלון משתנה, בונים מחדש כדי שתמיד יהיו מספיק תמונות למלא אותו
+  let lastStripWidth = nextProjectsStrip.clientWidth;
+  window.addEventListener("resize", function () {
+    if (nextProjectsStrip.clientWidth === lastStripWidth) return;
+    lastStripWidth = nextProjectsStrip.clientWidth;
+    buildStrip();
+  });
+}

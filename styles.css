@@ -856,15 +856,8 @@
   --next-projects-background: color-mix(in srgb, var(--color-pink) 50%, transparent);
   --next-projects-height: calc(284 * var(--strip-px));
   --next-project-size: calc(258 * var(--strip-px));
-  /* הדימוי השני רחב בפיקסל אחד (259 בפיגמה) */
-  --next-project-2-width: calc(259 * var(--strip-px));
   --next-project-gap: calc(30 * var(--strip-px));
-  /* החיתוך של כל דימוי, כמו בפיגמה: גודל ומיקום התמונה בתוך הריבוע */
-  --next-project-1-fit: fill;
-  --next-project-2-fit: cover;
-  --next-project-3-crop-width: 123.11%;  --next-project-3-crop-height: 153.68%;  --next-project-3-crop-left: -11.36%;  --next-project-3-crop-top: -12.98%;
-  --next-project-4-crop-width: 102.56%;  --next-project-4-crop-height: 152.87%;  --next-project-4-crop-left: -1.07%;   --next-project-4-crop-top: -36.22%;
-  --next-project-5-crop-width: 100%;     --next-project-5-crop-height: 178.2%;   --next-project-5-crop-left: -0.01%;   --next-project-5-crop-top: -46.37%;
+  /* הרשימה של הפרויקטים ברצועה (תמונה, קישור וחיתוך) נמצאת ב-script.js: nextProjectsList */
 
   /* באנר יצירת קשר */
   --banner-height: calc(76 * var(--banner-px));
@@ -2821,29 +2814,38 @@ body {
 .swatch--13 { --column: var(--swatch-13-column); --row: var(--swatch-13-row); --swatch-color: var(--swatch-13-color); }
 .swatch--14 { --column: var(--swatch-14-column); --row: var(--swatch-14-row); --swatch-color: var(--swatch-14-color); }
 
-/* ----- פרויקטים נוספים: פס אחד ברוחב כל החלון, מעל הצד השמאלי -----
+/* ----- פרויקטים נוספים: רולר ברוחב כל החלון, מעל הצד השמאלי -----
    הרקע ורוד בשקיפות 50% (רק הרקע, לא כל האלמנט, כדי שהדימויים יישארו מלאים).
    הפס עולה למעלה בגובה שלו (margin שלילי), כך שהוא יושב מעל סוף הגריד,
-   ורואים דרכו גם את קווי הגריד וגם את הטקסט שבצד שמאל */
+   ורואים דרכו גם את קווי הגריד וגם את הטקסט שבצד שמאל.
+   script.js בונה את הדימויים מהרשימה nextProjectsList, ומזיז את next-projects-track
+   מימין לשמאל בלופ. overflow: clip (ולא hidden), כדי שפוקוס במקלדת לא יגלול את הפס */
 .next-projects {
   position: relative;
   z-index: 2;
   margin-top: calc(-1 * var(--next-projects-height));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--next-project-gap);
   height: var(--next-projects-height);
+  overflow: clip;
   background-color: var(--next-projects-background);
 }
 
-/* כל דימוי: ריבוע, והתמונה בפנים חתוכה כמו בפיגמה */
+.next-projects-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  height: 100%;
+  will-change: transform;
+}
+
+/* כל דימוי: ריבוע, והתמונה בפנים חתוכה כמו בפיגמה (--w, --fit ו---crop-* מהרשימה ב-script.js).
+   הרווח אחרי כל דימוי (ולא gap), כדי שגם בין סוף הלופ לתחילתו יהיה אותו רווח */
 .next-project {
   position: relative;
   display: block;
   flex: none;
-  width: var(--next-project-size);
+  width: calc(var(--w, 258) * var(--strip-px));
   height: var(--next-project-size);
+  margin-right: var(--next-project-gap);
   overflow: hidden;
 }
 
@@ -2856,11 +2858,12 @@ body {
   object-fit: var(--fit, fill);
 }
 
-.next-project--1 { --fit: var(--next-project-1-fit); }
-.next-project--2 { --fit: var(--next-project-2-fit); width: var(--next-project-2-width); }
-.next-project--3 { --crop-width: var(--next-project-3-crop-width); --crop-height: var(--next-project-3-crop-height); --crop-left: var(--next-project-3-crop-left); --crop-top: var(--next-project-3-crop-top); }
-.next-project--4 { --crop-width: var(--next-project-4-crop-width); --crop-height: var(--next-project-4-crop-height); --crop-left: var(--next-project-4-crop-left); --crop-top: var(--next-project-4-crop-top); }
-.next-project--5 { --crop-width: var(--next-project-5-crop-width); --crop-height: var(--next-project-5-crop-height); --crop-left: var(--next-project-5-crop-left); --crop-top: var(--next-project-5-crop-top); }
+/* Focus במקלדת: אין Hover שנראה, אז קו מתאר בצבע קווי הגריד (הרצועה נעצרת, script.js) */
+.next-project:focus-visible,
+.next-project.is-focus {
+  outline: var(--line) solid var(--grid-line-color);
+  outline-offset: calc(-1 * var(--line));
+}
 
 /* ----- באנר יצירת קשר: פס כתום ברוחב כל החלון, עם טקסט שרץ ----- */
 .contact-banner {
