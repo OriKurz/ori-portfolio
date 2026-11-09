@@ -126,6 +126,11 @@
   --page-background: var(--color-blue);
   --grid-line-color: var(--color-pink);
 
+  /* סמן העכבר (במחשב): עיגול צהוב, וכחול מעל צהוב */
+  --cursor-size: 16px;
+  --cursor-color: var(--color-yellow);
+  --cursor-color-on-yellow: var(--color-blue);
+
   /* פונטים */
   --font-title: "Reisinger Michal", sans-serif;
   --font-text: "PP Telegraf", "TheBasics Corporate", sans-serif; /* עברית מוצגת ב-TheBasics */
@@ -3996,4 +4001,38 @@ body {
 /* רכיב ברוחב כל החלון (הבאנר): המצבים אחד מתחת לשני */
 .styleguide-states--stacked {
   flex-direction: column;
+}
+
+/* =========================================
+   סמן העכבר: עיגול צהוב במקום החץ, במחשב בלבד (cursor.js).
+   cursor.js מוסיף את has-custom-cursor רק במחשב, אז בלי הסקריפט החץ הרגיל נשאר
+   ========================================= */
+.has-custom-cursor,
+.has-custom-cursor * {
+  cursor: none !important;
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2147483647; /* תמיד מעל כל השכבות */
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+  margin: calc(var(--cursor-size) / -2) 0 0 calc(var(--cursor-size) / -2); /* המרכז בנקודת העכבר */
+  border-radius: 50%;
+  background: var(--cursor-color);
+  pointer-events: none; /* לא חוסם לחיצות */
+  will-change: transform;
+}
+
+/* מעל משהו צהוב העיגול כחול */
+.custom-cursor.is-on-yellow {
+  background: var(--cursor-color-on-yellow);
+}
+
+/* לפני התזוזה הראשונה וכשהעכבר מחוץ לחלון */
+.custom-cursor.is-hidden,
+.video-player.is-fullscreen:not(.is-active):not(.is-seeking) .custom-cursor {
+  opacity: 0;
 }
