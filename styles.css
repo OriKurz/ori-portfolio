@@ -1109,7 +1109,10 @@
      שורות שלמות עודפות שמתחלקות מעליהן ומתחתיהן (אי-זוגית למטה),
      ומה שקטן ממשבצת הוא שורה חלקית בראש החלון */
   --say-hi-pink-rows: 5;
-  --say-hi-about-height: calc(342 * var(--u));
+  /* שורה חלקית דקה מ---edge-snap בראש החלון נצמדת לקו העליון ולא נראית:
+     הכתום גדל בה (כמה פיקסלים בתחתית), והקו העליון נשאר בעובי רגיל */
+  --say-hi-top-sliver: mod(100dvh - 342 * var(--u), var(--cell));
+  --say-hi-about-height: calc(342 * var(--u) + min(var(--say-hi-top-sliver), max(0px, (var(--edge-snap) - var(--say-hi-top-sliver)) * 1000)));
   --say-hi-pink-height: calc(100dvh - var(--say-hi-about-height));
   /* השורות העודפות השלמות (+0.01px: תיקון לשגיאת חישוב), וכמה מהן מתחת לעיצוב */
   --say-hi-extra-rows: round(down, var(--say-hi-pink-height) - var(--say-hi-pink-rows) * var(--cell) + 0.01px, var(--cell));
@@ -1122,13 +1125,15 @@
   --about-type-px: var(--u);
   /* ה-Layout grid של הפריים: 5 טורים, שוליים 50, רווח 20 (טור = 252px).
      המיקומים מהקצה של הגריד (פחות 3px של מסגרת הפריים) ומהקו העליון של הכתום */
-  --about-intro-left: calc((50 - 3) * var(--u));     /* תחילת טור 1 */
+  /* הטור השמאלי והטור הימני נמדדים מקצוות החלון (בפיגמה: 49 משמאל ו-53 מימין,
+     כלומר 0.53 ו-0.57 משבצת), כך שהטורים העודפים בחלון רחב לא נכנסים ביניהם לקצה */
+  --about-intro-left: calc(49 * var(--u));
   --about-intro-width: calc(289 * var(--u));
   --about-intro-top: calc(33 * var(--u));
   --about-work-left: calc((420 - 3) * var(--u));
   --about-work-width: calc(191 * var(--u));
   --about-work-top: calc(34 * var(--u));
-  --about-tools-left: calc((50 + 4 * 272 - 3) * var(--u)); /* תחילת טור 5 */
+  --about-tools-right: calc(53 * var(--u));
   --about-tools-width: calc(249 * var(--u));
   --about-tools-top: calc(31 * var(--u));
 
@@ -3721,9 +3726,9 @@ body {
   position: absolute;
 }
 
-.say-hi-about-text--intro { left: calc(var(--grid-left) + var(--about-intro-left)); top: var(--about-intro-top); width: var(--about-intro-width); }
+.say-hi-about-text--intro { left: var(--about-intro-left); top: var(--about-intro-top); width: var(--about-intro-width); }
 .say-hi-about-text--work  { left: calc(var(--grid-left) + var(--about-work-left));  top: var(--about-work-top);  width: var(--about-work-width); }
-.say-hi-about-text--tools { left: calc(var(--grid-left) + var(--about-tools-left)); top: var(--about-tools-top); width: var(--about-tools-width); }
+.say-hi-about-text--tools { right: var(--about-tools-right); top: var(--about-tools-top); width: var(--about-tools-width); }
 
 /* במובייל: העמוד נגלל, והטקסטים יורדים בטור ברצועה, עם משבצת ביניהם */
 @media (max-width: 767.98px) {
@@ -3752,7 +3757,7 @@ body {
    כל כדור ממוקם בפינה של החלון, ו-script.js מזיז אותו עם transform.
    עד ש-script.js מציב אותם (is-ready) הם מוסתרים, כדי שלא יקפצו בטעינה */
 .contact-ball {
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   z-index: var(--layer-contact-balls);
@@ -3777,37 +3782,74 @@ body {
   visibility: visible;
 }
 
-.contact-ball span {
+.contact-ball-label {
   width: var(--contact-ball-text-width);
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* התווית ב-UltraBold: מונחת בדיוק על הרגילה, שקופה עד ה-hover */
+.contact-ball-label--bold {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  font-weight: 800;
+  opacity: 0;
 }
 
 /* E-MAIL בשורה אחת, בלי שבירה אחרי המקף */
-.contact-ball--email span {
+.contact-ball--email .contact-ball-label {
   white-space: nowrap;
 }
 
-.contact-ball--instagram { background-color: var(--color-blue); }
-.contact-ball--email     { background-color: var(--color-green); }
-.contact-ball--whatsapp  { background-color: var(--color-blue); }
-.contact-ball--cv        { background-color: var(--color-green); }
+/* כל הכדורים ירוקים */
+.contact-ball {
+  background-color: var(--color-green);
+}
 
-/* Hover: הכדור מאט ליד העכבר (script.js).
+/* Hover: הכדור הופך לכחול והטקסט ל-UltraBold, במעבר רך. הכדור גם מאט ליד העכבר (script.js).
+   Focus (מקלדת) נראה כמו hover, והכדור עוצר במקום (script.js).
    לחיצה: הכדור קטן מעט. scale (ולא transform), כי script.js מזיז את הכדור עם transform */
 .contact-ball {
-  transition: scale var(--transition-speed) ease;
+  transition: scale var(--transition-speed) ease, background-color var(--transition-speed) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contact-ball:hover {
+    background-color: var(--color-blue);
+  }
+
+  .contact-ball:hover .contact-ball-label {
+    opacity: 0;
+  }
+
+  .contact-ball:hover .contact-ball-label--bold {
+    opacity: 1;
+  }
+}
+
+.contact-ball:focus-visible,
+.contact-ball.is-hover,
+.contact-ball.is-focus {
+  outline: none;
+  background-color: var(--color-blue);
+}
+
+.contact-ball:focus-visible .contact-ball-label,
+.contact-ball.is-hover .contact-ball-label,
+.contact-ball.is-focus .contact-ball-label {
+  opacity: 0;
+}
+
+.contact-ball:focus-visible .contact-ball-label--bold,
+.contact-ball.is-hover .contact-ball-label--bold,
+.contact-ball.is-focus .contact-ball-label--bold {
+  opacity: 1;
 }
 
 .contact-ball:active,
 .contact-ball.is-pressed {
   scale: var(--contact-ball-pressed-scale);
-}
-
-/* ניווט במקלדת (Tab): לכדור אין מראה hover (הוא רק מאט), אז קו מתאר דק
-   בצבע קווי הגריד של העמוד, בעובי קו הגריד. הכדור גם עוצר במקום (script.js) */
-.contact-ball:focus-visible,
-.contact-ball.is-focus {
-  outline: var(--line) solid var(--grid-line-color);
-  outline-offset: var(--line);
 }
 
 /* =========================================

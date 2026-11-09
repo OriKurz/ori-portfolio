@@ -459,8 +459,9 @@ if (contactBalls.length > 0) {
   // המהירות: כמה קטרים של כדור בשנייה. במובייל לאט יותר.
   // המהירות המקורית (0.4 ו-0.22), פי 2 ועוד 50% (פי 3 בסך הכול),
   // ומחולקת ב-1.15 כי הכדורים גדלו ב-15% (כדי שהמהירות בפיקסלים תהיה בדיוק פי 3)
-  const desktopSpeed = 0.4 * 3 / 1.15;
-  const mobileSpeed = 0.22 * 3 / 1.15;
+  // ועוד 40% (פי 1.4)
+  const desktopSpeed = 0.4 * 3 / 1.15 * 1.4;
+  const mobileSpeed = 0.22 * 3 / 1.15 * 1.4;
   // ההאטה ליד העכבר: באיזה מרחק (בקטרים, ממרכז הכדור) ועד כמה (0.04 = 4% מהמהירות).
   // 4% מהמהירות המשולשת = אותה מהירות איטית כמו בהתחלה, כך שעדיין קל לתפוס את הכדור
   const slowRadius = 1.5;
@@ -471,9 +472,11 @@ if (contactBalls.length > 0) {
   // בכל צעד קטן כדור זז לכל היותר פיקסל אחד, כדי שההתנגשות תיתפס בדיוק ברגע המגע
   const maxStepDistance = 1;
 
-  // נקודות ההתחלה, ביחס לחלון (0 עד 1), מחוץ לטקסט. גם המקום שבו הם עומדים כשאין תנועה
-  const desktopStart = [[0.15, 0.32], [0.86, 0.3], [0.83, 0.76], [0.6, 0.8]];
-  const mobileStart = [[0.74, 0.14], [0.26, 0.84], [0.74, 0.9], [0.74, 0.55]];
+  // נקודות ההתחלה, ביחס לאזור הוורוד (0 עד 1), מחוץ לכותרת. גם המקום שבו הם עומדים כשאין תנועה
+  const desktopStart = [[0.12, 0.45], [0.88, 0.4], [0.88, 0.85], [0.12, 0.85]];
+  const mobileStart = [[0.2, 0.3], [0.8, 0.3], [0.2, 0.8], [0.8, 0.8]];
+  // הקיר התחתון: הקו שבו מתחיל החלק הכתום (אם יש כזה בעמוד)
+  const bottomWall = document.querySelector(".say-hi-about");
 
   // העכבר (או האצבע בזמן נגיעה). null = אין עכבר בחלון
   let pointer = null;
@@ -505,14 +508,18 @@ if (contactBalls.length > 0) {
     return ball;
   });
 
-  // הקירות: החלון, פחות המסגרת הכתומה
+  // הקירות: האזור הוורוד. מהצדדים ומלמעלה החלון פחות המסגרת הכתומה,
+  // ומלמטה הקו שבו מתחיל החלק הכתום. הכול ביחס לראש העמוד (במובייל העמוד נגלל)
   function getBounds() {
     const frame = getComputedStyle(document.body, "::after");
+    const bottom = bottomWall
+      ? bottomWall.getBoundingClientRect().top + window.scrollY
+      : window.innerHeight - (parseFloat(frame.borderBottomWidth) || 0);
     return {
       left: parseFloat(frame.borderLeftWidth) || 0,
       top: parseFloat(frame.borderTopWidth) || 0,
       right: window.innerWidth - (parseFloat(frame.borderRightWidth) || 0),
-      bottom: window.innerHeight - (parseFloat(frame.borderBottomWidth) || 0)
+      bottom: bottom
     };
   }
 
@@ -531,10 +538,11 @@ if (contactBalls.length > 0) {
   // מציב את הכדורים בנקודות ההתחלה
   function placeBalls() {
     const start = mobileScreen.matches ? mobileStart : desktopStart;
+    const bounds = getBounds();
     measureRadii();
     balls.forEach(function (ball, i) {
-      ball.x = start[i % start.length][0] * window.innerWidth;
-      ball.y = start[i % start.length][1] * window.innerHeight;
+      ball.x = bounds.left + start[i % start.length][0] * (bounds.right - bounds.left);
+      ball.y = bounds.top + start[i % start.length][1] * (bounds.bottom - bounds.top);
       draw(ball);
       ball.element.classList.add("is-ready");
     });
@@ -647,10 +655,10 @@ if (contactBalls.length > 0) {
   // העכבר: איפה הוא בחלון. באצבע: רק בזמן שנוגעים במסך
   window.addEventListener("pointermove", function (event) {
     if (event.pointerType === "touch" && event.buttons === 0) return;
-    pointer = { x: event.clientX, y: event.clientY };
+    pointer = { x: event.pageX, y: event.pageY };
   });
   window.addEventListener("pointerdown", function (event) {
-    pointer = { x: event.clientX, y: event.clientY };
+    pointer = { x: event.pageX, y: event.pageY };
   });
   window.addEventListener("pointerup", function (event) {
     if (event.pointerType === "touch") pointer = null;
