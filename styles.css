@@ -159,6 +159,7 @@
   --text-caption-size: 15;
   --text-nav-size: 20;
   --text-nav-mobile-size: 14;
+  --text-about-size: 20;
 
   /* פיקסל אחד בפיגמה: כמה הוא שווה במסך. כל עמוד (ולפעמים כל חלק בעמוד)
      קובע אותו לפי השיטה שבה הוא גדל עם המסך. בעמוד הבית: משבצת = 96px בפיגמה */
@@ -1102,19 +1103,34 @@
   --say-hi-title-right: calc((1440 - 1017.2) * var(--u));
   --say-hi-title-align: right;
 
-  /* הרצועה הכתומה (עליי): מתחילה ב-414px בפיגמה וממשיכה עד תחתית החלון.
-     שלושת הטקסטים ממוקמים בה לפי הפיגמה (מהפינה של הפריים) */
-  --say-hi-about-top: calc(414 * var(--u));
+  /* הגובה: הרצועה הכתומה תמיד בגובה שלה בפיגמה (342px: המרווח 33 מעל הטקסט,
+     13 שורות טקסט, ו-49 מתחת), צמודה לתחתית החלון, ומתחילה בדיוק על קו של הגריד.
+     כל השאר הוא הגריד הוורוד, שנגמר בשורה שלמה מעל הכתום: 5 השורות של העיצוב,
+     שורות שלמות עודפות שמתחלקות מעליהן ומתחתיהן (אי-זוגית למטה),
+     ומה שקטן ממשבצת הוא שורה חלקית בראש החלון */
+  --say-hi-pink-rows: 5;
+  --say-hi-about-height: calc(342 * var(--u));
+  --say-hi-pink-height: calc(100dvh - var(--say-hi-about-height));
+  /* השורות העודפות השלמות (+0.01px: תיקון לשגיאת חישוב), וכמה מהן מתחת לעיצוב */
+  --say-hi-extra-rows: round(down, var(--say-hi-pink-height) - var(--say-hi-pink-rows) * var(--cell) + 0.01px, var(--cell));
+  --say-hi-extra-below: round(up, var(--say-hi-extra-rows) / 2 - 0.01px, var(--cell));
+  --grid-top: max(0px, var(--say-hi-pink-height) - var(--say-hi-pink-rows) * var(--cell) - var(--say-hi-extra-below));
+  /* מראש אזור העיצוב (--grid-top) עד הקו שבו מתחיל הכתום */
+  --say-hi-about-top: calc(var(--say-hi-pink-height) - var(--grid-top));
+
+  /* הטקסט בכתום: גודל לפי פיקסל בפיגמה, כמו שאר העמוד */
   --about-type-px: var(--u);
-  /* המרווח מסוף הטקסט הצהוב (השורה האחרונה של הטור הראשון) ועד תחתית החלון:
-     49px בפיגמה = 0.53 משבצת, כך שהוא נשמר בכל גודל חלון */
-  --about-bottom-gap: calc(var(--cell) * 49 / 93);
-  /* המיקום לרוחב של כל טור, והגובה של הטורים האחרים ביחס לטור הראשון */
-  --about-intro-left: calc(46 * var(--u));
-  --about-work-left: calc(418.2 * var(--u));
-  --about-work-top: calc((449 - 448) * var(--u));
-  --about-tools-left: calc(1139.8 * var(--u));
-  --about-tools-top: calc((446 - 448) * var(--u));
+  /* ה-Layout grid של הפריים: 5 טורים, שוליים 50, רווח 20 (טור = 252px).
+     המיקומים מהקצה של הגריד (פחות 3px של מסגרת הפריים) ומהקו העליון של הכתום */
+  --about-intro-left: calc((50 - 3) * var(--u));     /* תחילת טור 1 */
+  --about-intro-width: calc(289 * var(--u));
+  --about-intro-top: calc(33 * var(--u));
+  --about-work-left: calc((420 - 3) * var(--u));
+  --about-work-width: calc(191 * var(--u));
+  --about-work-top: calc(34 * var(--u));
+  --about-tools-left: calc((50 + 4 * 272 - 3) * var(--u)); /* תחילת טור 5 */
+  --about-tools-width: calc(249 * var(--u));
+  --about-tools-top: calc(31 * var(--u));
 
   /* כדורי יצירת הקשר (בפיגמה: קוטר 87px, טקסט 17px ברוחב 65px), מוגדלים ב-15% */
   --contact-ball-scale: 1.15;
@@ -1136,6 +1152,9 @@
     --grid-rows: 5;
     --design-columns: 8;
     --grid-top: 0px;
+    /* במובייל העמוד נגלל: הכתום מתחיל אחרי 5 שורות ורודות */
+    --say-hi-about-top: calc(var(--say-hi-pink-rows) * var(--cell));
+    --say-hi-about-height: auto;
     --line: var(--line-mobile);
 
     --menu-width: calc(var(--cell) * 0.5);
@@ -1349,6 +1368,20 @@ body {
   font-size: calc(var(--text-hint-size) * var(--type-px));
   line-height: var(--line-height);
   letter-spacing: 0;
+}
+
+/* About / About Strong: הטקסט ברצועה הכתומה ב-Say Hi (ריווח 4%, כמו בפיגמה) */
+.text-about,
+.text-about-strong {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: calc(var(--text-about-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0.04em;
+}
+
+.text-about-strong {
+  font-weight: 800;
 }
 
 /* Contact Ball: הטקסט על כדורי יצירת הקשר ב-Say Hi */
@@ -3672,35 +3705,25 @@ body {
 }
 
 /* ----- הרצועה הכתומה (עליי) -----
-   ממלאת את כל רוחב החלון, מ---say-hi-about-top ועד תחתית החלון, ומכסה את הקווים.
-   הטקסטים במיקום שלהם בפיגמה, והשורות נשברות בדיוק כמו שם (br) */
+   ממלאת את כל רוחב החלון, מהקו של השורה הוורודה האחרונה ועד תחתית החלון, ומכסה את הקווים.
+   כל טור במיקום וברוחב שלו בפיגמה, והשורות נשברות לפי הרוחב */
 .say-hi-about {
   position: absolute;
   left: calc(-1 * var(--grid-left));
   top: var(--say-hi-about-top);
   width: 100vw;
-  height: calc(100dvh - var(--grid-top) - var(--say-hi-about-top));
+  height: var(--say-hi-about-height);
   background-color: var(--color-orange);
-}
-
-/* שלושת הטורים יושבים על תחתית הרצועה: הטור הראשון (הארוך) קובע את הגובה,
-   והשורה האחרונה שלו נגמרת --about-bottom-gap מעל תחתית החלון */
-.say-hi-about-texts {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: var(--about-bottom-gap);
 }
 
 .say-hi-about-text {
   --type-px: var(--about-type-px);
   position: absolute;
-  white-space: nowrap;
 }
 
-.say-hi-about-text--intro { position: relative; margin-left: calc(var(--grid-left) + var(--about-intro-left)); }
-.say-hi-about-text--work  { left: calc(var(--grid-left) + var(--about-work-left));  top: var(--about-work-top); }
-.say-hi-about-text--tools { left: calc(var(--grid-left) + var(--about-tools-left)); top: var(--about-tools-top); }
+.say-hi-about-text--intro { left: calc(var(--grid-left) + var(--about-intro-left)); top: var(--about-intro-top); width: var(--about-intro-width); }
+.say-hi-about-text--work  { left: calc(var(--grid-left) + var(--about-work-left));  top: var(--about-work-top);  width: var(--about-work-width); }
+.say-hi-about-text--tools { left: calc(var(--grid-left) + var(--about-tools-left)); top: var(--about-tools-top); width: var(--about-tools-width); }
 
 /* במובייל: העמוד נגלל, והטקסטים יורדים בטור ברצועה, עם משבצת ביניהם */
 @media (max-width: 767.98px) {
@@ -3712,21 +3735,16 @@ body {
   }
 
   .say-hi-about {
-    height: auto;
-    min-height: calc(100dvh - var(--say-hi-about-top));
-    padding: calc(var(--cell) / 2) var(--cell) var(--about-bottom-gap);
-  }
-
-  .say-hi-about-texts {
-    position: static;
     display: flex;
     flex-direction: column;
     gap: var(--cell);
+    min-height: calc(100dvh - var(--say-hi-about-top));
+    padding: calc(var(--cell) / 2) var(--cell) calc(var(--cell) * 49 / 93);
   }
 
   .say-hi-about-text {
     position: static;
-    margin-left: 0;
+    width: auto;
   }
 }
 

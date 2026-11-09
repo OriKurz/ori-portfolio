@@ -45,7 +45,7 @@
 - כל סגנון הוא מחלקה ב-`styles.css` (העמודה "מחלקה"). הצבע לא חלק מהסגנון.
 - הגדלים לפי פריים של 1440 בפיגמה. הגודל במסך = הגודל בטבלה כפול `--type-px` (פיקסל אחד בפיגמה), שכל עמוד קובע לפי השיטה שבה הוא גדל עם המסך.
 - פונט הטקסט הוא PP Telegraf (UltraLight=200, Regular=400, UltraBold=800). כל הסגנונות חוץ מ-Display ב-Telegraf.
-- **ריווח בין אותיות**: יש רק שני ערכים. טקסט באותיות גדולות: 4%. כל שאר הטקסטים: 0.
+- **ריווח בין אותיות**: יש רק שני ערכים. טקסט באותיות גדולות: 4%. כל שאר הטקסטים: 0 (חוץ מ-About, שהוא 4% לפי הפיגמה).
 - **עברית**: TheBasics הוא פונט גיבוי אחרי Telegraf (`--font-text`), רק לאותיות עבריות. נשארים ממנו Regular (400) ו-Bold (700, לסגנונות ה-UltraBold).
 - במובייל `text-display-large`, `text-button`, `text-button-strong` ו-`text-nav` עוברים לבד לגרסת המובייל שלהם.
 
@@ -67,6 +67,8 @@
 | Hint | `text-hint` | Telegraf Regular | 20 | 100% | 0 | hover to play / tap to play |
 | Contact Ball | `text-contact-ball` | Telegraf Regular | 17 | 100% | 4% | הטקסט על כדורי יצירת הקשר ב-Say Hi |
 | Timeline Year | `text-timeline-year` | Telegraf UltraBold | 20 | 100% | 0 | השנים בציר הזמן ב-Leftovers |
+| About | `text-about` | Telegraf Regular | 20 | 100% | 4% | הטקסט ברצועה הכתומה ב-Say Hi |
+| About Strong | `text-about-strong` | Telegraf UltraBold | 20 | 100% | 4% | המילים המודגשות ברצועה הכתומה ב-Say Hi |
 | Caption | `text-caption` | Telegraf Regular | 15 | 100% | 0 | טקסט התיאור מתחת לתמונות בגלריית הלוקיישנים ב-Leftovers |
 | Nav | `text-nav` | Telegraf Regular | 20 | 100% | 4% | הכפתורים בבר הבחירה במחשב |
 | Nav/Mobile | `text-nav` (במובייל) | Telegraf Regular | 14 | 100% | 4% | הכפתורים בבר הבחירה במובייל |
