@@ -143,11 +143,11 @@ if (ballCanvas) {
   // האזורים שהמסגרת לא מכסה: הכפתורים, הטקסטים, התמונה והכפתור PEEK / PLAY.
   // כל מלבן מוגדל ברדיוס של כדור, כך שמספיק לבדוק את מרכז הכדור
   function keepOutAreas() {
-    const elements = document.querySelectorAll(".nav-button, .name-box, .year-box, .photo, .balls-toggle");
+    const elements = document.querySelectorAll(".nav-button, .greeting-box, .photo, .balls-toggle");
     const rects = Array.from(elements, function (element) {
       return element.getBoundingClientRect();
     });
-    // הכותרת portfolio: מודדים את הטקסט עצמו, ולא את כל השורה
+    // הכותרת ORI KURZ: מודדים את הטקסט עצמו, ולא את כל השורה
     const title = document.querySelector(".title");
     if (title) {
       const range = document.createRange();

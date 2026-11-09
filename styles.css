@@ -131,7 +131,7 @@
      המחלקות עצמן (.text-...) מוגדרות בהמשך, בחלק "סגנונות טקסט" */
   --text-display-large-size: 275;
   --text-display-medium-size: 220;
-  --text-display-mobile-size: 70;
+  --text-display-mobile-size: 60;
   --text-page-title-size: 80;
   --text-banner-size: 40;
   --text-button-size: 25;
@@ -159,11 +159,12 @@
   --button-padding: calc(var(--cell) * 10 / 96);
 
   /* כפתורים בעמוד הבית: עמודה ושורה */
-  --index-button-column: 3;   --index-button-row: 1;
-  --works-column: 6;          --works-row: 1;
-  --about-column: 9;          --about-row: 1;
-  --say-hi-button-column: 12; --say-hi-button-row: 1;
-  --process-column: 2;        --process-row: 7;
+  --index-button-column: 4;   --index-button-row: 1;
+  --process-column: 7;        --process-row: 1;
+  --say-hi-button-column: 9;  --say-hi-button-row: 1;
+  /* PROCESS: במחשב משבצת אחת, והטקסט נשבר לשתי שורות */
+  --process-columns: 1;
+  --process-line-break: inline;
 
   /* בלחיצה הטקסט קטן מ-25px ל-20px, כמו ב-State3 בפיגמה (20/25 = 0.8) */
   --pressed-scale: 0.8;
@@ -176,28 +177,24 @@
   --contact-ball-pressed-scale: 0.92;
   --play-icon-pressed-scale: 0.9;
 
-  /* "ORI KURZ" ו-"2026": עמודה, שורה ורוחב (במשבצות) */
-  --name-column: 9;
-  --name-row: 7;
-  --name-columns: 2;
-  --year-column: 12;
-  --year-row: 7;
-  --year-columns: 1;
+  /* "HI, IM": עמודה, שורה ורוחב (במשבצות) */
+  --greeting-column: 1;
+  --greeting-row: 2;
+  --greeting-columns: 2;
   --info-text-color: var(--color-pink);
   /* המרחק מהקו העליון של המשבצת לטקסט, כמו בפיגמה */
   --text-offset: calc(var(--cell) * 0.4);
 
-  /* הכותרת portfolio: ממורכזת לרוחב */
-  --title-top: calc(var(--cell) * 1.8);
-  --title-align: center;
-  --title-right: 0px;
+  /* הכותרת ORI KURZ: מיושרת לימין, 1.53 משבצות מהקצה הימני של אזור העיצוב */
+  --title-top: calc(var(--cell) * 2.46);
+  --title-right: calc(var(--cell) * 1.53);
   /* פיגמה והדפדפן קוראים את מדדי הגובה של הפונט Reisinger אחרת
      (הפרש של 0.2em), לכן מורידים את הטקסט כדי שישב כמו בפיגמה */
   --title-font-offset: 0.2em;
 
   /* הפולרויד: מרכז התמונה וגודלה (במשבצות) */
-  --photo-center-column: 11.36;
-  --photo-center-row: 5.91;
+  --photo-center-column: 11.38;
+  --photo-center-row: 6.36;
   --photo-width: calc(var(--cell) * 2.771);
   --photo-height: calc(var(--cell) * 3.169);
   --photo-rotation: 29.72deg;
@@ -212,13 +209,14 @@
   --ball-color-3: var(--color-green);
   --ball-color-4: var(--color-pink);
 
-  /* הכפתור PEEK / PLAY: במחשב הוא ממלא בדיוק את המשבצת בעמודה 1 ושורה 1,
+  /* הכפתור PEEK / PLAY: במחשב הוא ממלא בדיוק 3 משבצות בעמודות 6-8 ושורה 7,
      את כל השטח שבין קווי הגריד (מתחיל אחרי הקו, ונגמר בקו הבא) */
-  --toggle-column: 1;
-  --toggle-row: 1;
+  --toggle-column: 6;
+  --toggle-row: 7;
+  --toggle-columns: 3;
   --toggle-left: calc(var(--toggle-column) * var(--cell) + var(--line));
   --toggle-top: calc(var(--toggle-row) * var(--cell) + var(--line));
-  --toggle-width: calc(var(--cell) - var(--line));
+  --toggle-width: calc(var(--toggle-columns) * var(--cell) - var(--line));
   --toggle-height: calc(var(--cell) - var(--line));
   --toggle-text-color: var(--color-green);
   --toggle-background: var(--color-yellow);
@@ -252,42 +250,40 @@
        במסך גבוה נשארים רק כמה פיקסלים בצד ימין */
     --grid-top: 0px;
 
-    /* הכפתור PEEK / PLAY (בפיגמה: ריבוע של 48px, טקסט 14px).
-       המרחק מהקצה השמאלי של המסך שווה בדיוק למרחק מהקצה העליון */
-    --toggle-row: 0.468;
-    --toggle-left: calc(var(--toggle-row) * var(--cell) - var(--grid-left));
-    --toggle-top: calc(var(--toggle-row) * var(--cell));
-    --toggle-width: calc(var(--cell) * 48 / 49.06);
-    --toggle-height: calc(var(--cell) * 48 / 49.06);
+    /* הכפתור PEEK / PLAY: ממלא 2 משבצות בעמודות 3-4 ושורה 14 (טקסט 14px) */
+    --toggle-column: 3;
+    --toggle-row: 14;
+    --toggle-columns: 2;
+    --toggle-left: calc(var(--toggle-column) * var(--cell) + var(--line));
+    --toggle-top: calc(var(--toggle-row) * var(--cell) + var(--line));
+    --toggle-width: calc(var(--toggle-columns) * var(--cell) - var(--line));
+    --toggle-height: calc(var(--cell) - var(--line));
     --toggle-text-offset: 0px;
 
     /* טקסטים: משבצת = 49.06px בפיגמה */
     --type-px: calc(var(--cell) / 49.06);
     --button-padding: calc(var(--cell) * 10 / 49.06);
 
-    /* כפתורים: עמודה ושורה (שורה 0-1 פנויה לכפתור PEEK / PLAY) */
-    --works-column: 1;    --works-row: 2;
-    --index-button-column: 5;   --index-button-row: 3;
-    --about-column: 2;    --about-row: 4;
-    --say-hi-button-column: 5;  --say-hi-button-row: 5;
-    --process-column: 3;  --process-row: 15;
+    /* כפתורים: עמודה ושורה. PROCESS כאן ברוחב 2 משבצות, בשורה אחת */
+    --process-column: 3;  --process-row: 1;
+    --process-columns: 2;
+    --process-line-break: none;
+    --index-button-column: 1;   --index-button-row: 4;
+    --say-hi-button-column: 5;  --say-hi-button-row: 4;
 
-    /* "ORI KURZ" ו-"2026": ורודים, כל אחד על מלבן שמאחד משבצות */
-    --name-column: 1;
-    --name-row: 12;
-    --name-columns: 3;
-    --year-column: 5;
-    --year-row: 13;
-    --year-columns: 2;
+    /* "HI, IM": ורוד, על מלבן שמאחד 2 משבצות */
+    --greeting-column: 1;
+    --greeting-row: 6;
+    --greeting-columns: 2;
+    --text-offset: calc(var(--cell) * 15 / 49.06);
 
-    /* הכותרת portfolio: מיושרת לימין, לקו של עמודה 7 */
-    --title-top: calc(var(--cell) * 6.32);
-    --title-align: right;
-    --title-right: calc(var(--cell) * (var(--grid-columns) - 7));
+    /* הכותרת ORI KURZ: מיושרת לימין */
+    --title-top: calc(var(--cell) * 6.62);
+    --title-right: calc(var(--cell) * 1.335);
 
     /* הפולרויד */
     --photo-center-column: 4.526;
-    --photo-center-row: 9.604;
+    --photo-center-row: 9.645;
     --photo-width: calc(var(--cell) * 3.182);
     --photo-height: calc(var(--cell) * 3.638);
   }
@@ -1524,10 +1520,12 @@ body {
   color: var(--color-yellow);
 }
 
-/* ----- "ORI KURZ" ו-"2026" -----
+/* ----- "HI, IM" -----
    מלבן כחול עם מסגרת בצבע הקו: מסתיר את הקווים שבין המשבצות שלו */
-.name-box,
-.year-box {
+.greeting-box {
+  --column: var(--greeting-column);
+  --row: var(--greeting-row);
+  --columns: var(--greeting-columns);
   --rows: 1;
   padding-top: var(--text-offset);
   background-color: var(--color-blue);
@@ -1535,18 +1533,6 @@ body {
   color: var(--info-text-color);
   text-align: center;
   white-space: nowrap;
-}
-
-.name-box {
-  --column: var(--name-column);
-  --row: var(--name-row);
-  --columns: var(--name-columns);
-}
-
-.year-box {
-  --column: var(--year-column);
-  --row: var(--year-row);
-  --columns: var(--year-columns);
 }
 
 /* ----- הפולרויד: ממוקם לפי המרכז שלו, ומסובב -----
@@ -1569,14 +1555,14 @@ body {
     translateY(50%);
 }
 
-/* ----- הכותרת "portfolio": במחשב ממורכזת, במובייל מיושרת לימין ----- */
+/* ----- הכותרת "ORI KURZ": מיושרת לימין ----- */
 .title {
   position: absolute;
   left: 0;
   right: var(--title-right);
   top: var(--title-top);
   padding-top: var(--title-font-offset);
-  text-align: var(--title-align);
+  text-align: right;
   white-space: nowrap;
 }
 
@@ -1586,24 +1572,22 @@ body {
   --row: var(--index-button-row);
 }
 
-.nav-button--works {
-  --column: var(--works-column);
-  --row: var(--works-row);
-}
-
-.nav-button--about {
-  --column: var(--about-column);
-  --row: var(--about-row);
-}
-
 .nav-button--say-hi {
   --column: var(--say-hi-button-column);
   --row: var(--say-hi-button-row);
 }
 
+/* PROCESS: במחשב משבצת אחת, והטקסט נשבר לשתי שורות (PRO / CESS) */
 .nav-button--process {
   --column: var(--process-column);
   --row: var(--process-row);
+  --columns: var(--process-columns);
+  text-align: center;
+}
+
+/* שבירת השורה בין PRO ל-CESS: רק במחשב */
+.process-line-break {
+  display: var(--process-line-break);
 }
 
 /* ----- מובייל ----- */
@@ -3782,8 +3766,14 @@ body {
   height: auto;
 }
 
+/* PEEK / PLAY בבמה: מתחיל בעמודה 1 ושורה 1 (באתר הוא בתחתית העמוד) */
 .styleguide-stage--toggle {
-  --styleguide-stage-columns: 3;
+  --styleguide-stage-columns: 5;
+}
+
+.styleguide-stage:has(.balls-toggle) {
+  --toggle-column: 1;
+  --toggle-row: 1;
 }
 
 .styleguide-stage--menu {
