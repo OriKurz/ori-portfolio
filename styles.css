@@ -131,9 +131,9 @@
   --cursor-pop-duration: 0.18s;
 
   /* מעבר בין עמודים (page-transition.js): קו טוש שמכסה את המסך ונמחק בעמוד הבא */
-  --page-transition-cover: 500ms;      /* הקו מצטייר ומכסה את המסך */
-  --page-transition-hold: 300ms;       /* המסך בצבע אחד, והעמוד החדש נטען */
-  --page-transition-reveal: 500ms;     /* הקו נמחק וחושף את העמוד החדש */
+  --page-transition-cover: 800ms;      /* הקו מצטייר ומכסה את המסך */
+  --page-transition-hold: 400ms;       /* המסך בצבע אחד, והעמוד החדש נטען */
+  --page-transition-reveal: 800ms;     /* הקו נמחק וחושף את העמוד החדש */
   --page-transition-max-wait: 2000ms;  /* עמוד שנטען לאט: לא מחכים יותר מזה */
   --page-transition-thickness: 0.34;   /* עובי הקו ביחס לגובה המסך (כשליש) */
   --layer-page-transition: 2147483646; /* מעל הכול, מתחת לסמן העכבר */

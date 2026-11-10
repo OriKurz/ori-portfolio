@@ -49,41 +49,68 @@
     return "var(" + options[Math.floor(Math.random() * options.length)] + ")";
   }
 
-  // התנועה: מאיצה בהתחלה ומאטה בסוף
+  // גרף התנועה: התחלה איטית, האצה באמצע והאטה ארוכה ורכה בסוף
+  // (כמו cubic-bezier(0.7, 0, 0.15, 1) ב-CSS)
+  const ease = { x1: 0.7, y1: 0, x2: 0.15, y2: 1 };
   function easeInOut(t) {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    function bezier(a, b, u) { return 3 * a * u * (1 - u) * (1 - u) + 3 * b * u * u * (1 - u) + u * u * u; }
+    // מוצאים את הנקודה על העקומה שבה הזמן הוא t (חיפוש בינארי), ומחזירים את ההתקדמות בה
+    let low = 0, high = 1, u = t;
+    for (let i = 0; i < 24; i++) {
+      u = (low + high) / 2;
+      if (bezier(ease.x1, ease.x2, u) < t) low = u; else high = u;
+    }
+    return bezier(ease.y1, ease.y2, u);
   }
 
   // ----- הקו -----
   // המסלול של הטוש, ביחס לגודל המסך (0 עד 1 לרוחב ולגובה).
-  // חמישה מעברים לרוחב, מלמטה למעלה, עם לולאה באמצע כל מעבר ופניות מחוץ למסך.
-  // המרחק בין המעברים קטן מעובי הקו, כך שהם חופפים ומכסים את כל המסך.
+  // הקו מתקדם באלכסון, מהפינה השמאלית התחתונה לפינה הימנית העליונה:
+  // הוא עובר הלוך וחזור לרוחב האלכסון (מלמעלה-שמאל ללמטה-ימין), עם לולאה באמצע כל מעבר
+  // ופניות מחוץ למסך. המעבר הראשון עובר בדיוק בפינה השמאלית התחתונה והאחרון בימנית העליונה.
+  // המרחק בין המעברים לפי גודל המסך, קטן מעובי הקו, כך שהם חופפים ומכסים את כל המסך.
   // המסלול נגמר בפינה הימנית העליונה, ולכן במחיקה הקו נסוג לשם.
-  const passRows = [0.9, 0.7, 0.5, 0.3, 0.1];
-  function strokePoints() {
-    const points = [[-0.15, 1.1]];
-    passRows.forEach(function (y, i) {
-      const toRight = i % 2 === 0;
-      const x = function (t) { return toRight ? t : 1 - t; };
-      const loopX = 0.3 + 0.35 * ((i * 0.37) % 1); // כל לולאה במקום אחר, שייראה אורגני
-      points.push([x(0.05), y + 0.02]);
-      points.push([x(loopX), y - 0.02]);
-      // הלולאה: עולה, מסתלסלת אחורה ויורדת דרך עצמה
-      points.push([x(loopX + 0.1), y - 0.1]);
-      points.push([x(loopX + 0.04), y - 0.16]);
-      points.push([x(loopX - 0.02), y - 0.08]);
-      points.push([x(loopX + 0.12), y + 0.02]);
-      points.push([x(0.95), y - 0.03]);
-      // פנייה מחוץ למסך לשורה הבאה
-      points.push([x(1.18), y - 0.1]);
-    });
-    points.push([1.25, -0.2]);
+  function strokePoints(width, height, thickness) {
+    // המיקום לאורך האלכסון: c = x - y (מ-1- בפינה השמאלית התחתונה עד 1 בימנית העליונה),
+    // והמיקום לאורך המעבר: t (מלמעלה-שמאל ללמטה-ימין)
+    function point(c, t) { return [(c + 1) / 2 + t, (1 - c) / 2 + t]; }
+
+    // כמה מעברים: המרחק ביניהם (בפיקסלים) עד 70% מעובי הקו
+    const pixelsPerStep = width * height / Math.hypot(width, height);
+    const passes = Math.ceil(2 / (0.7 * thickness * height / pixelsPerStep)) + 1;
+    const spacing = 2 / (passes - 1);
+    const overshoot = 0.12; // הפניות קצת מחוץ למסך
+
+    const points = [point(-1.15, -0.1)];
+    for (let i = 0; i < passes; i++) {
+      const c = -1 + i * spacing;
+      const s = (c + 1) / 2;
+      // החלק של המעבר שבתוך המסך, ועוד קצת מכל צד
+      const first = Math.max(-s, s - 1) - overshoot;
+      const last = Math.min(1 - s, s) + overshoot;
+      const forward = i % 2 === 0;
+      const along = function (fraction) { return forward ? first + (last - first) * fraction : last - (last - first) * fraction; };
+      points.push(point(c, along(0)));
+      // הלולאה: רק במעבר ארוך מספיק. עולה לכיוון המעבר הבא, מסתלסלת אחורה ויורדת דרך עצמה
+      if (last - first > 0.45) {
+        const m = 0.35 + 0.3 * ((i * 0.37) % 1); // כל לולאה במקום אחר, שייראה אורגני
+        points.push(point(c, along(m - 0.12)));
+        points.push(point(c + spacing * 0.35, along(m + 0.06)));
+        points.push(point(c + spacing * 0.6, along(m)));
+        points.push(point(c + spacing * 0.3, along(m - 0.06)));
+        points.push(point(c - spacing * 0.05, along(m + 0.14)));
+      }
+      points.push(point(c, along(1)));
+      // פנייה מחוץ למסך למעבר הבא
+      if (i < passes - 1) points.push(point(c + spacing / 2, along(1) + (forward ? 0.08 : -0.08)));
+    }
+    points.push(point(1.15, 0.1));
     return points;
   }
 
   // מסלול חלק (Catmull-Rom) שעובר דרך כל הנקודות, בפיקסלים של המסך
-  function strokePath(width, height) {
-    const p = strokePoints().map(function (point) { return [point[0] * width, point[1] * height]; });
+  function strokePath(width, height, thickness) {
+    const p = strokePoints(width, height, thickness).map(function (point) { return [point[0] * width, point[1] * height]; });
     let d = "M" + p[0][0] + " " + p[0][1];
     for (let i = 0; i < p.length - 1; i++) {
       const p0 = p[Math.max(0, i - 1)];
@@ -112,8 +139,9 @@
     svg.setAttribute("preserveAspectRatio", "none");
 
     const path = document.createElementNS(svgNS, "path");
-    path.setAttribute("d", strokePath(box.width, box.height));
-    path.setAttribute("stroke-width", box.height * parseFloat(cssValue("--page-transition-thickness")));
+    const thickness = parseFloat(cssValue("--page-transition-thickness"));
+    path.setAttribute("d", strokePath(box.width, box.height, thickness));
+    path.setAttribute("stroke-width", box.height * thickness);
     svg.appendChild(path);
     overlay.appendChild(svg);
 
