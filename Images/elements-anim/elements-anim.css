@@ -29,3 +29,6 @@
 [data-ea] > .ea-layer { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
 [data-ea] > .ea-layer > svg,
 [data-ea] > .ea-layer > canvas { display: block; width: 100%; height: 100%; overflow: visible; }
+
+/* Keyboard focus looks like the hover: the object plays (elements-anim.js), no outline */
+.ea-item:focus-visible { outline: none; }

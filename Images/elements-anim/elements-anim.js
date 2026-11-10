@@ -75,8 +75,12 @@
   });
   let uid = 0;
 
+  // objects whose hover turns on and off (a tap toggles them)
+  const toggles = new WeakSet();
+
   // hover with a mouse; tap on touch screens
   function hover(item, enter, leave) {
+    if (leave) toggles.add(item);
     item.addEventListener("pointerenter", e => { if (e.pointerType === "mouse") enter(e); });
     if (leave) item.addEventListener("pointerleave", e => { if (e.pointerType === "mouse") leave(e); });
     let on = false;
@@ -632,6 +636,30 @@
       item.classList.add("ea-item");
       if (getComputedStyle(item).position === "static") item.style.position = "relative";
       fn(item);
+      keyboard(item);
+    });
+  }
+
+  // keyboard: focus plays the object like a tap in its center, Enter or Space plays it again
+  function tap(item) {
+    const r = item.getBoundingClientRect();
+    item.dispatchEvent(new PointerEvent("pointerdown", { pointerType: "touch", clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }));
+  }
+  function keyboard(item) {
+    let on = false;
+    item.addEventListener("focus", () => {
+      if (!item.matches(":focus-visible")) return;
+      tap(item); on = true;
+    });
+    item.addEventListener("blur", () => {
+      if (on && toggles.has(item)) tap(item);
+      on = false;
+    });
+    item.addEventListener("keydown", e => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      if (on && toggles.has(item)) tap(item);
+      tap(item); on = true;
     });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
