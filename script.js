@@ -1782,9 +1782,6 @@ if (projectsList) {
   let centered = null;       // העיגול הממורכז, או null במצב של שתי השורות
   let ring = [];             // העיגולים הקטנים במעגל, לפי הסדר בכיוון השעון (מתחילים משמאל למעלה)
   let pixel = 1;             // פיקסל בפיגמה במסך (לכוח הדחייה)
-  // הקירות: כל עיגול נשאר תמיד שלם בתוכם, גם בהתנודדות (ביחס למבנה העיגולים).
-  // במחשב: החלון פחות השוליים של 50. במובייל: הרוחב פחות הרווח מהצדדים, ומתחת לראש המבנה
-  let walls = { left: -Infinity, right: Infinity, top: -Infinity, bottom: Infinity };
   let running = false;
   let lastTime = 0;
   let startTime = 0;
@@ -1811,7 +1808,6 @@ if (projectsList) {
       groupLeft = gap;
       groupTop = 0;
       projectsList.style.height = Math.max(rowsHeight, design.groupHeight * groupScale) + "px";
-      walls = { left: gap, right: width - gap, top: 0, bottom: Infinity };
 
       if (!centered) {
         items.forEach(function (item, index) {
@@ -1824,13 +1820,6 @@ if (projectsList) {
     } else {
       projectsList.style.height = "";
       const u = unit();
-      const wallMargin = design.margin * u;
-      walls = {
-        left: wallMargin - listBox.left,
-        right: document.documentElement.clientWidth - wallMargin - listBox.left,
-        top: wallMargin - listBox.top,
-        bottom: document.documentElement.clientHeight - wallMargin - listBox.top
-      };
 
       if (!centered) {
         // שתי השורות: ביחס לפינה של המבנה (שצמוד לשוליים הימניים והתחתונים)
@@ -1982,10 +1971,9 @@ if (projectsList) {
       const progress = Math.min(1, Math.max(0, (time - item.delay) / duration));
       const eased = easeInOut(progress);
       const wave = Math.sin(Math.PI * eased);
+      const goalX = item.fromX + (item.tx - item.fromX) * eased + item.bumpX * wave;
+      const goalY = item.fromY + (item.ty - item.fromY) * eased + item.bumpY * wave;
       const goalR = (item.fromR + (item.tr - item.fromR) * eased) * (1 + bumpGrow * wave);
-      // המסלול (כולל הדחיפה של הגל) לא יוצא מהקירות
-      const goalX = insideWalls(item.fromX + (item.tx - item.fromX) * eased + item.bumpX * wave, goalR, walls.left, walls.right);
-      const goalY = insideWalls(item.fromY + (item.ty - item.fromY) * eased + item.bumpY * wave, goalR, walls.top, walls.bottom);
       item.vx += (spring * (goalX - item.x) - damping * item.vx) * dt;
       item.vy += (spring * (goalY - item.y) - damping * item.vy) * dt;
       item.vr += (sizeSpring * (goalR - item.r) - sizeDamping * item.vr) * dt;
@@ -2059,20 +2047,6 @@ if (projectsList) {
         }
       }
     }
-
-    // הקירות: עיגול שמגיע לקיר נעצר בו ברכות (בלי להמשיך החוצה), וכך תמיד נשאר שלם במסך
-    items.forEach(function (item) {
-      if (item.x - item.r < walls.left) { item.x = walls.left + item.r; item.vx = Math.max(0, item.vx); }
-      if (item.x + item.r > walls.right) { item.x = walls.right - item.r; item.vx = Math.min(0, item.vx); }
-      if (item.y - item.r < walls.top) { item.y = walls.top + item.r; item.vy = Math.max(0, item.vy); }
-      if (item.y + item.r > walls.bottom) { item.y = walls.bottom - item.r; item.vy = Math.min(0, item.vy); }
-    });
-  }
-
-  // מקום בתוך הקירות לעיגול ברדיוס r (אם הוא רחב מהשטח: באמצע)
-  function insideWalls(value, r, low, high) {
-    if (high - low < 2 * r) return (low + high) / 2;
-    return Math.min(high - r, Math.max(low + r, value));
   }
 
   function isSettled(time) {
