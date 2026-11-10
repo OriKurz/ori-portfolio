@@ -1220,9 +1220,9 @@
 
   /* INDEX ו-Project & more: הכותרת צמודה לשוליים השמאליים, והשורה שמתחתיה זזה איתה (5px ימינה ממנה) */
   --projects-title-left: var(--projects-margin);
-  --projects-title-top: calc(55 * var(--u));
+  --projects-title-top: calc(68 * var(--u));
   --projects-subtitle-left: calc(var(--projects-margin) + 5 * var(--u));
-  --projects-subtitle-top: calc(124 * var(--u));
+  --projects-subtitle-top: calc(133 * var(--u));
 
   /* מבנה העיגולים: צמוד לשוליים הימניים והתחתונים.
      הגבולות שלו בפיגמה: מ-(596, 252) עד (1377, 754), כלומר 781x502 */
@@ -1234,7 +1234,7 @@
   /* העיגולים: 238px בפיגמה, עם מסגרת צהובה בעובי הקו */
   --project-circle-size: calc(238 * var(--u));
   /* הטקסט מתחת לעיגול הממורכז: מופיע אחרי שהעיגול כמעט הגיע */
-  --project-text-delay: 0.35s;
+  --project-text-delay: 1s;
   --project-text-fade: 0.4s;
 }
 
