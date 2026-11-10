@@ -130,12 +130,12 @@
   --cursor-size: 14px;
   --cursor-pop-duration: 0.18s;
 
-  /* מעבר בין עמודים (page-transition.js): קו טוש שמכסה את המסך ונמחק בעמוד הבא */
-  --page-transition-cover: 900ms;      /* הקו מצטייר ומכסה את המסך */
-  --page-transition-hold: 150ms;       /* המסך בצבע אחד (הקצר ביותר). העמוד החדש נטען מראש */
-  --page-transition-reveal: 900ms;     /* הקו נמחק וחושף את העמוד החדש */
+  /* מעבר בין עמודים (page-transition.js): משבצות הגריד מתמלאות בגל אלכסוני, ובעמוד הבא מתרוקנות */
+  --page-transition-wave: 600ms;       /* הגל כולו, מהמשבצת הראשונה עד האחרונה */
+  --page-transition-cell: 250ms;       /* כל משבצת גדלה (או מתכווצת) */
+  --page-transition-ease: cubic-bezier(0.45, 0, 0.55, 1); /* ease-in-out רך */
+  --page-transition-hold: 100ms;       /* המסך מכוסה (הקצר ביותר). העמוד החדש נטען מראש */
   --page-transition-max-wait: 1500ms;  /* עמוד שעוד לא מוכן: ההחזקה מתארכת, אבל לא יותר מזה */
-  --page-transition-thickness: 0.34;   /* עובי הקו ביחס לגובה המסך (כשליש) */
   --layer-page-transition: 2147483646; /* מעל הכול, מתחת לסמן העכבר */
 
   /* פונטים */
@@ -4426,7 +4426,8 @@ body {
 
 /* =========================================
    מעבר בין עמודים (page-transition.js)
-   קו עבה בצבע אקראי מהפלטה מצטייר על כל המסך, ובעמוד הבא נמחק וחושף אותו.
+   משבצות הגריד מתמלאות בצבע אקראי מהפלטה בגל אלכסוני, ובעמוד הבא מתרוקנות באותו גל.
+   התנועה רק ב-transform, כדי שתהיה חלקה (60 פריימים לשנייה) גם בטלפון.
    ========================================= */
 .page-transition {
   position: fixed;
@@ -4435,28 +4436,42 @@ body {
   width: 100vw;
   height: 100lvh; /* בטלפון: גם מאחורי שורת הכתובת */
   z-index: var(--layer-page-transition);
-  /* שכבה נפרדת: הציור של הקו לא מצייר מחדש את העמוד שמתחתיו (60 פריימים לשנייה) */
-  will-change: transform;
+  overflow: hidden;
   contain: strict;
 }
 
-/* המסך מכוסה כולו: הרקע ממלא גם כל פינה שהקו אולי לא הגיע אליה */
+/* המסך מכוסה כולו: גם הקווים שבין המשבצות */
 .page-transition.is-covered {
   background-color: var(--page-transition-color);
 }
 
-.page-transition svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+/* משבצת: ממלאת בדיוק את השטח שבין קווי הגריד (המיקום והגודל מ-page-transition.js) */
+.page-transition-cell {
+  position: absolute;
+  background-color: var(--page-transition-color);
+  animation-duration: var(--page-transition-cell);
+  animation-timing-function: var(--page-transition-ease);
+  animation-fill-mode: both;
 }
 
-.page-transition path {
-  fill: none;
-  stroke: var(--page-transition-color);
-  stroke-linecap: round;
-  stroke-linejoin: round;
+/* כיסוי: כל משבצת גדלה ממרכזה */
+.page-transition.is-covering .page-transition-cell {
+  animation-name: page-transition-cell-fill;
+}
+
+/* חשיפה: כל משבצת מתכווצת למרכזה */
+.page-transition.is-revealing .page-transition-cell {
+  animation-name: page-transition-cell-empty;
+}
+
+@keyframes page-transition-cell-fill {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+@keyframes page-transition-cell-empty {
+  from { transform: scale(1); }
+  to   { transform: scale(0); }
 }
 
 /* העמוד החדש מכוסה בצבע כבר מהציור הראשון, עד שהקו נבנה */
