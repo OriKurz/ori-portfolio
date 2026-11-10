@@ -1,10 +1,8 @@
-// מעבר בין עמודים, בנוי מהגריד:
-// 1. כיסוי: המשבצות של הגריד מתמלאות בצבע אחת אחרי השנייה, בגל אלכסוני
-//    מהפינה השמאלית התחתונה לימנית העליונה. כל משבצת גדלה ממרכזה עד שהיא ממלאת
-//    בדיוק את השטח שבין הקווים.
+// מעבר בין עמודים, בקוביות:
+// 1. כיסוי: רשת של קוביות ריבועיות מעל העמוד. הקוביות מופיעות אחת אחת בסדר אקראי,
+//    כל אחת בבת אחת ומלאה. בהתחלה בודדות, אחר כך הרבה יחד, ובסוף האחרונות לאט.
 // 2. החזקה: המסך מכוסה, רק עד שהעמוד החדש נטען.
-// 3. חשיפה (בעמוד החדש): המשבצות מתכווצות למרכזן באותו גל ובאותו כיוון.
-// בכיסוי המשבצות לפי הגריד של העמוד הנוכחי, ובחשיפה לפי הגריד של העמוד החדש.
+// 3. חשיפה (בעמוד החדש): אותן קוביות נעלמות אחת אחת, בסדר אקראי חדש ובאותו קצב.
 // הקובץ נטען ב-head של כל עמוד, כדי שהצבע יכסה את העמוד החדש כבר מהציור הראשון.
 // התזמונים במשתני --page-transition-... ב-styles.css.
 (function () {
@@ -16,7 +14,7 @@
   const paletteColors = ["--color-blue", "--color-pink", "--color-yellow", "--color-orange", "--color-mint", "--color-green"];
 
   // צבע הרקע של כל עמוד (כמו --page-background של העמוד ב-styles.css),
-  // כדי שהמשבצות לא יהיו בצבע של העמוד שאליו עוברים
+  // כדי שהקוביות לא יהיו בצבע של העמוד שאליו עוברים
   const pageBackgrounds = {
     "index.html": "--color-blue",
     "projects.html": "--color-green",
@@ -51,47 +49,32 @@
     return "var(" + options[Math.floor(Math.random() * options.length)] + ")";
   }
 
-  // ----- הגריד של העמוד -----
-  // מחזיר את גודל המשבצת, עובי הקו, ונקודה שבה מתחילה משבצת (בפיקסלים של המסך).
-  // הגריד שמצויר בעמוד: הגריד שנגלל בעמודי הפרויקט, או הרקע של עמוד הבית ו-Say Hi.
-  // עמוד בלי קווי גריד (האינדקס): המשבצות של הגריד שלו, צמודות זו לזו
-  function readGrid() {
-    const lines = document.querySelector(".full-project-grid.grid-lines, body.grid-lines");
-    const host = lines || document.body;
-    const probe = document.createElement("div");
-    probe.style.cssText = "position:absolute;visibility:hidden;left:0;top:0;width:var(--cell);height:var(--line)";
-    host.appendChild(probe);
-    const size = probe.getBoundingClientRect();
-    probe.remove();
+  // ----- שכבת הקוביות -----
+  // רשת של קוביות ריבועיות על כל המסך, בגודל הממוצע של משבצת באתר:
+  // במחשב 16 לרוחב (90 פיקסלים במסך של 1440), במובייל 8. השורה האחרונה נחתכת בתחתית.
+  // כל קובייה מקבלת זמן הופעה אקראי. כמה קוביות כבר הופיעו לאורך הזמן הולך לפי
+  // עקומה רכה: בהתחלה בודדות, באמצע הרבה יחד, ובסוף האחרונות לאט
+  const mobileQuery = window.matchMedia("(max-width: 767.98px)");
 
-    let cell = size.width;
-    if (!(cell > 4)) cell = Math.min(window.innerWidth, window.innerHeight) / 8; // עמוד בלי גריד
-
-    if (!lines) {
-      const origin = document.createElement("div");
-      origin.style.cssText = "position:fixed;visibility:hidden;left:var(--grid-left, 0px);top:var(--grid-top, 0px)";
-      document.body.appendChild(origin);
-      const box = origin.getBoundingClientRect();
-      origin.remove();
-      return { cell: cell, line: 0, x: box.left, y: box.top };
-    }
-
-    const box = lines.getBoundingClientRect();
-    const position = getComputedStyle(lines).backgroundPosition.split(/[\s,]+/);
-    return {
-      cell: cell,
-      line: size.height,
-      x: box.left + (parseFloat(position[0]) || 0),
-      y: box.top + (parseFloat(position[1]) || 0)
-    };
+  // ההפוך של ease-in-out (קובי): בהינתן איזה חלק מהקוביות כבר הופיע, באיזה חלק מהזמן
+  function easeInOutInverse(progress) {
+    return progress < 0.5
+      ? Math.cbrt(progress / 4)
+      : 1 - Math.cbrt(2 * (1 - progress)) / 2;
   }
 
-  // ----- שכבת המשבצות -----
-  // משבצת לכל אריח של הגריד שנראה במסך. כל משבצת ממלאת את השטח שבין הקווים
-  // (מימין לקו השמאלי ומתחת לקו העליון). ההשהיה של כל משבצת לפי המקום שלה באלכסון:
-  // 0 בפינה השמאלית התחתונה, הכי מאוחר בימנית העליונה
+  // ערבוב אקראי של רשימה (Fisher–Yates)
+  function shuffle(list) {
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = list[i];
+      list[i] = list[j];
+      list[j] = temp;
+    }
+    return list;
+  }
+
   function createOverlay(color) {
-    const grid = readGrid();
     const overlay = document.createElement("div");
     overlay.className = "page-transition";
     overlay.setAttribute("aria-hidden", "true");
@@ -99,28 +82,28 @@
     document.body.appendChild(overlay);
     // הגודל של השכבה עצמה (בטלפון: גם מאחורי שורת הכתובת)
     const size = overlay.getBoundingClientRect();
-    const width = size.width;
-    const height = size.height;
-    const firstX = grid.x - Math.ceil(grid.x / grid.cell) * grid.cell;
-    const firstY = grid.y - Math.ceil(grid.y / grid.cell) * grid.cell;
-    const columns = Math.ceil((width - firstX) / grid.cell);
-    const rows = Math.ceil((height - firstY) / grid.cell);
-    const wave = cssTime("--page-transition-wave") - cssTime("--page-transition-cell");
-    const farthest = Math.max(1, columns - 1 + rows - 1);
+    const columns = mobileQuery.matches ? 8 : 16;
+    const cube = size.width / columns;
+    const rows = Math.ceil(size.height / cube);
+    const total = columns * rows;
+    const duration = cssTime("--page-transition-duration");
 
+    // סדר אקראי: הקובייה ה-n בסדר מופיעה בזמן לפי העקומה
+    const order = shuffle(Array.from({ length: total }, function (_, index) { return index; }));
     const fragment = document.createDocumentFragment();
-    for (let row = 0; row < rows; row++) {
-      for (let column = 0; column < columns; column++) {
-        const cell = document.createElement("div");
-        cell.className = "page-transition-cell";
-        const left = firstX + column * grid.cell + grid.line;
-        const top = firstY + row * grid.cell + grid.line;
-        const step = column + (rows - 1 - row);
-        cell.style.cssText = "left:" + left + "px;top:" + top + "px;width:" + (grid.cell - grid.line) + "px;height:" +
-          (grid.cell - grid.line) + "px;animation-delay:" + Math.round(wave * step / farthest) + "ms";
-        fragment.appendChild(cell);
-      }
-    }
+    order.forEach(function (index, turn) {
+      const column = index % columns;
+      const row = Math.floor(index / columns);
+      // קצוות בפיקסלים שלמים, כדי שהקוביות ייצמדו בלי חריצים
+      const left = Math.round(column * cube);
+      const top = Math.round(row * cube);
+      const cell = document.createElement("div");
+      cell.className = "page-transition-cube";
+      cell.style.cssText = "left:" + left + "px;top:" + top + "px;width:" + (Math.round((column + 1) * cube) - left) +
+        "px;height:" + (Math.round((row + 1) * cube) - top) + "px;animation-delay:" +
+        Math.round(duration * easeInOutInverse((turn + 1) / total)) + "ms";
+      fragment.appendChild(cell);
+    });
     overlay.appendChild(fragment);
     return overlay;
   }
@@ -139,14 +122,14 @@
     const color = pickColor(url);
     const overlay = createOverlay(color);
     overlay.classList.add("is-covering");
-    // כשכל המשבצות מלאות: המסך מכוסה כולו (גם הקווים), ועוברים לעמוד החדש
+    // כשכל הקוביות הופיעו: המסך מכוסה כולו, ועוברים לעמוד החדש
     setTimeout(function () {
       overlay.classList.add("is-covered");
       try {
         sessionStorage.setItem(storageKey, JSON.stringify({ color: color, coveredAt: Date.now() }));
       } catch (error) { /* בלי אחסון: העמוד החדש פשוט מופיע */ }
       window.location.href = url.href;
-    }, cssTime("--page-transition-wave"));
+    }, cssTime("--page-transition-duration"));
   }
   window.goToPage = goToPage;
 
@@ -209,7 +192,7 @@
 
   // ----- כניסה לעמוד -----
   // אם הגענו מקישור עם מעבר: הצבע מכסה את העמוד מיד (html::after ב-styles.css),
-  // ואחרי ההחזקה המשבצות מתרוקנות וחושפות את העמוד
+  // ואחרי ההחזקה הקוביות נעלמות וחושפות את העמוד
   let arrival = null;
   try {
     arrival = JSON.parse(sessionStorage.getItem(storageKey));
@@ -225,7 +208,7 @@
   root.classList.add("is-page-transition-arriving");
 
   document.addEventListener("DOMContentLoaded", function () {
-    // המשבצות של העמוד החדש, מלאות, מתחת לכיסוי המלא
+    // הקוביות של העמוד החדש, כולן גלויות, מתחת לכיסוי המלא
     const overlay = createOverlay(arrival.color);
     overlay.classList.add("is-covered");
     root.classList.remove("is-page-transition-arriving");
@@ -238,11 +221,12 @@
       if (revealed) return;
       revealed = true;
       setTimeout(function () {
-        // הרקע המלא יורד והמשבצות מתחילות להתכווץ באותו פריים, כדי שלא יהיה הבהוב
+        // הרקע המלא יורד והקוביות מתחילות להיעלם באותו פריים, כדי שלא יהיה הבהוב.
+        // סדר אקראי חדש: השכבה של העמוד החדש נבנתה עם ערבוב משלה
         requestAnimationFrame(function () {
           overlay.classList.remove("is-covered");
           overlay.classList.add("is-revealing");
-          setTimeout(function () { overlay.remove(); }, cssTime("--page-transition-wave") + 50);
+          setTimeout(function () { overlay.remove(); }, cssTime("--page-transition-duration") + 50);
         });
       }, Math.max(0, holdEnd - Date.now()));
     }

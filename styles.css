@@ -130,10 +130,8 @@
   --cursor-size: 14px;
   --cursor-pop-duration: 0.18s;
 
-  /* מעבר בין עמודים (page-transition.js): משבצות הגריד מתמלאות בגל אלכסוני, ובעמוד הבא מתרוקנות */
-  --page-transition-wave: 600ms;       /* הגל כולו, מהמשבצת הראשונה עד האחרונה */
-  --page-transition-cell: 250ms;       /* כל משבצת גדלה (או מתכווצת) */
-  --page-transition-ease: cubic-bezier(0.45, 0, 0.55, 1); /* ease-in-out רך */
+  /* מעבר בין עמודים (page-transition.js): קוביות מופיעות בסדר אקראי, ובעמוד הבא נעלמות */
+  --page-transition-duration: 1000ms;  /* כל הכיסוי (וכל החשיפה), מהקובייה הראשונה עד האחרונה */
   --page-transition-hold: 100ms;       /* המסך מכוסה (הקצר ביותר). העמוד החדש נטען מראש */
   --page-transition-max-wait: 1500ms;  /* עמוד שעוד לא מוכן: ההחזקה מתארכת, אבל לא יותר מזה */
   --layer-page-transition: 2147483646; /* מעל הכול, מתחת לסמן העכבר */
@@ -4426,8 +4424,8 @@ body {
 
 /* =========================================
    מעבר בין עמודים (page-transition.js)
-   משבצות הגריד מתמלאות בצבע אקראי מהפלטה בגל אלכסוני, ובעמוד הבא מתרוקנות באותו גל.
-   התנועה רק ב-transform, כדי שתהיה חלקה (60 פריימים לשנייה) גם בטלפון.
+   קוביות בצבע אקראי מהפלטה מופיעות אחת אחת בסדר אקראי, ובעמוד הבא נעלמות באותו קצב.
+   כל קובייה מופיעה בבת אחת (opacity בלבד), כדי שיהיה חלק (60 פריימים לשנייה) גם בטלפון.
    ========================================= */
 .page-transition {
   position: fixed;
@@ -4440,38 +4438,38 @@ body {
   contain: strict;
 }
 
-/* המסך מכוסה כולו: גם הקווים שבין המשבצות */
+/* המסך מכוסה כולו */
 .page-transition.is-covered {
   background-color: var(--page-transition-color);
 }
 
-/* משבצת: ממלאת בדיוק את השטח שבין קווי הגריד (המיקום והגודל מ-page-transition.js) */
-.page-transition-cell {
+/* קובייה (המיקום, הגודל וזמן ההופעה מ-page-transition.js).
+   אנימציה באורך 0: לפני ההשהיה במצב from, ומיד אחריה במצב to, בלי מעבר */
+.page-transition-cube {
   position: absolute;
   background-color: var(--page-transition-color);
-  animation-duration: var(--page-transition-cell);
-  animation-timing-function: var(--page-transition-ease);
+  animation-duration: 0s;
   animation-fill-mode: both;
 }
 
-/* כיסוי: כל משבצת גדלה ממרכזה */
-.page-transition.is-covering .page-transition-cell {
-  animation-name: page-transition-cell-fill;
+/* כיסוי: כל קובייה מופיעה בזמן שלה */
+.page-transition.is-covering .page-transition-cube {
+  animation-name: page-transition-cube-show;
 }
 
-/* חשיפה: כל משבצת מתכווצת למרכזה */
-.page-transition.is-revealing .page-transition-cell {
-  animation-name: page-transition-cell-empty;
+/* חשיפה: כל קובייה נעלמת בזמן שלה */
+.page-transition.is-revealing .page-transition-cube {
+  animation-name: page-transition-cube-hide;
 }
 
-@keyframes page-transition-cell-fill {
-  from { transform: scale(0); }
-  to   { transform: scale(1); }
+@keyframes page-transition-cube-show {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-@keyframes page-transition-cell-empty {
-  from { transform: scale(1); }
-  to   { transform: scale(0); }
+@keyframes page-transition-cube-hide {
+  from { opacity: 1; }
+  to   { opacity: 0; }
 }
 
 /* העמוד החדש מכוסה בצבע כבר מהציור הראשון, עד שהקו נבנה */
