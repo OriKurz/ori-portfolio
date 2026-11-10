@@ -1189,6 +1189,57 @@
   }
 }
 
+/* ----- עמוד אינדקס הפרויקטים (projects.html) -----
+   הפריים INDEX בפיגמה: 1440x810, בלי קווי גריד. 16x9 משבצות של 90px ממלאות אותו בדיוק,
+   ולכן הוא גדל עם החלון בשיטת הגריד שממלא את המסך (כמו Say Hi): אזור העיצוב ממורכז ושלם.
+   מספרים כמו 238 * var(--u) הם פיקסלים מהפיגמה. */
+:root.page-projects {
+  --frame-cell: 90;
+  --grid-columns: 16;
+  --grid-rows: 9;
+  --line: var(--line-desktop);
+  /* פיקסל אחד בפיגמה */
+  --u: calc(var(--cell) / var(--frame-cell));
+  --type-px: var(--u);
+
+  --page-background: var(--color-green);
+
+  /* ההמבורגר: צהוב (30x24 בפיגמה), 12 מהשמאל ו-14 מלמעלה.
+     ה-hover הרגיל ירוק ולא היה נראה על הרקע הירוק, אז כאן הוא כחול */
+  --menu-left: calc(12 * var(--u));
+  --menu-top: calc(14 * var(--u));
+  --menu-width: calc(30 * var(--u));
+  --menu-line-height: calc(4 * var(--u));
+  --menu-gap: calc(6 * var(--u));
+  --pill-radius: calc(32 * var(--u));
+  --menu-line-color: var(--color-yellow);
+  --menu-hover-color: var(--color-blue);
+
+  /* INDEX ו-Project & more */
+  --projects-title-left: calc(43 * var(--u));
+  --projects-title-top: calc(55 * var(--u));
+  --projects-subtitle-left: calc(48 * var(--u));
+  --projects-subtitle-top: calc(124 * var(--u));
+
+  /* העיגולים: 238px בפיגמה, עם מסגרת צהובה בעובי הקו */
+  --project-circle-size: calc(238 * var(--u));
+}
+
+/* ----- עמוד אינדקס הפרויקטים במובייל -----
+   אין עיצוב מובייל בפיגמה. הכותרת כמו בעמודי הפרויקט במובייל (לפי 508px של הפיגמה),
+   והעיגולים יורדים בשני טורים, עם 33px ביניהם כמו בפיגמה. העמוד נגלל */
+@media (max-width: 767.98px) {
+  :root.page-projects {
+    --design-columns: 8;
+    --design-rows: 1;
+    --line: var(--line-mobile);
+    --u: calc(100vw / 508);
+    --projects-list-top: calc(200 * var(--u));
+    --projects-gap: calc(33 * var(--u));
+    --project-circle-size: calc((100vw - 3 * var(--projects-gap)) / 2);
+  }
+}
+
 /* ----- בר הבחירה (התפריט) -----
    פריים "bar" בפיגמה: 1440x61. הבר תמיד ברוחב המסך, אז פיקסל בפיגמה = 1/1440 מרוחב החלון.
    הכפתורים ממורכזים לגובה הבר (flex ב-.nav-bar). ההמבורגר במרחק שווה מהקצה העליון ומהשמאלי */
@@ -2148,15 +2199,15 @@ body {
   transition: scale var(--transition-speed) ease;
 }
 
-/* מעבר עכבר: הקווים ירוקים (גם בעמוד Say Hi, שבו הם כתומים) */
+/* מעבר עכבר: הקווים ירוקים (גם בעמוד Say Hi, שבו הם כתומים), אלא אם העמוד קובע אחרת (--menu-hover-color) */
 @media (hover: hover) and (pointer: fine) {
   .menu-button:hover .menu-button-line {
-    background-color: var(--color-green);
+    background-color: var(--menu-hover-color, var(--color-green));
   }
 }
 
 .menu-button.is-hover .menu-button-line {
-  background-color: var(--color-green);
+  background-color: var(--menu-hover-color, var(--color-green));
 }
 
 /* לחיצה: האייקון קטן מעט */
@@ -2173,7 +2224,7 @@ body {
 
 .menu-button:focus-visible .menu-button-line,
 .menu-button.is-focus .menu-button-line {
-  background-color: var(--color-green);
+  background-color: var(--menu-hover-color, var(--color-green));
 }
 
 /* ----- בר הבחירה (התפריט) -----
@@ -2233,7 +2284,7 @@ body {
 .nav-bar .menu-button.is-hover .menu-button-line,
 .nav-bar .menu-button:focus-visible .menu-button-line,
 .nav-bar .menu-button.is-focus .menu-button-line {
-  background-color: var(--color-green);
+  background-color: var(--menu-hover-color, var(--color-green));
 }
 
 /* שורת הכפתורים */
@@ -4179,4 +4230,153 @@ body {
 /* במסך מלא של הסרטון, כשהבר מוסתר, גם הכדור מוסתר */
 .video-player.is-fullscreen:not(.is-active):not(.is-seeking) .custom-cursor {
   opacity: 0;
+}
+
+/* =========================================
+   עמוד אינדקס הפרויקטים (projects.html)
+   ========================================= */
+
+/* עמוד של מסך אחד, בלי גלילה במחשב. במובייל נגלל, ראו למטה */
+.page-projects,
+.page-projects body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* ההמבורגר בפינה של החלון */
+.projects-menu {
+  position: absolute;
+  left: var(--menu-left);
+  top: var(--menu-top);
+}
+
+/* אזור העיצוב מהפיגמה, ממורכז בחלון */
+.projects-page {
+  position: absolute;
+  left: var(--grid-left);
+  top: var(--grid-top);
+  width: calc(var(--grid-columns) * var(--cell));
+  height: calc(var(--grid-rows) * var(--cell));
+  color: var(--color-yellow);
+}
+
+.projects-title,
+.projects-subtitle {
+  position: absolute;
+  white-space: nowrap;
+}
+
+.projects-title {
+  left: var(--projects-title-left);
+  top: var(--projects-title-top);
+}
+
+.projects-subtitle {
+  left: var(--projects-subtitle-left);
+  top: var(--projects-subtitle-top);
+}
+
+.projects-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ----- עיגול של פרויקט -----
+   במחשב: במיקום שלו בפיגמה (--x, --y). המסגרת הצהובה בתוך הגודל של העיגול */
+.project-circle {
+  position: absolute;
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  display: block;
+  width: var(--project-circle-size);
+  height: var(--project-circle-size);
+  border: var(--line) solid var(--color-yellow);
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* התמונה חתוכה לעיגול, בתוך המסגרת */
+.project-circle-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+/* החיתוך כמו בפיגמה. בלי חיתוך: התמונה נמתחת על כל העיגול (כמו בפיגמה) */
+.project-circle-image {
+  position: absolute;
+  left: var(--crop-left, 0);
+  top: var(--crop-top, 0);
+  width: var(--crop-width, 100%);
+  height: var(--crop-height, 100%);
+  max-width: none;
+}
+
+/* הכיסוי: כחול בשקיפות 50% בצורת העיגול (גם מעל המסגרת), ועליו השם בצהוב, במרכז */
+.project-circle-overlay {
+  position: absolute;
+  inset: calc(-1 * var(--line));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--color-blue) 50%, transparent);
+  color: var(--color-yellow);
+  text-align: center;
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
+}
+
+/* Hover (רק במחשב): הכיסוי מופיע במעבר רך */
+@media (hover: hover) and (pointer: fine) {
+  .project-circle:hover .project-circle-overlay {
+    opacity: 1;
+  }
+}
+
+/* Focus במקלדת: כמו hover, בלי קו מתאר */
+.project-circle:focus-visible {
+  outline: none;
+}
+
+.project-circle:focus-visible .project-circle-overlay,
+.project-circle.is-hover .project-circle-overlay,
+.project-circle.is-focus .project-circle-overlay {
+  opacity: 1;
+}
+
+/* במובייל: העמוד נגלל, והעיגולים בשני טורים מתחת לכותרת */
+@media (max-width: 767.98px) {
+  .page-projects,
+  .page-projects body {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .projects-page {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    padding-top: var(--projects-list-top);
+    padding-bottom: var(--projects-gap);
+  }
+
+  .projects-list {
+    display: grid;
+    grid-template-columns: repeat(2, var(--project-circle-size));
+    gap: var(--projects-gap);
+    justify-content: center;
+  }
+
+  .project-circle {
+    position: relative;
+    left: 0;
+    top: 0;
+  }
 }

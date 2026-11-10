@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="page-projects">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Index — Ori Kurz</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- גודל הגריד לפי החלון: נטען לפני שהעמוד מצויר -->
+  <script src="grid.js"></script>
+</head>
+<body>
+  <!-- בר הבחירה (התפריט): סגור בטעינה. ההמבורגר פותח אותו, והוא מחליק פנימה מלמעלה (script.js) -->
+  <nav class="nav-bar" id="nav-bar" aria-label="Main">
+    <!-- ההמבורגר של הבר: סוגר אותו -->
+    <button class="menu-button nav-bar-menu" type="button" aria-label="Close menu" aria-controls="nav-bar">
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+    </button>
+    <!-- INDEX מוביל לעמוד הזה (projects.html), והוא מסומן כעמוד הנוכחי -->
+    <ul class="nav-bar-list">
+      <li><a class="nav-bar-link text-nav" href="index.html">HOME</a></li>
+      <li><a class="nav-bar-link text-nav" href="projects.html" aria-current="page">INDEX</a></li>
+      <li><a class="nav-bar-link text-nav" href="say-hi.html">SAY HI :)</a></li>
+    </ul>
+  </nav>
+
+  <!-- ההמבורגר: בפינה השמאלית העליונה של החלון (12, 14 בפיגמה). פותח את בר הבחירה -->
+  <button class="menu-button projects-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
+    <span class="menu-button-line"></span>
+    <span class="menu-button-line"></span>
+    <span class="menu-button-line"></span>
+  </button>
+
+  <!-- אינדקס הפרויקטים: הפריים INDEX מהפיגמה (1440x810), ממורכז בחלון -->
+  <main class="projects-page">
+    <h1 class="projects-title text-page-title">INDEX</h1>
+    <p class="projects-subtitle text-subtitle">Project &amp; more</p>
+
+    <!-- העיגולים: כל פרויקט הוא עיגול עם תמונה.
+         --x ו---y: הפינה השמאלית העליונה של העיגול בפיגמה (פיקסלים בפריים).
+         התמונה חתוכה כמו בפיגמה (--crop-...), והשם מופיע ב-hover ובפוקוס.
+         פרויקט שעוד אין לו עמוד: בלי href, עם tabindex="0" (כדי שיהיה בניווט במקלדת).
+         כדי לחבר לו עמוד: מוסיפים href ומוחקים את tabindex -->
+    <ul class="projects-list">
+      <li>
+        <a class="project-circle" href="leftovers-project.html" aria-label="Leftovers*" style="--x: 867; --y: 252">
+          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-3.png" alt="" style="--crop-width: 123.11%; --crop-height: 153.68%; --crop-left: -11.36%; --crop-top: -12.98%"></span>
+          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Leftovers*</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="project-circle" tabindex="0" aria-label="Touch Grass" style="--x: 1139; --y: 252">
+          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-5.png" alt="" style="--crop-width: 100%; --crop-height: 178.2%; --crop-left: -0.01%; --crop-top: -46.37%"></span>
+          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Touch Grass</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="project-circle" href="the-perfect-crime-project.html" aria-label="The Perfect Crime" style="--x: 596; --y: 516">
+          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-1.png" alt=""></span>
+          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">The<br>Perfect<br>Crime</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="project-circle" tabindex="0" aria-label="Shunra" style="--x: 867; --y: 515">
+          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-4.png" alt="" style="--crop-width: 102.56%; --crop-height: 152.87%; --crop-left: -1.07%; --crop-top: -36.22%"></span>
+          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Shunra</span></span>
+        </a>
+      </li>
+      <li>
+        <a class="project-circle" tabindex="0" aria-label="Hora" style="--x: 1138; --y: 515">
+          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-2.png" alt="" style="--crop-width: 100.15%; --crop-height: 100%; --crop-left: -0.07%; --crop-top: 0.28%"></span>
+          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Hora</span></span>
+        </a>
+      </li>
+    </ul>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="keyboard-nav.js"></script>
+  <script src="cursor.js"></script>
+</body>
+</html>
