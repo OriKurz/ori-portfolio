@@ -1784,7 +1784,6 @@ if (projectsList) {
   const lookAhead = 0.25;    // כמה זמן קדימה (שניות) הדחייה צופה את ההתקרבות
   const sidePush = 1.2;      // כמה עיגולים שנעים זה מול זה מתגלגלים הצידה (ביחס לדחייה)
   const step = 1 / 120;      // צעד החישוב (שניות)
-  const textDelay = 0.5;     // הטקסט מתחת לממורכז מופיע לכל המאוחר אחרי זמן זה (שניות)
 
   let centered = null;       // העיגול הממורכז, או null במצב של שתי השורות
   let ring = [];             // העיגולים הקטנים במעגל, לפי הסדר בכיוון השעון (מתחילים משמאל למעלה)
@@ -2122,11 +2121,11 @@ if (projectsList) {
       simulate(dt, (now - startTime) / 1000 - elapsed + dt);
       elapsed -= step;
     }
-    // הטקסט: כשהעיגול הממורכז עבר 90% מהדרך, ולא יותר מ-textDelay אחרי הלחיצה
+    // הטקסט: רק כשהעיגול הממורכז עבר 90% מהדרך שלו למקום (גם אם הוא עוד מתנודד מעט)
     if (centered && !textShown) {
       const path = Math.hypot(centered.tx - centered.fromX, centered.ty - centered.fromY);
       const left = Math.hypot(centered.tx - centered.x, centered.ty - centered.y);
-      if ((now - startTime) / 1000 >= textDelay || left <= path * 0.1) showText();
+      if (left <= path * 0.1) showText();
     }
     if (isSettled((now - startTime) / 1000)) {
       running = false;
