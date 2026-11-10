@@ -788,7 +788,7 @@ if (navBar) {
 
       afterUnderlineDrawn(link, function () {
         if (link.href) {
-          window.location.href = link.href;
+          goToPage(link.href); // מעבר בין עמודים (page-transition.js)
         } else {
           // כפתור שעוד לא מוביל לשום מקום: הקו נאסף חזרה (אלא אם העכבר עליו)
           link.classList.remove("is-pressed");
@@ -1646,7 +1646,7 @@ contactBanners.forEach(function (banner) {
     start();
     const href = banner.href;
     touchX = null;
-    setTimeout(function () { window.location.href = href; }, fastDuration + 4 * fastStagger);
+    setTimeout(function () { goToPage(href); }, fastDuration + 4 * fastStagger);
   });
 
   measure();

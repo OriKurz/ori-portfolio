@@ -130,6 +130,14 @@
   --cursor-size: 14px;
   --cursor-pop-duration: 0.18s;
 
+  /* מעבר בין עמודים (page-transition.js): קו טוש שמכסה את המסך ונמחק בעמוד הבא */
+  --page-transition-cover: 500ms;      /* הקו מצטייר ומכסה את המסך */
+  --page-transition-hold: 300ms;       /* המסך בצבע אחד, והעמוד החדש נטען */
+  --page-transition-reveal: 500ms;     /* הקו נמחק וחושף את העמוד החדש */
+  --page-transition-max-wait: 2000ms;  /* עמוד שנטען לאט: לא מחכים יותר מזה */
+  --page-transition-thickness: 0.34;   /* עובי הקו ביחס לגובה המסך (כשליש) */
+  --layer-page-transition: 2147483646; /* מעל הכול, מתחת לסמן העכבר */
+
   /* פונטים */
   --font-title: "Reisinger Michal", sans-serif;
   --font-text: "PP Telegraf", "TheBasics Corporate", sans-serif; /* עברית מוצגת ב-TheBasics */
@@ -4414,4 +4422,48 @@ body {
     bottom: auto;
     width: 100%;
   }
+}
+
+/* =========================================
+   מעבר בין עמודים (page-transition.js)
+   קו עבה בצבע אקראי מהפלטה מצטייר על כל המסך, ובעמוד הבא נמחק וחושף אותו.
+   ========================================= */
+.page-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100lvh; /* בטלפון: גם מאחורי שורת הכתובת */
+  z-index: var(--layer-page-transition);
+}
+
+/* המסך מכוסה כולו: הרקע ממלא גם כל פינה שהקו אולי לא הגיע אליה */
+.page-transition.is-covered {
+  background-color: var(--page-transition-color);
+}
+
+.page-transition svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.page-transition path {
+  fill: none;
+  stroke: var(--page-transition-color);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* העמוד החדש מכוסה בצבע כבר מהציור הראשון, עד שהקו נבנה */
+.is-page-transition-arriving::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100lvh;
+  z-index: var(--layer-page-transition);
+  background-color: var(--page-transition-color);
 }
