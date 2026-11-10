@@ -49,18 +49,9 @@
     return "var(" + options[Math.floor(Math.random() * options.length)] + ")";
   }
 
-  // גרף התנועה: התחלה איטית, האצה באמצע והאטה ארוכה ורכה בסוף
-  // (כמו cubic-bezier(0.7, 0, 0.15, 1) ב-CSS)
-  const ease = { x1: 0.7, y1: 0, x2: 0.15, y2: 1 };
+  // גרף התנועה: מתון (ease-in-out-sine). מתחיל ונגמר ברכות, בקצב כמעט אחיד באמצע
   function easeInOut(t) {
-    function bezier(a, b, u) { return 3 * a * u * (1 - u) * (1 - u) + 3 * b * u * u * (1 - u) + u * u * u; }
-    // מוצאים את הנקודה על העקומה שבה הזמן הוא t (חיפוש בינארי), ומחזירים את ההתקדמות בה
-    let low = 0, high = 1, u = t;
-    for (let i = 0; i < 24; i++) {
-      u = (low + high) / 2;
-      if (bezier(ease.x1, ease.x2, u) < t) low = u; else high = u;
-    }
-    return bezier(ease.y1, ease.y2, u);
+    return -(Math.cos(Math.PI * t) - 1) / 2;
   }
 
   // ----- הקו -----
@@ -151,9 +142,11 @@
   }
 
   // מריץ את התנועה של הקו: from ו-to הם כמה מהקו מוסתר (dashoffset, ביחס לאורך)
+  // הזמן נמדד מהפריים הראשון, כדי שהתנועה לא תקפוץ אם הפריים הראשון מתעכב
   function animate(stroke, from, to, duration, done) {
-    const start = performance.now();
+    let start = null;
     function frame(now) {
+      if (start === null) start = now;
       const t = Math.min(1, (now - start) / duration);
       stroke.path.style.strokeDashoffset = (from + (to - from) * easeInOut(t)) * stroke.length;
       if (t < 1) requestAnimationFrame(frame);
@@ -173,11 +166,8 @@
     }
     leaving = true;
 
-    // מתחילים לטעון את העמוד הבא כבר עכשיו
-    const prefetch = document.createElement("link");
-    prefetch.rel = "prefetch";
-    prefetch.href = url.href;
-    document.head.appendChild(prefetch);
+    // מתחילים לטעון את העמוד הבא כבר עכשיו (אם לא התחלנו כשהעכבר התקרב)
+    prefetch(url.href);
 
     const color = pickColor(url);
     const stroke = createOverlay(color);
@@ -202,6 +192,33 @@
     if (url.hash && url.pathname === window.location.pathname) return false;
     return true;
   }
+
+  // טעינה מראש של עמוד, כדי שיהיה מוכן כשהקו מכסה את המסך (פעם אחת לכל עמוד)
+  const prefetched = new Set();
+  function prefetch(href) {
+    const url = new URL(href, window.location.href);
+    url.hash = "";
+    if (prefetched.has(url.href)) return;
+    prefetched.add(url.href);
+    const link = document.createElement("link");
+    if (link.relList && link.relList.supports && link.relList.supports("prefetch")) {
+      link.rel = "prefetch";
+      link.href = url.href;
+      document.head.appendChild(link);
+    } else if (window.fetch) {
+      // ספארי (אין prefetch): טוענים את העמוד ברקע למטמון של הדפדפן
+      fetch(url.href, { credentials: "same-origin" }).catch(function () {});
+    }
+  }
+
+  // העכבר מתקרב לקישור, פוקוס במקלדת או נגיעה: טוענים מראש את העמוד שלו
+  function prefetchFromEvent(event) {
+    const link = event.target.closest && event.target.closest("a[href]");
+    if (link && isPageLink(link)) prefetch(link.href);
+  }
+  document.addEventListener("pointerover", prefetchFromEvent, { passive: true });
+  document.addEventListener("pointerdown", prefetchFromEvent, { passive: true });
+  document.addEventListener("focusin", prefetchFromEvent);
 
   // כל לחיצה על קישור בין עמודים. רץ אחרי כל הסקריפטים האחרים,
   // כך שקישור שסקריפט כבר טיפל בו (preventDefault) לא מושפע
@@ -245,22 +262,26 @@
     stroke.path.style.strokeDashoffset = 0;
     root.classList.remove("is-page-transition-arriving");
 
-    // ההחזקה: לפחות --page-transition-hold מסוף הכיסוי, ועד שהעמוד נטען (עם גבול עליון)
+    // ההחזקה: --page-transition-hold מסוף הכיסוי. היא מתארכת רק אם העמוד עוד לא מוכן
+    // (הפונטים עוד נטענים), ולא יותר מ---page-transition-max-wait
     const holdEnd = arrival.coveredAt + cssTime("--page-transition-hold");
     let revealed = false;
     function reveal() {
       if (revealed) return;
       revealed = true;
       setTimeout(function () {
-        stroke.overlay.classList.remove("is-covered");
-        // הקו נמחק מההתחלה שלו: 0 עד 1- (החלק הגלוי נסוג לסוף המסלול, למעלה מימין)
-        animate(stroke, 0, -1, cssTime("--page-transition-reveal"), function () {
-          stroke.overlay.remove();
+        // מסירים את הרקע המלא ומתחילים למחוק באותו פריים, כדי שלא יהיה הבהוב
+        requestAnimationFrame(function () {
+          stroke.overlay.classList.remove("is-covered");
+          // הקו נמחק מההתחלה שלו: 0 עד 1- (החלק הגלוי נסוג לסוף המסלול, למעלה מימין)
+          animate(stroke, 0, -1, cssTime("--page-transition-reveal"), function () {
+            stroke.overlay.remove();
+          });
         });
       }, Math.max(0, holdEnd - Date.now()));
     }
-    if (document.readyState === "complete") reveal();
-    else window.addEventListener("load", reveal);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(reveal);
+    else reveal();
     setTimeout(reveal, cssTime("--page-transition-max-wait"));
   });
 })();

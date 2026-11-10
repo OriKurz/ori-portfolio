@@ -131,10 +131,10 @@
   --cursor-pop-duration: 0.18s;
 
   /* מעבר בין עמודים (page-transition.js): קו טוש שמכסה את המסך ונמחק בעמוד הבא */
-  --page-transition-cover: 800ms;      /* הקו מצטייר ומכסה את המסך */
-  --page-transition-hold: 400ms;       /* המסך בצבע אחד, והעמוד החדש נטען */
-  --page-transition-reveal: 800ms;     /* הקו נמחק וחושף את העמוד החדש */
-  --page-transition-max-wait: 2000ms;  /* עמוד שנטען לאט: לא מחכים יותר מזה */
+  --page-transition-cover: 900ms;      /* הקו מצטייר ומכסה את המסך */
+  --page-transition-hold: 150ms;       /* המסך בצבע אחד (הקצר ביותר). העמוד החדש נטען מראש */
+  --page-transition-reveal: 900ms;     /* הקו נמחק וחושף את העמוד החדש */
+  --page-transition-max-wait: 1500ms;  /* עמוד שעוד לא מוכן: ההחזקה מתארכת, אבל לא יותר מזה */
   --page-transition-thickness: 0.34;   /* עובי הקו ביחס לגובה המסך (כשליש) */
   --layer-page-transition: 2147483646; /* מעל הכול, מתחת לסמן העכבר */
 
@@ -4435,6 +4435,9 @@ body {
   width: 100vw;
   height: 100lvh; /* בטלפון: גם מאחורי שורת הכתובת */
   z-index: var(--layer-page-transition);
+  /* שכבה נפרדת: הציור של הקו לא מצייר מחדש את העמוד שמתחתיו (60 פריימים לשנייה) */
+  will-change: transform;
+  contain: strict;
 }
 
 /* המסך מכוסה כולו: הרקע ממלא גם כל פינה שהקו אולי לא הגיע אליה */
