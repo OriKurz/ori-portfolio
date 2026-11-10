@@ -1725,6 +1725,8 @@ if (projectsList) {
     const circle = li.querySelector(".project-circle");
     return {
       circle: circle,
+      frame: circle.querySelector(".project-circle-frame"),
+      image: circle.querySelector(".project-circle-image"),
       text: li.querySelector(".project-circle-text"),
       // המיקום בשתי השורות בפיגמה (הפינה השמאלית העליונה)
       figmaX: parseFloat(circle.style.getPropertyValue("--x")),
@@ -1785,6 +1787,9 @@ if (projectsList) {
   let running = false;
   let lastTime = 0;
   let startTime = 0;
+  let textPosition = null;   // איפה הטקסט מתחת לעיגול הממורכז
+  let frameSize = 0;         // הגודל הקבוע של התמונה בכל עיגול (הכי גדול שהעיגול מגיע אליו)
+  let line = 0;              // עובי המסגרת הצהובה
 
   // פיקסל בפיגמה במסך (במחשב: --u של העמוד)
   function unit() {
@@ -1916,6 +1921,30 @@ if (projectsList) {
     return swapped.map(function (item, index) { return swapped[(index - 1 + swapped.length) % swapped.length]; });
   }
 
+  // ----- הכנה מראש (בטעינה ובשינוי גודל החלון) -----
+  // התמונה בכל עיגול מצוירת פעם אחת בגודל הכי גדול שהעיגול מגיע אליו (הממורכז),
+  // ובתנועה רק מוקטנת ב-transform. כך הדפדפן לא מצייר מחדש תמונות גדולות בכל פריים,
+  // וגם המעבר הראשון חלק כמו הבאים
+  function prepareFrames() {
+    line = parseFloat(getComputedStyle(items[0].circle).borderLeftWidth) || 0;
+    // היעדים של סידור ממורכז לדוגמה, רק כדי למדוד את העיגול הגדול
+    const savedCentered = centered;
+    const savedRing = ring;
+    centered = items[0];
+    ring = firstRing();
+    computeTargets();
+    let largest = centered.tr * 2;
+    centered = savedCentered;
+    ring = savedRing;
+    computeTargets();
+    items.forEach(function (item) { largest = Math.max(largest, item.tr * 2); });
+    frameSize = Math.ceil(largest - 2 * line);
+    items.forEach(function (item) {
+      item.frame.style.width = frameSize + "px";
+      item.frame.style.height = frameSize + "px";
+    });
+  }
+
   // ----- ציור -----
   function draw() {
     items.forEach(function (item) {
@@ -1924,19 +1953,25 @@ if (projectsList) {
       item.circle.style.top = (item.y - item.r) + "px";
       item.circle.style.width = size + "px";
       item.circle.style.height = size + "px";
+      item.frame.style.transform = "scale(" + Math.max(0, size - 2 * line) / frameSize + ")";
     });
   }
 
-  function placeText(textPosition) {
+  // הטקסט של הממורכז הקודם נעלם מיד, והעיגול הממורכז מקבל את הכיסוי עם השם
+  function placeText(position) {
+    textPosition = position;
     items.forEach(function (item) {
-      const visible = textPosition && item === centered;
-      if (visible) {
-        item.text.style.left = textPosition.x + "px";
-        item.text.style.top = textPosition.y + "px";
-      }
-      item.text.classList.toggle("is-visible", Boolean(visible));
+      item.text.classList.remove("is-visible");
       item.circle.classList.toggle("is-centered", item === centered);
     });
+  }
+
+  // הטקסט מופיע רק כשהעיגול הממורכז כבר התייצב במקומו
+  function showText() {
+    if (!centered || !textPosition) return;
+    centered.text.style.left = textPosition.x + "px";
+    centered.text.style.top = textPosition.y + "px";
+    centered.text.classList.add("is-visible");
   }
 
   // קופץ ישר ליעד, בלי תנועה (בטעינה, בשינוי גודל החלון, ובצמצום תנועה)
@@ -1946,6 +1981,7 @@ if (projectsList) {
       item.vx = 0; item.vy = 0; item.vr = 0;
     });
     draw();
+    showText();
   }
 
   // האצה והאטה רכות ומודגשות
@@ -2081,8 +2117,7 @@ if (projectsList) {
     if (!centered) ring = [];
     else if (!previous) ring = firstRing();
     else ring = turnRing(previous);
-    const textPosition = computeTargets();
-    placeText(textPosition);
+    placeText(computeTargets());
     if (reducedMotion.matches) {
       snap();
       return;
@@ -2143,11 +2178,17 @@ if (projectsList) {
 
   // שינוי גודל החלון: הכול במקום, בלי תנועה
   window.addEventListener("resize", function () {
+    prepareFrames();
     placeText(computeTargets());
     items.forEach(function (item) { item.bumpX = 0; item.bumpY = 0; item.fromX = item.tx; item.fromY = item.ty; item.fromR = item.tr; });
     snap();
   });
 
+  prepareFrames();
   placeText(computeTargets());
   snap();
+  // מפענחים את התמונות מראש, כדי שלא יפוענחו באמצע התנועה הראשונה
+  items.forEach(function (item) {
+    if (item.image && item.image.decode) item.image.decode().catch(function () {});
+  });
 }

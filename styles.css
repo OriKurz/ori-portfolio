@@ -1239,8 +1239,7 @@
 
   /* העיגולים: 238px בפיגמה, עם מסגרת צהובה בעובי הקו */
   --project-circle-size: calc(238 * var(--u));
-  /* הטקסט מתחת לעיגול הממורכז: מופיע אחרי שהעיגול כמעט הגיע */
-  --project-text-delay: 1s;
+  /* הטקסט מתחת לעיגול הממורכז: מופיע ברכות אחרי שהעיגול התייצב */
   --project-text-fade: 0.4s;
 }
 
@@ -4321,12 +4320,18 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* התמונה חתוכה לעיגול, בתוך המסגרת */
+/* התמונה חתוכה לעיגול, בתוך המסגרת. script.js נותן לה גודל קבוע (הכי גדול שהעיגול מגיע אליו)
+   ומקטין אותה ב-transform, כדי שהתנועה תהיה חלקה בלי לצייר מחדש את התמונה בכל פריים */
 .project-circle-frame {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   border-radius: 50%;
+  translate: -50% -50%;
+  will-change: transform;
 }
 
 /* החיתוך כמו בפיגמה. בלי חיתוך: התמונה נמתחת על כל העיגול (כמו בפיגמה) */
@@ -4361,12 +4366,13 @@ body {
   }
 }
 
-/* העיגול הממורכז: הכיסוי בלי השם (השם כבר כתוב מתחתיו), רק כדי לסמן שלחיצה נכנסת לפרויקט */
-.project-circle.is-centered .project-circle-name {
-  visibility: hidden;
+/* העיגול הממורכז: הכיסוי עם השם מופיע קבוע, כל עוד הוא ממורכז */
+.project-circle.is-centered .project-circle-overlay {
+  opacity: 1;
 }
 
-/* הטקסט מתחת לעיגול הממורכז: script.js ממקם אותו. מופיע ברכות אחרי שהעיגול מגיע */
+/* הטקסט מתחת לעיגול הממורכז: script.js ממקם אותו ומציג אותו רק אחרי שהעיגול התייצב.
+   כשבוחרים עיגול אחר הוא נעלם מיד */
 .project-circle-text {
   position: absolute;
   left: 0;
@@ -4377,14 +4383,13 @@ body {
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--transition-speed) ease, visibility 0s var(--transition-speed);
   pointer-events: none;
 }
 
 .project-circle-text.is-visible {
   opacity: 1;
   visibility: visible;
-  transition: opacity var(--project-text-fade) ease var(--project-text-delay), visibility 0s;
+  transition: opacity var(--project-text-fade) ease;
 }
 
 /* Focus במקלדת: כמו hover, בלי קו מתאר */
