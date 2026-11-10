@@ -1233,6 +1233,9 @@
 
   /* העיגולים: 238px בפיגמה, עם מסגרת צהובה בעובי הקו */
   --project-circle-size: calc(238 * var(--u));
+  /* הטקסט מתחת לעיגול הממורכז: מופיע אחרי שהעיגול כמעט הגיע */
+  --project-text-delay: 0.35s;
+  --project-text-fade: 0.4s;
 }
 
 /* ----- עמוד אינדקס הפרויקטים במובייל -----
@@ -4297,6 +4300,8 @@ body {
 
 /* ----- עיגול של פרויקט -----
    במחשב: במיקום שלו בפיגמה (--x, --y), ביחס לפינה של מבנה העיגולים.
+   אחרי שהעמוד נטען, script.js מזיז את העיגולים ומשנה את הגודל שלהם (left, top, width, height),
+   גם בסידור של שתי השורות וגם בסידור סביב עיגול ממורכז.
    המסגרת הצהובה בתוך הגודל של העיגול */
 .project-circle {
   position: absolute;
@@ -4350,6 +4355,32 @@ body {
   }
 }
 
+/* העיגול הממורכז: הכיסוי בלי השם (השם כבר כתוב מתחתיו), רק כדי לסמן שלחיצה נכנסת לפרויקט */
+.project-circle.is-centered .project-circle-name {
+  visibility: hidden;
+}
+
+/* הטקסט מתחת לעיגול הממורכז: script.js ממקם אותו. מופיע ברכות אחרי שהעיגול מגיע */
+.project-circle-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  translate: -50% 0;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-speed) ease, visibility 0s var(--transition-speed);
+  pointer-events: none;
+}
+
+.project-circle-text.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--project-text-fade) ease var(--project-text-delay), visibility 0s;
+}
+
 /* Focus במקלדת: כמו hover, בלי קו מתאר */
 .project-circle:focus-visible {
   outline: none;
@@ -4376,19 +4407,11 @@ body {
     padding-bottom: var(--projects-gap);
   }
 
+  /* הגובה של מבנה העיגולים: script.js קובע לפי הסידורים */
   .projects-list {
-    position: static;
-    width: auto;
-    height: auto;
-    display: grid;
-    grid-template-columns: repeat(2, var(--project-circle-size));
-    gap: var(--projects-gap);
-    justify-content: center;
-  }
-
-  .project-circle {
     position: relative;
-    left: 0;
-    top: 0;
+    right: auto;
+    bottom: auto;
+    width: 100%;
   }
 }

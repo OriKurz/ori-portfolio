@@ -1703,3 +1703,304 @@ if (descriptionScroll && projectPageScroll && bottomArea) {
   window.addEventListener("resize", followPageScroll);
   followPageScroll();
 }
+
+// =========================================
+// אינדקס הפרויקטים (projects.html): לחיצה על עיגול ממרכזת אותו
+// במצב הרגיל העיגולים בשתי שורות. לחיצה על עיגול: הוא גדל וזז למרכז,
+// וכל השאר קטנים ומסתדרים סביבו במעגל (הגדלים והמיקומים מהפיגמה).
+// לחיצה על העיגול הממורכז מובילה לעמוד שלו (אם יש לו).
+// לחיצה מחוץ לעיגולים, או Esc: חוזרים לשתי השורות.
+// התנועה: כל עיגול נע בקפיץ רך וקופצני (עם overshoot קטן), והעיגולים לא חודרים זה לזה:
+// כשעיגול גדל או זז, השכנים נדחפים ומגיבים, והתגובות נרגעות בהדרגה.
+// ב-prefers-reduced-motion המעבר מיידי.
+// =========================================
+
+const projectsList = document.querySelector(".projects-list");
+
+if (projectsList) {
+  const items = Array.from(projectsList.querySelectorAll("li")).map(function (li) {
+    const circle = li.querySelector(".project-circle");
+    return {
+      circle: circle,
+      text: li.querySelector(".project-circle-text"),
+      // המיקום בשתי השורות בפיגמה (הפינה השמאלית העליונה)
+      figmaX: parseFloat(circle.style.getPropertyValue("--x")),
+      figmaY: parseFloat(circle.style.getPropertyValue("--y")),
+      // המצב בתנועה: מרכז, רדיוס ומהירויות (בפיקסלים של המסך)
+      x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0,
+      // היעד
+      tx: 0, ty: 0, tr: 0
+    };
+  });
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const mobileScreen = window.matchMedia("(max-width: 767.98px)");
+
+  // ----- המידות מהפיגמה (פיקסלים בפריים של 1440) -----
+  const design = {
+    // שתי השורות: הפינה של המבנה, הגודל שלו וגודל עיגול
+    listX: 596, listY: 252, listWidth: 781, listHeight: 502,
+    size: 238,
+    // הסידור סביב עיגול ממורכז: העיגול הגדול, העיגולים הקטנים והטקסט
+    bigX: 932, bigY: 279, bigSize: 256.5,
+    smallSize: 151.25,
+    smallSlots: [[781, 128], [1188, 128], [781, 530], [1188, 530]],
+    textTop: 553,
+    // המבנה של הסידור הממורכז (לגובה במובייל)
+    groupX: 781, groupY: 128, groupWidth: 558.5, groupHeight: 553.25,
+    gap: 33
+  };
+
+  // ----- התנועה -----
+  const spring = 130;        // כמה חזק הקפיץ מושך ליעד
+  const damping = 11;        // כמה מהר התנודות נרגעות (פחות = יותר קופצני)
+  const sizeSpring = 170;    // הקפיץ של הגודל: קצת אחר, כדי שהתנועה תרגיש אורגנית
+  const sizeDamping = 12;
+  const pushStrength = 18;   // כמה חזק עיגול דוחף עיגול שנכנס אליו
+  const sidePush = 30;       // כמה חזק עיגולים שנתקעים זה מול זה מתגלגלים הצידה
+  const step = 1 / 120;      // צעד החישוב (שניות)
+
+  let centered = null;       // העיגול הממורכז, או null במצב של שתי השורות
+  let running = false;
+  let lastTime = 0;
+
+  // פיקסל בפיגמה במסך (במחשב: --u של העמוד)
+  function unit() {
+    return parseFloat(getComputedStyle(projectsList).width) / design.listWidth;
+  }
+
+  // ----- היעדים של כל עיגול, לפי הסידור הנוכחי -----
+  function computeTargets() {
+    const mobile = mobileScreen.matches;
+    let scale, originX, originY;
+    let textPosition = null;
+
+    if (!mobile) {
+      // במחשב: הכול ביחס לפינה של מבנה שתי השורות (שצמוד לשוליים הימניים והתחתונים)
+      projectsList.style.height = "";
+      scale = unit();
+      originX = design.listX;
+      originY = design.listY;
+    }
+
+    if (mobile) {
+      // במובייל (אין עיצוב): שני טורים עם רווח של 33, והסידור הממורכז מוקטן לרוחב המסך
+      const width = projectsList.clientWidth;
+      const mobileUnit = width / 508;
+      const gap = design.gap * mobileUnit;
+      const size = (width - 3 * gap) / 2;
+      const rows = Math.ceil(items.length / 2);
+      const rowsHeight = rows * size + (rows - 1) * gap;
+      const groupScale = (width - 2 * gap) / design.groupWidth;
+      projectsList.style.height = Math.max(rowsHeight, design.groupHeight * groupScale) + "px";
+
+      if (!centered) {
+        items.forEach(function (item, index) {
+          item.tx = gap + (index % 2) * (size + gap) + size / 2;
+          item.ty = Math.floor(index / 2) * (size + gap) + size / 2;
+          item.tr = size / 2;
+        });
+        return null;
+      }
+      scale = groupScale;
+      originX = design.groupX - gap / groupScale;
+      originY = design.groupY;
+    } else if (!centered) {
+      items.forEach(function (item) {
+        item.tx = (item.figmaX - originX + design.size / 2) * scale;
+        item.ty = (item.figmaY - originY + design.size / 2) * scale;
+        item.tr = design.size / 2 * scale;
+      });
+      return null;
+    }
+
+    // הסידור הממורכז: הנבחר גדול במרכז, השאר קטנים במעגל סביבו
+    const bigCenterX = design.bigX + design.bigSize / 2;
+    const bigCenterY = design.bigY + design.bigSize / 2;
+    centered.tx = (bigCenterX - originX) * scale;
+    centered.ty = (bigCenterY - originY) * scale;
+    centered.tr = design.bigSize / 2 * scale;
+
+    const others = items.filter(function (item) { return item !== centered; });
+    ringSlots(others.length, bigCenterX, bigCenterY).forEach(function (slot, index) {
+      const item = others[index];
+      item.tx = (slot[0] - originX) * scale;
+      item.ty = (slot[1] - originY) * scale;
+      item.tr = design.smallSize / 2 * scale;
+    });
+
+    textPosition = { x: (bigCenterX - originX) * scale, y: (design.textTop - originY) * scale };
+    return textPosition;
+  }
+
+  // המקומות של העיגולים הקטנים (מרכזים), לפי סדר הקריאה (משמאל לימין, מלמעלה למטה).
+  // ארבעה: בדיוק כמו בפיגמה. מספר אחר: במעגל באותו מרחק מהמרכז, מתחילים משמאל למעלה
+  function ringSlots(count, centerX, centerY) {
+    const half = design.smallSize / 2;
+    if (count === design.smallSlots.length) {
+      return design.smallSlots.map(function (slot) { return [slot[0] + half, slot[1] + half]; });
+    }
+    const first = design.smallSlots[0];
+    const radius = Math.hypot(first[0] + half - centerX, first[1] + half - centerY);
+    const slots = [];
+    for (let i = 0; i < count; i++) {
+      const angle = -3 * Math.PI / 4 + (i / count) * Math.PI * 2;
+      slots.push([centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle)]);
+    }
+    return slots.sort(function (a, b) { return Math.round(a[1] - b[1]) || a[0] - b[0]; });
+  }
+
+  // ----- ציור -----
+  function draw() {
+    items.forEach(function (item) {
+      const size = Math.max(0, item.r * 2);
+      item.circle.style.left = (item.x - item.r) + "px";
+      item.circle.style.top = (item.y - item.r) + "px";
+      item.circle.style.width = size + "px";
+      item.circle.style.height = size + "px";
+    });
+  }
+
+  function placeText(textPosition) {
+    items.forEach(function (item) {
+      const visible = textPosition && item === centered;
+      if (visible) {
+        item.text.style.left = textPosition.x + "px";
+        item.text.style.top = textPosition.y + "px";
+      }
+      item.text.classList.toggle("is-visible", Boolean(visible));
+      item.circle.classList.toggle("is-centered", item === centered);
+    });
+  }
+
+  // קופץ ישר ליעד, בלי תנועה (בטעינה, בשינוי גודל החלון, ובצמצום תנועה)
+  function snap() {
+    items.forEach(function (item) {
+      item.x = item.tx; item.y = item.ty; item.r = item.tr;
+      item.vx = 0; item.vy = 0; item.vr = 0;
+    });
+    draw();
+  }
+
+  // ----- הפיזיקה: קפיצים ליעד, ודחיפה בין עיגולים שנכנסים זה לזה -----
+  function simulate(dt) {
+    items.forEach(function (item) {
+      item.vx += (spring * (item.tx - item.x) - damping * item.vx) * dt;
+      item.vy += (spring * (item.ty - item.y) - damping * item.vy) * dt;
+      item.vr += (sizeSpring * (item.tr - item.r) - sizeDamping * item.vr) * dt;
+    });
+
+    // עיגולים לא חודרים זה לזה: מי שנכנס לשכן נהדף החוצה, והשכן מקבל דחיפה.
+    // עיגול קטן זז יותר מעיגול גדול
+    for (let i = 0; i < items.length; i++) {
+      for (let j = i + 1; j < items.length; j++) {
+        const a = items[i];
+        const b = items[j];
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let distance = Math.hypot(dx, dy);
+        const overlap = a.r + b.r - distance;
+        if (overlap <= 0) continue;
+        if (distance < 0.001) { dx = 1; dy = 0; distance = 1; }
+        const nx = dx / distance;
+        const ny = dy / distance;
+        const weightA = b.r / (a.r + b.r);
+        const weightB = a.r / (a.r + b.r);
+        a.x -= nx * overlap * weightA;
+        a.y -= ny * overlap * weightA;
+        b.x += nx * overlap * weightB;
+        b.y += ny * overlap * weightB;
+        a.vx -= nx * overlap * pushStrength * weightA;
+        a.vy -= ny * overlap * pushStrength * weightA;
+        b.vx += nx * overlap * pushStrength * weightB;
+        b.vy += ny * overlap * pushStrength * weightB;
+        // דחיפה הצידה: שני עיגולים שמחליפים מקום (נעים זה מול זה) מתגלגלים זה סביב זה,
+        // במקום להיתקע ראש בראש
+        const side = Math.sign(nx * (b.ty - a.ty) - ny * (b.tx - a.tx)) || 1;
+        a.vx -= -ny * side * overlap * sidePush * weightA;
+        a.vy -= nx * side * overlap * sidePush * weightA;
+        b.vx += -ny * side * overlap * sidePush * weightB;
+        b.vy += nx * side * overlap * sidePush * weightB;
+      }
+    }
+
+    items.forEach(function (item) {
+      item.x += item.vx * dt;
+      item.y += item.vy * dt;
+      item.r += item.vr * dt;
+    });
+  }
+
+  function isSettled() {
+    return items.every(function (item) {
+      return Math.abs(item.tx - item.x) < 0.2 && Math.abs(item.ty - item.y) < 0.2 && Math.abs(item.tr - item.r) < 0.2 &&
+        Math.abs(item.vx) < 0.5 && Math.abs(item.vy) < 0.5 && Math.abs(item.vr) < 0.5;
+    });
+  }
+
+  function tick(now) {
+    let elapsed = Math.min(0.05, (now - lastTime) / 1000);
+    lastTime = now;
+    while (elapsed > 0) {
+      simulate(Math.min(step, elapsed));
+      elapsed -= step;
+    }
+    if (isSettled()) {
+      running = false;
+      snap();
+      return;
+    }
+    draw();
+    requestAnimationFrame(tick);
+  }
+
+  // ----- מעבר לסידור חדש -----
+  function arrange(newCentered) {
+    centered = newCentered;
+    const textPosition = computeTargets();
+    placeText(textPosition);
+    if (reducedMotion.matches) {
+      snap();
+      return;
+    }
+    if (!running) {
+      running = true;
+      lastTime = performance.now();
+      requestAnimationFrame(tick);
+    }
+  }
+
+  // לחיצה (וגם Enter, וגם נגיעה בטלפון): עיגול שלא ממורכז מתמרכז.
+  // העיגול הממורכז: הקישור עובד כרגיל (בלי עמוד: לא קורה כלום)
+  function activate(item, event) {
+    if (item === centered) return;
+    event.preventDefault();
+    arrange(item);
+  }
+
+  items.forEach(function (item) {
+    item.circle.addEventListener("click", function (event) {
+      activate(item, event);
+    });
+    // קישור בלי href לא מקבל click מ-Enter, אז מטפלים בו כאן
+    item.circle.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && !item.circle.hasAttribute("href")) activate(item, event);
+    });
+  });
+
+  // לחיצה מחוץ לעיגולים, או Esc: חוזרים לשתי השורות
+  document.addEventListener("click", function (event) {
+    if (centered && !event.target.closest(".project-circle")) arrange(null);
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && centered) arrange(null);
+  });
+
+  // שינוי גודל החלון: הכול במקום, בלי תנועה
+  window.addEventListener("resize", function () {
+    placeText(computeTargets());
+    snap();
+  });
+
+  placeText(computeTargets());
+  snap();
+}

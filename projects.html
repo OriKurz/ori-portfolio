@@ -38,40 +38,53 @@
     <p class="projects-subtitle text-subtitle">Project &amp; more</p>
 
     <!-- העיגולים: כל פרויקט הוא עיגול עם תמונה.
-         --x ו---y: הפינה השמאלית העליונה של העיגול בפיגמה (פיקסלים בפריים).
+         --x ו---y: הפינה השמאלית העליונה של העיגול בפיגמה (פיקסלים בפריים), במצב של שתי השורות.
          התמונה חתוכה כמו בפיגמה (--crop-...), והשם מופיע ב-hover ובפוקוס.
+         לחיצה על עיגול ממרכזת אותו וכל השאר מסתדרים סביבו (script.js).
+         לחיצה על העיגול הממורכז מובילה לעמוד שלו.
          פרויקט שעוד אין לו עמוד: בלי href, עם tabindex="0" (כדי שיהיה בניווט במקלדת).
-         כדי לחבר לו עמוד: מוסיפים href ומוחקים את tabindex -->
+         כדי לחבר לו עמוד: מוסיפים href ומוחקים את tabindex.
+         פרויקט חדש: עוד li באותו מבנה, והוא מצטרף לבד למעגל -->
     <ul class="projects-list">
       <li>
         <a class="project-circle" href="leftovers-project.html" aria-label="Leftovers*" style="--x: 867; --y: 252">
           <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-3.png" alt="" style="--crop-width: 123.11%; --crop-height: 153.68%; --crop-left: -11.36%; --crop-top: -12.98%"></span>
           <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Leftovers*</span></span>
         </a>
+        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
+        <p class="project-circle-text text-subtitle">The story of<br>Villa Epecuén<br>Map Design<br>&amp; Data Visualization<br>2026</p>
       </li>
       <li>
         <a class="project-circle" tabindex="0" aria-label="Touch Grass" style="--x: 1139; --y: 252">
           <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-5.png" alt="" style="--crop-width: 100%; --crop-height: 178.2%; --crop-left: -0.01%; --crop-top: -46.37%"></span>
           <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Touch Grass</span></span>
         </a>
+        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
+        <p class="project-circle-text text-subtitle">motion elements<br>for conference<br>Motion Graphics<br>&amp; Branding<br>2026</p>
       </li>
       <li>
         <a class="project-circle" href="the-perfect-crime-project.html" aria-label="The Perfect Crime" style="--x: 596; --y: 516">
           <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-1.png" alt=""></span>
           <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">The<br>Perfect<br>Crime</span></span>
         </a>
+        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
+        <p class="project-circle-text text-subtitle">A sound-driven<br>short film<br>Motion Graphics<br>2026</p>
       </li>
       <li>
         <a class="project-circle" tabindex="0" aria-label="Shunra" style="--x: 867; --y: 515">
           <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-4.png" alt="" style="--crop-width: 102.56%; --crop-height: 152.87%; --crop-left: -1.07%; --crop-top: -36.22%"></span>
           <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Shunra</span></span>
         </a>
+        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
+        <p class="project-circle-text text-subtitle">A raw fish<br>brand for cats<br>Branding<br>2026</p>
       </li>
       <li>
         <a class="project-circle" tabindex="0" aria-label="Hora" style="--x: 1138; --y: 515">
           <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-2.png" alt="" style="--crop-width: 100.15%; --crop-height: 100%; --crop-left: -0.07%; --crop-top: 0.28%"></span>
           <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Hora</span></span>
         </a>
+        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
+        <p class="project-circle-text text-subtitle">An MTV ident- style<br>animation<br>Motion Graphics<br>2025</p>
       </li>
     </ul>
   </main>
