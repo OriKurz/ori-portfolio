@@ -1737,7 +1737,9 @@ if (projectsList) {
       fromX: 0, fromY: 0, fromR: 0,
       tx: 0, ty: 0, tr: 0,
       // הגל: לאיזה כיוון הוא נדחף, כמה, ומתי הגל מגיע אליו
-      bumpX: 0, bumpY: 0, delay: 0
+      bumpX: 0, bumpY: 0, delay: 0,
+      // עיגול קטן שעובר ממקום למקום במעגל: נע בקשת סביב העיגול הגדול, ולא בקו ישר דרכו
+      arc: null
     };
   });
   const title = document.querySelector(".projects-title");
@@ -1756,6 +1758,8 @@ if (projectsList) {
     // העיגולים הקטנים מוקטנים ל-80% מהפיגמה. הקצה החיצוני שלהם נשאר במקום, כדי שהשוליים לא ישתנו
     smallScale: 0.8,
     smallSlots: [[781, 128], [1188, 128], [781, 530], [1188, 530]],
+    // הקומפוזיציה הסגורה: המרווח בין העיגול הגדול לכל עיגול קטן
+    ringGap: 40,
     textTop: 553,
     // הגבולות של הסידור הממורכז
     groupX: 781, groupY: 128, groupWidth: 558.5, groupHeight: 553.25,
@@ -1780,6 +1784,7 @@ if (projectsList) {
   const lookAhead = 0.25;    // כמה זמן קדימה (שניות) הדחייה צופה את ההתקרבות
   const sidePush = 1.2;      // כמה עיגולים שנעים זה מול זה מתגלגלים הצידה (ביחס לדחייה)
   const step = 1 / 120;      // צעד החישוב (שניות)
+  const textDelay = 0.5;     // הטקסט מתחת לממורכז מופיע לכל המאוחר אחרי זמן זה (שניות)
 
   let centered = null;       // העיגול הממורכז, או null במצב של שתי השורות
   let ring = [];             // העיגולים הקטנים במעגל, לפי הסדר בכיוון השעון (מתחילים משמאל למעלה)
@@ -1787,7 +1792,9 @@ if (projectsList) {
   let running = false;
   let lastTime = 0;
   let startTime = 0;
+  let startGaps = [];        // המרווח בין כל שני עיגולים בתחילת המעבר
   let textPosition = null;   // איפה הטקסט מתחת לעיגול הממורכז
+  let textShown = false;
   let frameSize = 0;         // הגודל הקבוע של התמונה בכל עיגול (הכי גדול שהעיגול מגיע אליו)
   let line = 0;              // עובי המסגרת הצהובה
 
@@ -1879,15 +1886,18 @@ if (projectsList) {
   }
 
   // המקומות של העיגולים הקטנים (מרכזים), בכיוון השעון, מתחילים משמאל למעלה.
-  // ארבעה: הפינות כמו בפיגמה. מספר אחר: במעגל באותו מרחק מהמרכז.
-  // העיגול המוקטן צמוד לקצה החיצוני של המקום שלו בפיגמה, כך שהשוליים לא משתנים
+  // קומפוזיציה סגורה ומהודקת: כל עיגול קטן במרחק ringGap מהעיגול הגדול,
+  // בכיוון של הפינה שלו בפיגמה. ארבעה: הפינות. מספר אחר: במעגל באותו מרחק מהמרכז
   function ringSlots(count, centerX, centerY) {
     const half = design.smallSize / 2;
-    const shrink = half * (1 - design.smallScale);
+    const bigCenterX = design.bigX + design.bigSize / 2;
+    const bigCenterY = design.bigY + design.bigSize / 2;
+    const reach = design.bigSize / 2 + design.ringGap + half * design.smallScale;
     const corners = design.smallSlots.map(function (slot) {
-      const x = slot[0] + half;
-      const y = slot[1] + half;
-      return [x + Math.sign(x - centerX) * shrink, y + Math.sign(y - centerY) * shrink];
+      const dx = slot[0] + half - bigCenterX;
+      const dy = slot[1] + half - bigCenterY;
+      const length = Math.hypot(dx, dy);
+      return [centerX + dx / length * reach, centerY + dy / length * reach];
     });
     if (count === corners.length) {
       // בפיגמה: שמאל למעלה, ימין למעלה, שמאל למטה, ימין למטה. בכיוון השעון:
@@ -1960,15 +1970,17 @@ if (projectsList) {
   // הטקסט של הממורכז הקודם נעלם מיד, והעיגול הממורכז מקבל את הכיסוי עם השם
   function placeText(position) {
     textPosition = position;
+    textShown = false;
     items.forEach(function (item) {
       item.text.classList.remove("is-visible");
       item.circle.classList.toggle("is-centered", item === centered);
     });
   }
 
-  // הטקסט מופיע רק כשהעיגול הממורכז כבר התייצב במקומו
+  // הטקסט מופיע כשהעיגול הממורכז כמעט הגיע (tick), או מיד כשאין תנועה
   function showText() {
-    if (!centered || !textPosition) return;
+    if (!centered || !textPosition || textShown) return;
+    textShown = true;
     centered.text.style.left = textPosition.x + "px";
     centered.text.style.top = textPosition.y + "px";
     centered.text.classList.add("is-visible");
@@ -1993,9 +2005,13 @@ if (projectsList) {
   // כל עיגול נמשך בקפיץ רך אחרי נקודה שנעה לאט מהמקום הקודם שלו ליעד (עם האצה והאטה),
   // ועוד דחיפה קטנה של הגל שעולה ויורדת. הקפיץ מוסיף את ההתנודדות העדינה בסוף
   // טווח הדחייה והמרווח הקטן ביותר של שני עיגולים: לפי ההגדרות,
-  // אבל לא יותר מהמרווח שלהם במנוחה (בשתי השורות הם קרובים יותר מאשר במעגל)
-  function pairLimits(a, b) {
-    const restGap = Math.hypot(b.tx - a.tx, b.ty - a.ty) - a.tr - b.tr;
+  // אבל לא יותר מהמרווח שלהם במנוחה (בשתי השורות הם קרובים יותר מאשר במעגל),
+  // וגם לא יותר מהמרווח שלהם בתחילת המעבר. אחרת, ביציאה משתי השורות הצפופות
+  // הכוח פועל כבר מהפריים הראשון, נדלק ונכבה בכל צעד, והעיגולים רועדים
+  function pairLimits(i, j) {
+    const a = items[i];
+    const b = items[j];
+    const restGap = Math.min(startGaps[i][j], Math.hypot(b.tx - a.tx, b.ty - a.ty) - a.tr - b.tr);
     return {
       range: Math.min(repelRange * pixel, restGap * 0.9),
       smallest: Math.min(minGap * pixel, restGap * 0.6)
@@ -2007,8 +2023,14 @@ if (projectsList) {
       const progress = Math.min(1, Math.max(0, (time - item.delay) / duration));
       const eased = easeInOut(progress);
       const wave = Math.sin(Math.PI * eased);
-      const goalX = item.fromX + (item.tx - item.fromX) * eased + item.bumpX * wave;
-      const goalY = item.fromY + (item.ty - item.fromY) * eased + item.bumpY * wave;
+      let goalX = item.fromX + (item.tx - item.fromX) * eased + item.bumpX * wave;
+      let goalY = item.fromY + (item.ty - item.fromY) * eased + item.bumpY * wave;
+      if (item.arc) {
+        const angle = item.arc.fromAngle + item.arc.turn * eased;
+        const reach = item.arc.fromReach + (item.arc.toReach - item.arc.fromReach) * eased;
+        goalX = item.arc.x + Math.cos(angle) * reach + item.bumpX * wave;
+        goalY = item.arc.y + Math.sin(angle) * reach + item.bumpY * wave;
+      }
       const goalR = (item.fromR + (item.tr - item.fromR) * eased) * (1 + bumpGrow * wave);
       item.vx += (spring * (goalX - item.x) - damping * item.vx) * dt;
       item.vy += (spring * (goalY - item.y) - damping * item.vy) * dt;
@@ -2026,7 +2048,7 @@ if (projectsList) {
         let dy = b.y - a.y;
         let distance = Math.hypot(dx, dy);
         const gap = distance - a.r - b.r;
-        const limits = pairLimits(a, b);
+        const limits = pairLimits(i, j);
         const range = limits.range;
         const smallest = limits.smallest;
         if (distance < 0.001) { dx = 1; dy = 0; distance = 1; }
@@ -2063,7 +2085,7 @@ if (projectsList) {
         const b = items[j];
         const distance = Math.hypot(b.x - a.x, b.y - a.y) || 0.001;
         const gap = distance - a.r - b.r;
-        const smallest = pairLimits(a, b).smallest;
+        const smallest = pairLimits(i, j).smallest;
         if (gap >= smallest) continue;
         const nx = (b.x - a.x) / distance;
         const ny = (b.y - a.y) / distance;
@@ -2100,6 +2122,12 @@ if (projectsList) {
       simulate(dt, (now - startTime) / 1000 - elapsed + dt);
       elapsed -= step;
     }
+    // הטקסט: כשהעיגול הממורכז עבר 90% מהדרך, ולא יותר מ-textDelay אחרי הלחיצה
+    if (centered && !textShown) {
+      const path = Math.hypot(centered.tx - centered.fromX, centered.ty - centered.fromY);
+      const left = Math.hypot(centered.tx - centered.x, centered.ty - centered.y);
+      if ((now - startTime) / 1000 >= textDelay || left <= path * 0.1) showText();
+    }
     if (isSettled((now - startTime) / 1000)) {
       running = false;
       snap();
@@ -2132,6 +2160,19 @@ if (projectsList) {
     })) || 1;
     items.forEach(function (item) {
       item.fromX = item.x; item.fromY = item.y; item.fromR = item.r;
+      // במעגל שמסתובב: מי שהיה קטן ונשאר קטן נע בקשת סביב המרכז (בכיוון השעון)
+      item.arc = null;
+      if (previous && centered && item !== previous && item !== centered) {
+        const fromAngle = Math.atan2(item.y - centered.ty, item.x - centered.tx);
+        const toAngle = Math.atan2(item.ty - centered.ty, item.tx - centered.tx);
+        item.arc = {
+          x: centered.tx, y: centered.ty,
+          fromAngle: fromAngle,
+          turn: ((toAngle - fromAngle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI),
+          fromReach: Math.hypot(item.x - centered.tx, item.y - centered.ty),
+          toReach: Math.hypot(item.tx - centered.tx, item.ty - centered.ty)
+        };
+      }
       let dx = item.x - source.x;
       let dy = item.y - source.y;
       const distance = Math.hypot(dx, dy);
@@ -2140,6 +2181,9 @@ if (projectsList) {
       item.bumpX = dx * strength;
       item.bumpY = dy * strength;
       item.delay = waveDelay * distance / farthest;
+    });
+    startGaps = items.map(function (a) {
+      return items.map(function (b) { return Math.hypot(b.x - a.x, b.y - a.y) - a.r - b.r; });
     });
 
     startTime = performance.now();
