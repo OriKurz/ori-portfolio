@@ -968,9 +968,10 @@
   /* העיגולים עם האותיות: 8px בפיגמה, ואזור ה-hover סביבם גדול יותר */
   --marker-dot-size: calc(8 * var(--u));
   --marker-hit-size: calc(20 * var(--u));
-  /* הפופ: העיגול גדל פי 2, בקפיצה קטנה מעבר לגודל הסופי שמתיישבת עליו */
-  --marker-hidden-scale: 0.6;
-  --marker-pop-scale: 2;
+  /* במצב הרגיל העיגול פי 2 מהעיגול שבתמונה, ומכסה אותו.
+     הפופ: פי 1.75 מזה (3.5), בקפיצה קטנה מעבר לגודל הסופי שמתיישבת עליו */
+  --marker-rest-scale: 2;
+  --marker-pop-scale: 3.5;
   /* האות בעיגול: 6px מתוך עיגול של 8px בפיגמה = 75 מתוך 100 ב-SVG */
   --marker-letter-size: 75px;
   --marker-pop-time: 0.45s;
@@ -3278,7 +3279,8 @@ body {
   translate: -50% -50%;
 }
 
-/* העיגול הנפרד (SVG): לא נראה בכלל, עד שהעכבר עליו או על הציור שלו (.is-popped, script.js) */
+/* העיגול הנפרד (SVG): תמיד נראה, פי 2 מהעיגול שבתמונה, ומכסה אותו.
+   גדל בפופ כשהעכבר עליו או על הציור שלו (.is-popped, script.js) */
 .map-marker-dot {
   position: absolute;
   left: 50%;
@@ -3287,9 +3289,8 @@ body {
   height: var(--marker-dot-size);
   overflow: visible;
   translate: -50% -50%;
-  opacity: 0;
-  scale: var(--marker-hidden-scale);
-  transition: opacity var(--marker-hide-time) ease, scale var(--marker-hide-time) ease-in;
+  scale: var(--marker-rest-scale);
+  transition: scale var(--marker-hide-time) ease-in;
   pointer-events: none;
 }
 
@@ -3309,9 +3310,8 @@ body {
 
 /* הפופ: גדל בקפיצה רכה ונשאר גדול יותר */
 .map-marker.is-popped .map-marker-dot {
-  opacity: 1;
   scale: var(--marker-pop-scale);
-  transition: opacity var(--marker-hide-time) ease, scale var(--marker-pop-time) var(--marker-pop-easing);
+  transition: scale var(--marker-pop-time) var(--marker-pop-easing);
 }
 
 /* אזור שקוף מעל ציור במקרא */
@@ -3320,7 +3320,7 @@ body {
   height: calc(var(--h) / var(--map-image-height) * 100%);
 }
 
-/* מי שביקש פחות תנועה: העיגול מופיע ונעלם מיד, בלי פופ */
+/* מי שביקש פחות תנועה: העיגול משנה גודל מיד, בלי פופ */
 @media (prefers-reduced-motion: reduce) {
   .map-marker-dot,
   .map-marker.is-popped .map-marker-dot {
