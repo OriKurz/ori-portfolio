@@ -1771,10 +1771,12 @@ if (projectsList) {
   const bumpGrow = 0.06;     // כמה העיגולים "נושמים" (גדלים מעט) כשהגל עובר
   const waveDelay = 0.22;    // כמה זמן לוקח לגל להגיע לעיגול הכי רחוק (שניות)
   // הדחייה בין העיגולים (פיקסלים בפיגמה)
-  const repelRange = 20;     // מאיזה מרחק בין הקצוות עיגול מתחיל להידחף מהשכן
-  const minGap = 8;          // המרווח הקטן ביותר: קרוב מזה הם אף פעם לא מגיעים
-  const repelStrength = 2600; // כמה חזק הכוח (גדל ככל שהם מתקרבים)
-  const sidePush = 0.6;      // כמה עיגולים שנעים זה מול זה מתגלגלים הצידה (ביחס לדחייה)
+  // (בכל זוג לא יותר מהמרווח שלהם במנוחה, כדי שבמנוחה אין כוח והם יושבים בדיוק במקום)
+  const repelRange = 90;     // מאיזה מרחק בין הקצוות עיגול מתחיל להידחף מהשכן
+  const minGap = 24;         // המרווח הקטן ביותר: קרוב מזה הם אף פעם לא מגיעים
+  const repelStrength = 9000; // כמה חזק הכוח (גדל ככל שהם מתקרבים)
+  const lookAhead = 0.25;    // כמה זמן קדימה (שניות) הדחייה צופה את ההתקרבות
+  const sidePush = 1.2;      // כמה עיגולים שנעים זה מול זה מתגלגלים הצידה (ביחס לדחייה)
   const step = 1 / 120;      // צעד החישוב (שניות)
 
   let centered = null;       // העיגול הממורכז, או null במצב של שתי השורות
@@ -1954,6 +1956,16 @@ if (projectsList) {
   // ----- הפיזיקה -----
   // כל עיגול נמשך בקפיץ רך אחרי נקודה שנעה לאט מהמקום הקודם שלו ליעד (עם האצה והאטה),
   // ועוד דחיפה קטנה של הגל שעולה ויורדת. הקפיץ מוסיף את ההתנודדות העדינה בסוף
+  // טווח הדחייה והמרווח הקטן ביותר של שני עיגולים: לפי ההגדרות,
+  // אבל לא יותר מהמרווח שלהם במנוחה (בשתי השורות הם קרובים יותר מאשר במעגל)
+  function pairLimits(a, b) {
+    const restGap = Math.hypot(b.tx - a.tx, b.ty - a.ty) - a.tr - b.tr;
+    return {
+      range: Math.min(repelRange * pixel, restGap * 0.9),
+      smallest: Math.min(minGap * pixel, restGap * 0.6)
+    };
+  }
+
   function simulate(dt, time) {
     items.forEach(function (item) {
       const progress = Math.min(1, Math.max(0, (time - item.delay) / duration));
@@ -1970,8 +1982,6 @@ if (projectsList) {
     // דחייה רכה, כמו מגנטים הפוכים: כשעיגול מתקרב לשכן (פחות מ-repelRange בין הקצוות)
     // שניהם נדחפים זה מזה, וככל שהם קרובים יותר הכוח חזק יותר. עיגול קטן זז יותר מגדול.
     // עיגולים שנעים זה מול זה גם מתגלגלים הצידה, במקום להיתקע ראש בראש
-    const range = repelRange * pixel;
-    const smallest = minGap * pixel;
     for (let i = 0; i < items.length; i++) {
       for (let j = i + 1; j < items.length; j++) {
         const a = items[i];
@@ -1980,13 +1990,19 @@ if (projectsList) {
         let dy = b.y - a.y;
         let distance = Math.hypot(dx, dy);
         const gap = distance - a.r - b.r;
-        if (gap >= range) continue;
+        const limits = pairLimits(a, b);
+        const range = limits.range;
+        const smallest = limits.smallest;
         if (distance < 0.001) { dx = 1; dy = 0; distance = 1; }
         const nx = dx / distance;
         const ny = dy / distance;
         const weightA = b.r / (a.r + b.r);
         const weightB = a.r / (a.r + b.r);
-        const closeness = Math.min(1, (range - gap) / (range - smallest));
+        // מסתכלים קצת קדימה: עיגולים שמתקרבים מהר (או גדלים) נדחפים מוקדם יותר, כדי שיאטו ברכות
+        const closing = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny - a.vr - b.vr;
+        const aheadGap = gap + Math.min(0, closing) * lookAhead;
+        if (aheadGap >= range) continue;
+        const closeness = Math.min(1.5, (range - aheadGap) / (range - smallest));
         const force = repelStrength * pixel * closeness * closeness * dt;
         const side = Math.sign(nx * (b.ty - a.ty) - ny * (b.tx - a.tx)) || 1;
         const fx = nx * force - ny * side * force * sidePush;
@@ -2011,6 +2027,7 @@ if (projectsList) {
         const b = items[j];
         const distance = Math.hypot(b.x - a.x, b.y - a.y) || 0.001;
         const gap = distance - a.r - b.r;
+        const smallest = pairLimits(a, b).smallest;
         if (gap >= smallest) continue;
         const nx = (b.x - a.x) / distance;
         const ny = (b.y - a.y) / distance;
