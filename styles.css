@@ -1215,11 +1215,21 @@
   --menu-line-color: var(--color-yellow);
   --menu-hover-color: var(--color-blue);
 
-  /* INDEX ו-Project & more */
-  --projects-title-left: calc(43 * var(--u));
+  /* שולי העמוד: 50px בפיגמה, מקצוות החלון. ההמבורגר לא תלוי בהם */
+  --projects-margin: calc(50 * var(--u));
+
+  /* INDEX ו-Project & more: הכותרת צמודה לשוליים השמאליים, והשורה שמתחתיה זזה איתה (5px ימינה ממנה) */
+  --projects-title-left: var(--projects-margin);
   --projects-title-top: calc(55 * var(--u));
-  --projects-subtitle-left: calc(48 * var(--u));
+  --projects-subtitle-left: calc(var(--projects-margin) + 5 * var(--u));
   --projects-subtitle-top: calc(124 * var(--u));
+
+  /* מבנה העיגולים: צמוד לשוליים הימניים והתחתונים.
+     הגבולות שלו בפיגמה: מ-(596, 252) עד (1377, 754), כלומר 781x502 */
+  --projects-list-x: 596;
+  --projects-list-y: 252;
+  --projects-list-width: calc(781 * var(--u));
+  --projects-list-height: calc(502 * var(--u));
 
   /* העיגולים: 238px בפיגמה, עם מסגרת צהובה בעובי הקו */
   --project-circle-size: calc(238 * var(--u));
@@ -4251,13 +4261,10 @@ body {
   top: var(--menu-top);
 }
 
-/* אזור העיצוב מהפיגמה, ממורכז בחלון */
+/* העמוד ממלא את החלון. השוליים נמדדים מקצוות החלון */
 .projects-page {
   position: absolute;
-  left: var(--grid-left);
-  top: var(--grid-top);
-  width: calc(var(--grid-columns) * var(--cell));
-  height: calc(var(--grid-rows) * var(--cell));
+  inset: 0;
   color: var(--color-yellow);
 }
 
@@ -4278,17 +4285,23 @@ body {
 }
 
 .projects-list {
+  position: absolute;
+  right: var(--projects-margin);
+  bottom: var(--projects-margin);
+  width: var(--projects-list-width);
+  height: var(--projects-list-height);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 /* ----- עיגול של פרויקט -----
-   במחשב: במיקום שלו בפיגמה (--x, --y). המסגרת הצהובה בתוך הגודל של העיגול */
+   במחשב: במיקום שלו בפיגמה (--x, --y), ביחס לפינה של מבנה העיגולים.
+   המסגרת הצהובה בתוך הגודל של העיגול */
 .project-circle {
   position: absolute;
-  left: calc(var(--x) * var(--u));
-  top: calc(var(--y) * var(--u));
+  left: calc((var(--x) - var(--projects-list-x)) * var(--u));
+  top: calc((var(--y) - var(--projects-list-y)) * var(--u));
   display: block;
   width: var(--project-circle-size);
   height: var(--project-circle-size);
@@ -4359,15 +4372,14 @@ body {
 
   .projects-page {
     position: relative;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: auto;
     padding-top: var(--projects-list-top);
     padding-bottom: var(--projects-gap);
   }
 
   .projects-list {
+    position: static;
+    width: auto;
+    height: auto;
     display: grid;
     grid-template-columns: repeat(2, var(--project-circle-size));
     gap: var(--projects-gap);
