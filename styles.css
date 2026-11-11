@@ -3473,14 +3473,21 @@ body {
 
 @media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-perfect-crime {
-    /* הלשונית: 315x525 בפיגמה, מתחת לשורה הראשונה של הגריד (שבה ההמבורגר) */
+    /* הלשונית: 315x513 בפיגמה, מתחת לשורה הראשונה של הגריד (שבה ההמבורגר).
+       סגורה: זזה ברוחב שלה שמאלה, והפס הוורוד בקצה שלה נעלם מתחת לקו הגריד השמאלי */
     --text-tab-width: 315px;
-    --text-tab-height: 525px;
+    --text-tab-height: 513px;
     --text-tab-top: calc(var(--cell) + var(--line));
     --text-tab-border: 2px;
     --text-tab-padding-top: 13px;
     --text-tab-gap: 13px;
+    /* הפס הוורוד לאורך הקצה הימני (Rectangle 131): 12 רוחב, בולט 2 מעבר לקו */
+    --text-tab-strip-width: 12px;
+    --text-tab-strip-overhang: 2px;
+    /* הידית המקוצרת (Vector 20): 30x184 עם הקו, צמודה לתחתית הלשונית */
     --text-tab-handle-width: 30px;
+    --text-tab-handle-height: 184px;
+    --text-tab-handle-bottom: -1px;
     /* הטקסט בלשונית, בגדלים מהפיגמה */
     --text-tab-title-size: 30px;
     --text-tab-title-width: 124px;
@@ -3491,8 +3498,12 @@ body {
     /* תנועה: רכה, עם האטה בסוף */
     --text-tab-duration: 0.5s;
     --text-tab-ease: cubic-bezier(0.22, 1, 0.36, 1);
-    --text-tab-hint-duration: 0.6s;
-    --text-tab-hint-ease: cubic-bezier(0.45, 0, 0.55, 1);
+    /* הסגירה הראשונה, אחרי שהלשונית מוצגת פתוחה בכניסה לעמוד */
+    --text-tab-intro-duration: 0.9s;
+    --text-tab-intro-ease: cubic-bezier(0.65, 0, 0.35, 1);
+    /* הידית נעלמת בגלילה ובנגיעה, וחוזרת ברכות (ההשהיה לפני החזרה ב-script.js) */
+    --text-tab-handle-hide-duration: 0.2s;
+    --text-tab-handle-show-duration: 0.45s;
     --layer-text-tab: 8;
   }
 
@@ -3517,13 +3528,26 @@ body {
     touch-action: pan-y;
   }
 
-  .page-perfect-crime .text-tab.is-dragging {
+  .page-perfect-crime .text-tab.is-dragging,
+  .page-perfect-crime .text-tab.is-instant {
     transition: none;
   }
 
-  .page-perfect-crime .text-tab.is-hinting {
-    transition-duration: var(--text-tab-hint-duration);
-    transition-timing-function: var(--text-tab-hint-ease);
+  .page-perfect-crime .text-tab.is-intro-closing {
+    transition-duration: var(--text-tab-intro-duration);
+    transition-timing-function: var(--text-tab-intro-ease);
+  }
+
+  /* הפס הוורוד לאורך הקצה הימני של הלשונית, מעל הקו שלה */
+  .page-perfect-crime .text-tab::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: calc(-1 * var(--text-tab-strip-overhang));
+    width: var(--text-tab-strip-width);
+    background-color: var(--grid-line-color);
+    pointer-events: none;
   }
 
   /* המלבן עם הטקסט. הקו השמאלי מחוץ למסך, כמו בפיגמה.
@@ -3569,14 +3593,15 @@ body {
     line-height: var(--text-tab-body-line-height);
   }
 
-  /* הידית: הצורה הוורודה מהפיגמה, צמודה לקצה הימני של המלבן */
+  /* הידית: הצורה הוורודה מהפיגמה, צמודה לקצה הימני של המלבן, בתחתית שלו.
+     אזור הנגיעה הרחב יותר שסביבה ב-script.js (כדי לא לחסום את האיורים) */
   .page-perfect-crime .text-tab-handle {
     display: block;
     position: absolute;
     left: calc(100% - 1px);
-    top: 0;
+    bottom: var(--text-tab-handle-bottom);
     width: var(--text-tab-handle-width);
-    height: 100%;
+    height: var(--text-tab-handle-height);
     padding: 0;
     border: 0;
     background: none;
@@ -3585,6 +3610,18 @@ body {
     -webkit-tap-highlight-color: transparent;
     /* Pressed (ברירת המחדל): הידית מתכווצת אל המלבן */
     transform-origin: left center;
+    transition:
+      scale var(--transition-speed) ease,
+      translate var(--text-tab-handle-show-duration) var(--text-tab-ease);
+  }
+
+  /* בזמן גלילה או נגיעה במסך: הידית נאספת שמאלה אל מחוץ למסך */
+  .page-perfect-crime .text-tab.is-handle-hidden .text-tab-handle {
+    translate: calc(-1 * var(--text-tab-handle-width)) 0;
+    pointer-events: none;
+    transition:
+      scale var(--transition-speed) ease,
+      translate var(--text-tab-handle-hide-duration) ease-in;
   }
 
   /* הצורה עצמה (קובץ ה-SVG כמסכה), כדי שהצבע יבוא מהמשתנה */
@@ -3612,7 +3649,9 @@ body {
 }
 
 @media (max-width: 767.98px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
-  .page-perfect-crime .text-tab {
+  .page-perfect-crime .text-tab,
+  .page-perfect-crime .text-tab-handle,
+  .page-perfect-crime .text-tab.is-handle-hidden .text-tab-handle {
     transition: none;
   }
 }

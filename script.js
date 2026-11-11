@@ -2540,10 +2540,12 @@ if (projectsList) {
 
 // =========================================
 // לשונית הטקסט (The Perfect Crime, רק במובייל)
-// הטקסט של הפרויקט בלשונית בצד שמאל. הידית תמיד גלויה.
+// הטקסט של הפרויקט בלשונית בצד שמאל.
+// כניסה לעמוד: הלשונית כבר פתוחה, ואחרי כ-1.5 שניות נסגרת ברכות
+// (נגיעה במסך או גלילה סוגרות אותה מיד). פעם אחת בכל כניסה.
 // פתיחה וסגירה: נגיעה בידית, או גרירה לרוחב (הלשונית עוקבת אחרי האצבע,
 // ובשחרור נפתחת או נסגרת לפי המרחק והמהירות). נגיעה מחוץ ללשונית או Esc סוגרות.
-// בכניסה לעמוד: רמז אחד, הלשונית נפתחת שליש ונסגרת.
+// הידית נעלמת בזמן גלילה ובזמן שאצבע על המסך, וחוזרת כ-0.4 שנייה אחרי.
 // במחשב: בלי שינוי (CSS)
 // =========================================
 const textTab = document.querySelector(".text-tab");
@@ -2559,12 +2561,21 @@ if (textTab) {
   const flickSpeed = 0.3;
   // תזוזה מינימלית לפני שמחליטים אם זו גרירה לרוחב או גלילה לגובה
   const dragThreshold = 8;
+  // אזור הנגיעה של הידית: עוד 16 פיקסלים מימין לחלק הנראה, ו-8 למעלה ולמטה
+  const handleReachX = 16;
+  const handleReachY = 8;
+  // כמה זמן הלשונית פתוחה בכניסה לעמוד, וכמה זמן הידית מחכה לפני שהיא חוזרת
+  const introOpenTime = 1500;
+  const handleReturnDelay = 400;
 
   let isOpen = false;
-  let userInteracted = false;
+  // הלשונית פתוחה בכניסה לעמוד: העמוד עדיין נגלל, וכל נגיעה או גלילה סוגרות אותה
+  let introActive = false;
   let drag = null;
-  // אחרי גרירה, או נגיעה מחוץ ללשונית הפתוחה: הלחיצה שבאה אחריה לא מפעילה כלום
+  // אחרי גרירה, או נגיעה שסגרה את הלשונית: הלחיצה שבאה אחריה לא מפעילה כלום
   let swallowNextClick = false;
+  let touchCount = 0;
+  let handleTimer = null;
 
   // 0 = סגורה, 1 = פתוחה
   function setProgress(progress) {
@@ -2573,26 +2584,69 @@ if (textTab) {
 
   function setOpen(open) {
     isOpen = open;
-    textTab.classList.remove("is-hinting");
+    if (open) textTab.classList.remove("is-intro-closing");
     setProgress(open ? 1 : 0);
     textTabHandle.setAttribute("aria-expanded", open ? "true" : "false");
-    root.classList.toggle("is-text-tab-open", open);
+    // כשהלשונית פתוחה העמוד שמאחוריה לא נגלל (חוץ מבכניסה לעמוד)
+    root.classList.toggle("is-text-tab-open", open && !introActive);
+    if (open) showHandle();
   }
+
+  // ----- הכניסה לעמוד -----
+  function startIntro() {
+    introActive = true;
+    textTab.classList.add("is-instant");
+    setOpen(true);
+    textTab.getBoundingClientRect();
+    textTab.classList.remove("is-instant");
+  }
+
+  // slow: הסגירה הרכה בסוף הזמן. בלי: נגיעה או גלילה, סוגרים מיד בתנועה הרגילה
+  function endIntro(slow) {
+    if (!introActive) return;
+    introActive = false;
+    if (slow) {
+      textTab.classList.add("is-intro-closing");
+      textTab.addEventListener("transitionend", function done(event) {
+        if (event.target !== textTab) return;
+        textTab.removeEventListener("transitionend", done);
+        textTab.classList.remove("is-intro-closing");
+      });
+    }
+    setOpen(false);
+  }
+
+  if (mobileScreen.matches && !reducedMotion.matches) startIntro();
 
   // ----- נגיעה בידית (וגם Enter במקלדת) -----
   textTabHandle.addEventListener("click", function () {
-    userInteracted = true;
+    if (introActive) {
+      endIntro(false);
+      return;
+    }
     setOpen(!isOpen);
   });
 
   document.addEventListener("keydown", function (event) {
     swallowNextClick = false;
-    if (event.key === "Escape" && isOpen) setOpen(false);
+    if (event.key !== "Escape") return;
+    if (introActive) endIntro(false);
+    else if (isOpen) setOpen(false);
   });
 
-  // ----- גרירה: על הידית או על הלשונית הפתוחה -----
-  textTab.addEventListener("pointerdown", function (event) {
-    if (!mobileScreen.matches || (event.pointerType === "mouse" && event.button !== 0)) return;
+  // ----- אזור הנגיעה המורחב של הידית: רק על שטח שאין בו רכיב לחיץ,
+  // כך שהאיורים שליד הידית נשארים לחיצים -----
+  function isNearHandle(x, y, target) {
+    if (isOpen || textTab.classList.contains("is-handle-hidden")) return false;
+    if (textTab.contains(target)) return false;
+    if (target.closest && target.closest('a, button, [role="button"], [data-ea], [tabindex]')) return false;
+    const box = textTabHandle.getBoundingClientRect();
+    return x >= box.left && x <= box.right + handleReachX &&
+      y >= box.top - handleReachY && y <= box.bottom + handleReachY;
+  }
+
+  // ----- גרירה: על הידית, באזור הנגיעה שלה, או על הלשונית הפתוחה -----
+  function startPointer(event, fromReach) {
     drag = {
       id: event.pointerId,
       startX: event.clientX,
@@ -2600,9 +2654,16 @@ if (textTab) {
       startProgress: isOpen ? 1 : 0,
       progress: isOpen ? 1 : 0,
       active: false,
+      // נגיעה באזור הנגיעה (לא על הידית עצמה): בלי גרירה היא פותחת כמו לחיצה
+      fromReach: fromReach,
       // הנקודות האחרונות, לחישוב המהירות בשחרור
       samples: [{ x: event.clientX, time: event.timeStamp }]
     };
+  }
+
+  textTab.addEventListener("pointerdown", function (event) {
+    if (!mobileScreen.matches || (event.pointerType === "mouse" && event.button !== 0)) return;
+    startPointer(event, false);
   });
 
   // התנועה והשחרור נבדקים בכל העמוד, כי האצבע יוצאת מהידית מיד
@@ -2612,15 +2673,13 @@ if (textTab) {
     const dy = event.clientY - drag.startY;
 
     if (!drag.active) {
-      // תנועה לגובה קודם: זו גלילה של הטקסט, לא גרירה
+      // תנועה לגובה קודם: זו גלילה, לא גרירה
       if (Math.abs(dy) > dragThreshold && Math.abs(dy) > Math.abs(dx)) {
         drag = null;
         return;
       }
       if (Math.abs(dx) < dragThreshold) return;
       drag.active = true;
-      userInteracted = true;
-      textTab.classList.remove("is-hinting");
       textTab.classList.add("is-dragging");
     }
 
@@ -2634,7 +2693,12 @@ if (textTab) {
     if (!drag || event.pointerId !== drag.id) return;
     const ended = drag;
     drag = null;
-    if (!ended.active) return;
+
+    if (!ended.active) {
+      // נגיעה קצרה באזור הנגיעה שליד הידית: כמו לחיצה על הידית
+      if (ended.fromReach && event.type === "pointerup") setOpen(!isOpen);
+      return;
+    }
 
     // המהירות ב-5 הנקודות האחרונות: הנפה מהירה מכריעה גם במרחק קצר
     const first = ended.samples[0];
@@ -2653,13 +2717,32 @@ if (textTab) {
   document.addEventListener("pointerup", endDrag);
   document.addEventListener("pointercancel", endDrag);
 
-  // ----- נגיעה מחוץ ללשונית: סוגרת, ולא מפעילה את מה שמתחתיה
-  // (חוץ מההמבורגר ובר הבחירה, שנשארים לחיצים) -----
+  // ----- נגיעה במסך -----
+  // בכניסה לעמוד: כל נגיעה סוגרת את הלשונית.
+  // לשונית פתוחה: נגיעה מחוץ לה סוגרת, ולא מפעילה את מה שמתחתיה
+  // (חוץ מההמבורגר ובר הבחירה, שנשארים לחיצים).
+  // לשונית סגורה: נגיעה ליד הידית מתחילה גרירה או לחיצה שלה
   document.addEventListener("pointerdown", function (event) {
     swallowNextClick = false;
-    if (!isOpen || textTab.contains(event.target)) return;
-    setOpen(false);
-    if (!event.target.closest(".menu-button, .nav-bar")) swallowNextClick = true;
+    if (!mobileScreen.matches) return;
+    const onMenu = event.target.closest(".menu-button, .nav-bar");
+
+    if (introActive) {
+      endIntro(false);
+      if (!onMenu) swallowNextClick = true;
+      // הנגיעה רק סוגרת: לא מתחילה גרירה של הלשונית
+      if (textTab.contains(event.target)) event.stopPropagation();
+      return;
+    }
+
+    if (isOpen) {
+      if (textTab.contains(event.target)) return;
+      setOpen(false);
+      if (!onMenu) swallowNextClick = true;
+      return;
+    }
+
+    if (isNearHandle(event.clientX, event.clientY, event.target)) startPointer(event, true);
   }, true);
 
   document.addEventListener("click", function (event) {
@@ -2670,35 +2753,68 @@ if (textTab) {
   }, true);
 
   // ----- כשהלשונית פתוחה העמוד שמאחוריה לא נגלל (גם בספארי בטלפון).
-  // רק הטקסט שבתוך הלשונית נגלל -----
+  // רק הטקסט שבתוך הלשונית נגלל. וגרירה של הלשונית לא גוללת את העמוד -----
   document.addEventListener("touchmove", function (event) {
-    if (isOpen && !textTabContent.contains(event.target)) event.preventDefault();
+    if (drag && drag.active) {
+      event.preventDefault();
+      return;
+    }
+    if (isOpen && !introActive && !textTabContent.contains(event.target)) event.preventDefault();
   }, { passive: false });
+
+  // ----- הידית נעלמת בגלילה ובנגיעה (כשהלשונית סגורה), וחוזרת אחרי השהיה -----
+  function hideHandle() {
+    if (isOpen) return;
+    clearTimeout(handleTimer);
+    textTab.classList.add("is-handle-hidden");
+  }
+
+  function showHandle() {
+    clearTimeout(handleTimer);
+    textTab.classList.remove("is-handle-hidden");
+  }
+
+  // חוזרת רק כשאין אצבע על המסך והגלילה נעצרה (כל גלילה מאפסת את הזמן)
+  function scheduleShowHandle() {
+    clearTimeout(handleTimer);
+    handleTimer = setTimeout(function () {
+      if (touchCount === 0) showHandle();
+    }, handleReturnDelay);
+  }
+
+  document.addEventListener("touchstart", function (event) {
+    touchCount = event.touches.length;
+    // נגיעה בידית או באזור הנגיעה שלה (הגרירה כבר התחילה) לא מעלימה אותה
+    if (!mobileScreen.matches || drag || textTab.contains(event.target)) return;
+    hideHandle();
+  }, { passive: true });
+
+  function touchEnded(event) {
+    touchCount = event.touches.length;
+    if (touchCount === 0 && textTab.classList.contains("is-handle-hidden")) scheduleShowHandle();
+  }
+
+  document.addEventListener("touchend", touchEnded, { passive: true });
+  document.addEventListener("touchcancel", touchEnded, { passive: true });
+
+  window.addEventListener("scroll", function () {
+    if (!mobileScreen.matches) return;
+    // גלילה בכניסה לעמוד סוגרת את הלשונית מיד
+    if (introActive) endIntro(false);
+    if (isOpen) return;
+    hideHandle();
+    scheduleShowHandle();
+  }, { passive: true });
 
   // ----- מעבר למחשב (סיבוב הטלפון לרוחב): הלשונית נסגרת -----
   mobileScreen.addEventListener("change", function () {
-    if (!mobileScreen.matches && isOpen) setOpen(false);
+    if (mobileScreen.matches) return;
+    introActive = false;
+    if (isOpen) setOpen(false);
+    showHandle();
   });
 
-  // ----- הרמז בכניסה: חצי שנייה אחרי שהעמוד גלוי (אחרי המעבר בקוביות, אם יש),
-  // הלשונית נפתחת שליש ונסגרת. פעם אחת בכל כניסה, ולא ב-prefers-reduced-motion -----
-  function playHint() {
-    if (!mobileScreen.matches || reducedMotion.matches || userInteracted || isOpen) return;
-    textTab.classList.add("is-hinting");
-    setProgress(1 / 3);
-    textTab.addEventListener("transitionend", function back(event) {
-      if (event.target !== textTab) return;
-      textTab.removeEventListener("transitionend", back);
-      if (!textTab.classList.contains("is-hinting")) return;
-      setProgress(0);
-      textTab.addEventListener("transitionend", function done(event) {
-        if (event.target !== textTab) return;
-        textTab.removeEventListener("transitionend", done);
-        textTab.classList.remove("is-hinting");
-      });
-    });
-  }
-
+  // ----- הסגירה הרכה בכניסה: 1.5 שניות אחרי שהעמוד גלוי (אחרי המעבר בקוביות, אם יש) -----
   function whenPageVisible(callback) {
     const overlay = document.querySelector(".page-transition");
     if (!overlay) {
@@ -2714,10 +2830,14 @@ if (textTab) {
     observer.observe(overlay.parentNode, { childList: true });
   }
 
-  function startHint() {
-    whenPageVisible(function () { setTimeout(playHint, 500); });
+  function scheduleIntroClose() {
+    whenPageVisible(function () {
+      setTimeout(function () { endIntro(true); }, introOpenTime);
+    });
   }
 
-  if (document.readyState === "complete") startHint();
-  else window.addEventListener("load", startHint, { once: true });
+  if (introActive) {
+    if (document.readyState === "complete") scheduleIntroClose();
+    else window.addEventListener("load", scheduleIntroClose, { once: true });
+  }
 }
