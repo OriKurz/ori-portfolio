@@ -845,6 +845,9 @@
   /* החפצים המאוירים: מיכל ברוחב כל הגריד, משורה 8 עד שורה 15 (7 שורות) */
   --elements-board-column: 0;   --elements-board-row: 8;
   --elements-board-columns: 10; --elements-board-rows: 7;
+  /* במובייל בלבד (elements-anim.js קורא את זה): התנועות של החפצים גדולות פי 2, ונמשכות פי 1.25 */
+  --elements-anim-mobile-power: 2;
+  --elements-anim-mobile-duration: 1.25;
   /* כל חפץ: left, top ו-width באחוזים מהמיכל (לפי x, y ו-width בפיגמה) */
   --ea-tape-left: 35.786%;         --ea-tape-top: 72.092%;         --ea-tape-width: 18.536%;
   --ea-box-fragile-left: 56.786%;  --ea-box-fragile-top: 71.48%;   --ea-box-fragile-width: 19.5%;

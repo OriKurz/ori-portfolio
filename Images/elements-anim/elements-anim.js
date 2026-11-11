@@ -20,7 +20,17 @@
   const LOTTIE_URL = `${BASE}vendor/lottie.min.js`;
   const NS = "http://www.w3.org/2000/svg";
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const M = reduce ? 0.35 : 1;
+  // on mobile (portrait phone) the moves are stronger (P) and last longer (T); the numbers are in styles.css
+  const mobile = matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+  let P = 1, T = 1, M = reduce ? 0.35 : 1;
+  function readMobileBoost() {
+    const css = getComputedStyle(document.querySelector("[data-ea]") || document.documentElement);
+    const num = (name, fallback) => parseFloat(css.getPropertyValue(name)) || fallback;
+    P = mobile.matches ? num("--elements-anim-mobile-power", 1) : 1;
+    T = mobile.matches ? num("--elements-anim-mobile-duration", 1) : 1;
+    M = (reduce ? 0.35 : 1) * P;
+  }
+  mobile.addEventListener("change", readMobileBoost);
 
   /* ---------- sizes and fixed points measured on each drawing (in its own pixels) ---------- */
   const SIZE = {
@@ -57,7 +67,7 @@
   const jobs = new Set(); let looping = false, prevT = 0;
   function run(fn) { jobs.add(fn); if (!looping) { looping = true; prevT = performance.now(); requestAnimationFrame(loop); } }
   function loop(now) {
-    const dt = Math.max(0, Math.min(0.033, (now - prevT) / 1000)); prevT = now;
+    const dt = Math.max(0, Math.min(0.033, (now - prevT) / 1000)) / T; prevT = now;
     for (const fn of [...jobs]) if (!fn(dt)) jobs.delete(fn);
     if (jobs.size) requestAnimationFrame(loop); else looping = false;
   }
@@ -197,7 +207,7 @@
         { offset: 0.82, transform: `translateY(6%) ${r(360 * M)} scale(1.09,.88)` },
         { offset: 0.91, transform: `translateY(-5%) ${r(360 * M)} scale(.98,1.03)` },
         { offset: 1, transform: `translateY(0) ${r(360 * M)} scale(1,1)` }
-      ], { duration: 1150, easing: "linear" });
+      ], { duration: 1150 * T, easing: "linear" });
       a.onfinish = () => { busy = false; };
     };
     const side = e => { const r = item.getBoundingClientRect(); return e.clientX < r.left + r.width / 2 ? 1 : -1; };
@@ -210,11 +220,11 @@
     img.style.transformOrigin = pct([247, 572], SIZE.tree);
     const s = spring(2.4, 0.3);
     const tick = dt => {
-      const a = step(s, dt); s.x = Math.max(-6, Math.min(6, s.x));
+      const a = step(s, dt); s.x = Math.max(-6 * P, Math.min(6 * P, s.x));
       img.style.transform = Math.abs(s.x) > 0.01 ? `rotate(${s.x.toFixed(2)}deg)` : "";
       return a;
     };
-    mouseSpeed(item, v => { s.v = Math.max(-16, Math.min(16, s.v + v * 9 * M)); run(tick); });
+    mouseSpeed(item, v => { s.v = Math.max(-16 * P, Math.min(16 * P, s.v + v * 9 * M)); run(tick); });
     item.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse") { s.v += 14 * M; run(tick); } });
   };
 
@@ -381,7 +391,7 @@
       const T0 = performance.now();
       swing.v = 70 * M;
       run(() => {
-        const t = (performance.now() - T0) / 1000;
+        const t = (performance.now() - T0) / 1000 / T;
         const k = keys.findIndex(q => q[0] > t);
         let y = 0, sx = 1, sy = 1;
         if (k > 0) {
@@ -466,9 +476,9 @@
     let busy = false;
     hover(item, () => {
       if (busy) return; busy = true;
-      const T0 = performance.now(), reach = M;
+      const T0 = performance.now(), reach = Math.min(1, M);          // the tape never comes out past its own length
       run(() => {
-        const t = (performance.now() - T0) / 1000;
+        const t = (performance.now() - T0) / 1000 / T;
         let out;
         if (t < 0.22) out = 1 - (1 - t / 0.22) ** 3;                      // slides out
         else if (t < 0.85) out = 1;                                       // stays out, still
@@ -491,7 +501,7 @@
     hover(item, () => {
       T0 = performance.now(); if (on) return; on = true;
       run(() => {
-        const t = (performance.now() - T0) / 1000;
+        const t = (performance.now() - T0) / 1000 / T;
         if (t > 0.9) { axe.removeAttribute("transform"); on = false; return false; }
         const a = 5 * M * Math.exp(-t / 0.22) * Math.sin(t * Math.PI * 2 * 13);
         axe.setAttribute("transform", `rotate(${a.toFixed(2)} ${P[0]} ${P[1]})`);
@@ -576,7 +586,7 @@
         let alive = false;
         for (const d of drops) {
           d.v += (-d.w * d.w * d.a - 2 * d.z * d.w * d.v) * dt; d.a += d.v * dt;
-          d.a = Math.max(-35, Math.min(35, d.a));
+          d.a = Math.max(-35 * P, Math.min(35 * P, d.a));
           if (Math.abs(d.a) > 0.05 || Math.abs(d.v) > 0.5) alive = true;
           d.g.setAttribute("transform", `rotate(${d.a.toFixed(2)} ${d.px.toFixed(1)} ${d.py.toFixed(1)})`);
         }
@@ -584,7 +594,7 @@
           const w = 5.2, z = 0.17;
           c.vx += (-w * w * c.x - 2 * z * w * c.vx) * dt; c.vy += (-w * w * c.y - 2 * z * w * c.vy) * dt;
           c.x += c.vx * dt; c.y += c.vy * dt;
-          const r = Math.hypot(c.x, c.y); if (r > 9) { c.x *= 9 / r; c.y *= 9 / r; }
+          const r = Math.hypot(c.x, c.y), rMax = 9 * P; if (r > rMax) { c.x *= rMax / r; c.y *= rMax / r; }
           if (r > 0.02 || Math.hypot(c.vx, c.vy) > 0.2) alive = true;
           for (const b of c.beads) {
             const X = c.x * b.w, Y = c.y * b.w;
@@ -604,7 +614,7 @@
           const m = d.host.getScreenCTM(); if (!m) continue;
           const p = toScreen(m, d.px, d.py + 20);
           const f = Math.exp(-((Math.hypot(p.x - x, p.y - y) / R) ** 2));
-          d.v = Math.max(-260, Math.min(260, d.v - vx * f * 55 * M));
+          d.v = Math.max(-260 * P, Math.min(260 * P, d.v - vx * f * 55 * M));
         }
         const m = svg.getScreenCTM();
         const scale = rect.width / (svg.viewBox.baseVal.width || DATA.w);
@@ -612,8 +622,8 @@
           const p = toScreen(m, c.cx, c.cy);
           const f = Math.exp(-((Math.hypot(p.x - x, p.y - y) / (R * 1.3)) ** 2));
           const g = f * 7 * M / scale;
-          c.vx = Math.max(-60, Math.min(60, c.vx + vx * g));
-          c.vy = Math.max(-40, Math.min(40, c.vy + vy * g * 0.5));
+          c.vx = Math.max(-60 * P, Math.min(60 * P, c.vx + vx * g));
+          c.vy = Math.max(-40 * P, Math.min(40 * P, c.vy + vy * g * 0.5));
         }
         if (!running) { running = true; run(tick); }
       };
@@ -628,6 +638,7 @@
 
   /* ---------- start ---------- */
   function init() {
+    readMobileBoost();
     document.querySelectorAll("[data-ea]").forEach(item => {
       if (item.dataset.eaInit) return;
       const fn = INIT[item.dataset.ea];
