@@ -1407,6 +1407,8 @@ if (nextProjectsStrip) {
   const track = nextProjectsStrip.querySelector(".next-projects-track");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const secondsPerProject = 7;  // המהירות הרגילה: כמה שניות לוקח לפרויקט אחד לעבור
+  const mobileSpeedUp = 1.5;    // במובייל הרצועה מהירה פי 1.5 (50% יותר)
+  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
   const maxPush = 5;            // כמה מהר יותר (פי) כשהעכבר צמוד לקצה השמאלי
   const pushArea = 0.5;         // החלק השמאלי של הרצועה שבו העכבר דוחף (חצי מהרוחב)
   const easeTime = 0.6;         // כמה רך שינוי המהירות (בשניות)
@@ -1475,7 +1477,7 @@ if (nextProjectsStrip) {
   function baseSpeed() {
     const firstProject = track.firstElementChild;
     const step = firstProject.offsetWidth + parseFloat(getComputedStyle(firstProject).marginRight);
-    return step / secondsPerProject;
+    return step / secondsPerProject * (mobileScreen.matches ? mobileSpeedUp : 1);
   }
 
   function moveStrip(time) {
@@ -1529,6 +1531,63 @@ if (nextProjectsStrip) {
     lastStripWidth = nextProjectsStrip.clientWidth;
     buildStrip();
   });
+}
+
+// =========================================
+// עמודי הפרויקטים במובייל: כותרות הסעיפים בגריד (Main Scenes, Color palette וכו').
+// כל כותרת יושבת בפינה השמאלית התחתונה של המשבצת שלה, ואף פעם לא חורגת ממנה.
+// אם היא לא נכנסת במשבצת אחת, היא תופסת שתי משבצות ברוחב (המלבן מסתיר את הקו שבאמצע).
+// הסדר שבו מנסים: שבירת השורות של הפיגמה ב-1 ואז 2 משבצות. אם עדיין לא נכנס:
+// בלי השבירות של הפיגמה (is-reflowed), ומוסיפים משבצות לרוחב עד שנכנס.
+// במחשב: בלי שינוי (CSS)
+// =========================================
+const gridSectionTitles = document.querySelectorAll(".full-project-grid .section-title");
+
+if (gridSectionTitles.length) {
+  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+
+  // האם הטקסט נכנס בתוך המלבן (בלי המסגרת והריווח הפנימי)
+  function titleFits(title) {
+    const style = getComputedStyle(title);
+    const box = title.getBoundingClientRect();
+    const innerRight = box.right - parseFloat(style.borderRightWidth) - parseFloat(style.paddingRight);
+    const innerHeight = title.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+    const range = document.createRange();
+    range.selectNodeContents(title);
+    const lineRects = Array.from(range.getClientRects()).filter(function (rect) { return rect.width > 0; });
+    const lineTops = new Set(lineRects.map(function (rect) { return Math.round(rect.top); }));
+    const textRight = Math.max.apply(null, lineRects.map(function (rect) { return rect.right; }));
+    const textHeight = lineTops.size * parseFloat(style.lineHeight || style.fontSize);
+    // סובלנות קטנה: בראש כל שורה יש רווח ריק מעל האותיות (בערך 15% מגודל הפונט)
+    return textRight <= innerRight + 0.5 && textHeight <= innerHeight + parseFloat(style.fontSize) * 0.15;
+  }
+
+  function fitSectionTitles() {
+    gridSectionTitles.forEach(function (title) {
+      title.classList.remove("is-reflowed");
+      title.style.removeProperty("--title-columns");
+      if (!mobileScreen.matches) return;
+
+      const style = getComputedStyle(title);
+      const gridColumns = parseFloat(style.getPropertyValue("--grid-columns"));
+      const startColumn = Math.floor(parseFloat(style.getPropertyValue("--column")));
+      const maxColumns = Math.max(1, gridColumns - startColumn);
+
+      const tries = [];
+      for (let columns = 1; columns <= Math.min(2, maxColumns); columns++) tries.push({ reflow: false, columns: columns });
+      for (let columns = 1; columns <= maxColumns; columns++) tries.push({ reflow: true, columns: columns });
+
+      for (const attempt of tries) {
+        title.classList.toggle("is-reflowed", attempt.reflow);
+        title.style.setProperty("--title-columns", attempt.columns);
+        if (titleFits(title)) break;
+      }
+    });
+  }
+
+  fitSectionTitles();
+  document.fonts.ready.then(fitSectionTitles);
+  window.addEventListener("resize", fitSectionTitles);
 }
 
 // =========================================

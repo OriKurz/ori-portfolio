@@ -174,6 +174,9 @@
   --text-about-mobile-line-height: 22.5;
   --text-about-mobile-small-size: 14;
   --text-about-mobile-small-line-height: 18;
+  /* הגודל המינימלי במובייל: טקסט רגיל לפחות 17px, וטקסט קטן במיוחד לפחות 14px */
+  --text-min-size: 17px;
+  --text-min-small-size: 14px;
 
   /* פיקסל אחד בפיגמה: כמה הוא שווה במסך. כל עמוד (ולפעמים כל חלק בעמוד)
      קובע אותו לפי השיטה שבה הוא גדל עם המסך. בעמוד הבית: משבצת = 96px בפיגמה */
@@ -905,8 +908,9 @@
 @media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-full-project,
   .vars-full-project {
-    /* הקו הימני של הגריד צריך להיכנס גם הוא ברוחב המסך */
-    --cell: round(down, (100vw - var(--line)) / var(--grid-columns), 1px);
+    /* הגריד ממלא בדיוק את כל רוחב המסך, בלי פס ריק בצדדים: טורים שלמים,
+       והקו הימני של הגריד יושב על הקצה הימני של המסך */
+    --cell: calc((100vw - var(--line)) / var(--grid-columns));
     --line: var(--line-mobile);
     /* הטקסט: לפי רוחב החלק השמאלי בפיגמה (508px) */
     --px: calc(100vw / 508);
@@ -915,8 +919,16 @@
     --title-left: var(--margin-mobile);
     --description-left: var(--margin-mobile);
     --description-width: calc(100vw - 2 * var(--margin-mobile));
-    /* בבאנר הטקסט היה יוצא קטן מדי לפי רוחב המסך, אז הוא גדל עם המשבצת */
-    --banner-px: var(--u);
+    /* בבאנר הטקסט היה יוצא קטן מדי לפי רוחב המסך, אז הוא גדל עם המשבצת,
+       ועוד 30% (הטקסט, הכוכבים והגובה) */
+    --banner-px: calc(var(--u) * 1.3);
+    /* הבאנר גלוי כולו מעל סרגל הדפדפן בתחתית: הגובה שהסרגל מכסה
+       (ההפרש בין גובה המסך הגדול לגובה האמיתי, או האזור הבטוח של המכשיר), ועוד מרווח קטן */
+    --banner-bottom-space: calc(max(env(safe-area-inset-bottom, 0px), 100lvh - 100dvh) + 12px);
+    /* רולר הפרויקטים: כל תמונה ברוחב 40% מהמסך (258 ברוחב בפיגמה) */
+    --strip-px: calc(100vw * 0.4 / 258);
+    /* כותרות הסעיפים בגריד: הריווח הפנימי מהפינה השמאלית התחתונה של המשבצת */
+    --section-title-padding: 3px;
 
     --progress-height: 3px;
     --progress-hover-height: 6px;
@@ -1569,6 +1581,41 @@ body {
     font-size: calc(var(--text-about-mobile-small-size) * var(--type-px));
     line-height: calc(var(--text-about-mobile-small-line-height) * var(--type-px));
   }
+
+  /* גודל מינימלי במובייל: טקסט רגיל לפחות 17px, וטקסט קטן במיוחד לפחות 14px.
+     max() משאיר את הגודל מהפיגמה כשהוא כבר גדול מהמינימום */
+  .text-subtitle      { font-size: max(var(--text-min-size), calc(var(--text-subtitle-size) * var(--type-px))); }
+  .text-section-title { font-size: max(var(--text-min-size), calc(var(--text-section-title-size) * var(--type-px))); }
+  .text-tagline       { font-size: max(var(--text-min-size), calc(var(--text-tagline-size) * var(--type-px))); }
+  .text-button        { font-size: max(var(--text-min-size), calc(var(--text-button-mobile-size) * var(--type-px))); }
+  .text-button-mobile { font-size: max(var(--text-min-size), calc(var(--text-button-mobile-size) * var(--type-px))); }
+  .text-body {
+    font-size: max(var(--text-min-size), calc(var(--text-body-size) * var(--type-px)));
+    line-height: max(var(--text-min-size) * 28 / 20, calc(var(--text-body-line-height) * var(--type-px)));
+  }
+  .text-about-mobile,
+  .text-about-mobile-strong {
+    font-size: max(var(--text-min-size), calc(var(--text-about-mobile-size) * var(--type-px)));
+    line-height: max(var(--text-min-size) * 22.5 / 17, calc(var(--text-about-mobile-line-height) * var(--type-px)));
+  }
+
+  /* הטקסטים הקטנים במיוחד: לפחות 14px */
+  .text-nav                  { font-size: max(var(--text-min-small-size), calc(var(--text-nav-mobile-size) * var(--type-px))); }
+  .text-button-strong        { font-size: max(var(--text-min-small-size), calc(var(--text-button-mobile-strong-size) * var(--type-px))); }
+  .text-button-mobile-strong { font-size: max(var(--text-min-small-size), calc(var(--text-button-mobile-strong-size) * var(--type-px))); }
+  .text-hint                 { font-size: max(var(--text-min-small-size), calc(var(--text-hint-size) * var(--type-px))); }
+  .text-caption              { font-size: max(var(--text-min-small-size), calc(var(--text-caption-size) * var(--type-px))); }
+  .text-timeline-year        { font-size: max(var(--text-min-small-size), calc(var(--text-timeline-year-size) * var(--type-px))); }
+  .text-contact-ball         { font-size: max(var(--text-min-small-size), calc(var(--text-contact-ball-size) * var(--type-px))); }
+  .text-about-mobile-small,
+  .text-about-mobile-small-strong {
+    font-size: max(var(--text-min-small-size), calc(var(--text-about-mobile-small-size) * var(--type-px)));
+    line-height: max(var(--text-min-small-size) * 18 / 14, calc(var(--text-about-mobile-small-line-height) * var(--type-px)));
+  }
+
+  /* זמני: הטקסט על כדורי Say Hi ב-14px רחב מהכדור (60% מהגודל במובייל),
+     אז בינתיים הוא נשאר בגודל הקודם, עד שיוחלט אם להגדיל את הכדורים */
+  .page-say-hi .text-contact-ball { font-size: calc(var(--text-contact-ball-size) * var(--type-px)); }
 }
 
 /* =========================================
@@ -3257,6 +3304,33 @@ body {
     margin-top: 0;
     margin-left: 0;
   }
+
+  /* מרווח מתחת לבאנר, כדי שבסוף הגלילה הוא כולו גלוי מעל סרגל הדפדפן ולחיץ */
+  .full-project-scroll {
+    padding-bottom: var(--banner-bottom-space);
+  }
+
+  /* כותרות הסעיפים בגריד: מלבן של משבצות שלמות, מקו לקו (כמו grid-box),
+     והטקסט בפינה השמאלית התחתונה שלו. רוחב המלבן (--title-columns) נקבע ב-script.js:
+     משבצת אחת, ואם הטקסט לא נכנס, שתיים. הרקע מסתיר את הקו שבאמצע */
+  .full-project-grid .section-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    left: calc(round(down, var(--column), 1) * var(--cell));
+    top: calc(round(down, var(--row), 1) * var(--cell));
+    width: calc(var(--title-columns, 1) * var(--cell) + var(--line));
+    height: calc(var(--cell) + var(--line));
+    padding: 0 var(--section-title-padding) var(--section-title-padding);
+    border: var(--line) solid transparent;
+    background-color: var(--page-background);
+    background-clip: padding-box;
+  }
+
+  /* כשהשבירות של הפיגמה לא נכנסות, הטקסט נשבר לבד לפי הרוחב */
+  .full-project-grid .section-title.is-reflowed br {
+    display: none;
+  }
 }
 
 /* =========================================
@@ -3338,6 +3412,14 @@ body {
   .page-leftovers .full-project-panel {
     margin-left: 0;
   }
+
+  /* זמני: הטקסטים האלה בגריד של Leftovers לא נכנסים במקום שלהם בגודל המינימלי
+     (הגריד צפוף מדי), אז בינתיים הם נשארים בגודל מהפיגמה, עד שיוחלט על פריסה */
+  .page-leftovers .full-project-grid .leftovers-coordinates { font-size: calc(var(--text-subtitle-size) * var(--type-px)); }
+  .page-leftovers .full-project-grid .leftovers-gallery-label { font-size: calc(var(--text-section-title-size) * var(--type-px)); }
+  .page-leftovers .full-project-grid .text-hint { font-size: calc(var(--text-hint-size) * var(--type-px)); }
+  .page-leftovers .full-project-grid .text-caption { font-size: calc(var(--text-caption-size) * var(--type-px)); }
+  .page-leftovers .full-project-grid .text-timeline-year { font-size: calc(var(--text-timeline-year-size) * var(--type-px)); }
 }
 
 /* ----- התוויות בגריד ----- */
