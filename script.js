@@ -2814,30 +2814,9 @@ if (textTab) {
     showHandle();
   });
 
-  // ----- הסגירה הרכה בכניסה: 1.5 שניות אחרי שהעמוד גלוי (אחרי המעבר בקוביות, אם יש) -----
-  function whenPageVisible(callback) {
-    const overlay = document.querySelector(".page-transition");
-    if (!overlay) {
-      callback();
-      return;
-    }
-    // המעבר בקוביות עוד מכסה את העמוד: מחכים שהשכבה שלו תוסר
-    const observer = new MutationObserver(function () {
-      if (overlay.isConnected) return;
-      observer.disconnect();
-      callback();
-    });
-    observer.observe(overlay.parentNode, { childList: true });
-  }
-
-  function scheduleIntroClose() {
-    whenPageVisible(function () {
-      setTimeout(function () { endIntro(true); }, introOpenTime);
-    });
-  }
-
+  // ----- הסגירה הרכה בכניסה: 1.5 שניות מפתיחת העמוד
+  // (לא מחכים לטעינה של הסרטון או לסוף המעבר בקוביות) -----
   if (introActive) {
-    if (document.readyState === "complete") scheduleIntroClose();
-    else window.addEventListener("load", scheduleIntroClose, { once: true });
+    setTimeout(function () { endIntro(true); }, introOpenTime);
   }
 }
