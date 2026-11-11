@@ -3499,7 +3499,7 @@ body {
     --text-tab-duration: 0.5s;
     --text-tab-ease: cubic-bezier(0.22, 1, 0.36, 1);
     /* הסגירה הראשונה, אחרי שהלשונית מוצגת פתוחה בכניסה לעמוד */
-    --text-tab-intro-duration: 0.9s;
+    --text-tab-intro-duration: 0.55s;
     --text-tab-intro-ease: cubic-bezier(0.65, 0, 0.35, 1);
     /* הידית נעלמת בגלילה ובנגיעה, וחוזרת ברכות (ההשהיה לפני החזרה ב-script.js) */
     --text-tab-handle-hide-duration: 0.2s;
