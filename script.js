@@ -516,13 +516,15 @@ if (contactBalls.length > 0) {
     return ball;
   });
 
-  // הקירות: האזור הוורוד. מהצדדים ומלמעלה החלון פחות המסגרת הכתומה,
-  // ומלמטה הקו שבו מתחיל החלק הכתום. הכול ביחס לראש העמוד (במובייל העמוד נגלל)
+  // הקירות: האזור הוורוד שגלוי. מהצדדים ומלמעלה החלון פחות המסגרת הכתומה,
+  // ומלמטה הקו שבו מתחיל החלק הכתום. הכול ביחס למסך (שכבת הכדורים קבועה על המסך),
+  // כך שבמובייל, כשהכתום עולה בגלילה, הקיר התחתון עולה איתו ודוחף את הכדורים
   function getBounds() {
     const frame = getComputedStyle(document.body, "::after");
+    const windowBottom = window.innerHeight - (parseFloat(frame.borderBottomWidth) || 0);
     const bottom = bottomWall
-      ? bottomWall.getBoundingClientRect().top + window.scrollY
-      : window.innerHeight - (parseFloat(frame.borderBottomWidth) || 0);
+      ? Math.min(windowBottom, bottomWall.getBoundingClientRect().top)
+      : windowBottom;
     return {
       left: parseFloat(frame.borderLeftWidth) || 0,
       top: parseFloat(frame.borderTopWidth) || 0,
@@ -663,10 +665,10 @@ if (contactBalls.length > 0) {
   // העכבר: איפה הוא בחלון. באצבע: רק בזמן שנוגעים במסך
   window.addEventListener("pointermove", function (event) {
     if (event.pointerType === "touch" && event.buttons === 0) return;
-    pointer = { x: event.pageX, y: event.pageY };
+    pointer = { x: event.clientX, y: event.clientY };
   });
   window.addEventListener("pointerdown", function (event) {
-    pointer = { x: event.pageX, y: event.pageY };
+    pointer = { x: event.clientX, y: event.clientY };
   });
   window.addEventListener("pointerup", function (event) {
     if (event.pointerType === "touch") pointer = null;
@@ -679,6 +681,10 @@ if (contactBalls.length > 0) {
   window.addEventListener("resize", function () {
     if (reducedMotion.matches) placeBalls();
   });
+  // במובייל הקיר התחתון זז בגלילה. בלי תנועה: מציבים מחדש באזור הוורוד שגלוי
+  window.addEventListener("scroll", function () {
+    if (reducedMotion.matches) placeBalls();
+  }, { passive: true });
   reducedMotion.addEventListener("change", start);
   mobileScreen.addEventListener("change", start);
 

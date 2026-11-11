@@ -32,57 +32,63 @@
        ואזור העיצוב ממורכז מעליהם -->
   <main class="say-hi-page">
 
-    <div class="say-hi-grid">
+    <!-- החלק הוורוד. במובייל הוא נשאר במקום (sticky) בזמן שהחלק הכתום עולה מעליו,
+         עד שנשאר ממנו גלוי 40% מהמסך, ומשם נגלל כרגיל (styles.css) -->
+    <div class="say-hi-stage">
+      <div class="say-hi-grid">
 
-      <!-- ההמבורגר: קישור זמני לעמוד הבית, עד שיהיה תפריט -->
-      <button class="on-grid menu-button" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
-        <span class="menu-button-line"></span>
-        <span class="menu-button-line"></span>
-        <span class="menu-button-line"></span>
-      </button>
+        <!-- ההמבורגר: פותח את בר הבחירה -->
+        <button class="on-grid menu-button" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+        </button>
 
-      <!-- מלבן ורוד שמסתיר את הקווים שמאחורי הטקסט הקטן -->
-      <div class="grid-box say-hi-box">
-        <p class="say-hi-text text-button">AND LET’S WORK TOGETHER</p>
+        <!-- מלבן ורוד שמסתיר את הקווים שמאחורי הטקסט הקטן -->
+        <div class="grid-box say-hi-box">
+          <p class="say-hi-text text-button">AND LET’S WORK TOGETHER</p>
+        </div>
+
+        <h1 class="say-hi-title text-display-medium">Say  hi</h1>
+
+        <!-- כדורי יצירת הקשר: מסתובבים באזור הוורוד שגלוי כל הזמן (script.js).
+             השכבה שלהם קבועה על המסך, והקצה העליון של החלק הכתום הוא הקיר התחתון.
+             כל כדור הוא קישור ליעד שלו. כולם נפתחים בלשונית חדשה (המייל: הודעה חדשה ב-Gmail).
+             draggable="false": כדי שגרירה בעכבר לא תתפוס את הקישור כמו כפתור רגיל -->
+        <div class="contact-balls">
+          <a draggable="false" class="contact-ball text-contact-ball contact-ball--instagram" href="https://www.instagram.com/ori_kurz/" target="_blank" rel="noopener" aria-label="Instagram"><span class="contact-ball-label">INSTA<br>GRAM</span></a>
+          <a draggable="false" class="contact-ball text-contact-ball contact-ball--email" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=orikurz1@gmail.com" target="_blank" rel="noopener" aria-label="E-mail"><span class="contact-ball-label">E-MAIL</span></a>
+          <a draggable="false" class="contact-ball text-contact-ball contact-ball--whatsapp" href="https://wa.me/972525014266" target="_blank" rel="noopener" aria-label="WhatsApp"><span class="contact-ball-label">WHATS<br>APP</span></a>
+          <!-- CV: פותח את קובץ קורות החיים (PDF) בלשונית חדשה -->
+          <a draggable="false" class="contact-ball text-contact-ball contact-ball--cv" href="Ori-kurz-cv.pdf" target="_blank" rel="noopener" aria-label="CV"><span class="contact-ball-label">CV</span></a>
+        </div>
       </div>
-
-      <h1 class="say-hi-title text-display-medium">Say  hi</h1>
-
-      <!-- הרצועה הכתומה בתחתית: עליי. ממלאת את החלון לרוחב ועד למטה.
-           כל טור ברוחב שלו בפיגמה, והשורות נשברות לפי הרוחב. br = שורה ריקה או פסקה חדשה -->
-      <section class="say-hi-about" aria-label="About me">
-        <p class="say-hi-about-text say-hi-about-text--intro text-about">
-          <strong class="text-about-strong">So, I’m Ori</strong>, and I design, create, think &amp; solve problems Based in Israel.<br>
-          <br>
-          <br>
-          I’m a final-year Visual Communication student at Bezalel, and I making things that move, stand out, and feel one of a kind. I do motion design, interactive design, illustration, branding and so much more cool stuff.
-        </p>
-        <p class="say-hi-about-text say-hi-about-text--work text-about">
-          Oh, I also built this website myself<br>
-          <br>
-          <br>
-          <br>
-          Open to full-time roles, freelance and collaborations.
-        </p>
-        <p class="say-hi-about-text say-hi-about-text--tools text-about">
-          <strong class="text-about-strong">Design &amp; Motion:</strong> Figma, Adobe CC (After Effects, Illustrator, Photoshop, InDesign, Premiere Pro), Cinema 4D, Procreate<br>
-          <br>
-          <strong class="text-about-strong">Creative Tech &amp; AI:</strong> p5.js, Claude Code, VS Code, GitHub, Vercel, Gemini, Weavy
-        </p>
-      </section>
     </div>
-  </main>
 
-  <!-- כדורי יצירת הקשר: מסתובבים באזור הוורוד כל הזמן (script.js).
-       כל כדור הוא קישור ליעד שלו. כולם נפתחים בלשונית חדשה (המייל: הודעה חדשה ב-Gmail).
-       draggable="false": כדי שגרירה בעכבר לא תתפוס את הקישור כמו כפתור רגיל -->
-  <div class="contact-balls">
-    <a draggable="false" class="contact-ball text-contact-ball contact-ball--instagram" href="https://www.instagram.com/ori_kurz/" target="_blank" rel="noopener" aria-label="Instagram"><span class="contact-ball-label">INSTA<br>GRAM</span></a>
-    <a draggable="false" class="contact-ball text-contact-ball contact-ball--email" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=orikurz1@gmail.com" target="_blank" rel="noopener" aria-label="E-mail"><span class="contact-ball-label">E-MAIL</span></a>
-    <a draggable="false" class="contact-ball text-contact-ball contact-ball--whatsapp" href="https://wa.me/972525014266" target="_blank" rel="noopener" aria-label="WhatsApp"><span class="contact-ball-label">WHATS<br>APP</span></a>
-    <!-- CV: פותח את קובץ קורות החיים (PDF) בלשונית חדשה -->
-    <a draggable="false" class="contact-ball text-contact-ball contact-ball--cv" href="Ori-kurz-cv.pdf" target="_blank" rel="noopener" aria-label="CV"><span class="contact-ball-label">CV</span></a>
-  </div>
+    <!-- הרצועה הכתומה: עליי. במחשב צמודה לתחתית החלון. במובייל עולה מעל החלק הוורוד בגלילה.
+         כל טור ברוחב שלו בפיגמה, והשורות נשברות לפי הרוחב. br = שורה ריקה או פסקה חדשה.
+         במובייל לכל טור סגנון משלו (text-about-mobile / text-about-mobile-small) -->
+    <section class="say-hi-about" aria-label="About me">
+      <p class="say-hi-about-text say-hi-about-text--intro text-about text-about-mobile">
+        <strong class="text-about-strong text-about-mobile-strong">So, I’m Ori</strong>, and I design, create, think &amp; solve problems<br class="say-hi-mobile-break"> Based in Israel.<br>
+        <br>
+        <br>
+        I’m a final-year Visual Communication student at Bezalel, and I making things that move, stand out, and feel one of a kind. I do motion design, interactive design, illustration, branding and so much more cool stuff.
+      </p>
+      <p class="say-hi-about-text say-hi-about-text--work text-about text-about-mobile-small">
+        Oh, I also built this website myself<br>
+        <br>
+        <br>
+        <br>
+        <span class="say-hi-about-later">Open to full-time roles, freelance and collaborations.</span>
+      </p>
+      <p class="say-hi-about-text say-hi-about-text--tools text-about text-about-mobile-small">
+        <strong class="text-about-strong text-about-mobile-small-strong">Design &amp; Motion:</strong> Figma, Adobe CC (After Effects, Illustrator, Photoshop, InDesign, Premiere Pro), Cinema 4D, Procreate<br>
+        <br>
+        <strong class="text-about-strong text-about-mobile-small-strong">Creative Tech &amp; AI:</strong> p5.js, Claude Code, VS Code, GitHub, Vercel, Gemini, Weavy
+      </p>
+    </section>
+  </main>
 
   <script src="script.js"></script>
   <script src="keyboard-nav.js"></script>
