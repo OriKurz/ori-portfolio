@@ -1796,6 +1796,11 @@ if (projectsList) {
   let textShown = false;
   let frameSize = 0;         // הגודל הקבוע של התמונה בכל עיגול (הכי גדול שהעיגול מגיע אליו)
   let line = 0;              // עובי המסגרת הצהובה
+  // במובייל, כשיש עיגול ממורכז: האליפסה של העיגולים הקטנים, האזור הפנוי מתחת לעיגול
+  // הממורכז (בגודל הטקסט), וגבולות המסך. במחשב: null
+  let ellipse = null;
+  let clearZone = null;
+  let screenBounds = null;
 
   // פיקסל בפיגמה במסך (במחשב: --u של העמוד)
   function unit() {
@@ -1821,6 +1826,10 @@ if (projectsList) {
       projectsList.style.height = Math.max(rowsHeight, design.groupHeight * groupScale) + "px";
 
       if (!centered) {
+        ellipse = null;
+        clearZone = null;
+        // שני הטורים יכולים להיות גבוהים מהמסך, אז שומרים רק על הצדדים
+        screenBounds = { left: 0, right: width, top: -Infinity, bottom: Infinity };
         items.forEach(function (item, index) {
           item.tx = gap + (index % 2) * (size + gap) + size / 2;
           item.ty = Math.floor(index / 2) * (size + gap) + size / 2;
@@ -1828,7 +1837,11 @@ if (projectsList) {
         });
         return null;
       }
+      return mobileEllipse(listBox, width, gap, groupScale);
     } else {
+      ellipse = null;
+      clearZone = null;
+      screenBounds = null;
       projectsList.style.height = "";
       const u = unit();
 
@@ -1882,6 +1895,71 @@ if (projectsList) {
 
     // הטקסט: מתחת לעיגול הגדול, באותו מרחק כמו בפיגמה
     return { x: toX(bigCenterX), y: toY(design.textTop) };
+  }
+
+  // ----- הסידור הממורכז במובייל: אליפסה אנכית -----
+  // העיגול הממורכז והטקסט שמתחתיו באמצע, והעיגולים הקטנים על אליפסה אנכית סביבם,
+  // שמתפרסת על רוב הגובה שבין הכותרת לתחתית המסך (בתוך השוליים). הכול ממורכז בחלל הזה.
+  // מתחת לעיגול הממורכז, לכל הרוחב והגובה של הטקסט, יש אזור פנוי (clearZone)
+  // שאף עיגול קטן לא נכנס אליו, ואף עיגול לא יוצא מהמסך (screenBounds), גם בזמן התנועה
+  function mobileEllipse(listBox, width, gap, groupScale) {
+    const bigR = design.bigSize / 2 * groupScale;
+    const smallR = design.smallSize * design.smallScale / 2 * groupScale;
+    const bigCenterY = design.bigY + design.bigSize / 2;
+    // הטקסט: באותו מרחק מהעיגול הגדול כמו במחשב
+    const textOffset = (design.textTop - bigCenterY) * groupScale;
+    const textWidth = centered.text.offsetWidth;
+    const textHeight = centered.text.offsetHeight;
+
+    // החלל: מתחת לכותרת ועד תחתית המסך, בתוך השוליים (ביחס למבנה העיגולים)
+    const top = subtitle.getBoundingClientRect().bottom + gap - listBox.top;
+    const bottom = window.innerHeight - gap - listBox.top;
+    const left = gap;
+    const right = width - gap;
+
+    // האליפסה: ממורכזת בחלל, והעיגולים הקטנים נוגעים בשוליים שלו
+    const centerX = (left + right) / 2;
+    const centerY = (top + bottom) / 2;
+    const radiusX = (right - left) / 2 - smallR;
+    const radiusY = (bottom - top) / 2 - smallR;
+    ellipse = { x: centerX, y: centerY, a: radiusX, b: radiusY };
+
+    // העיגול הממורכז והטקסט יחד ממורכזים באליפסה
+    const coreTop = -bigR;
+    const coreBottom = textOffset + textHeight;
+    const bigY = centerY - (coreTop + coreBottom) / 2;
+    centered.tx = centerX;
+    centered.ty = bigY;
+    centered.tr = bigR;
+
+    // ארבעה עיגולים: שניים למעלה ושניים למטה, 30 מעלות מהציר האנכי (בכיוון השעון,
+    // מתחילים משמאל למעלה), כדי שהאליפסה תתפרס על רוב הגובה. מספר אחר: במרווחים שווים
+    const count = ring.length;
+    const tilt = Math.PI / 6;
+    const fourAngles = [-Math.PI / 2 - tilt, -Math.PI / 2 + tilt, Math.PI / 2 - tilt, Math.PI / 2 + tilt];
+    ring.forEach(function (item, index) {
+      const angle = count === 4 ? fourAngles[index] : -3 * Math.PI / 4 + (index / count) * Math.PI * 2;
+      item.tx = centerX + radiusX * Math.cos(angle);
+      item.ty = centerY + radiusY * Math.sin(angle);
+      item.tr = smallR;
+    });
+
+    clearZone = {
+      left: centerX - textWidth / 2,
+      right: centerX + textWidth / 2,
+      top: bigY + textOffset,
+      bottom: bigY + textOffset + textHeight,
+      gap: gap / 2
+    };
+    screenBounds = {
+      left: 0,
+      right: width,
+      top: -listBox.top,
+      bottom: window.innerHeight - listBox.top
+    };
+    projectsList.style.height = Math.max(parseFloat(projectsList.style.height) || 0, bottom + gap) + "px";
+
+    return { x: centerX, y: bigY + textOffset };
   }
 
   // המקומות של העיגולים הקטנים (מרכזים), בכיוון השעון, מתחילים משמאל למעלה.
@@ -2027,8 +2105,8 @@ if (projectsList) {
       if (item.arc) {
         const angle = item.arc.fromAngle + item.arc.turn * eased;
         const reach = item.arc.fromReach + (item.arc.toReach - item.arc.fromReach) * eased;
-        goalX = item.arc.x + Math.cos(angle) * reach + item.bumpX * wave;
-        goalY = item.arc.y + Math.sin(angle) * reach + item.bumpY * wave;
+        goalX = item.arc.x + Math.cos(angle) * reach * item.arc.scaleX + item.bumpX * wave;
+        goalY = item.arc.y + Math.sin(angle) * reach * item.arc.scaleY + item.bumpY * wave;
       }
       const goalR = (item.fromR + (item.tr - item.fromR) * eased) * (1 + bumpGrow * wave);
       item.vx += (spring * (goalX - item.x) - damping * item.vx) * dt;
@@ -2104,6 +2182,55 @@ if (projectsList) {
         }
       }
     }
+
+    // במובייל: אף עיגול קטן לא נכנס לאזור הטקסט שמתחת לעיגול הממורכז
+    if (centered && clearZone) {
+      items.forEach(function (item) {
+        if (item === centered) return;
+        keepOutOfZone(item, clearZone);
+      });
+    }
+
+    // במובייל: כל העיגולים נשארים שלמים בתוך המסך
+    if (screenBounds) {
+      items.forEach(function (item) {
+        const r = Math.max(0, item.r);
+        if (item.x - r < screenBounds.left) { item.x = screenBounds.left + r; item.vx = Math.max(0, item.vx); }
+        if (item.x + r > screenBounds.right) { item.x = screenBounds.right - r; item.vx = Math.min(0, item.vx); }
+        if (item.y - r < screenBounds.top) { item.y = screenBounds.top + r; item.vy = Math.max(0, item.vy); }
+        if (item.y + r > screenBounds.bottom) { item.y = screenBounds.bottom - r; item.vy = Math.min(0, item.vy); }
+      });
+    }
+  }
+
+  // דוחף עיגול אל מחוץ למלבן (ועוד מרווח), לצד הקרוב, ועוצר את התנועה שלו פנימה
+  function keepOutOfZone(item, zone) {
+    const r = Math.max(0, item.r) + zone.gap;
+    const nearestX = Math.min(Math.max(item.x, zone.left), zone.right);
+    const nearestY = Math.min(Math.max(item.y, zone.top), zone.bottom);
+    let dx = item.x - nearestX;
+    let dy = item.y - nearestY;
+    let distance = Math.hypot(dx, dy);
+    if (distance >= r) return;
+    if (distance < 0.001) {
+      // המרכז בתוך המלבן: יוצאים מהצלע הקרובה
+      const exits = [
+        [item.x - zone.left, -1, 0], [zone.right - item.x, 1, 0],
+        [item.y - zone.top, 0, -1], [zone.bottom - item.y, 0, 1]
+      ].sort(function (p, q) { return p[0] - q[0]; });
+      dx = exits[0][1]; dy = exits[0][2];
+      item.x += dx * (exits[0][0] + r);
+      item.y += dy * (exits[0][0] + r);
+    } else {
+      dx /= distance; dy /= distance;
+      item.x += dx * (r - distance);
+      item.y += dy * (r - distance);
+    }
+    const inward = item.vx * dx + item.vy * dy;
+    if (inward < 0) {
+      item.vx -= dx * inward;
+      item.vy -= dy * inward;
+    }
   }
 
   function isSettled(time) {
@@ -2161,15 +2288,20 @@ if (projectsList) {
       item.fromX = item.x; item.fromY = item.y; item.fromR = item.r;
       // במעגל שמסתובב: מי שהיה קטן ונשאר קטן נע בקשת סביב המרכז (בכיוון השעון)
       item.arc = null;
+      // (במחשב סביב העיגול הממורכז. במובייל לאורך האליפסה, כדי לא לצאת מהמסך)
       if (previous && centered && item !== previous && item !== centered) {
-        const fromAngle = Math.atan2(item.y - centered.ty, item.x - centered.tx);
-        const toAngle = Math.atan2(item.ty - centered.ty, item.tx - centered.tx);
+        const arcX = ellipse ? ellipse.x : centered.tx;
+        const arcY = ellipse ? ellipse.y : centered.ty;
+        const scaleX = ellipse ? ellipse.a : 1;
+        const scaleY = ellipse ? ellipse.b : 1;
+        const fromAngle = Math.atan2((item.y - arcY) / scaleY, (item.x - arcX) / scaleX);
+        const toAngle = Math.atan2((item.ty - arcY) / scaleY, (item.tx - arcX) / scaleX);
         item.arc = {
-          x: centered.tx, y: centered.ty,
+          x: arcX, y: arcY, scaleX: scaleX, scaleY: scaleY,
           fromAngle: fromAngle,
           turn: ((toAngle - fromAngle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI),
-          fromReach: Math.hypot(item.x - centered.tx, item.y - centered.ty),
-          toReach: Math.hypot(item.tx - centered.tx, item.ty - centered.ty)
+          fromReach: Math.hypot((item.x - arcX) / scaleX, (item.y - arcY) / scaleY),
+          toReach: Math.hypot((item.tx - arcX) / scaleX, (item.ty - arcY) / scaleY)
         };
       }
       let dx = item.x - source.x;
