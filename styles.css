@@ -3347,6 +3347,8 @@ body {
     --column: calc(var(--grid-columns) - 2);
     --row: var(--section-title-elements-row);
     --title-columns: 2;
+    /* באותו גודל כמו כותרות הסעיפים הקטנות (14) */
+    font-size: var(--section-title-mobile-size);
   }
 
   /* כשהשבירות של הפיגמה לא נכנסות, הטקסט נשבר לבד לפי הרוחב */
