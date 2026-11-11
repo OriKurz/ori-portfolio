@@ -1534,14 +1534,14 @@ if (nextProjectsStrip) {
 }
 
 // =========================================
-// עמודי הפרויקטים במובייל: כותרות הסעיפים בגריד (Main Scenes, Color palette וכו') ו-"tap to play".
+// עמודי הפרויקטים במובייל: כותרות הסעיפים בגריד (Main Scenes, Color palette וכו').
 // כל אחת יושבת בתוך המשבצת שלה (לשמאל וממורכזת לגובה), ואף פעם לא חורגת ממנה.
 // אם היא לא נכנסת במשבצת אחת, היא תופסת שתי משבצות שלמות ברוחב (או יותר), שמתאחדות למשבצת אחת.
 // הסדר שבו מנסים: שבירת השורות של הפיגמה ב-1 ואז 2 משבצות. אם עדיין לא נכנס:
 // בלי השבירות של הפיגמה (is-reflowed), ומוסיפים משבצות לרוחב עד שנכנס.
 // במחשב: בלי שינוי (CSS)
 // =========================================
-const gridSectionTitles = document.querySelectorAll(".full-project-grid .section-title, .full-project-grid .play-hint");
+const gridSectionTitles = document.querySelectorAll(".full-project-grid .section-title");
 
 if (gridSectionTitles.length) {
   const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
@@ -1585,9 +1585,26 @@ if (gridSectionTitles.length) {
     });
   }
 
-  fitSectionTitles();
-  document.fonts.ready.then(fitSectionTitles);
-  window.addEventListener("resize", fitSectionTitles);
+  // הגריד מתחיל בדיוק על פיקסל שלם של המסך (מתחת לטקסט, שגובהו לא תמיד שלם),
+  // כדי שקווי הגריד והמשבצות המאוחדות ייפלו בדיוק על אותם פיקסלים
+  const gridPanel = document.querySelector(".full-project-panel");
+  function snapGridToPixels() {
+    gridPanel.style.paddingTop = "";
+    if (!mobileScreen.matches) return;
+    const pixel = 1 / window.devicePixelRatio;
+    const top = gridPanel.getBoundingClientRect().top + window.scrollY;
+    const extra = Math.ceil(top / pixel - 0.01) * pixel - top;
+    if (extra > 0.001) gridPanel.style.paddingTop = extra + "px";
+  }
+
+  function layoutGrid() {
+    snapGridToPixels();
+    fitSectionTitles();
+  }
+
+  layoutGrid();
+  document.fonts.ready.then(layoutGrid);
+  window.addEventListener("resize", layoutGrid);
 }
 
 // =========================================

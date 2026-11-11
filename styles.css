@@ -107,6 +107,8 @@
   --line-mobile: 2px;
   /* השוליים של העמודים במובייל (במחשב לכל עמוד השוליים שלו מהפיגמה, כמו 50) */
   --margin-mobile: 20px;
+  /* פיקסל אחד של המסך (בטלפון יש 2 או 3 פיקסלים בכל פיקסל של CSS) */
+  --device-px: 1px;
   /* עובי המסגרת סביב החלון: 6px מתוך 96px */
   --frame-border: calc(var(--line) * 2);
   /* המיקום של אזור העיצוב: חצי מהטורים העודפים משמאל.
@@ -266,6 +268,15 @@
   --layer-balls: 1;
   --layer-frame: 2;
   --layer-toggle: 3;
+}
+
+/* פיקסל אחד של המסך, לפי צפיפות המסך */
+@media (min-resolution: 2dppx) {
+  :root { --device-px: 0.5px; }
+}
+
+@media (min-resolution: 3dppx) {
+  :root { --device-px: calc(1px / 3); }
 }
 
 /* ----- עמוד הבית במובייל (מסכים צרים מ-768px) -----
@@ -908,9 +919,10 @@
 @media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-full-project,
   .vars-full-project {
-    /* הגריד ממלא בדיוק את כל רוחב המסך, בלי פס ריק בצדדים: טורים שלמים,
-       והקו הימני של הגריד יושב על הקצה הימני של המסך */
-    --cell: calc((100vw - var(--line)) / var(--grid-columns));
+    /* הגריד ממלא את כל רוחב המסך: טורים שלמים, והקו הימני של הגריד על הקצה הימני.
+       המשבצת מעוגלת לפיקסל שלם של המסך (--device-px), כדי שהקווים והמשבצות המאוחדות
+       ייפלו בדיוק על אותם פיקסלים (נשאר לכל היותר פיקסל אחד בקצה הימני) */
+    --cell: round(down, (100vw - var(--line)) / var(--grid-columns), var(--device-px));
     --line: var(--line-mobile);
     /* הטקסט: לפי רוחב החלק השמאלי בפיגמה (508px) */
     --px: calc(100vw / 508);
@@ -3304,6 +3316,15 @@ body {
     margin-left: 0;
   }
 
+  /* קווי הגריד כתבנית אחת רציפה (ולא אריחים), כדי שכל קו ייפול בדיוק על פיקסלים שלמים
+     של המסך: אריחים בגודל לא שלם נמתחים ומטשטשים את הקו בחצי פיקסל */
+  .full-project-grid.grid-lines {
+    background-image:
+      repeating-linear-gradient(to right, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell)),
+      repeating-linear-gradient(to bottom, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell));
+    background-size: auto;
+  }
+
   /* מרווח מתחת לבאנר, כדי שבסוף הגלילה הוא כולו גלוי מעל סרגל הדפדפן ולחיץ */
   .full-project-scroll {
     padding-bottom: var(--banner-bottom-space);
@@ -3324,18 +3345,20 @@ body {
     width: calc(var(--title-columns, 1) * var(--cell) + var(--line));
     height: calc(var(--cell) + var(--line));
     padding: 0 var(--section-title-padding);
-    border: var(--line) solid transparent;
+    border: var(--line) solid var(--grid-line-color);
     background-color: var(--page-background);
-    background-clip: padding-box;
   }
 
   .full-project-grid .section-title {
     font-size: var(--section-title-mobile-size);
   }
 
-  /* "tap to play": בלי רקע, כדי לא להסתיר את העץ המאויר שיושב באותן משבצות */
+  /* "tap to play": בשורה של Little Things Magic, בשתי המשבצות הימניות ביותר
+     (צמוד לקצה הימני של הגריד), כדי שלא יעלה על האיורים */
   .full-project-grid .play-hint {
-    background-color: transparent;
+    --column: calc(var(--grid-columns) - 2);
+    --row: var(--section-title-elements-row);
+    --title-columns: 2;
   }
 
   /* כשהשבירות של הפיגמה לא נכנסות, הטקסט נשבר לבד לפי הרוחב */
