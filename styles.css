@@ -1115,10 +1115,16 @@
     /* המפה, הגלריה וציר הזמן: ברוחב המסך פחות השוליים */
     --leftovers-content-width: calc(100vw - 2 * var(--margin-mobile));
 
-    /* השורה שמעל המפה: המקום משמאל, הקואורדינטות מיושרות לקצה הימני של הגריד שמעל המפה,
+    /* משבצות הטקסט: מהטור הראשון משמאל (או עד האחרון מימין), 3 משבצות לפחות.
+       הטקסט בתוכן בדיוק בשוליים של 20, כך שהוא מתיישר לקצוות של המפה */
+    --leftovers-label-columns: 3;
+    --leftovers-label-padding-left: calc(var(--margin-mobile) - var(--line));
+    --leftovers-label-padding-right: calc(var(--grid-columns) * var(--cell) - 100vw + var(--margin-mobile));
+    /* השורה שמעל המפה: המקום משמאל, הקואורדינטות בשלוש המשבצות האחרונות מימין,
        והזכוכית המגדלת במשבצת שמשמאלן */
-    --label-box-coordinates-column: 6;  --label-box-coordinates-columns: 3;
-    --magnifier-column: 5;
+    --label-box-place-column: 0;        --place-column: 0;
+    --label-box-coordinates-column: 7;  --label-box-coordinates-columns: 3;
+    --magnifier-column: 6;
 
     /* המפה: מתחת לקו של השורה שמעליה, בפרופורציות של התמונה */
     --leftovers-map-top: calc(2 * var(--cell) + var(--line));
@@ -1128,9 +1134,11 @@
     --marker-hit-size: calc(20 * var(--leftovers-content-width) / 664);
     --magnifier-lens-size: calc(var(--leftovers-content-width) * 0.6);
 
-    /* מה שמתחת למפה: מתחיל בשורה השלמה הראשונה אחרי המפה, מהטור הראשון (כמו שם המקום) */
-    --label-box-map-column: 1;
-    --map-label-column: 1.151;
+    /* מה שמתחת למפה: מתחיל בשורה השלמה הראשונה אחרי המפה, מהטור הראשון (כמו שם המקום).
+       "drag to show" מיד אחרי "Locations gallery" */
+    --label-box-map-column: 0;          --label-box-map-columns: 3;      --map-label-column: 0;
+    --label-box-gallery-column: 0;      --label-box-gallery-columns: 3;
+    --label-box-hint-column: 3;
     --leftovers-below-map: round(up, var(--leftovers-map-top) + var(--leftovers-map-height), var(--cell));
 
     /* הגלריה: 2x4 לוקיישנים ברוחב התוכן (779 = רוחב הגלריה בפיגמה).
@@ -3567,12 +3575,30 @@ body {
 
   .page-leftovers .leftovers-gallery-label,
   .page-leftovers .leftovers-gallery-hint {
-    --label-columns: 2;
     --label-top: calc(var(--leftovers-below-map) + var(--cell));
   }
 
-  .page-leftovers .leftovers-gallery-label { --label-column: var(--label-box-gallery-column); }
-  .page-leftovers .leftovers-gallery-hint  { --label-column: var(--label-box-hint-column); }
+  .page-leftovers .leftovers-gallery-label { --label-column: var(--label-box-gallery-column); --label-columns: var(--label-box-gallery-columns); }
+  .page-leftovers .leftovers-gallery-hint  { --label-column: var(--label-box-hint-column);    --label-columns: var(--label-box-hint-columns); }
+
+  /* משבצות הטקסט שמשמאל: הטקסט מתחיל 20 מהקצה השמאלי של המסך (כמו המפה),
+     והמשבצת המאוחדת לפחות 3 משבצות (script.js מוסיף משבצות אם הטקסט לא נכנס) */
+  .page-leftovers .full-project-grid .leftovers-place,
+  .page-leftovers .full-project-grid .leftovers-map-label {
+    width: calc(max(var(--leftovers-label-columns), var(--title-columns, 1)) * var(--cell) + var(--line));
+    padding-left: var(--leftovers-label-padding-left);
+  }
+
+  .page-leftovers .leftovers-gallery-label {
+    padding-left: var(--leftovers-label-padding-left);
+  }
+
+  /* הקואורדינטות: מיושרות לימין, 20 מהקצה הימני של המסך (כמו המפה) */
+  .page-leftovers .leftovers-coordinates {
+    align-items: flex-end;
+    text-align: right;
+    padding-right: var(--leftovers-label-padding-right);
+  }
 
   /* "Main map, 50×70, print": בשורה הראשונה מתחת למפה */
   .page-leftovers .leftovers-label-box--map,
