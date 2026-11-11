@@ -1814,10 +1814,12 @@ if (projectsList) {
     let groupScale, groupLeft, groupTop;
 
     if (mobileScreen.matches) {
-      // במובייל (אין עיצוב): שני טורים עם רווח של 33, והסידור הממורכז מוקטן לרוחב המסך
+      // במובייל (אין עיצוב): שני טורים עם רווח של 33 ושוליים של 20 (--projects-margin),
+      // והסידור הממורכז מוקטן לרוחב המסך
       const width = projectsList.clientWidth;
       const gap = design.gap * width / 508;
-      const size = (width - 3 * gap) / 2;
+      const margin = parseFloat(getComputedStyle(projectsList).getPropertyValue("--projects-margin")) || gap;
+      const size = (width - 2 * margin - gap) / 2;
       const rows = Math.ceil(items.length / 2);
       const rowsHeight = rows * size + (rows - 1) * gap;
       groupScale = (width - 2 * gap) / design.groupWidth;
@@ -1831,13 +1833,13 @@ if (projectsList) {
         // שני הטורים יכולים להיות גבוהים מהמסך, אז שומרים רק על הצדדים
         screenBounds = { left: 0, right: width, top: -Infinity, bottom: Infinity };
         items.forEach(function (item, index) {
-          item.tx = gap + (index % 2) * (size + gap) + size / 2;
+          item.tx = margin + (index % 2) * (size + gap) + size / 2;
           item.ty = Math.floor(index / 2) * (size + gap) + size / 2;
           item.tr = size / 2;
         });
         return null;
       }
-      return mobileEllipse(listBox, width, gap, groupScale);
+      return mobileEllipse(listBox, width, gap, margin, groupScale);
     } else {
       ellipse = null;
       clearZone = null;
@@ -1902,7 +1904,7 @@ if (projectsList) {
   // שמתפרסת על רוב הגובה שבין הכותרת לתחתית המסך (בתוך השוליים). הכול ממורכז בחלל הזה.
   // מתחת לעיגול הממורכז, לכל הרוחב והגובה של הטקסט, יש אזור פנוי (clearZone)
   // שאף עיגול קטן לא נכנס אליו, ואף עיגול לא יוצא מהמסך (screenBounds), גם בזמן התנועה
-  function mobileEllipse(listBox, width, gap, groupScale) {
+  function mobileEllipse(listBox, width, gap, margin, groupScale) {
     const bigR = design.bigSize / 2 * groupScale;
     const smallR = design.smallSize * design.smallScale / 2 * groupScale;
     const bigCenterY = design.bigY + design.bigSize / 2;
@@ -1913,9 +1915,9 @@ if (projectsList) {
 
     // החלל: מתחת לכותרת ועד תחתית המסך, בתוך השוליים (ביחס למבנה העיגולים)
     const top = subtitle.getBoundingClientRect().bottom + gap - listBox.top;
-    const bottom = window.innerHeight - gap - listBox.top;
-    const left = gap;
-    const right = width - gap;
+    const bottom = window.innerHeight - margin - listBox.top;
+    const left = margin;
+    const right = width - margin;
 
     // האליפסה: ממורכזת בחלל, והעיגולים הקטנים נוגעים בשוליים שלו
     const centerX = (left + right) / 2;
@@ -1957,7 +1959,7 @@ if (projectsList) {
       top: -listBox.top,
       bottom: window.innerHeight - listBox.top
     };
-    projectsList.style.height = Math.max(parseFloat(projectsList.style.height) || 0, bottom + gap) + "px";
+    projectsList.style.height = Math.max(parseFloat(projectsList.style.height) || 0, bottom + margin) + "px";
 
     return { x: centerX, y: bigY + textOffset };
   }

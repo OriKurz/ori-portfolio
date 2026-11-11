@@ -105,6 +105,8 @@
   /* עובי הקו הקבוע בשאר העמודים: 3px במחשב ו-2px במובייל */
   --line-desktop: 3px;
   --line-mobile: 2px;
+  /* השוליים של העמודים במובייל (במחשב לכל עמוד השוליים שלו מהפיגמה, כמו 50) */
+  --margin-mobile: 20px;
   /* עובי המסגרת סביב החלון: 6px מתוך 96px */
   --frame-border: calc(var(--line) * 2);
   /* המיקום של אזור העיצוב: חצי מהטורים העודפים משמאל.
@@ -904,6 +906,10 @@
     /* הטקסט: לפי רוחב החלק השמאלי בפיגמה (508px) */
     --px: calc(100vw / 508);
     --info-height: calc(790 * var(--px));
+    /* השוליים: 20px מקצוות המסך (ההמבורגר נשאר במקום) */
+    --title-left: var(--margin-mobile);
+    --description-left: var(--margin-mobile);
+    --description-width: calc(100vw - 2 * var(--margin-mobile));
     /* בבאנר הטקסט היה יוצא קטן מדי לפי רוחב המסך, אז הוא גדל עם המשבצת */
     --banner-px: var(--u);
 
@@ -1048,6 +1054,8 @@
   :root.page-leftovers {
     --magnifier-lens-size: calc(var(--cell) * 6);
     --magnifier-zoom: 2.5;
+    /* שורת המשנה הימנית זזה יחד עם הכותרת (226 מימין לה, כמו בפיגמה) */
+    --type-left: calc(var(--margin-mobile) + 226 * var(--px));
   }
 }
 
@@ -1254,8 +1262,9 @@
     --line: var(--line-mobile);
     --u: calc(100vw / 508);
     --projects-list-top: calc(200 * var(--u));
+    --projects-margin: var(--margin-mobile);
     --projects-gap: calc(33 * var(--u));
-    --project-circle-size: calc((100vw - 3 * var(--projects-gap)) / 2);
+    --project-circle-size: calc((100vw - 2 * var(--projects-margin) - var(--projects-gap)) / 2);
   }
 }
 
@@ -3875,7 +3884,7 @@ body {
     flex-direction: column;
     gap: var(--cell);
     min-height: calc(100dvh - var(--say-hi-about-top));
-    padding: calc(var(--cell) / 2) var(--cell) calc(var(--cell) * 49 / 93);
+    padding: calc(var(--cell) / 2) var(--margin-mobile) calc(var(--cell) * 49 / 93);
   }
 
   .say-hi-about-text {
@@ -4430,7 +4439,7 @@ body {
   .projects-page {
     position: relative;
     padding-top: var(--projects-list-top);
-    padding-bottom: var(--projects-gap);
+    padding-bottom: var(--projects-margin);
   }
 
   /* הגובה של מבנה העיגולים: script.js קובע לפי הסידורים */
