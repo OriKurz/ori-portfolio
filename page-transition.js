@@ -54,7 +54,7 @@
   // במחשב 16 לרוחב (90 פיקסלים במסך של 1440), במובייל 8. השורה האחרונה נחתכת בתחתית.
   // כל קובייה מקבלת זמן הופעה אקראי. כמה קוביות כבר הופיעו לאורך הזמן הולך לפי
   // עקומה רכה: בהתחלה בודדות, באמצע הרבה יחד, ובסוף האחרונות לאט
-  const mobileQuery = window.matchMedia("(max-width: 767.98px)");
+  const mobileQuery = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
 
   // ההפוך של ease-in-out (קובי): בהינתן איזה חלק מהקוביות כבר הופיע, באיזה חלק מהזמן
   function easeInOutInverse(progress) {

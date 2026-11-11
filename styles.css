@@ -264,7 +264,7 @@
    מסך גבוה: בדיוק 8 משבצות לרוחב, ולמטה נשארת שורה חלקית.
    מסך נמוך (כל 17 השורות לא נכנסות): מוסיפים טורים (זוגי, חצי מכל צד)
    והמשבצות קטנות, כמו במחשב (--cell ו---grid-left מ-:root). */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-home,
   .vars-home {
     --grid-columns: 8;
@@ -469,7 +469,7 @@
    מלבן שבו התמונות אחת מתחת לשנייה, ברוחב מלא. גלילה רגילה של העמוד.
    כל מלבן הוא מספר שלם של שורות, והתוכן ממורכז בו לגובה.
    הגדלים של הטקסט והכפתור כמו בעמוד הבית במובייל. */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-process {
     --grid-columns: 8;
     --grid-rows: 136;
@@ -668,7 +668,7 @@
    אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב המסך (כמו עמוד הבית במובייל),
    והאלמנטים יורדים בטור: הסרגל העליון, בר האינדקס, הסרטון, ריבועי השם, הטקסט והכפתור.
    העמוד נגלל לגובה, וקווי הגריד ממשיכים עד קצות המסך. */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-project {
     --grid-columns: 8;
     --grid-rows: 13;
@@ -894,7 +894,7 @@
 /* ----- עמוד פרויקט מלא במובייל -----
    אין עדיין עיצוב מובייל בפיגמה. בינתיים: טור אחד, הטקסט ואחריו הגריד
    (10 משבצות לרוחב המסך), עם גלילה רגילה של העמוד. */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-full-project,
   .vars-full-project {
     /* הקו הימני של הגריד צריך להיכנס גם הוא ברוחב המסך */
@@ -1043,7 +1043,7 @@
 }
 
 /* הזכוכית המגדלת בטלפון: עיגול של 6 משבצות, מגדיל פי 2.5 */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-leftovers {
     --magnifier-lens-size: calc(var(--cell) * 6);
     --magnifier-zoom: 2.5;
@@ -1157,7 +1157,7 @@
    אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב המסך, ואותו סידור כמו במחשב
    (המלבן בשורה 3, ברוחב 6 משבצות). הגריד מתחיל בראש המסך,
    והרצועה הכתומה בתחתית: שלושת הטקסטים אחד מתחת לשני, והעמוד נגלל. */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-say-hi,
   .vars-say-hi {
     --grid-columns: 8;
@@ -1246,7 +1246,7 @@
 /* ----- עמוד אינדקס הפרויקטים במובייל -----
    אין עיצוב מובייל בפיגמה. הכותרת כמו בעמודי הפרויקט במובייל (לפי 508px של הפיגמה),
    והעיגולים יורדים בשני טורים, עם 33px ביניהם כמו בפיגמה. העמוד נגלל */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-projects {
     --design-columns: 8;
     --design-rows: 1;
@@ -1299,7 +1299,7 @@
 /* מובייל (אין עיצוב בפיגמה): בר נמוך יותר, המבורגר בגודל ההמבורגר של העמודים במובייל,
    טקסט Nav/Mobile (14), והמילים מתפזרות ברווחים שווים עד הקצה הימני.
    פיקסל אחד עד רוחב 375, וקטן יותר בטלפונים צרים יותר כדי שהשורה תמיד תיכנס */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   :root {
     --nav-px: min(1px, 100vw / 375);
     --nav-height: calc(52 * var(--nav-px));
@@ -1319,6 +1319,20 @@
     --nav-list-justify: space-between;
     --nav-line: var(--line-mobile);
     --nav-underline-offset: calc(3 * var(--nav-px));
+  }
+}
+
+/* ----- טלפון לרוחב -----
+   מסך לרוחב מציג תמיד את גרסת המחשב (גרסת המובייל רק לאורך, ראו למעלה).
+   בטלפון (מגע, מסך נמוך מ-768) קווי הגריד נשארים 2px, כמו במובייל */
+@media (orientation: landscape) and (max-height: 767.98px) and (pointer: coarse) {
+  :root {
+    --line-desktop: var(--line-mobile);
+  }
+
+  :root.page-home {
+    --line: var(--line-mobile);
+    --frame-border: 3px;
   }
 }
 
@@ -1498,7 +1512,7 @@ body {
 
 /* במובייל (צר מ-768px) הסגנונות שיש להם גרסת מובייל עוברים אליה:
    Display/Large → Display/Mobile, Button → Button/Mobile, Button/Strong → Button/Mobile Strong, Nav → Nav/Mobile */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   .text-display-large  { font-size: calc(var(--text-display-mobile-size) * var(--type-px)); }
   .text-button         { font-size: calc(var(--text-button-mobile-size) * var(--type-px)); }
   .text-button-strong  { font-size: calc(var(--text-button-mobile-strong-size) * var(--type-px)); }
@@ -1850,7 +1864,7 @@ body {
 }
 
 /* ----- מובייל ----- */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   /* אזור העיצוב ברוחב 8 משבצות בדיוק
      (הקו הימני ביותר נמצא בכל מקרה מתחת למסגרת) */
   .home {
@@ -2127,7 +2141,7 @@ body {
 }
 
 /* במובייל: העמוד נגלל לגובה, בלי גלילה לרוחב */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   .page-project body {
     height: auto;
     overflow-x: hidden;
@@ -3170,7 +3184,7 @@ body {
 }
 
 /* ----- מובייל: טור אחד, והעמוד כולו נגלל ----- */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   .page-full-project body {
     height: auto;
     overflow-x: hidden;
@@ -3258,7 +3272,7 @@ body {
 }
 
 /* במובייל: טור אחד והעמוד כולו נגלל כרגיל */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   .page-leftovers .full-project-info {
     position: relative;
     height: auto;
@@ -3843,7 +3857,7 @@ body {
 .say-hi-about-text--tools { justify-self: end; margin-right: var(--about-tools-right); margin-top: var(--about-tools-top); width: var(--about-tools-width); }
 
 /* במובייל: העמוד נגלל, והטקסטים יורדים בטור ברצועה, עם משבצת ביניהם */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   .page-say-hi,
   .page-say-hi body {
     height: auto;
@@ -3975,7 +3989,7 @@ body {
 }
 
 /* במובייל: שוליים צרים, ושני הכפתורים אחד מתחת לשני */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-styleguide {
     --styleguide-gutter: calc(16 * var(--styleguide-type-px));
     --styleguide-section-gap: calc(64 * var(--styleguide-type-px));
@@ -4404,7 +4418,7 @@ body {
 }
 
 /* במובייל: העמוד נגלל, והעיגולים בשני טורים מתחת לכותרת */
-@media (max-width: 767.98px) {
+@media (max-width: 767.98px) and (orientation: portrait) {
   .page-projects,
   .page-projects body {
     height: auto;

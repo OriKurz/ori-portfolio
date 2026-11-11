@@ -454,7 +454,7 @@ const contactBalls = document.querySelectorAll(".contact-ball");
 
 if (contactBalls.length > 0) {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const mobileScreen = window.matchMedia("(max-width: 767.98px)");
+  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
 
   // המהירות: כמה קטרים של כדור בשנייה. במובייל לאט יותר.
   // המהירות המקורית (0.4 ו-0.22), פי 2 ועוד 50% (פי 3 בסך הכול),
@@ -1745,7 +1745,7 @@ if (projectsList) {
   const title = document.querySelector(".projects-title");
   const subtitle = document.querySelector(".projects-subtitle");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const mobileScreen = window.matchMedia("(max-width: 767.98px)");
+  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
 
   // ----- המידות מהפיגמה (פיקסלים בפריים של 1440) -----
   const design = {
