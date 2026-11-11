@@ -1106,6 +1106,56 @@
     --magnifier-zoom: 2.5;
     /* שורת המשנה הימנית זזה יחד עם הכותרת (226 מימין לה, כמו בפיגמה) */
     --type-left: calc(var(--margin-mobile) + 226 * var(--px));
+
+    /* הגריד: 10 טורים, אותה משבצת ואותו קו כמו ב-The Perfect Crime במובייל */
+    --grid-columns: 10;
+    /* הטקסטים, הבאנר וכל מה שלא הוגדל כאן נשארים בגודל שהיה להם בגריד של 14 טורים */
+    --leftovers-old-cell: round(down, (100vw - var(--line)) / 14, var(--device-px));
+    --u: calc(var(--leftovers-old-cell) / var(--frame-cell));
+
+    /* השורה שמעל המפה: המקום משמאל, הקואורדינטות מיושרות לקצה הימני של המפה,
+       והזכוכית המגדלת במשבצת שמשמאלן (הטקסט באותו מרחק מהפינה כמו קודם) */
+    --label-box-coordinates-column: 7;
+    --coordinates-column: 7.095;   --coordinates-row: 1.166;
+    --magnifier-column: 6;
+
+    /* המפה: כל הרוחב פחות טור מכל צד (8 טורים), והגובה לפי הפרופורציות של התמונה (8 * 2700 / 1935) */
+    --map-column: 1;    --map-row: 2;
+    --map-columns: 8;   --map-rows: 11.163;
+    /* העיגולים והזכוכית גדלים יחד עם המפה (664 = רוחב המפה בפיגמה) */
+    --marker-dot-size: calc(8 * 8 * var(--cell) / 664);
+    --marker-hit-size: calc(20 * 8 * var(--cell) / 664);
+    --magnifier-lens-size: calc(var(--cell) * 4.8);
+
+    /* מה שמתחת למפה: מתחיל בשורה השלמה הראשונה אחרי המפה */
+    --label-box-map-column: 1;      --label-box-map-row: 14;
+    --map-label-column: 1.151;      --map-label-row: 14.306;
+    --label-box-gallery-column: 1;  --label-box-gallery-row: 15;
+    --label-box-hint-column: 3;     --label-box-hint-row: 15;
+    --gallery-label-column: 1.064;  --gallery-label-row: 15.234;
+    --gallery-hint-column: 3.119;   --gallery-hint-row: 15.234;
+
+    /* הגלריה: ברוחב המפה (8 טורים), הכול קטן באותו יחס (8 מתוך 12 טורים) */
+    --leftovers-gallery-u: calc(var(--cell) * 8 / 12 / var(--frame-cell));
+    --gallery-box-column: 1;      --gallery-box-row: 16;
+    --gallery-box-columns: 8;     --gallery-box-rows: 12;
+    --gallery-column: 1.091;      --gallery-row: 16.163;
+    --gallery-columns: 7.821;     --gallery-rows: 10.733;
+    --gallery-column-gap: calc(36 * var(--leftovers-gallery-u));
+    --gallery-row-gap: calc(29 * var(--leftovers-gallery-u));
+    --caption-gap: calc(5 * var(--leftovers-gallery-u));
+
+    /* Source Material: התווית ממורכזת מעל ציר הזמן, והציר והאיורים ברוחב המפה (878 בפיגמה = 8 טורים) */
+    --leftovers-timeline-u: calc(var(--cell) * 8 / var(--timeline-width));
+    --label-box-source-column: 3;   --label-box-source-row: 28;
+    --source-label-column: 3.934;   --source-label-row: 28.377;
+    --timeline-column: 1;           --timeline-row: 29.266;
+    --source-background-width: calc(359 * var(--leftovers-timeline-u));
+    --source-background-height: calc(423 * var(--leftovers-timeline-u));
+    --source-background-left-column: -0.05;  --source-background-left-row: 30.022;
+    --source-background-right-column: 6.722; --source-background-right-row: 30.031;
+    /* אורך הגריד: עד הפרויקטים הנוספים, באותו מרחק מהציר כמו קודם (בגודל החדש) */
+    --grid-rows: 34.404;
   }
 }
 
@@ -3476,6 +3526,12 @@ body {
 
   .page-leftovers .full-project-panel {
     margin-left: 0;
+  }
+
+  /* ציר הזמן ברוחב המפה: כל המספרים שבתוכו (בפיקסלים של הפיגמה) לפי יחידה משלו.
+     השנים נשארות בגודל שלהן (--type-px) */
+  .source-timeline {
+    --u: var(--leftovers-timeline-u);
   }
 
 }
