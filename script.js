@@ -1597,7 +1597,26 @@ if (gridSectionTitles.length) {
     if (extra > 0.001) gridPanel.style.paddingTop = extra + "px";
   }
 
+  // The Perfect Crime במובייל: החפצים המאוירים ארוכים מהשורות שהיו להם במחשב,
+  // אז כל מה שמתחתם יורד במספר השורות השלמות שחסרות (--elements-shift), והגריד מתארך באותו מספר
+  const elementsBoard = document.querySelector(".elements-board");
+  function shiftBelowElements() {
+    if (!elementsBoard) return;
+    document.documentElement.style.removeProperty("--elements-shift");
+    if (!mobileScreen.matches) return;
+    const cellProbe = document.createElement("div");
+    cellProbe.style.width = "var(--cell)";
+    elementsBoard.parentNode.appendChild(cellProbe);
+    const cell = cellProbe.getBoundingClientRect().width;
+    cellProbe.remove();
+    const boardRows = elementsBoard.getBoundingClientRect().height / cell;
+    const desktopRows = parseFloat(getComputedStyle(elementsBoard).getPropertyValue("--elements-board-rows"));
+    const shift = Math.max(0, Math.ceil(boardRows - desktopRows - 0.01));
+    document.documentElement.style.setProperty("--elements-shift", shift);
+  }
+
   function layoutGrid() {
+    shiftBelowElements();
     snapGridToPixels();
     fitSectionTitles();
   }

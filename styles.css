@@ -766,7 +766,8 @@
   --frame-cell: 93.333;
   --grid-columns: 10;
   /* אורך הגריד: עד הקו שבו מתחילים הפרויקטים הנוספים (y=2608 בפיגמה), במשבצות */
-  --grid-rows: 28;
+  /* במובייל החפצים המאוירים ארוכים יותר, וכל מה שמתחתם יורד ב---elements-shift שורות שלמות (script.js) */
+  --grid-rows: calc(28 + var(--elements-shift, 0));
   /* גודל משבצת בפיקסלים שלמים: 10 משבצות ממלאות 933 מתוך 1440 של החלון, כמו בפיגמה.
      ה-0.01px מתקן שגיאת עיגול קטנה של הדפדפן (כמו בעמוד המבואה) */
   --cell: round(down, 100vw * 933 / 1440 / var(--grid-columns) + 0.01px, 1px);
@@ -942,6 +943,25 @@
     /* כותרות הסעיפים בגריד: הריווח הפנימי מהפינה השמאלית התחתונה של המשבצת */
     --section-title-padding: 3px;
     --section-title-mobile-size: 14px;
+
+    /* החפצים המאוירים במובייל: הפריים "Group 10" בפיגמה (359x684), ברוחב המסך פחות השוליים.
+       left, top ו-width באחוזים מהפריים. בפריים אין את הקופסה שמתהפכת (box-flip) */
+    --elements-board-mobile-width: 359;
+    --elements-board-mobile-height: 684;
+    --ea-tree-left: 0%;              --ea-tree-top: 0.649%;          --ea-tree-width: 28.47%;
+    --ea-box-small-left: 38.997%;    --ea-box-small-top: 3.363%;     --ea-box-small-width: 18.663%;
+    --ea-car-left: 62.953%;          --ea-car-top: 1.754%;           --ea-car-width: 35.655%;
+    --ea-box-long-left: 49.025%;     --ea-box-long-top: 19.883%;     --ea-box-long-width: 49.582%;
+    --ea-glass-left: 4.178%;         --ea-glass-top: 19.152%;        --ea-glass-width: 15.32%;
+    --ea-chandelier-left: 5.292%;    --ea-chandelier-top: 21.491%;   --ea-chandelier-width: 54.318%;
+    --ea-gift-left: 62.117%;         --ea-gift-top: 33.333%;         --ea-gift-width: 37.883%;
+    --ea-box-office-left: 0.279%;    --ea-box-office-top: 46.784%;   --ea-box-office-width: 34.54%;
+    --ea-siren-left: 39.276%;        --ea-siren-top: 51.462%;        --ea-siren-width: 20.613%;
+    --ea-box-fragile-left: 64.345%;  --ea-box-fragile-top: 61.696%;  --ea-box-fragile-width: 35.655%;
+    --ea-tape-left: 14.485%;         --ea-tape-top: 62.135%;         --ea-tape-width: 33.983%;
+    --ea-fire-left: 69.359%;         --ea-fire-top: 83.626%;         --ea-fire-width: 30.641%;
+    --ea-axe-left: 37.604%;          --ea-axe-top: 83.626%;          --ea-axe-width: 28.134%;
+    --ea-lamp-left: 0.279%;          --ea-lamp-top: 84.064%;         --ea-lamp-width: 34.54%;
 
     --progress-height: 3px;
     --progress-hover-height: 6px;
@@ -3332,6 +3352,42 @@ body {
   /* כשהשבירות של הפיגמה לא נכנסות, הטקסט נשבר לבד לפי הרוחב */
   .full-project-grid .section-title.is-reflowed br {
     display: none;
+  }
+
+  /* החפצים המאוירים: מתחילים באותה שורה, ברוחב המסך פחות השוליים, ובגובה לפי הפריים במובייל */
+  .elements-board {
+    left: var(--margin-mobile);
+    width: calc(100vw - 2 * var(--margin-mobile));
+    aspect-ratio: var(--elements-board-mobile-width) / var(--elements-board-mobile-height);
+    isolation: isolate;
+  }
+
+  /* סדר השכבות כמו בפריים במובייל (מספר גבוה = מעל) */
+  .elements-board-item--tree        { z-index: 1; }
+  .elements-board-item--box-small   { z-index: 2; }
+  .elements-board-item--car         { z-index: 3; }
+  .elements-board-item--box-long    { z-index: 4; }
+  .elements-board-item--glass       { z-index: 5; }
+  .elements-board-item--chandelier  { z-index: 6; }
+  .elements-board-item--gift        { z-index: 7; }
+  .elements-board-item--box-office  { z-index: 8; }
+  .elements-board-item--siren       { z-index: 9; }
+  .elements-board-item--box-fragile { z-index: 10; }
+  .elements-board-item--tape        { z-index: 11; }
+  .elements-board-item--fire        { z-index: 12; }
+  .elements-board-item--axe         { z-index: 13; }
+  .elements-board-item--lamp        { z-index: 14; }
+  /* elements-anim.css נותן לכל חפץ display: block, אז צריך משקל גבוה יותר */
+  .elements-board .elements-board-item--box-flip { display: none; }
+
+  /* כל מה שמתחת לחפצים (Main Scenes והשאר) יורד ב---elements-shift שורות שלמות (script.js) */
+  .elements-board ~ .on-grid,
+  .elements-board ~ .grid-box {
+    top: calc((var(--row) + var(--elements-shift, 0)) * var(--cell));
+  }
+
+  .full-project-grid .elements-board ~ .section-title {
+    top: calc((round(down, var(--row), 1) + var(--elements-shift, 0)) * var(--cell));
   }
 }
 
