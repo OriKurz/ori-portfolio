@@ -1755,8 +1755,8 @@ if (projectsList) {
     // הסידור סביב עיגול ממורכז: העיגול הגדול, העיגולים הקטנים והטקסט
     bigX: 932, bigY: 279, bigSize: 256.5,
     smallSize: 151.25,
-    // העיגולים הקטנים מוקטנים ל-80% מהפיגמה. הקצה החיצוני שלהם נשאר במקום, כדי שהשוליים לא ישתנו
-    smallScale: 0.8,
+    // העיגולים הקטנים: 88% מהפיגמה (80%, ועוד 10%)
+    smallScale: 0.88,
     smallSlots: [[781, 128], [1188, 128], [781, 530], [1188, 530]],
     // הקומפוזיציה הסגורה: המרווח בין העיגול הגדול לכל עיגול קטן
     ringGap: 40,
@@ -1791,6 +1791,10 @@ if (projectsList) {
   let running = false;
   let lastTime = 0;
   let startTime = 0;
+  // החזרה לשתי השורות: הדחייה כבויה עד שכולם במקום, והעיגולים נעים בגודל הקטן של המעגל
+  let returning = false;
+  let returnSize = 0;        // הרדיוס של עיגול קטן במעגל, שבו נעים בחזרה
+  const returnGrowAt = 0.9;  // באיזה חלק מהדרך עיגול גדל חזרה לגודל שלו בשורות
   let startGaps = [];        // המרווח בין כל שני עיגולים בתחילת המעבר
   let textPosition = null;   // איפה הטקסט מתחת לעיגול הממורכז
   let textShown = false;
@@ -2110,7 +2114,13 @@ if (projectsList) {
         goalX = item.arc.x + Math.cos(angle) * reach * item.arc.scaleX + item.bumpX * wave;
         goalY = item.arc.y + Math.sin(angle) * reach * item.arc.scaleY + item.bumpY * wave;
       }
-      const goalR = (item.fromR + (item.tr - item.fromR) * eased) * (1 + bumpGrow * wave);
+      let goalR = (item.fromR + (item.tr - item.fromR) * eased) * (1 + bumpGrow * wave);
+      // בחזרה: כל העיגולים (גם הממורכז, מיד) בגודל הקטן של המעגל,
+      // ורק כשעיגול עבר 90% מהדרך הוא גדל לגודל שלו בשורות
+      if (returning) {
+        const grow = Math.max(0, (eased - returnGrowAt) / (1 - returnGrowAt));
+        goalR = returnSize + (item.tr - returnSize) * grow;
+      }
       item.vx += (spring * (goalX - item.x) - damping * item.vx) * dt;
       item.vy += (spring * (goalY - item.y) - damping * item.vy) * dt;
       item.vr += (sizeSpring * (goalR - item.r) - sizeDamping * item.vr) * dt;
@@ -2118,7 +2128,40 @@ if (projectsList) {
 
     // דחייה רכה, כמו מגנטים הפוכים: כשעיגול מתקרב לשכן (פחות מ-repelRange בין הקצוות)
     // שניהם נדחפים זה מזה, וככל שהם קרובים יותר הכוח חזק יותר. עיגול קטן זז יותר מגדול.
-    // עיגולים שנעים זה מול זה גם מתגלגלים הצידה, במקום להיתקע ראש בראש
+    // עיגולים שנעים זה מול זה גם מתגלגלים הצידה, במקום להיתקע ראש בראש.
+    // בחזרה לשתי השורות הדחייה כבויה, כדי שלא תחסום אותם בדרך
+    if (!returning) applyRepel(dt);
+
+    items.forEach(function (item) {
+      item.x += item.vx * dt;
+      item.y += item.vy * dt;
+      item.r += item.vr * dt;
+    });
+
+    if (!returning) keepMinGap();
+
+    // במובייל: אף עיגול קטן לא נכנס לאזור הטקסט שמתחת לעיגול הממורכז
+    if (centered && clearZone) {
+      items.forEach(function (item) {
+        if (item === centered) return;
+        keepOutOfZone(item, clearZone);
+      });
+    }
+
+    // במובייל: כל העיגולים נשארים שלמים בתוך המסך
+    if (screenBounds) {
+      items.forEach(function (item) {
+        const r = Math.max(0, item.r);
+        if (item.x - r < screenBounds.left) { item.x = screenBounds.left + r; item.vx = Math.max(0, item.vx); }
+        if (item.x + r > screenBounds.right) { item.x = screenBounds.right - r; item.vx = Math.min(0, item.vx); }
+        if (item.y - r < screenBounds.top) { item.y = screenBounds.top + r; item.vy = Math.max(0, item.vy); }
+        if (item.y + r > screenBounds.bottom) { item.y = screenBounds.bottom - r; item.vy = Math.min(0, item.vy); }
+      });
+    }
+  }
+
+  // הדחייה בין כל שני עיגולים (משנה את המהירויות)
+  function applyRepel(dt) {
     for (let i = 0; i < items.length; i++) {
       for (let j = i + 1; j < items.length; j++) {
         const a = items[i];
@@ -2150,14 +2193,10 @@ if (projectsList) {
         b.vy += fy * weightB;
       }
     }
+  }
 
-    items.forEach(function (item) {
-      item.x += item.vx * dt;
-      item.y += item.vy * dt;
-      item.r += item.vr * dt;
-    });
-
-    // ביטחון: אף פעם לא קרובים יותר מהמרווח הקטן ביותר (וגם לא ממשיכים להתקרב)
+  // ביטחון: אף פעם לא קרובים יותר מהמרווח הקטן ביותר (וגם לא ממשיכים להתקרב)
+  function keepMinGap() {
     for (let i = 0; i < items.length; i++) {
       for (let j = i + 1; j < items.length; j++) {
         const a = items[i];
@@ -2183,25 +2222,6 @@ if (projectsList) {
           b.vy -= ny * approaching * weightB;
         }
       }
-    }
-
-    // במובייל: אף עיגול קטן לא נכנס לאזור הטקסט שמתחת לעיגול הממורכז
-    if (centered && clearZone) {
-      items.forEach(function (item) {
-        if (item === centered) return;
-        keepOutOfZone(item, clearZone);
-      });
-    }
-
-    // במובייל: כל העיגולים נשארים שלמים בתוך המסך
-    if (screenBounds) {
-      items.forEach(function (item) {
-        const r = Math.max(0, item.r);
-        if (item.x - r < screenBounds.left) { item.x = screenBounds.left + r; item.vx = Math.max(0, item.vx); }
-        if (item.x + r > screenBounds.right) { item.x = screenBounds.right - r; item.vx = Math.min(0, item.vx); }
-        if (item.y - r < screenBounds.top) { item.y = screenBounds.top + r; item.vy = Math.max(0, item.vy); }
-        if (item.y + r > screenBounds.bottom) { item.y = screenBounds.bottom - r; item.vy = Math.min(0, item.vy); }
-      });
     }
   }
 
@@ -2258,6 +2278,7 @@ if (projectsList) {
     }
     if (isSettled((now - startTime) / 1000)) {
       running = false;
+      returning = false;
       snap();
       return;
     }
@@ -2269,12 +2290,16 @@ if (projectsList) {
   // source: העיגול שממנו יוצא הגל (זה שנלחץ, או הממורכז כשחוזרים לשתי השורות)
   function arrange(newCentered, source) {
     const previous = centered;
+    // חוזרים לשתי השורות: נעים בגודל של עיגול קטן במעגל, בלי דחייה
+    returning = !newCentered;
+    if (returning && ring.length) returnSize = ring[0].tr;
     centered = newCentered;
     if (!centered) ring = [];
     else if (!previous) ring = firstRing();
     else ring = turnRing(previous);
     placeText(computeTargets());
     if (reducedMotion.matches) {
+      returning = false;
       snap();
       return;
     }
