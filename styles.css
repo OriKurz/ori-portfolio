@@ -3455,6 +3455,169 @@ body {
 }
 
 /* =========================================
+   לשונית הטקסט (The Perfect Crime, רק במובייל)
+   הפריים "Frame 31" בפיגמה: הטקסט של הפרויקט בלשונית בצד שמאל.
+   סגורה: רק הידית הוורודה גלויה בקצה השמאלי. פתוחה: מלבן מנטה עם הטקסט.
+   הפתיחה, הסגירה, הגרירה והרמז בכניסה ב-script.js
+   ========================================= */
+
+/* במחשב הלשונית "שקופה": הטקסט במקום הרגיל שלו, והידית לא קיימת */
+.text-tab,
+.text-tab-content {
+  display: contents;
+}
+
+.text-tab-handle {
+  display: none;
+}
+
+@media (max-width: 767.98px) and (orientation: portrait) {
+  :root.page-perfect-crime {
+    /* הלשונית: 315x525 בפיגמה, מתחת לשורה הראשונה של הגריד (שבה ההמבורגר) */
+    --text-tab-width: 315px;
+    --text-tab-height: 525px;
+    --text-tab-top: calc(var(--cell) + var(--line));
+    --text-tab-border: 2px;
+    --text-tab-padding-top: 13px;
+    --text-tab-gap: 13px;
+    --text-tab-handle-width: 30px;
+    /* הטקסט בלשונית, בגדלים מהפיגמה */
+    --text-tab-title-size: 30px;
+    --text-tab-title-width: 124px;
+    --text-tab-subtitle-size: 17px;
+    --text-tab-body-size: 17px;
+    --text-tab-body-line-height: 20px;
+    --text-tab-body-width: 268px;
+    /* תנועה: רכה, עם האטה בסוף */
+    --text-tab-duration: 0.5s;
+    --text-tab-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --text-tab-hint-duration: 0.6s;
+    --text-tab-hint-ease: cubic-bezier(0.45, 0, 0.55, 1);
+    --layer-text-tab: 8;
+  }
+
+  /* הטקסט כבר לא בתחילת העמוד: הגריד מתחיל למעלה, וההמבורגר יושב במשבצת הראשונה שלו */
+  .page-perfect-crime .full-project-info {
+    height: 0;
+    z-index: auto;
+  }
+
+  /* הלשונית: קבועה על המסך. --text-tab-progress: 0 סגורה, 1 פתוחה (script.js) */
+  .page-perfect-crime .text-tab {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: var(--text-tab-top);
+    z-index: var(--layer-text-tab);
+    width: var(--text-tab-width);
+    height: min(var(--text-tab-height), 100dvh - var(--text-tab-top) - var(--margin-mobile));
+    transform: translateX(calc((var(--text-tab-progress, 0) - 1) * var(--text-tab-width)));
+    transition: transform var(--text-tab-duration) var(--text-tab-ease);
+    /* גרירה לרוחב בקוד, גלילה לגובה בדפדפן */
+    touch-action: pan-y;
+  }
+
+  .page-perfect-crime .text-tab.is-dragging {
+    transition: none;
+  }
+
+  .page-perfect-crime .text-tab.is-hinting {
+    transition-duration: var(--text-tab-hint-duration);
+    transition-timing-function: var(--text-tab-hint-ease);
+  }
+
+  /* המלבן עם הטקסט. הקו השמאלי מחוץ למסך, כמו בפיגמה.
+     טקסט ארוך מהלשונית נגלל בתוכה */
+  .page-perfect-crime .text-tab-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--text-tab-gap);
+    height: 100%;
+    padding: var(--text-tab-padding-top) var(--margin-mobile) var(--margin-mobile);
+    border: var(--text-tab-border) solid var(--grid-line-color);
+    border-left: 0;
+    background-color: var(--page-background);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  .page-perfect-crime .text-tab-content::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page-perfect-crime .text-tab .full-project-title,
+  .page-perfect-crime .text-tab .full-project-type,
+  .page-perfect-crime .text-tab .full-project-description {
+    position: static;
+    flex-shrink: 0;
+    color: var(--color-orange);
+  }
+
+  .page-perfect-crime .text-tab .full-project-title {
+    width: var(--text-tab-title-width);
+    font-size: var(--text-tab-title-size);
+  }
+
+  .page-perfect-crime .text-tab .full-project-type {
+    font-size: var(--text-tab-subtitle-size);
+  }
+
+  .page-perfect-crime .text-tab .full-project-description {
+    width: var(--text-tab-body-width);
+    font-size: var(--text-tab-body-size);
+    line-height: var(--text-tab-body-line-height);
+  }
+
+  /* הידית: הצורה הוורודה מהפיגמה, צמודה לקצה הימני של המלבן */
+  .page-perfect-crime .text-tab-handle {
+    display: block;
+    position: absolute;
+    left: calc(100% - 1px);
+    top: 0;
+    width: var(--text-tab-handle-width);
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    /* Pressed (ברירת המחדל): הידית מתכווצת אל המלבן */
+    transform-origin: left center;
+  }
+
+  /* הצורה עצמה (קובץ ה-SVG כמסכה), כדי שהצבע יבוא מהמשתנה */
+  .page-perfect-crime .text-tab-handle::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--grid-line-color);
+    -webkit-mask: url("Images/text-tab-handle.svg") 0 0 / 100% 100% no-repeat;
+    mask: url("Images/text-tab-handle.svg") 0 0 / 100% 100% no-repeat;
+  }
+
+  /* Focus: אין Hover בטלפון, אז קו מתאר בצבע ובעובי קווי הגריד */
+  .page-perfect-crime .text-tab-handle:focus-visible,
+  .page-perfect-crime .text-tab-handle.is-focus {
+    outline: var(--line) solid var(--grid-line-color);
+    outline-offset: var(--line);
+  }
+
+  /* כשהלשונית פתוחה העמוד שמאחוריה לא נגלל */
+  :root.page-perfect-crime.is-text-tab-open,
+  :root.page-perfect-crime.is-text-tab-open body {
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 767.98px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
+  .page-perfect-crime .text-tab {
+    transition: none;
+  }
+}
+
+/* =========================================
    עמוד הפרויקט Leftovers*
    ========================================= */
 

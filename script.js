@@ -2537,3 +2537,187 @@ if (projectsList) {
     if (item.image && item.image.decode) item.image.decode().catch(function () {});
   });
 }
+
+// =========================================
+// לשונית הטקסט (The Perfect Crime, רק במובייל)
+// הטקסט של הפרויקט בלשונית בצד שמאל. הידית תמיד גלויה.
+// פתיחה וסגירה: נגיעה בידית, או גרירה לרוחב (הלשונית עוקבת אחרי האצבע,
+// ובשחרור נפתחת או נסגרת לפי המרחק והמהירות). נגיעה מחוץ ללשונית או Esc סוגרות.
+// בכניסה לעמוד: רמז אחד, הלשונית נפתחת שליש ונסגרת.
+// במחשב: בלי שינוי (CSS)
+// =========================================
+const textTab = document.querySelector(".text-tab");
+
+if (textTab) {
+  const textTabHandle = textTab.querySelector(".text-tab-handle");
+  const textTabContent = textTab.querySelector(".text-tab-content");
+  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const root = document.documentElement;
+
+  // מהירות גרירה (פיקסלים למילישנייה) שמספיקה כדי לפתוח או לסגור, גם במרחק קצר
+  const flickSpeed = 0.3;
+  // תזוזה מינימלית לפני שמחליטים אם זו גרירה לרוחב או גלילה לגובה
+  const dragThreshold = 8;
+
+  let isOpen = false;
+  let userInteracted = false;
+  let drag = null;
+  // אחרי גרירה, או נגיעה מחוץ ללשונית הפתוחה: הלחיצה שבאה אחריה לא מפעילה כלום
+  let swallowNextClick = false;
+
+  // 0 = סגורה, 1 = פתוחה
+  function setProgress(progress) {
+    textTab.style.setProperty("--text-tab-progress", progress);
+  }
+
+  function setOpen(open) {
+    isOpen = open;
+    textTab.classList.remove("is-hinting");
+    setProgress(open ? 1 : 0);
+    textTabHandle.setAttribute("aria-expanded", open ? "true" : "false");
+    root.classList.toggle("is-text-tab-open", open);
+  }
+
+  // ----- נגיעה בידית (וגם Enter במקלדת) -----
+  textTabHandle.addEventListener("click", function () {
+    userInteracted = true;
+    setOpen(!isOpen);
+  });
+
+  document.addEventListener("keydown", function (event) {
+    swallowNextClick = false;
+    if (event.key === "Escape" && isOpen) setOpen(false);
+  });
+
+  // ----- גרירה: על הידית או על הלשונית הפתוחה -----
+  textTab.addEventListener("pointerdown", function (event) {
+    if (!mobileScreen.matches || (event.pointerType === "mouse" && event.button !== 0)) return;
+    drag = {
+      id: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startProgress: isOpen ? 1 : 0,
+      progress: isOpen ? 1 : 0,
+      active: false,
+      // הנקודות האחרונות, לחישוב המהירות בשחרור
+      samples: [{ x: event.clientX, time: event.timeStamp }]
+    };
+  });
+
+  // התנועה והשחרור נבדקים בכל העמוד, כי האצבע יוצאת מהידית מיד
+  document.addEventListener("pointermove", function (event) {
+    if (!drag || event.pointerId !== drag.id) return;
+    const dx = event.clientX - drag.startX;
+    const dy = event.clientY - drag.startY;
+
+    if (!drag.active) {
+      // תנועה לגובה קודם: זו גלילה של הטקסט, לא גרירה
+      if (Math.abs(dy) > dragThreshold && Math.abs(dy) > Math.abs(dx)) {
+        drag = null;
+        return;
+      }
+      if (Math.abs(dx) < dragThreshold) return;
+      drag.active = true;
+      userInteracted = true;
+      textTab.classList.remove("is-hinting");
+      textTab.classList.add("is-dragging");
+    }
+
+    drag.progress = Math.min(1, Math.max(0, drag.startProgress + dx / textTab.offsetWidth));
+    setProgress(drag.progress);
+    drag.samples.push({ x: event.clientX, time: event.timeStamp });
+    if (drag.samples.length > 5) drag.samples.shift();
+  });
+
+  function endDrag(event) {
+    if (!drag || event.pointerId !== drag.id) return;
+    const ended = drag;
+    drag = null;
+    if (!ended.active) return;
+
+    // המהירות ב-5 הנקודות האחרונות: הנפה מהירה מכריעה גם במרחק קצר
+    const first = ended.samples[0];
+    const last = ended.samples[ended.samples.length - 1];
+    const speed = last.time > first.time ? (last.x - first.x) / (last.time - first.time) : 0;
+    let open = ended.progress > 0.5;
+    if (speed > flickSpeed) open = true;
+    if (speed < -flickSpeed) open = false;
+
+    textTab.classList.remove("is-dragging");
+    // הגרירה לא נחשבת לחיצה (על הידית או על מה שמתחת לאצבע)
+    swallowNextClick = true;
+    setOpen(open);
+  }
+
+  document.addEventListener("pointerup", endDrag);
+  document.addEventListener("pointercancel", endDrag);
+
+  // ----- נגיעה מחוץ ללשונית: סוגרת, ולא מפעילה את מה שמתחתיה
+  // (חוץ מההמבורגר ובר הבחירה, שנשארים לחיצים) -----
+  document.addEventListener("pointerdown", function (event) {
+    swallowNextClick = false;
+    if (!isOpen || textTab.contains(event.target)) return;
+    setOpen(false);
+    if (!event.target.closest(".menu-button, .nav-bar")) swallowNextClick = true;
+  }, true);
+
+  document.addEventListener("click", function (event) {
+    if (!swallowNextClick) return;
+    swallowNextClick = false;
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
+
+  // ----- כשהלשונית פתוחה העמוד שמאחוריה לא נגלל (גם בספארי בטלפון).
+  // רק הטקסט שבתוך הלשונית נגלל -----
+  document.addEventListener("touchmove", function (event) {
+    if (isOpen && !textTabContent.contains(event.target)) event.preventDefault();
+  }, { passive: false });
+
+  // ----- מעבר למחשב (סיבוב הטלפון לרוחב): הלשונית נסגרת -----
+  mobileScreen.addEventListener("change", function () {
+    if (!mobileScreen.matches && isOpen) setOpen(false);
+  });
+
+  // ----- הרמז בכניסה: חצי שנייה אחרי שהעמוד גלוי (אחרי המעבר בקוביות, אם יש),
+  // הלשונית נפתחת שליש ונסגרת. פעם אחת בכל כניסה, ולא ב-prefers-reduced-motion -----
+  function playHint() {
+    if (!mobileScreen.matches || reducedMotion.matches || userInteracted || isOpen) return;
+    textTab.classList.add("is-hinting");
+    setProgress(1 / 3);
+    textTab.addEventListener("transitionend", function back(event) {
+      if (event.target !== textTab) return;
+      textTab.removeEventListener("transitionend", back);
+      if (!textTab.classList.contains("is-hinting")) return;
+      setProgress(0);
+      textTab.addEventListener("transitionend", function done(event) {
+        if (event.target !== textTab) return;
+        textTab.removeEventListener("transitionend", done);
+        textTab.classList.remove("is-hinting");
+      });
+    });
+  }
+
+  function whenPageVisible(callback) {
+    const overlay = document.querySelector(".page-transition");
+    if (!overlay) {
+      callback();
+      return;
+    }
+    // המעבר בקוביות עוד מכסה את העמוד: מחכים שהשכבה שלו תוסר
+    const observer = new MutationObserver(function () {
+      if (overlay.isConnected) return;
+      observer.disconnect();
+      callback();
+    });
+    observer.observe(overlay.parentNode, { childList: true });
+  }
+
+  function startHint() {
+    whenPageVisible(function () { setTimeout(playHint, 500); });
+  }
+
+  if (document.readyState === "complete") startHint();
+  else window.addEventListener("load", startHint, { once: true });
+}
