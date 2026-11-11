@@ -176,9 +176,6 @@
   --text-about-mobile-line-height: 22.5;
   --text-about-mobile-small-size: 14;
   --text-about-mobile-small-line-height: 18;
-  /* הגודל המינימלי במובייל: טקסט רגיל לפחות 17px, וטקסט קטן במיוחד לפחות 14px */
-  --text-min-size: 17px;
-  --text-min-small-size: 14px;
 
   /* פיקסל אחד בפיגמה: כמה הוא שווה במסך. כל עמוד (ולפעמים כל חלק בעמוד)
      קובע אותו לפי השיטה שבה הוא גדל עם המסך. בעמוד הבית: משבצת = 96px בפיגמה */
@@ -1593,38 +1590,6 @@ body {
   .text-about-mobile-small-strong {
     font-size: calc(var(--text-about-mobile-small-size) * var(--type-px));
     line-height: calc(var(--text-about-mobile-small-line-height) * var(--type-px));
-  }
-
-  /* גודל מינימלי במובייל: טקסט רגיל לפחות 17px, וטקסט קטן במיוחד לפחות 14px.
-     max() משאיר את הגודל מהפיגמה כשהוא כבר גדול מהמינימום.
-     לא חל על Say Hi (:where לא מוסיף משקל, כך שכללים של עמודים עדיין גוברים) */
-  :where(:root:not(.page-say-hi)) .text-subtitle      { font-size: max(var(--text-min-size), calc(var(--text-subtitle-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-section-title { font-size: max(var(--text-min-size), calc(var(--text-section-title-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-tagline       { font-size: max(var(--text-min-size), calc(var(--text-tagline-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-button        { font-size: max(var(--text-min-size), calc(var(--text-button-mobile-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-button-mobile { font-size: max(var(--text-min-size), calc(var(--text-button-mobile-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-body {
-    font-size: max(var(--text-min-size), calc(var(--text-body-size) * var(--type-px)));
-    line-height: max(var(--text-min-size) * 28 / 20, calc(var(--text-body-line-height) * var(--type-px)));
-  }
-  :where(:root:not(.page-say-hi)) .text-about-mobile,
-  :where(:root:not(.page-say-hi)) .text-about-mobile-strong {
-    font-size: max(var(--text-min-size), calc(var(--text-about-mobile-size) * var(--type-px)));
-    line-height: max(var(--text-min-size) * 22.5 / 17, calc(var(--text-about-mobile-line-height) * var(--type-px)));
-  }
-
-  /* הטקסטים הקטנים במיוחד: לפחות 14px */
-  :where(:root:not(.page-say-hi)) .text-nav                  { font-size: max(var(--text-min-small-size), calc(var(--text-nav-mobile-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-button-strong        { font-size: max(var(--text-min-small-size), calc(var(--text-button-mobile-strong-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-button-mobile-strong { font-size: max(var(--text-min-small-size), calc(var(--text-button-mobile-strong-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-hint                 { font-size: max(var(--text-min-small-size), calc(var(--text-hint-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-caption              { font-size: max(var(--text-min-small-size), calc(var(--text-caption-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-timeline-year        { font-size: max(var(--text-min-small-size), calc(var(--text-timeline-year-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-contact-ball         { font-size: max(var(--text-min-small-size), calc(var(--text-contact-ball-size) * var(--type-px))); }
-  :where(:root:not(.page-say-hi)) .text-about-mobile-small,
-  :where(:root:not(.page-say-hi)) .text-about-mobile-small-strong {
-    font-size: max(var(--text-min-small-size), calc(var(--text-about-mobile-small-size) * var(--type-px)));
-    line-height: max(var(--text-min-small-size) * 18 / 14, calc(var(--text-about-mobile-small-line-height) * var(--type-px)));
   }
 
 }
@@ -3447,13 +3412,6 @@ body {
     margin-left: 0;
   }
 
-  /* זמני: הטקסטים האלה בגריד של Leftovers לא נכנסים במקום שלהם בגודל המינימלי
-     (הגריד צפוף מדי), אז בינתיים הם נשארים בגודל מהפיגמה, עד שיוחלט על פריסה */
-  .page-leftovers .full-project-grid .leftovers-coordinates { font-size: calc(var(--text-subtitle-size) * var(--type-px)); }
-  .page-leftovers .full-project-grid .leftovers-gallery-label { font-size: calc(var(--text-section-title-size) * var(--type-px)); }
-  .page-leftovers .full-project-grid .text-hint { font-size: calc(var(--text-hint-size) * var(--type-px)); }
-  .page-leftovers .full-project-grid .text-caption { font-size: calc(var(--text-caption-size) * var(--type-px)); }
-  .page-leftovers .full-project-grid .text-timeline-year { font-size: calc(var(--text-timeline-year-size) * var(--type-px)); }
 }
 
 /* ----- התוויות בגריד ----- */
