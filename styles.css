@@ -1210,12 +1210,12 @@
 
     --say-hi-box-column: 1;
     --say-hi-box-columns: 6;
-    /* גודל הטקסט: כמו הכפתורים בעמוד הבית במובייל (17px מתוך משבצת של 49.06px).
+    /* גודל הטקסט: Button/Mobile (17px) בפריים say-hi-m בפיגמה, שבו משבצת = 49.06px.
        ממורכז לרוחב ולגובה */
-    --tagline-type-px: calc(var(--cell) * 17 / 49.06 / 25);
+    --tagline-type-px: calc(var(--cell) / 49.06);
     --say-hi-text-align: center;
     --say-hi-text-right: 0px;
-    --say-hi-text-offset: calc((var(--cell) - var(--line) - var(--text-button-size) * var(--tagline-type-px)) / 2);
+    --say-hi-text-offset: calc((var(--cell) - var(--line) - var(--text-button-mobile-size) * var(--tagline-type-px)) / 2);
 
     /* החלק הוורוד: בטעינה 75% מגובה המסך. בגלילה הכתום עולה מעליו עד הקו התחתון
        של השורה הראשונה (--say-hi-top-row-height).
