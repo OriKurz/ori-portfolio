@@ -1214,10 +1214,10 @@
     --about-work-left: calc(244 * var(--about-px));
     --about-work-top: calc((588 - 572) * var(--about-px));
     --about-work-width: calc(109 * var(--about-px));
-    /* "Open to full-time..." מתחיל ב-723: 135 מתחת ל-"Oh, I also..." (588) */
-    --about-later-gap: calc((723 - 588 - 6 * 18) * var(--about-px));
-    /* הטור הרחב מתחיל ב-939, מתחת לשורה האחרונה של הטור השמאלי (15 שורות מ-585) */
-    --about-tools-top: calc((939 - 585 - 15 * 22.5) * var(--about-px));
+    /* "Open to full-time..." מתחיל ב-699: 111 מתחת ל-"Oh, I also..." (588) */
+    --about-later-gap: calc((699 - 588 - 6 * 18) * var(--about-px));
+    /* הטור הרחב מתחיל ב-926, מתחת לשורה האחרונה של הטור השמאלי (14 שורות מ-585) */
+    --about-tools-top: calc((926 - 585 - 14 * 22.5) * var(--about-px));
     --about-tools-width: calc(345 * var(--about-px));
 
     /* הכותרת באותו גודל במשבצות כמו במחשב, ממורכזת לרוחב */
@@ -4012,6 +4012,10 @@ body {
 
   .say-hi-mobile-break {
     display: inline;
+  }
+
+  .say-hi-desktop-break {
+    display: none;
   }
 }
 
