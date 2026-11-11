@@ -929,6 +929,7 @@
     --strip-px: calc(100vw * 0.4 / 258);
     /* כותרות הסעיפים בגריד: הריווח הפנימי מהפינה השמאלית התחתונה של המשבצת */
     --section-title-padding: 3px;
+    --section-title-mobile-size: 14px;
 
     --progress-height: 3px;
     --progress-hover-height: 6px;
@@ -1583,39 +1584,37 @@ body {
   }
 
   /* גודל מינימלי במובייל: טקסט רגיל לפחות 17px, וטקסט קטן במיוחד לפחות 14px.
-     max() משאיר את הגודל מהפיגמה כשהוא כבר גדול מהמינימום */
-  .text-subtitle      { font-size: max(var(--text-min-size), calc(var(--text-subtitle-size) * var(--type-px))); }
-  .text-section-title { font-size: max(var(--text-min-size), calc(var(--text-section-title-size) * var(--type-px))); }
-  .text-tagline       { font-size: max(var(--text-min-size), calc(var(--text-tagline-size) * var(--type-px))); }
-  .text-button        { font-size: max(var(--text-min-size), calc(var(--text-button-mobile-size) * var(--type-px))); }
-  .text-button-mobile { font-size: max(var(--text-min-size), calc(var(--text-button-mobile-size) * var(--type-px))); }
-  .text-body {
+     max() משאיר את הגודל מהפיגמה כשהוא כבר גדול מהמינימום.
+     לא חל על Say Hi (:where לא מוסיף משקל, כך שכללים של עמודים עדיין גוברים) */
+  :where(:root:not(.page-say-hi)) .text-subtitle      { font-size: max(var(--text-min-size), calc(var(--text-subtitle-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-section-title { font-size: max(var(--text-min-size), calc(var(--text-section-title-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-tagline       { font-size: max(var(--text-min-size), calc(var(--text-tagline-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-button        { font-size: max(var(--text-min-size), calc(var(--text-button-mobile-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-button-mobile { font-size: max(var(--text-min-size), calc(var(--text-button-mobile-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-body {
     font-size: max(var(--text-min-size), calc(var(--text-body-size) * var(--type-px)));
     line-height: max(var(--text-min-size) * 28 / 20, calc(var(--text-body-line-height) * var(--type-px)));
   }
-  .text-about-mobile,
-  .text-about-mobile-strong {
+  :where(:root:not(.page-say-hi)) .text-about-mobile,
+  :where(:root:not(.page-say-hi)) .text-about-mobile-strong {
     font-size: max(var(--text-min-size), calc(var(--text-about-mobile-size) * var(--type-px)));
     line-height: max(var(--text-min-size) * 22.5 / 17, calc(var(--text-about-mobile-line-height) * var(--type-px)));
   }
 
   /* הטקסטים הקטנים במיוחד: לפחות 14px */
-  .text-nav                  { font-size: max(var(--text-min-small-size), calc(var(--text-nav-mobile-size) * var(--type-px))); }
-  .text-button-strong        { font-size: max(var(--text-min-small-size), calc(var(--text-button-mobile-strong-size) * var(--type-px))); }
-  .text-button-mobile-strong { font-size: max(var(--text-min-small-size), calc(var(--text-button-mobile-strong-size) * var(--type-px))); }
-  .text-hint                 { font-size: max(var(--text-min-small-size), calc(var(--text-hint-size) * var(--type-px))); }
-  .text-caption              { font-size: max(var(--text-min-small-size), calc(var(--text-caption-size) * var(--type-px))); }
-  .text-timeline-year        { font-size: max(var(--text-min-small-size), calc(var(--text-timeline-year-size) * var(--type-px))); }
-  .text-contact-ball         { font-size: max(var(--text-min-small-size), calc(var(--text-contact-ball-size) * var(--type-px))); }
-  .text-about-mobile-small,
-  .text-about-mobile-small-strong {
+  :where(:root:not(.page-say-hi)) .text-nav                  { font-size: max(var(--text-min-small-size), calc(var(--text-nav-mobile-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-button-strong        { font-size: max(var(--text-min-small-size), calc(var(--text-button-mobile-strong-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-button-mobile-strong { font-size: max(var(--text-min-small-size), calc(var(--text-button-mobile-strong-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-hint                 { font-size: max(var(--text-min-small-size), calc(var(--text-hint-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-caption              { font-size: max(var(--text-min-small-size), calc(var(--text-caption-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-timeline-year        { font-size: max(var(--text-min-small-size), calc(var(--text-timeline-year-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-contact-ball         { font-size: max(var(--text-min-small-size), calc(var(--text-contact-ball-size) * var(--type-px))); }
+  :where(:root:not(.page-say-hi)) .text-about-mobile-small,
+  :where(:root:not(.page-say-hi)) .text-about-mobile-small-strong {
     font-size: max(var(--text-min-small-size), calc(var(--text-about-mobile-small-size) * var(--type-px)));
     line-height: max(var(--text-min-small-size) * 18 / 14, calc(var(--text-about-mobile-small-line-height) * var(--type-px)));
   }
 
-  /* זמני: הטקסט על כדורי Say Hi ב-14px רחב מהכדור (60% מהגודל במובייל),
-     אז בינתיים הוא נשאר בגודל הקודם, עד שיוחלט אם להגדיל את הכדורים */
-  .page-say-hi .text-contact-ball { font-size: calc(var(--text-contact-ball-size) * var(--type-px)); }
 }
 
 /* =========================================
@@ -3312,8 +3311,9 @@ body {
 
   /* כותרות הסעיפים בגריד: מלבן של משבצות שלמות, מקו לקו (כמו grid-box),
      והטקסט בפינה השמאלית התחתונה שלו. רוחב המלבן (--title-columns) נקבע ב-script.js:
-     משבצת אחת, ואם הטקסט לא נכנס, שתיים. הרקע מסתיר את הקו שבאמצע */
+     משבצת אחת, ואם הטקסט לא נכנס, שתיים או יותר. בלי רקע: קווי הגריד נשארים גלויים */
   .full-project-grid .section-title {
+    font-size: var(--section-title-mobile-size);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -3323,8 +3323,6 @@ body {
     height: calc(var(--cell) + var(--line));
     padding: 0 var(--section-title-padding) var(--section-title-padding);
     border: var(--line) solid transparent;
-    background-color: var(--page-background);
-    background-clip: padding-box;
   }
 
   /* כשהשבירות של הפיגמה לא נכנסות, הטקסט נשבר לבד לפי הרוחב */

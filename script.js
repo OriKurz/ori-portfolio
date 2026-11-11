@@ -1407,7 +1407,7 @@ if (nextProjectsStrip) {
   const track = nextProjectsStrip.querySelector(".next-projects-track");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const secondsPerProject = 7;  // המהירות הרגילה: כמה שניות לוקח לפרויקט אחד לעבור
-  const mobileSpeedUp = 1.5;    // במובייל הרצועה מהירה פי 1.5 (50% יותר)
+  const mobileSpeedUp = 2.25;   // במובייל הרצועה מהירה פי 2.25
   const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
   const maxPush = 5;            // כמה מהר יותר (פי) כשהעכבר צמוד לקצה השמאלי
   const pushArea = 0.5;         // החלק השמאלי של הרצועה שבו העכבר דוחף (חצי מהרוחב)
@@ -1536,7 +1536,7 @@ if (nextProjectsStrip) {
 // =========================================
 // עמודי הפרויקטים במובייל: כותרות הסעיפים בגריד (Main Scenes, Color palette וכו').
 // כל כותרת יושבת בפינה השמאלית התחתונה של המשבצת שלה, ואף פעם לא חורגת ממנה.
-// אם היא לא נכנסת במשבצת אחת, היא תופסת שתי משבצות ברוחב (המלבן מסתיר את הקו שבאמצע).
+// אם היא לא נכנסת במשבצת אחת, היא תופסת שתי משבצות שלמות ברוחב (או יותר), מקו לקו, בלי רקע.
 // הסדר שבו מנסים: שבירת השורות של הפיגמה ב-1 ואז 2 משבצות. אם עדיין לא נכנס:
 // בלי השבירות של הפיגמה (is-reflowed), ומוסיפים משבצות לרוחב עד שנכנס.
 // במחשב: בלי שינוי (CSS)
