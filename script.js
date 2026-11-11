@@ -511,7 +511,8 @@ if (contactBalls.length > 0) {
   const balls = Array.from(contactBalls).map(function (element, i) {
     const angle = startAngle(i);
     const ball = { element: element, x: 0, y: 0, dx: Math.cos(angle), dy: Math.sin(angle), pace: 1, focused: false };
-    element.addEventListener("focus", function () { ball.focused = true; });
+    // עוצר רק בפוקוס מהמקלדת. נגיעה בכדור (שנותנת לו פוקוס בחלק מהדפדפנים) לא עוצרת אותו
+    element.addEventListener("focus", function () { ball.focused = element.matches(":focus-visible"); });
     element.addEventListener("blur", function () { ball.focused = false; });
     // כדור שעוד לא מחובר לשום קובץ (href="#", כמו CV): הלחיצה לא עושה כלום
     element.addEventListener("click", function (event) {
@@ -543,7 +544,9 @@ if (contactBalls.length > 0) {
       left: parseFloat(frame.borderLeftWidth) || 0,
       top: parseFloat(frame.borderTopWidth) || 0,
       right: window.innerWidth - (parseFloat(frame.borderRightWidth) || 0),
-      bottom: bottom
+      bottom: bottom,
+      // במובייל: המשבצת של ההמבורגר (בפינה השמאלית העליונה) היא מכשול, והכדורים לא נכנסים אליה
+      menuCell: rowHeight > 0 ? { right: rowHeight, bottom: rowHeight } : null
     };
   }
 
@@ -578,6 +581,33 @@ if (contactBalls.length > 0) {
     if (ball.x + ball.radius > bounds.right) { ball.x = bounds.right - ball.radius; ball.dx = -Math.abs(ball.dx); }
     if (ball.y - ball.radius < bounds.top) { ball.y = bounds.top + ball.radius; ball.dy = Math.abs(ball.dy); }
     if (ball.y + ball.radius > bounds.bottom) { ball.y = bounds.bottom - ball.radius; ball.dy = -Math.abs(ball.dy); }
+  }
+
+  // מכשול מלבני בפינה השמאלית העליונה (המשבצת של ההמבורגר): כשהכדור נוגע בו,
+  // הוא נדחף החוצה מהנקודה הקרובה ביותר במלבן, וחוזר ממנו כמו מקיר
+  function bounceOffCorner(ball, cell) {
+    const nearestX = Math.min(ball.x, cell.right);
+    const nearestY = Math.min(ball.y, cell.bottom);
+    let nx = ball.x - nearestX;
+    let ny = ball.y - nearestY;
+    const distance = Math.hypot(nx, ny);
+    if (distance >= ball.radius) return;
+    if (distance < 0.001) {
+      // המרכז בתוך המשבצת: יוצאים מהצלע הקרובה
+      if (cell.right - ball.x < cell.bottom - ball.y) { nx = 1; ny = 0; } else { nx = 0; ny = 1; }
+      ball.x = nx ? cell.right + ball.radius : ball.x;
+      ball.y = ny ? cell.bottom + ball.radius : ball.y;
+    } else {
+      nx /= distance;
+      ny /= distance;
+      ball.x = nearestX + nx * ball.radius;
+      ball.y = nearestY + ny * ball.radius;
+    }
+    const along = ball.dx * nx + ball.dy * ny;
+    if (along < 0) {
+      ball.dx -= 2 * along * nx;
+      ball.dy -= 2 * along * ny;
+    }
   }
 
   // שומר כיוון חדש לכדור (וקטור באורך 1). אם התנועה אחרי ההתנגשות כמעט אפס
@@ -661,6 +691,7 @@ if (contactBalls.length > 0) {
       });
       balls.forEach(function (ball) {
         bounceOffWalls(ball, bounds);
+        if (bounds.menuCell) bounceOffCorner(ball, bounds.menuCell);
       });
     }
 
@@ -676,16 +707,13 @@ if (contactBalls.length > 0) {
     if (!reducedMotion.matches) frame = requestAnimationFrame(step);
   }
 
-  // העכבר: איפה הוא בחלון. באצבע: רק בזמן שנוגעים במסך
+  // העכבר: איפה הוא בחלון. רק עכבר: במכשירי מגע אין האטה, והכדורים תמיד נעים במהירות הרגילה
+  // (נגיעה שנגמרת בגלילה לא שולחת pointerup, ומיקום שנשאר היה מקפיא את הכדורים לידו)
   window.addEventListener("pointermove", function (event) {
-    if (event.pointerType === "touch" && event.buttons === 0) return;
-    pointer = { x: event.clientX, y: event.clientY };
+    if (event.pointerType === "mouse") pointer = { x: event.clientX, y: event.clientY };
   });
   window.addEventListener("pointerdown", function (event) {
-    pointer = { x: event.clientX, y: event.clientY };
-  });
-  window.addEventListener("pointerup", function (event) {
-    if (event.pointerType === "touch") pointer = null;
+    if (event.pointerType === "mouse") pointer = { x: event.clientX, y: event.clientY };
   });
   document.documentElement.addEventListener("pointerleave", function () {
     pointer = null;

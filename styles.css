@@ -3946,12 +3946,14 @@ body {
     height: var(--say-hi-pink-height);
   }
 
-  /* הוורוד והגריד: קבועים על כל המסך, מתחת לכתום */
+  /* הוורוד והגריד: קבועים במקום, מתחת לכתום. רק בגובה החלק הוורוד (75%), כך שמתחת
+     לכתום אף פעם לא נשאר קו או שארית של הגריד */
   .say-hi-grid {
     position: fixed;
-    inset: 0;
-    width: auto;
-    height: auto;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: var(--say-hi-pink-height);
     overflow: hidden;
     background-color: var(--page-background);
     background-image:
@@ -3980,14 +3982,15 @@ body {
     background-size: var(--cell) var(--cell);
   }
 
-  /* הכתום: מתחיל בסוף החלק הוורוד (75%) ועולה מעליו בגלילה. שני טורים, ומתחתם טור רחב.
-     לפחות בגובה המסך מתחת לשורה הראשונה, כדי שתמיד יוכל לעלות עד אליה */
+  /* הכתום: מתחיל בסוף החלק הוורוד (75%) ועולה מעליו בגלילה רק כמה שצריך כדי שכל הטקסט ייראה:
+     הגלילה נגמרת ב-20 פיקסלים מתחת לטקסט. שני טורים, ומתחתם טור רחב.
+     טקסט קצר: הכתום לפחות עד תחתית המסך, בלי גלילה */
   .say-hi-about {
     position: relative;
     z-index: 1;
     bottom: auto;
     width: 100%;
-    min-height: calc(100svh - var(--say-hi-top-row-height));
+    min-height: calc(100dvh - var(--say-hi-pink-height));
     align-content: start; /* הגובה העודף נשאר מתחת לטקסט, ולא בין השורות */
     grid-template-columns: calc(var(--about-work-left) - var(--margin-mobile)) auto;
     padding: 0 var(--margin-mobile) var(--margin-mobile);
