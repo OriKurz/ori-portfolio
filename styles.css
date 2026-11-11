@@ -299,8 +299,9 @@
     --greeting-columns: 2;
     --text-offset: calc(var(--cell) * 15 / 49.06);
 
-    /* הכותרת ORI KURZ: מיושרת לימין */
-    --title-top: calc(var(--cell) * 6.62);
+    /* הכותרת ORI KURZ: מיושרת לימין. המיקום לגובה נמדד מול קווי הגריד בפיגמה:
+       ראש האותיות על הקו העליון של השורה, והבסיס על הקו התחתון */
+    --title-top: calc(var(--cell) * 6.669);
     --title-right: calc(var(--cell) * 1.335);
 
     /* הפולרויד */
