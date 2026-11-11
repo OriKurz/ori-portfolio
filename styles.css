@@ -1195,11 +1195,11 @@
     --say-hi-text-right: 0px;
     --say-hi-text-offset: calc((var(--cell) - var(--line) - var(--text-button-size) * var(--tagline-type-px)) / 2);
 
-    /* החלק הוורוד: בטעינה 75% מגובה המסך. בגלילה הכתום עולה מעליו עד שנשאר ממנו 40%.
+    /* החלק הוורוד: בטעינה 75% מגובה המסך. בגלילה הכתום עולה מעליו עד הקו התחתון
+       של השורה הראשונה (--say-hi-top-row-height).
        svh: גובה המסך כשסרגל הדפדפן פתוח, כדי שהחלוקה לא תקפוץ כשהסרגל נעלם בגלילה */
     --say-hi-pink-height: 75svh;
-    --say-hi-pink-min: 40svh;
-    --say-hi-cover: calc(var(--say-hi-pink-height) - var(--say-hi-pink-min));
+    --say-hi-top-row-height: calc(var(--cell) + var(--line));
     /* "Say hi" והשורה שמתחתיו ממורכזים בחלק הוורוד, על שורות שלמות של הגריד:
        הכותרת תופסת 3 שורות, והמלבן עם הטקסט הקטן בשורה שמתחתיה (4 שורות יחד) */
     --say-hi-box-top: calc(round(nearest, (var(--say-hi-pink-height) - 4 * var(--cell)) / 2, var(--cell)) + 3 * var(--cell));
@@ -3840,15 +3840,16 @@ body {
 /* ההמבורגר: אותו כפתור כמו בעמודי הפרויקט, בכתום.
    הוא תמיד במשבצת השלמה הראשונה בפינה השמאלית העליונה של המסך (לא של אזור העיצוב),
    ממורכז בדיוק בשטח שבין קווי הגריד שלה (מהקו בעובי --line ועד הקו הבא), לרוחב ולגובה.
-   המיקום ביחס לאזור העיצוב, ולכן מחסירים את --grid-left ואת --grid-top.
+   קבוע על המסך (fixed), כדי שיישאר גלוי ולחיץ גם כשהחלק הכתום עולה במובייל.
    הקו הראשון מלמעלה הוא ב---top-gap (כשיש שורה חלקית בראש המסך, ההמבורגר מתחתיה) */
-.say-hi-grid .menu-button {
+.say-hi-menu {
   --menu-height: calc(3 * var(--menu-line-height) + 2 * var(--menu-gap));
-  left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2 - var(--grid-left));
-  top: calc(var(--top-gap) + (var(--cell) + var(--line) - var(--menu-height)) / 2 - var(--grid-top));
+  position: fixed;
+  left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
+  top: calc(var(--top-gap) + (var(--cell) + var(--line) - var(--menu-height)) / 2);
 }
 
-.say-hi-grid .menu-button-line {
+.say-hi-menu .menu-button-line {
   border-radius: var(--menu-line-height);
   background-color: var(--color-orange);
 }
@@ -3913,7 +3914,14 @@ body {
   display: none;
 }
 
-/* במובייל: העמוד נגלל, והטקסטים יורדים בטור ברצועה, עם משבצת ביניהם */
+/* השורה הראשונה של הגריד מעל הכתום: רק במובייל */
+.say-hi-top-row {
+  display: none;
+}
+
+/* במובייל: החלק הוורוד (הגריד, הכותרת וההמבורגר) קבוע במקום, ורק החלק הכתום נגלל.
+   הוא עולה מעל הוורוד עד הקו התחתון של השורה הראשונה, ואם הטקסט ארוך יותר
+   הוא ממשיך לעלות אל מתחת לשורה הראשונה (שמעליו), כך שהקצה שלו נראה עומד והטקסט נגלל */
 @media (max-width: 767.98px) and (orientation: portrait) {
   .page-say-hi,
   .page-say-hi body {
@@ -3925,25 +3933,27 @@ body {
     overflow-y: auto;
   }
 
-  /* body לא גולל בעצמו (overflow גלוי), אחרת החלק הוורוד לא נעצר (sticky) בגלילה של העמוד.
-     קווי הגריד על החלק הוורוד עצמו (ולא על body), כדי שיישארו איתו כשהוא נעצר */
+  /* מה שמתחת לטקסט (גם כשהדפדפן מוסיף גובה) כתום, בלי פס ורוד בתחתית.
+     הוורוד והגריד מצוירים על החלק הוורוד עצמו */
   .page-say-hi body {
     overflow: visible;
+    background-color: var(--color-orange);
     background-image: none;
   }
 
-  /* הבמה: גבוהה מהחלק הוורוד במרחק שהכתום עולה מעליו. כל עוד גוללים בתוך המרחק הזה
-     הוורוד נשאר במקום (sticky), ואחר כך נגלל יחד עם הכתום */
+  /* המקום של החלק הוורוד בגלילה: הכתום מתחיל מתחתיו (75% מהמסך) */
   .say-hi-stage {
-    height: calc(var(--say-hi-pink-height) + var(--say-hi-cover));
+    height: var(--say-hi-pink-height);
   }
 
+  /* הוורוד והגריד: קבועים על כל המסך, מתחת לכתום */
   .say-hi-grid {
-    position: sticky;
-    top: 0;
-    left: 0;
-    height: var(--say-hi-pink-height);
+    position: fixed;
+    inset: 0;
+    width: auto;
+    height: auto;
     overflow: hidden;
+    background-color: var(--page-background);
     background-image:
       linear-gradient(to right, var(--grid-line-color) var(--line), transparent var(--line)),
       linear-gradient(to bottom, var(--grid-line-color) var(--line), transparent var(--line));
@@ -3954,17 +3964,38 @@ body {
     top: var(--say-hi-box-top);
   }
 
-  /* הכתום: מתחיל בסוף החלק הוורוד (75%) ועולה מעליו בגלילה. שני טורים, ומתחתם טור רחב */
+  /* השורה הראשונה של הגריד, עם הקו שמתחתיה: מעל הכתום, ומתחת לכדורים ולהמבורגר */
+  .say-hi-top-row {
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    width: 100%;
+    height: var(--say-hi-top-row-height);
+    background-color: var(--page-background);
+    background-image:
+      linear-gradient(to right, var(--grid-line-color) var(--line), transparent var(--line)),
+      linear-gradient(to bottom, var(--grid-line-color) var(--line), transparent var(--line));
+    background-size: var(--cell) var(--cell);
+  }
+
+  /* הכתום: מתחיל בסוף החלק הוורוד (75%) ועולה מעליו בגלילה. שני טורים, ומתחתם טור רחב.
+     לפחות בגובה המסך מתחת לשורה הראשונה, כדי שתמיד יוכל לעלות עד אליה */
   .say-hi-about {
     position: relative;
     z-index: 1;
     bottom: auto;
     width: 100%;
-    margin-top: calc(-1 * var(--say-hi-cover));
-    /* לפחות עד תחתית המסך כשנשארים 40% ורוד, כדי שהכתום תמיד יוכל לעלות עד לשם */
-    min-height: calc(100svh - var(--say-hi-pink-min));
+    min-height: calc(100svh - var(--say-hi-top-row-height));
+    align-content: start; /* הגובה העודף נשאר מתחת לטקסט, ולא בין השורות */
     grid-template-columns: calc(var(--about-work-left) - var(--margin-mobile)) auto;
     padding: 0 var(--margin-mobile) var(--margin-mobile);
+  }
+
+  /* השורות נשברות רק איפה שיש br, בדיוק כמו בפיגמה */
+  .say-hi-about-text {
+    white-space: nowrap;
   }
 
   .say-hi-about-text--intro { grid-area: 1 / 1; margin: var(--about-intro-top) 0 0; width: var(--about-intro-width); }
@@ -3979,6 +4010,11 @@ body {
   .say-hi-mobile-break {
     display: inline;
   }
+}
+
+/* שם של כלי או מילה מחוברת (Adobe CC, full-time...): אף פעם לא נשבר באמצע */
+.say-hi-nowrap {
+  white-space: nowrap;
 }
 
 /* שכבת הכדורים: קבועה על המסך (במחשב העמוד לא נגלל, אז זה אותו דבר).

@@ -461,7 +461,8 @@ if (contactBalls.length > 0) {
   // ומחולקת ב-1.15 כי הכדורים גדלו ב-15% (כדי שהמהירות בפיקסלים תהיה בדיוק פי 3)
   // ועוד 40% (פי 1.4)
   const desktopSpeed = 0.4 * 3 / 1.15 * 1.4;
-  const mobileSpeed = 0.22 * 3 / 1.15 * 1.4;
+  // במובייל עוד 60% (פי 1.6): כאן מגיעים לכדורים באצבע, ולא רודפים אחריהם בעכבר
+  const mobileSpeed = 0.22 * 3 / 1.15 * 1.4 * 1.6;
   // ההאטה ליד העכבר: באיזה מרחק (בקטרים, ממרכז הכדור) ועד כמה (0.04 = 4% מהמהירות).
   // 4% מהמהירות המשולשת = אותה מהירות איטית כמו בהתחלה, כך שעדיין קל לתפוס את הכדור
   const slowRadius = 1.5;
@@ -477,6 +478,9 @@ if (contactBalls.length > 0) {
   const mobileStart = [[0.2, 0.3], [0.8, 0.3], [0.2, 0.8], [0.8, 0.8]];
   // הקיר התחתון: הקו שבו מתחיל החלק הכתום (אם יש כזה בעמוד)
   const bottomWall = document.querySelector(".say-hi-about");
+  // שכבת הכדורים, והשורה הראשונה של הגריד שמעל הכתום (רק במובייל)
+  const ballsLayer = document.querySelector(".contact-balls");
+  const topRow = document.querySelector(".say-hi-top-row");
 
   // הגובה של החלק הכתום (לפי הטקסט) נשמר ב---say-hi-about-height,
   // כדי שהגריד הוורוד יחלק את השורות העודפות לפי המקום שבאמת נשאר מעליו
@@ -518,13 +522,23 @@ if (contactBalls.length > 0) {
 
   // הקירות: האזור הוורוד שגלוי. מהצדדים ומלמעלה החלון פחות המסגרת הכתומה,
   // ומלמטה הקו שבו מתחיל החלק הכתום. הכול ביחס למסך (שכבת הכדורים קבועה על המסך),
-  // כך שבמובייל, כשהכתום עולה בגלילה, הקיר התחתון עולה איתו ודוחף את הכדורים
+  // כך שבמובייל, כשהכתום עולה בגלילה, הקיר התחתון עולה איתו ודוחף את הכדורים.
+  // במובייל הקיר לא עולה מעל שתי שורות של הגריד: משם הכדורים ממשיכים לנוע מתחת לכתום,
+  // ושכבת הכדורים נחתכת בקצה הכתום, כך שרואים רק את מה שבחלק הוורוד הגלוי
   function getBounds() {
     const frame = getComputedStyle(document.body, "::after");
     const windowBottom = window.innerHeight - (parseFloat(frame.borderBottomWidth) || 0);
-    const bottom = bottomWall
+    let bottom = bottomWall
       ? Math.min(windowBottom, bottomWall.getBoundingClientRect().top)
       : windowBottom;
+    const rowHeight = topRow ? topRow.offsetHeight : 0; // משבצת וקו (0 במחשב)
+    if (rowHeight > 0) {
+      const visibleBottom = Math.max(bottom, rowHeight);
+      ballsLayer.style.clipPath = "inset(0 0 " + Math.max(0, window.innerHeight - visibleBottom) + "px 0)";
+      bottom = Math.max(bottom, 2 * rowHeight);
+    } else {
+      ballsLayer.style.clipPath = "";
+    }
     return {
       left: parseFloat(frame.borderLeftWidth) || 0,
       top: parseFloat(frame.borderTopWidth) || 0,

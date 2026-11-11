@@ -32,17 +32,17 @@
        ואזור העיצוב ממורכז מעליהם -->
   <main class="say-hi-page">
 
-    <!-- החלק הוורוד. במובייל הוא נשאר במקום (sticky) בזמן שהחלק הכתום עולה מעליו,
-         עד שנשאר ממנו גלוי 40% מהמסך, ומשם נגלל כרגיל (styles.css) -->
+    <!-- ההמבורגר: פותח את בר הבחירה. תמיד במשבצת הראשונה בפינה השמאלית העליונה של המסך,
+         מעל הכול (גם מעל החלק הכתום כשהוא עולה במובייל) -->
+    <button class="menu-button say-hi-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+    </button>
+
+    <!-- החלק הוורוד. במובייל הוא קבוע במקום, והחלק הכתום עולה מעליו בגלילה (styles.css) -->
     <div class="say-hi-stage">
       <div class="say-hi-grid">
-
-        <!-- ההמבורגר: פותח את בר הבחירה -->
-        <button class="on-grid menu-button" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
-          <span class="menu-button-line"></span>
-          <span class="menu-button-line"></span>
-          <span class="menu-button-line"></span>
-        </button>
 
         <!-- מלבן ורוד שמסתיר את הקווים שמאחורי הטקסט הקטן -->
         <div class="grid-box say-hi-box">
@@ -50,44 +50,50 @@
         </div>
 
         <h1 class="say-hi-title text-display-medium">Say  hi</h1>
-
-        <!-- כדורי יצירת הקשר: מסתובבים באזור הוורוד שגלוי כל הזמן (script.js).
-             השכבה שלהם קבועה על המסך, והקצה העליון של החלק הכתום הוא הקיר התחתון.
-             כל כדור הוא קישור ליעד שלו. כולם נפתחים בלשונית חדשה (המייל: הודעה חדשה ב-Gmail).
-             draggable="false": כדי שגרירה בעכבר לא תתפוס את הקישור כמו כפתור רגיל -->
-        <div class="contact-balls">
-          <a draggable="false" class="contact-ball text-contact-ball contact-ball--instagram" href="https://www.instagram.com/ori_kurz/" target="_blank" rel="noopener" aria-label="Instagram"><span class="contact-ball-label">INSTA<br>GRAM</span></a>
-          <a draggable="false" class="contact-ball text-contact-ball contact-ball--email" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=orikurz1@gmail.com" target="_blank" rel="noopener" aria-label="E-mail"><span class="contact-ball-label">E-MAIL</span></a>
-          <a draggable="false" class="contact-ball text-contact-ball contact-ball--whatsapp" href="https://wa.me/972525014266" target="_blank" rel="noopener" aria-label="WhatsApp"><span class="contact-ball-label">WHATS<br>APP</span></a>
-          <!-- CV: פותח את קובץ קורות החיים (PDF) בלשונית חדשה -->
-          <a draggable="false" class="contact-ball text-contact-ball contact-ball--cv" href="Ori-kurz-cv.pdf" target="_blank" rel="noopener" aria-label="CV"><span class="contact-ball-label">CV</span></a>
-        </div>
       </div>
     </div>
 
+    <!-- כדורי יצירת הקשר: מסתובבים באזור הוורוד שגלוי כל הזמן (script.js).
+         השכבה שלהם קבועה על המסך, והקצה העליון של החלק הכתום הוא הקיר התחתון.
+         כל כדור הוא קישור ליעד שלו. כולם נפתחים בלשונית חדשה (המייל: הודעה חדשה ב-Gmail).
+         draggable="false": כדי שגרירה בעכבר לא תתפוס את הקישור כמו כפתור רגיל -->
+    <div class="contact-balls">
+      <a draggable="false" class="contact-ball text-contact-ball contact-ball--instagram" href="https://www.instagram.com/ori_kurz/" target="_blank" rel="noopener" aria-label="Instagram"><span class="contact-ball-label">INSTA<br>GRAM</span></a>
+      <a draggable="false" class="contact-ball text-contact-ball contact-ball--email" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=orikurz1@gmail.com" target="_blank" rel="noopener" aria-label="E-mail"><span class="contact-ball-label">E-MAIL</span></a>
+      <a draggable="false" class="contact-ball text-contact-ball contact-ball--whatsapp" href="https://wa.me/972525014266" target="_blank" rel="noopener" aria-label="WhatsApp"><span class="contact-ball-label">WHATS<br>APP</span></a>
+      <!-- CV: פותח את קובץ קורות החיים (PDF) בלשונית חדשה -->
+      <a draggable="false" class="contact-ball text-contact-ball contact-ball--cv" href="Ori-kurz-cv.pdf" target="_blank" rel="noopener" aria-label="CV"><span class="contact-ball-label">CV</span></a>
+    </div>
+
     <!-- הרצועה הכתומה: עליי. במחשב צמודה לתחתית החלון. במובייל עולה מעל החלק הוורוד בגלילה.
-         כל טור ברוחב שלו בפיגמה, והשורות נשברות לפי הרוחב. br = שורה ריקה או פסקה חדשה.
+         כל טור ברוחב שלו בפיגמה. br = שורה ריקה או פסקה חדשה.
+         say-hi-mobile-break: שבירת שורה רק במובייל, בדיוק כמו בפריים המובייל בפיגמה.
+         say-hi-nowrap: שם של כלי או מילה מחוברת שאף פעם לא נשברים באמצע.
          במובייל לכל טור סגנון משלו (text-about-mobile / text-about-mobile-small) -->
     <section class="say-hi-about" aria-label="About me">
       <p class="say-hi-about-text say-hi-about-text--intro text-about text-about-mobile">
-        <strong class="text-about-strong text-about-mobile-strong">So, I’m Ori</strong>, and I design, create, think &amp; solve problems<br class="say-hi-mobile-break"> Based in Israel.<br>
+        <strong class="text-about-strong text-about-mobile-strong say-hi-nowrap">So, I’m Ori</strong>, and I<br class="say-hi-mobile-break"> design, create, think &amp;<br class="say-hi-mobile-break"> solve problems<br class="say-hi-mobile-break"> Based in Israel.<br>
         <br>
         <br>
-        I’m a final-year Visual Communication student at Bezalel, and I making things that move, stand out, and feel one of a kind. I do motion design, interactive design, illustration, branding and so much more cool stuff.
+        I’m a final-year Visual<br class="say-hi-mobile-break"> Communication student<br class="say-hi-mobile-break"> at Bezalel, and I making<br class="say-hi-mobile-break"> things that move, stand<br class="say-hi-mobile-break"> out, and feel one of a<br class="say-hi-mobile-break"> kind. I do motion design,<br class="say-hi-mobile-break"> interactive design,<br class="say-hi-mobile-break"> illustration, branding and<br class="say-hi-mobile-break"> so much more cool stuff.
       </p>
       <p class="say-hi-about-text say-hi-about-text--work text-about text-about-mobile-small">
-        Oh, I also built this website myself<br>
+        Oh, I also built<br class="say-hi-mobile-break"> this website<br class="say-hi-mobile-break"> myself<br>
         <br>
         <br>
         <br>
-        <span class="say-hi-about-later">Open to full-time roles, freelance and collaborations.</span>
+        <span class="say-hi-about-later">Open to<br class="say-hi-mobile-break"> <span class="say-hi-nowrap">full-time</span> roles,<br class="say-hi-mobile-break"> freelance and<br class="say-hi-mobile-break"> collaborations.</span>
       </p>
       <p class="say-hi-about-text say-hi-about-text--tools text-about text-about-mobile-small">
-        <strong class="text-about-strong text-about-mobile-small-strong">Design &amp; Motion:</strong> Figma, Adobe CC (After Effects, Illustrator, Photoshop, InDesign, Premiere Pro), Cinema 4D, Procreate<br>
+        <strong class="text-about-strong text-about-mobile-small-strong say-hi-nowrap">Design &amp; Motion:</strong> Figma, <span class="say-hi-nowrap">Adobe CC</span><br class="say-hi-mobile-break"> (<span class="say-hi-nowrap">After Effects</span>, Illustrator, Photoshop, InDesign,<br class="say-hi-mobile-break"> <span class="say-hi-nowrap">Premiere Pro</span>), <span class="say-hi-nowrap">Cinema 4D</span>, Procreate<br>
         <br>
-        <strong class="text-about-strong text-about-mobile-small-strong">Creative Tech &amp; AI:</strong> p5.js, Claude Code, VS Code, GitHub, Vercel, Gemini, Weavy
+        <strong class="text-about-strong text-about-mobile-small-strong say-hi-nowrap">Creative Tech &amp; AI:</strong> p5.js, <span class="say-hi-nowrap">Claude Code</span>,<br class="say-hi-mobile-break"> <span class="say-hi-nowrap">VS Code</span>, GitHub, Vercel, Gemini, Weavy
       </p>
     </section>
+
+    <!-- במובייל: השורה הראשונה של הגריד (שבה ההמבורגר), מעל החלק הכתום.
+         הכתום נעצר מתחתיה, והטקסט שלו נגלל אל מתחתיה -->
+    <div class="say-hi-top-row" aria-hidden="true"></div>
   </main>
 
   <script src="script.js"></script>
