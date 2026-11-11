@@ -922,9 +922,9 @@
     /* בבאנר הטקסט היה יוצא קטן מדי לפי רוחב המסך, אז הוא גדל עם המשבצת,
        ועוד 30% (הטקסט, הכוכבים והגובה) */
     --banner-px: calc(var(--u) * 1.3);
-    /* הבאנר גלוי כולו מעל סרגל הדפדפן בתחתית: הגובה שהסרגל מכסה
-       (ההפרש בין גובה המסך הגדול לגובה האמיתי, או האזור הבטוח של המכשיר), ועוד מרווח קטן */
-    --banner-bottom-space: calc(max(env(safe-area-inset-bottom, 0px), 100lvh - 100dvh) + 12px);
+    /* הבאנר הוא הדבר האחרון בעמוד: מתחתיו רק האזור הבטוח של המכשיר (אם יש),
+       כדי שבסוף הגלילה הוא צמוד מעל סרגל הדפדפן ולא מוסתר מתחתיו */
+    --banner-bottom-space: env(safe-area-inset-bottom, 0px);
     /* רולר הפרויקטים: כל תמונה ברוחב 40% מהמסך (258 ברוחב בפיגמה) */
     --strip-px: calc(100vw * 0.4 / 258);
     /* כותרות הסעיפים בגריד: הריווח הפנימי מהפינה השמאלית התחתונה של המשבצת */
@@ -3309,20 +3309,33 @@ body {
     padding-bottom: var(--banner-bottom-space);
   }
 
-  /* כותרות הסעיפים בגריד: מלבן של משבצות שלמות, מקו לקו (כמו grid-box),
-     והטקסט בפינה השמאלית התחתונה שלו. רוחב המלבן (--title-columns) נקבע ב-script.js:
-     משבצת אחת, ואם הטקסט לא נכנס, שתיים או יותר. בלי רקע: קווי הגריד נשארים גלויים */
-  .full-project-grid .section-title {
-    font-size: var(--section-title-mobile-size);
+  /* כותרות הסעיפים ו-"tap to play" בגריד: משבצת מאוחדת של משבצות שלמות, מקו לקו
+     (כמו grid-box), כמו המשבצות המאוחדות בפיגמה. המסגרת החיצונית על קווי הגריד,
+     והרקע בצבע העמוד מכסה רק את הקווים שבפנים. הטקסט לשמאל עם ריווח קטן, וממורכז לגובה.
+     רוחב המשבצת (--title-columns) נקבע ב-script.js: משבצת אחת, ואם הטקסט לא נכנס, שתיים או יותר */
+  .full-project-grid .section-title,
+  .full-project-grid .play-hint {
+    z-index: 1;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
     left: calc(round(down, var(--column), 1) * var(--cell));
     top: calc(round(down, var(--row), 1) * var(--cell));
     width: calc(var(--title-columns, 1) * var(--cell) + var(--line));
     height: calc(var(--cell) + var(--line));
-    padding: 0 var(--section-title-padding) var(--section-title-padding);
+    padding: 0 var(--section-title-padding);
     border: var(--line) solid transparent;
+    background-color: var(--page-background);
+    background-clip: padding-box;
+  }
+
+  .full-project-grid .section-title {
+    font-size: var(--section-title-mobile-size);
+  }
+
+  /* "tap to play": בלי רקע, כדי לא להסתיר את העץ המאויר שיושב באותן משבצות */
+  .full-project-grid .play-hint {
+    background-color: transparent;
   }
 
   /* כשהשבירות של הפיגמה לא נכנסות, הטקסט נשבר לבד לפי הרוחב */

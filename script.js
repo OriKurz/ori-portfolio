@@ -1534,14 +1534,14 @@ if (nextProjectsStrip) {
 }
 
 // =========================================
-// עמודי הפרויקטים במובייל: כותרות הסעיפים בגריד (Main Scenes, Color palette וכו').
-// כל כותרת יושבת בפינה השמאלית התחתונה של המשבצת שלה, ואף פעם לא חורגת ממנה.
-// אם היא לא נכנסת במשבצת אחת, היא תופסת שתי משבצות שלמות ברוחב (או יותר), מקו לקו, בלי רקע.
+// עמודי הפרויקטים במובייל: כותרות הסעיפים בגריד (Main Scenes, Color palette וכו') ו-"tap to play".
+// כל אחת יושבת בתוך המשבצת שלה (לשמאל וממורכזת לגובה), ואף פעם לא חורגת ממנה.
+// אם היא לא נכנסת במשבצת אחת, היא תופסת שתי משבצות שלמות ברוחב (או יותר), שמתאחדות למשבצת אחת.
 // הסדר שבו מנסים: שבירת השורות של הפיגמה ב-1 ואז 2 משבצות. אם עדיין לא נכנס:
 // בלי השבירות של הפיגמה (is-reflowed), ומוסיפים משבצות לרוחב עד שנכנס.
 // במחשב: בלי שינוי (CSS)
 // =========================================
-const gridSectionTitles = document.querySelectorAll(".full-project-grid .section-title");
+const gridSectionTitles = document.querySelectorAll(".full-project-grid .section-title, .full-project-grid .play-hint");
 
 if (gridSectionTitles.length) {
   const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
