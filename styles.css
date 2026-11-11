@@ -945,11 +945,11 @@
     --section-title-mobile-size: 14px;
 
     /* החפצים המאוירים במובייל: הפריים "Group 10" בפיגמה (359x684), ברוחב המסך פחות השוליים.
-       left, top ו-width באחוזים מהפריים. בפריים אין את הקופסה שמתהפכת (box-flip) */
+       left, top ו-width באחוזים מהפריים. הארגז בשורה העליונה הוא box-flip (קופץ ועושה סלטה), ו-box-small לא מופיע בפריים */
     --elements-board-mobile-width: 359;
     --elements-board-mobile-height: 684;
     --ea-tree-left: 0%;              --ea-tree-top: 0.649%;          --ea-tree-width: 28.47%;
-    --ea-box-small-left: 38.997%;    --ea-box-small-top: 3.363%;     --ea-box-small-width: 18.663%;
+    --ea-box-flip-left: 38.997%;     --ea-box-flip-top: 3.363%;      --ea-box-flip-width: 18.663%;
     --ea-car-left: 62.953%;          --ea-car-top: 1.754%;           --ea-car-width: 35.655%;
     --ea-box-long-left: 49.025%;     --ea-box-long-top: 19.883%;     --ea-box-long-width: 49.582%;
     --ea-glass-left: 4.178%;         --ea-glass-top: 19.152%;        --ea-glass-width: 15.32%;
@@ -3364,7 +3364,7 @@ body {
 
   /* סדר השכבות כמו בפריים במובייל (מספר גבוה = מעל) */
   .elements-board-item--tree        { z-index: 1; }
-  .elements-board-item--box-small   { z-index: 2; }
+  .elements-board-item--box-flip    { z-index: 2; }
   .elements-board-item--car         { z-index: 3; }
   .elements-board-item--box-long    { z-index: 4; }
   .elements-board-item--glass       { z-index: 5; }
@@ -3378,7 +3378,12 @@ body {
   .elements-board-item--axe         { z-index: 13; }
   .elements-board-item--lamp        { z-index: 14; }
   /* elements-anim.css נותן לכל חפץ display: block, אז צריך משקל גבוה יותר */
-  .elements-board .elements-board-item--box-flip { display: none; }
+  .elements-board .elements-board-item--box-small { display: none; }
+
+  /* בזמן שהארגז קופץ (ea-jumping, elements-anim.js) הוא מעל כל האיורים, וכל הלוח מעל
+     כותרות הסעיפים. כשהוא נוחת הוא חוזר לסדר הרגיל */
+  .elements-board:has(.ea-jumping) { z-index: 2; }
+  .elements-board .elements-board-item.ea-jumping { z-index: 15; }
 
   /* כל מה שמתחת לחפצים (Main Scenes והשאר) יורד ב---elements-shift שורות שלמות (script.js) */
   .elements-board ~ .on-grid,
