@@ -1112,50 +1112,48 @@
     /* הטקסטים, הבאנר וכל מה שלא הוגדל כאן נשארים בגודל שהיה להם בגריד של 14 טורים */
     --leftovers-old-cell: round(down, (100vw - var(--line)) / 14, var(--device-px));
     --u: calc(var(--leftovers-old-cell) / var(--frame-cell));
+    /* המפה, הגלריה וציר הזמן: ברוחב המסך פחות השוליים */
+    --leftovers-content-width: calc(100vw - 2 * var(--margin-mobile));
 
-    /* השורה שמעל המפה: המקום משמאל, הקואורדינטות מיושרות לקצה הימני של המפה,
-       והזכוכית המגדלת במשבצת שמשמאלן (הטקסט באותו מרחק מהפינה כמו קודם) */
-    --label-box-coordinates-column: 7;
-    --coordinates-column: 7.095;   --coordinates-row: 1.166;
-    --magnifier-column: 6;
+    /* השורה שמעל המפה: המקום משמאל, הקואורדינטות מיושרות לקצה הימני של הגריד שמעל המפה,
+       והזכוכית המגדלת במשבצת שמשמאלן */
+    --label-box-coordinates-column: 6;  --label-box-coordinates-columns: 3;
+    --magnifier-column: 5;
 
-    /* המפה: כל הרוחב פחות טור מכל צד (8 טורים), והגובה לפי הפרופורציות של התמונה (8 * 2700 / 1935) */
-    --map-column: 1;    --map-row: 2;
-    --map-columns: 8;   --map-rows: 11.163;
+    /* המפה: מתחת לקו של השורה שמעליה, בפרופורציות של התמונה */
+    --leftovers-map-top: calc(2 * var(--cell) + var(--line));
+    --leftovers-map-height: calc(var(--leftovers-content-width) * var(--map-image-height) / var(--map-image-width));
     /* העיגולים והזכוכית גדלים יחד עם המפה (664 = רוחב המפה בפיגמה) */
-    --marker-dot-size: calc(8 * 8 * var(--cell) / 664);
-    --marker-hit-size: calc(20 * 8 * var(--cell) / 664);
-    --magnifier-lens-size: calc(var(--cell) * 4.8);
+    --marker-dot-size: calc(8 * var(--leftovers-content-width) / 664);
+    --marker-hit-size: calc(20 * var(--leftovers-content-width) / 664);
+    --magnifier-lens-size: calc(var(--leftovers-content-width) * 0.6);
 
-    /* מה שמתחת למפה: מתחיל בשורה השלמה הראשונה אחרי המפה */
-    --label-box-map-column: 1;      --label-box-map-row: 14;
-    --map-label-column: 1.151;      --map-label-row: 14.306;
-    --label-box-gallery-column: 1;  --label-box-gallery-row: 15;
-    --label-box-hint-column: 3;     --label-box-hint-row: 15;
-    --gallery-label-column: 1.064;  --gallery-label-row: 15.234;
-    --gallery-hint-column: 3.119;   --gallery-hint-row: 15.234;
+    /* מה שמתחת למפה: מתחיל בשורה השלמה הראשונה אחרי המפה, מהטור הראשון (כמו שם המקום) */
+    --label-box-map-column: 1;
+    --map-label-column: 1.151;
+    --leftovers-below-map: round(up, var(--leftovers-map-top) + var(--leftovers-map-height), var(--cell));
 
-    /* הגלריה: ברוחב המפה (8 טורים), הכול קטן באותו יחס (8 מתוך 12 טורים) */
-    --leftovers-gallery-u: calc(var(--cell) * 8 / 12 / var(--frame-cell));
-    --gallery-box-column: 1;      --gallery-box-row: 16;
-    --gallery-box-columns: 8;     --gallery-box-rows: 12;
-    --gallery-column: 1.091;      --gallery-row: 16.163;
-    --gallery-columns: 7.821;     --gallery-rows: 10.733;
+    /* הגלריה: 2x4 לוקיישנים ברוחב התוכן (779 = רוחב הגלריה בפיגמה).
+       הכיתובים 14. כיתוב ארוך נשבר לשתי שורות, והמרווח בין השורות גדל כדי ששתיהן ייכנסו */
+    --leftovers-gallery-u: calc(var(--leftovers-content-width) / 779);
     --gallery-column-gap: calc(36 * var(--leftovers-gallery-u));
-    --gallery-row-gap: calc(29 * var(--leftovers-gallery-u));
     --caption-gap: calc(5 * var(--leftovers-gallery-u));
+    --leftovers-caption-space: calc(var(--caption-gap) + var(--section-title-mobile-size) + 9 * var(--leftovers-gallery-u));
+    --gallery-row-gap: max(29 * var(--leftovers-gallery-u), var(--leftovers-caption-space) + var(--section-title-mobile-size));
+    --leftovers-gallery-height: calc(4 * 245.5 * var(--leftovers-gallery-u) + 3 * var(--gallery-row-gap));
+    /* הרקע מאחורי הגלריה: מהקו שאחרי התוויות ועד מיד מתחת לשורה האחרונה של הכיתובים */
+    --leftovers-gallery-box-top: calc(var(--leftovers-below-map) + 2 * var(--cell));
+    --leftovers-gallery-padding: calc(16 * var(--leftovers-gallery-u));
+    --leftovers-gallery-box-height: calc(var(--line) + var(--leftovers-gallery-padding) + var(--leftovers-gallery-height) + var(--leftovers-caption-space));
 
-    /* Source Material: התווית ממורכזת מעל ציר הזמן, והציר והאיורים ברוחב המפה (878 בפיגמה = 8 טורים) */
-    --leftovers-timeline-u: calc(var(--cell) * 8 / var(--timeline-width));
-    --label-box-source-column: 3;   --label-box-source-row: 28;
-    --source-label-column: 3.934;   --source-label-row: 28.377;
-    --timeline-column: 1;           --timeline-row: 29.266;
+    /* Source Material: בשורה השלמה הראשונה אחרי הגלריה. ציר הזמן ברוחב התוכן (878 בפיגמה) */
+    --leftovers-source-top: round(up, var(--leftovers-gallery-box-top) + var(--leftovers-gallery-box-height), var(--cell));
+    --leftovers-timeline-u: calc(var(--leftovers-content-width) / var(--timeline-width));
+    --leftovers-timeline-top: calc(var(--leftovers-source-top) + 1.266 * var(--cell));
     --source-background-width: calc(359 * var(--leftovers-timeline-u));
     --source-background-height: calc(423 * var(--leftovers-timeline-u));
-    --source-background-left-column: -0.05;  --source-background-left-row: 30.022;
-    --source-background-right-column: 6.722; --source-background-right-row: 30.031;
-    /* אורך הגריד: עד הפרויקטים הנוספים, באותו מרחק מהציר כמו קודם (בגודל החדש) */
-    --grid-rows: 34.404;
+    /* אורך הגריד: עד הפרויקטים הנוספים, באותו מרחק מהציר כמו בפיגמה, מעוגל לשורה שלמה */
+    --leftovers-grid-height: round(up, var(--leftovers-timeline-top) + 563.9 * var(--leftovers-timeline-u) + var(--next-projects-height), var(--cell));
   }
 }
 
@@ -3528,10 +3526,121 @@ body {
     margin-left: 0;
   }
 
-  /* ציר הזמן ברוחב המפה: כל המספרים שבתוכו (בפיקסלים של הפיגמה) לפי יחידה משלו.
+  /* ----- Leftovers במובייל: המיקומים מחושבים מהמשתנים --leftovers-... (ב-:root.page-leftovers) ----- */
+
+  /* המפה: ברוחב התוכן, השכבה העליונה באזור שלה */
+  .page-leftovers .leftovers-map {
+    left: var(--margin-mobile);
+    top: var(--leftovers-map-top);
+    width: var(--leftovers-content-width);
+    height: var(--leftovers-map-height);
+    z-index: 2;
+  }
+
+  /* הקואורדינטות, "Locations gallery" ו-"drag to show": בגודל של כותרות הסעיפים (14),
+     בתוך המלבן שלהם, לשמאל וממורכזים לגובה (כמו כותרות הסעיפים) */
+  .page-leftovers .leftovers-coordinates,
+  .page-leftovers .leftovers-gallery-label,
+  .page-leftovers .leftovers-gallery-hint {
+    left: calc(var(--label-column) * var(--cell));
+    top: var(--label-top);
+    width: calc(var(--label-columns) * var(--cell) + var(--line));
+    height: calc(var(--cell) + var(--line));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 var(--section-title-padding);
+    border: var(--line) solid transparent;
+    font-size: var(--section-title-mobile-size);
+  }
+
+  /* כל שורה של הקואורדינטות היא span נפרד, אז ה-br לא נחוץ בתוך ה-flex */
+  .page-leftovers .leftovers-coordinates br {
+    display: none;
+  }
+
+  .page-leftovers .leftovers-coordinates {
+    --label-column: var(--label-box-coordinates-column);
+    --label-columns: var(--label-box-coordinates-columns);
+    --label-top: calc(var(--label-box-coordinates-row) * var(--cell));
+  }
+
+  .page-leftovers .leftovers-gallery-label,
+  .page-leftovers .leftovers-gallery-hint {
+    --label-columns: 2;
+    --label-top: calc(var(--leftovers-below-map) + var(--cell));
+  }
+
+  .page-leftovers .leftovers-gallery-label { --label-column: var(--label-box-gallery-column); }
+  .page-leftovers .leftovers-gallery-hint  { --label-column: var(--label-box-hint-column); }
+
+  /* "Main map, 50×70, print": בשורה הראשונה מתחת למפה */
+  .page-leftovers .leftovers-label-box--map,
+  .page-leftovers .leftovers-map-label {
+    top: var(--leftovers-below-map);
+  }
+
+  .page-leftovers .leftovers-label-box--gallery,
+  .page-leftovers .leftovers-label-box--hint {
+    top: calc(var(--leftovers-below-map) + var(--cell));
+  }
+
+  /* הרקע מאחורי הגלריה: מקו לקו לרוחב, ועד מיד מתחת לכיתובים של השורה האחרונה */
+  .page-leftovers .leftovers-gallery-box {
+    left: 0;
+    top: var(--leftovers-gallery-box-top);
+    width: calc(var(--grid-columns) * var(--cell) + var(--line));
+    height: var(--leftovers-gallery-box-height);
+  }
+
+  .page-leftovers .leftovers-gallery {
+    left: var(--margin-mobile);
+    top: calc(var(--leftovers-gallery-box-top) + var(--line) + var(--leftovers-gallery-padding));
+    width: var(--leftovers-content-width);
+    height: var(--leftovers-gallery-height);
+  }
+
+  .page-leftovers .location-caption {
+    width: 100%;
+    white-space: normal;
+    font-size: var(--section-title-mobile-size);
+  }
+
+  /* Source Material: משבצת מאוחדת אחת של 4 משבצות באמצע הגריד, הטקסט בשורה אחת וממורכז */
+  .page-leftovers .leftovers-label-box--source {
+    display: none;
+  }
+
+  .page-leftovers .full-project-grid .leftovers-source-label {
+    --title-columns: 4 !important;
+    left: calc((var(--grid-columns) - 4) / 2 * var(--cell));
+    top: var(--leftovers-source-top);
+    align-items: center;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* ציר הזמן ברוחב התוכן: כל המספרים שבתוכו (בפיקסלים של הפיגמה) לפי יחידה משלו.
      השנים נשארות בגודל שלהן (--type-px) */
-  .source-timeline {
+  .page-leftovers .source-timeline {
     --u: var(--leftovers-timeline-u);
+    left: var(--margin-mobile);
+    top: var(--leftovers-timeline-top);
+  }
+
+  /* האיורים שברקע: באותו מקום ביחס לציר כמו בפיגמה */
+  .page-leftovers .source-background--left {
+    left: calc(var(--margin-mobile) - 115.204 * var(--leftovers-timeline-u));
+    top: calc(var(--leftovers-timeline-top) + 82.934 * var(--leftovers-timeline-u));
+  }
+
+  .page-leftovers .source-background--right {
+    left: calc(var(--margin-mobile) + 628.01 * var(--leftovers-timeline-u));
+    top: calc(var(--leftovers-timeline-top) + 83.93 * var(--leftovers-timeline-u));
+  }
+
+  .page-leftovers .full-project-panel .full-project-grid {
+    height: var(--leftovers-grid-height);
   }
 
 }
