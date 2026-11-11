@@ -51,6 +51,12 @@ if (ballCanvas) {
   const keepOutMargin = 0.25;    // מרווח (במשבצות) בין המסגרת לכפתורים, לטקסטים ולתמונה
   const loadHeadStart = 3.1;      // בטעינה: כמה שניות מתנועת ה-PLAY רצות מאחורי הקלעים לפני שרואים משהו
   const restSpeed = 0.05;         // מתחת למהירות הזאת (משבצות לשנייה) כדור נחשב עומד
+  const shakeThreshold = 10;      // ניעור בטלפון: תאוצה (מטר לשנייה בשנייה) שמעליה זה נחשב ניעור ולא סתם תנועה של היד
+  const shakeGain = 6;            // כמה חזק ניעור דוחף את הכדורים (משבצות לשנייה, לכל מטר לשנייה של ניעור)
+  const shakeRandomness = 0.6;    // כמה אקראיות יש בדחיפה של כל כדור (0 = כולם זזים יחד)
+  const shakeAtEdges = 0.25;      // במצב PLAY הניעור חלש יותר, כדי שהכדורים יישארו בשוליים
+  const shakeMixEvery = 0.2;      // במצב PLAY: כל כמה שניות לכל היותר כדורים שכנים במסגרת מחליפים מקומות
+  const vibrateEvery = 0.3;       // כל כמה שניות לכל היותר הטלפון רוטט בזמן ניעור
 
   const context = ballCanvas.getContext("2d");
   const page = document.documentElement;
@@ -69,6 +75,8 @@ if (ballCanvas) {
   let focusedRect = null;   // כפתור שנבחר במקלדת: הכדורים זזים ממנו כדי שיראו אותו
   let running = false;      // האם האנימציה רצה עכשיו
   let lastFrameTime = 0;
+  let shakeKick = { x: 0, y: 0 }; // הדחיפה מהניעור שעוד לא ניתנה לכדורים (משבצות לשנייה)
+  let frameKeepOut = [];    // במצב PLAY: האזורים במרכז שהכדורים במסגרת לא נכנסים אליהם
 
   // ----- רשת עזר למציאת כדורים קרובים -----
   // במקום לבדוק כל כדור מול כל כדור, מחלקים את המסך לתאים בגודל כדור,
@@ -172,6 +180,7 @@ if (ballCanvas) {
     const outside = (ballCount * spacing * spacing * 0.87) / (2 * (width + height)) + 2 * spacing;
     const points = honeycomb(-outside, -outside, width + outside, height + outside, spacing, 0);
     const keepOut = keepOutAreas();
+    frameKeepOut = keepOut;
 
     // עובי המסגרת משתנה סביב המסך: גלים בזוויות אקראיות (בין חצי משבצת ל-2.4 משבצות)
     const phases = [0, 1, 2].map(function () { return Math.random() * Math.PI * 2; });
@@ -286,7 +295,7 @@ if (ballCanvas) {
   // הכדורים מתגלגלים לשוליים, וחלקם יוצאים מהמסך
   function sendBallsToEdges() {
     const spots = edgeSpots(balls.length);
-    balls.forEach(function (ball) { ball.target = null; });
+    balls.forEach(function (ball) { ball.target = null; ball.shaken = false; });
     // הכדורים הקרובים לקצה תופסים את המסגרת, והשאר יוצאים מהמסך
     giveSpotsToNearestBalls(spots.frame, balls.slice());
     const leftOver = balls.filter(function (ball) { return !ball.target; });
@@ -300,7 +309,7 @@ if (ballCanvas) {
 
   // הכדורים (כולל אלה שמחוץ למסך) מתגלגלים בחזרה ומתפזרים על כל המסך
   function spreadBallsOverScreen() {
-    balls.forEach(function (ball) { ball.target = null; });
+    balls.forEach(function (ball) { ball.target = null; ball.shaken = false; });
     const spots = coverSpots();
     giveSpotsToNearestBalls(spots, balls.slice());
     // ערבוב צבעים: כדור שרואים שומר על הצבע שלו, וכדור שמחוץ למסך מקבל צבע
@@ -638,6 +647,7 @@ if (ballCanvas) {
     const stopAmount = rollingStop * cell * h;
     const springDamping = 2 * Math.sqrt(rollSpring) * 0.9;
     transitionTime += seconds;
+    giveShakeKick();
 
     balls.forEach(function (ball) {
       // "בדרך": כדור שעוד מתגלגל ליעד שלו
@@ -691,6 +701,7 @@ if (ballCanvas) {
       separateBalls(0.8, pileUp);
       // היד חזקה מכולם: אם התנגשות החזירה כדור לתוך התעלה, היד דוחפת אותו שוב
       pushByAllHands(sub, h);
+      keepShakenBallsInFrame();
       keepInsideScreen();
 
       // 3. המהירות החדשה = כמה כל כדור זז בפועל, ועוד התנופה מהיד.
@@ -916,6 +927,148 @@ if (ballCanvas) {
   document.addEventListener("focusout", function () {
     focusedRect = null;
   });
+
+  // =========================================
+  // ניעור הטלפון (רק בטלפון): הכדורים מקבלים דחיפה בכיוון ובעוצמה של הניעור
+  // =========================================
+  const isPhone = window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+  let lastMotionTime = 0;
+  let gravity = null;          // הערכה של כוח המשיכה, למכשיר שנותן רק תאוצה כולל משיכה
+  let lastMixTime = 0;
+  let lastVibrateTime = 0;
+
+  // מתרגם תאוצה מהצירים של הטלפון לצירים של המסך (x ימינה, y למטה), לפי סיבוב המסך
+  function toScreenAxes(ax, ay) {
+    const angle = ((screen.orientation && screen.orientation.angle) || window.orientation || 0) * Math.PI / 180;
+    return {
+      x: ax * Math.cos(angle) + ay * Math.sin(angle),
+      y: ax * Math.sin(angle) - ay * Math.cos(angle),
+    };
+  }
+
+  function onDeviceMotion(event) {
+    if (reducedMotion.matches) return;
+    const now = performance.now() / 1000;
+    const seconds = Math.min(0.05, lastMotionTime ? now - lastMotionTime : 1 / 60);
+    lastMotionTime = now;
+
+    // התאוצה של היד בלבד (בלי כוח המשיכה). אם אין, מורידים את המשיכה בעצמנו
+    let ax;
+    let ay;
+    if (event.acceleration && event.acceleration.x !== null) {
+      ax = event.acceleration.x;
+      ay = event.acceleration.y;
+    } else if (event.accelerationIncludingGravity && event.accelerationIncludingGravity.x !== null) {
+      const total = event.accelerationIncludingGravity;
+      if (!gravity) gravity = { x: total.x, y: total.y };
+      gravity.x += (total.x - gravity.x) * 0.1;
+      gravity.y += (total.y - gravity.y) * 0.1;
+      ax = total.x - gravity.x;
+      ay = total.y - gravity.y;
+    } else {
+      return;
+    }
+
+    const force = Math.hypot(ax, ay);
+    const extra = force - shakeThreshold;
+    if (extra <= 0) return;
+
+    // הכדורים נזרקים כמו בקופסה שמנערים: הפוך לכיוון שבו הטלפון מאיץ
+    const direction = toScreenAxes(ax / force, ay / force);
+    shakeKick.x -= direction.x * extra * seconds * shakeGain * cell;
+    shakeKick.y -= direction.y * extra * seconds * shakeGain * cell;
+
+    if (ballsAtEdges && now - lastMixTime > shakeMixEvery) {
+      lastMixTime = now;
+      mixFrame(extra);
+    }
+    if (now - lastVibrateTime > vibrateEvery) {
+      lastVibrateTime = now;
+      vibrate(Math.round(Math.min(60, 15 + extra * 2)));
+    }
+    wakeUp();
+  }
+
+  // רטט קצר. מכשיר בלי רטט (כמו אייפון): פשוט בלי
+  function vibrate(milliseconds) {
+    try {
+      if (navigator.vibrate) navigator.vibrate(milliseconds);
+    } catch (error) {
+      // אין רטט
+    }
+  }
+
+  // נותן לכל כדור את הדחיפה מהניעור, כל אחד בכיוון ובעוצמה קצת אחרים
+  function giveShakeKick() {
+    const kickSpeed = Math.hypot(shakeKick.x, shakeKick.y);
+    if (kickSpeed === 0) return;
+    const strength = ballsAtEdges ? shakeAtEdges : 1;
+    balls.forEach(function (ball) {
+      // במצב PLAY כדורים שמחוץ למסך לא זזים
+      if (ballsAtEdges && (!ball.target || ball.target.hidden)) return;
+      const turn = (Math.random() - 0.5) * shakeRandomness * 2;
+      const scale = strength * (1 + (Math.random() - 0.5) * shakeRandomness * 2);
+      ball.vx += (shakeKick.x * Math.cos(turn) - shakeKick.y * Math.sin(turn)) * scale;
+      ball.vy += (shakeKick.x * Math.sin(turn) + shakeKick.y * Math.cos(turn)) * scale;
+      if (ballsAtEdges) ball.shaken = true;
+    });
+    shakeKick = { x: 0, y: 0 };
+  }
+
+  // במצב PLAY: כדורים שכנים במסגרת מחליפים מקומות, כך שהם מתערבבים בלי לצאת מהשוליים
+  function mixFrame(extra) {
+    const frameBalls = balls.filter(function (ball) { return ball.target && !ball.target.hidden; });
+    const chance = Math.min(0.4, extra / 40);
+    frameBalls.forEach(function (ball) {
+      if (Math.random() > chance) return;
+      const neighbors = frameBalls.filter(function (other) {
+        return other !== ball && Math.hypot(other.target.x - ball.target.x, other.target.y - ball.target.y) < ballRadius * 3.5;
+      });
+      if (neighbors.length === 0) return;
+      const other = neighbors[Math.floor(Math.random() * neighbors.length)];
+      const target = ball.target;
+      ball.target = other.target;
+      other.target = target;
+    });
+  }
+
+  // במצב PLAY: כדור שהניעור הקפיץ לא נכנס לאזורים במרכז (כפתורים, טקסטים, תמונה)
+  function keepShakenBallsInFrame() {
+    if (!ballsAtEdges) return;
+    balls.forEach(function (ball) {
+      if (!ball.shaken) return;
+      frameKeepOut.forEach(function (area) {
+        if (!insideArea(ball, area)) return;
+        const toLeft = ball.x - area.left;
+        const toRight = area.right - ball.x;
+        const toTop = ball.y - area.top;
+        const toBottom = area.bottom - ball.y;
+        const nearest = Math.min(toLeft, toRight, toTop, toBottom);
+        if (nearest === toLeft) ball.x = area.left;
+        else if (nearest === toRight) ball.x = area.right;
+        else if (nearest === toTop) ball.y = area.top;
+        else ball.y = area.bottom;
+      });
+    });
+  }
+
+  if (isPhone && "DeviceMotionEvent" in window) {
+    if (typeof DeviceMotionEvent.requestPermission === "function") {
+      // אייפון: מבקשים רשות לקרוא את תנועת הטלפון בנגיעה הראשונה, ולא שואלים שוב באותה כניסה
+      const askForMotion = function () {
+        document.removeEventListener("touchend", askForMotion);
+        if (reducedMotion.matches) return;
+        DeviceMotionEvent.requestPermission().then(function (answer) {
+          if (answer === "granted") window.addEventListener("devicemotion", onDeviceMotion);
+        }).catch(function () {
+          // סירוב או שגיאה: הכדורים עובדים כרגיל, בלי ניעור
+        });
+      };
+      document.addEventListener("touchend", askForMotion);
+    } else {
+      window.addEventListener("devicemotion", onDeviceMotion);
+    }
+  }
 
   // =========================================
   // התחלה, ושינוי גודל החלון
