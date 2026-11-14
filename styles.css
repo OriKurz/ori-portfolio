@@ -1168,6 +1168,60 @@
   }
 }
 
+/* ----- עמוד הפרויקט Shunra (shunra-project.html) -----
+   אותה תבנית כמו עמוד פרויקט מלא, עם הצבעים של הפרויקט.
+   מספרים כמו 458 * var(--u) הם פיקסלים מהפריים "דף פרויקט שונרא" בפיגמה.
+   14 משבצות של 66.4px באותו רוחב של 933, כמו ב-Leftovers.
+   מעל הגריד: הלוגו והרשת (canvas מ-shunra-net.js) */
+:root.page-shunra {
+  --frame-cell: 66.4;
+  --grid-columns: 14;
+  /* הגריד מתחיל בקו של y=458 בפיגמה, ונמשך עד הפס של הפרויקטים הנוספים (y=2972), במשבצות.
+     הגריד עצמו מעוגל למעלה לשורה שלמה (.page-shunra .full-project-grid) */
+  --grid-rows: 37.861;
+
+  /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
+  --shunra-cream: #fff8df;     /* רקע העמוד */
+  --shunra-ink: #265687;       /* קווי הגריד */
+  --shunra-steel: #5c85b0;     /* ההמבורגר */
+  --shunra-red: #e5262c;       /* הרשת */
+  --shunra-red-dark: #a01a1f;  /* הצד האחורי של הרשת: גוון כהה יותר של אותו אדום */
+
+  --page-background: var(--shunra-cream);
+  --grid-line-color: var(--shunra-ink);
+  --menu-line-color: var(--shunra-steel);
+
+  /* הכותרת ושתי שורות המשנה (ההזזה של 8px כמו בעמודי הפרויקט האחרים) */
+  --title-width: calc(418 * var(--px));
+  --type-top: calc(150 * var(--px));
+  --type-left: calc(297 * var(--px));
+
+  /* מעל הגריד: הגובה עד הקו העליון של הגריד */
+  --shunra-hero-height: calc(458 * var(--u));
+  /* הלוגו (518.9x122 בפיגמה) */
+  --shunra-logo-left: calc(224 * var(--u));
+  --shunra-logo-top: calc(247 * var(--u));
+  --shunra-logo-width: calc(518.888 * var(--u));
+  --shunra-logo-height: calc(122.034 * var(--u));
+  /* הרשת: 932x381 בפיגמה, מעל הלוגו */
+  --shunra-net-left: calc(1 * var(--u));
+  --shunra-net-top: calc(70 * var(--u));
+  --shunra-net-width: calc(932 * var(--u));
+
+  /* פרויקטים נוספים: פס מנטה בשקיפות 50%, כמו בפיגמה */
+  --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
+  --next-projects-height: calc(277.79 * var(--strip-px));
+}
+
+@media (max-width: 767.98px) and (orientation: portrait) {
+  :root.page-shunra {
+    /* אין טקסט ארוך: החלק של הטקסט רק בגובה הכותרת ושורות המשנה */
+    --info-height: calc(253 * var(--px));
+    /* שורת המשנה הימנית זזה יחד עם הכותרת (226 מימין לה, כמו בפיגמה) */
+    --type-left: calc(var(--margin-mobile) + 226 * var(--px));
+  }
+}
+
 /* ----- עמוד Say Hi (say-hi.html) -----
    הפריים בפיגמה: 1440x810, משבצת = 93px, והגריד מתחיל מהפינה של הפריים.
    אותה שיטה כמו בעמוד מבואה לפרויקט: אזור העיצוב ממורכז ושלם,
@@ -3722,6 +3776,76 @@ body {
 
 .full-project-header .menu-button {
   pointer-events: auto;
+}
+
+/* =========================================
+   עמוד הפרויקט Shunra
+   ========================================= */
+
+.page-shunra .full-project-type {
+  left: var(--type-left);
+}
+
+/* הגריד נגמר בשורה שלמה, והפס של הפרויקטים הנוספים יושב בתחתית שלו */
+.page-shunra .full-project-grid {
+  height: round(up, var(--grid-rows) * var(--cell) + var(--next-projects-height), var(--cell));
+}
+
+/* מעל הגריד: הלוגו, והרשת מעליו */
+.shunra-hero {
+  position: relative;
+  height: var(--shunra-hero-height);
+}
+
+.shunra-logo {
+  position: absolute;
+  left: var(--shunra-logo-left);
+  top: var(--shunra-logo-top);
+  width: var(--shunra-logo-width);
+  height: var(--shunra-logo-height);
+  max-width: none;
+}
+
+/* הרשת (shunra-net.js מצייר אותה ומגיב לעכבר ולנגיעה).
+   touch-action: pan-y: בטלפון היא לא חוסמת את הגלילה של העמוד */
+.shunra-net,
+.shunra-net-fallback {
+  position: absolute;
+  left: var(--shunra-net-left);
+  top: var(--shunra-net-top);
+  width: var(--shunra-net-width);
+  aspect-ratio: 932 / 381;
+  max-width: none;
+}
+
+.shunra-net {
+  --shunra-net: var(--shunra-red);
+  --shunra-net-back: var(--shunra-red-dark);
+  display: block;
+  touch-action: pan-y;
+}
+
+/* תמונת הרשת: רק גיבוי, למי שביקש צמצום תנועה (או אם הסקריפט לא נטען) */
+.shunra-net-fallback {
+  display: none;
+}
+
+.shunra-hero.is-net-static .shunra-net {
+  display: none;
+}
+
+.shunra-hero.is-net-static .shunra-net-fallback {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shunra-net {
+    display: none;
+  }
+
+  .shunra-net-fallback {
+    display: block;
+  }
 }
 
 /* במובייל: טור אחד והעמוד כולו נגלל כרגיל */

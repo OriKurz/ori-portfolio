@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" class="page-full-project page-shunra">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shunra — Project — Ori Kurz</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- מעבר בין עמודים: נטען ב-head כדי לכסות את העמוד החדש מהציור הראשון -->
+  <script src="page-transition.js"></script>
+</head>
+<body>
+  <!-- בר הבחירה (התפריט): סגור בטעינה. ההמבורגר פותח אותו, והוא מחליק פנימה מלמעלה (script.js) -->
+  <nav class="nav-bar" id="nav-bar" aria-label="Main">
+    <!-- ההמבורגר של הבר: סוגר אותו -->
+    <button class="menu-button nav-bar-menu" type="button" aria-label="Close menu" aria-controls="nav-bar">
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+    </button>
+    <!-- INDEX מוביל לעמוד אינדקס הפרויקטים (projects.html) -->
+    <ul class="nav-bar-list">
+      <li><a class="nav-bar-link text-nav" href="index.html">HOME</a></li>
+      <li><a class="nav-bar-link text-nav" href="projects.html">INDEX</a></li>
+      <li><a class="nav-bar-link text-nav" href="say-hi.html">SAY HI :)</a></li>
+    </ul>
+  </nav>
+
+  <!-- עמוד פרויקט מלא: הפריים "דף פרויקט שונרא" מהפיגמה. העמוד עוד לא גמור:
+       יש בו רק מה שיש בפריים. אותה תבנית כמו the-perfect-crime-project.html -->
+  <main class="full-project">
+
+    <!-- האזור הנגלל (במחשב). הצד השמאלי "דבוק" בתוכו ולא זז -->
+    <div class="full-project-scroll">
+
+      <!-- העמודה השמאלית והגריד. העמודה "דבוקה" (sticky) עד סוף הקופסה הזו,
+           שנגמרת בדיוק מעל What's Next: בסוף העמוד הרצועה והבאנר דוחפים אותה למעלה -->
+      <div class="full-project-body">
+      <!-- ===== החלק של הטקסט (בלי גריד, לא נגלל) ===== -->
+      <section class="full-project-info">
+        <!-- ההמבורגר: פותח וסוגר את בר הבחירה -->
+        <button class="menu-button full-project-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+        </button>
+
+        <h1 class="full-project-title text-page-title">Shunra</h1>
+        <p class="full-project-tagline text-subtitle">*fragments that<br>were never meant<br>to persist, yet<br>somehow endured</p>
+        <p class="full-project-type text-subtitle">Graphic Design and<br>Data Visualization<br>Academic project<br>2026</p>
+      </section>
+
+      <!-- ===== החלק של הגריד ===== -->
+      <section class="full-project-panel">
+        <!-- מעל הגריד: הלוגו, והרשת מעליו -->
+        <div class="shunra-hero">
+          <img class="shunra-logo" src="Images/shunra/shunra-logo.svg" alt="Shunra logo">
+          <!-- הרשת: shunra-net.js מצייר אותה על ה-canvas -->
+          <canvas class="shunra-net" aria-hidden="true"></canvas>
+          <!-- גיבוי: מוצג רק למי שביקש צמצום תנועה -->
+          <img class="shunra-net-fallback" src="Images/shunra/shunra-net.png" alt="">
+        </div>
+
+        <div class="full-project-grid grid-lines"></div>
+      </section>
+      </div>
+
+      <!-- ===== פרויקטים נוספים: רולר ברוחב כל המסך =====
+           script.js בונה את הדימויים מהרשימה המשותפת nextProjectsList ומזיז אותם בלופ.
+           כל דימוי הוא קישור. דימוי בלי href עוד לא מוביל לשום מקום -->
+      <section class="next-projects" aria-label="More projects">
+        <div class="next-projects-track"></div>
+      </section>
+
+      <!-- ===== באנר יצירת קשר: ברוחב כל המסך =====
+           מוביל לעמוד Say Hi (say-hi.html).
+           הטקסט רץ מימין לשמאל בלופ. יש בו שני חצאים זהים: כשהחצי הראשון יוצא,
+           השני נמצא בדיוק במקום שלו, ולכן אין קפיצה -->
+      <a class="contact-banner" href="say-hi.html" aria-label="Say hi, let’s make things together">
+        <div class="contact-banner-track" aria-hidden="true">
+          <div class="contact-banner-half">
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+          </div>
+          <div class="contact-banner-half">
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+            <img class="contact-banner-star contact-banner-star--1" src="Images/contact-star-1.svg" alt="">
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <img class="contact-banner-star contact-banner-star--2" src="Images/contact-star-2.svg" alt="">
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="keyboard-nav.js"></script>
+  <script src="cursor.js"></script>
+  <script src="shunra-net.js"></script>
+  <script>
+    // הרשת: רק בלי צמצום תנועה. אם shunra-net.js לא נטען, מוצגת התמונה
+    (function () {
+      const hero = document.querySelector(".shunra-hero");
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      if (typeof initShunraNet !== "function") {
+        hero.classList.add("is-net-static");
+        return;
+      }
+      initShunraNet(hero.querySelector(".shunra-net"));
+    })();
+  </script>
+</body>
+</html>

@@ -20,7 +20,8 @@
     "projects.html": "--color-green",
     "say-hi.html": "--color-pink",
     "the-perfect-crime-project.html": "--color-mint",
-    "leftovers-project.html": "--leftovers-navy"
+    "leftovers-project.html": "--leftovers-navy",
+    "shunra-project.html": "--shunra-cream"
   };
 
   // קורא משתנה מ-styles.css
