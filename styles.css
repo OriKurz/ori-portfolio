@@ -1228,10 +1228,19 @@
   --shunra-logo-title-top: calc(400 * var(--u));
   --menu-title-column: 0.12;  --menu-title-row: 0.346;
 
-  /* הפוסטרים ("image 7" בפיגמה: 931x698, ב-x=508 וב-y=1587) */
-  --shunra-posters-left: calc(0 * var(--u));
-  --shunra-posters-top: calc(1587 * var(--u));
+  /* כותרת הפוסטרים: משבצת מאוחדת של שתי משבצות בשורה 17 של הגריד.
+     הטקסט בתוכה 6 משמאל ו-17 מלמעלה (פיקסלים מהפיגמה) */
+  --poster-title-column: 0;  --poster-title-row: 17;
+  --poster-title-text-left: calc(6 * var(--u));
+  --poster-title-text-top: calc(17 * var(--u));
+
+  /* הפוסטרים ("image 7" בפיגמה: מסגרת של 931x655, ב-x=509 וב-y=1656).
+     התמונה (4:3) ברוחב המסגרת, וחתוכה למעלה ולמטה כמו בפיגמה */
+  --shunra-posters-left: calc(1 * var(--u));
+  --shunra-posters-top: calc(1656 * var(--u));
   --shunra-posters-width: calc(931 * var(--u));
+  --shunra-poster-crop-top: -3.23%;
+  --shunra-poster-crop-height: 106.6%;
   /* כל כמה זמן הפוסטר מתחלף, באלפיות שנייה (script.js קורא את זה) */
   --shunra-poster-interval: 700;
 
@@ -1239,12 +1248,12 @@
   --shunra-hero-height: calc(458 * var(--u));
   /* הלוגו (518.9x122 בפיגמה) */
   --shunra-logo-left: calc(224 * var(--u));
-  --shunra-logo-top: calc(247 * var(--u));
+  --shunra-logo-top: calc(199 * var(--u));
   --shunra-logo-width: calc(518.888 * var(--u));
   --shunra-logo-height: calc(122.034 * var(--u));
   /* הרשת: 932x381 בפיגמה, מעל הלוגו */
   --shunra-net-left: calc(1 * var(--u));
-  --shunra-net-top: calc(70 * var(--u));
+  --shunra-net-top: calc(56 * var(--u));
   --shunra-net-width: calc(932 * var(--u));
 
   /* פרויקטים נוספים: פס מנטה בשקיפות 50%, כמו בפיגמה */
@@ -3839,6 +3848,20 @@ body {
 
 .shunra-menu-title { --column: var(--menu-title-column); --row: var(--menu-title-row); }
 
+/* "Poster Campaign": במחשב משבצת מאוחדת של שתי משבצות, ברקע של העמוד שמכסה
+   את הקו הפנימי (Rectangle 132 בפיגמה). במובייל: כמו כל כותרות הסעיפים בגריד */
+.shunra-poster-title {
+  --column: var(--poster-title-column);
+  --row: var(--poster-title-row);
+  position: absolute;
+  left: calc(var(--column) * var(--cell) + var(--line));
+  top: calc(var(--row) * var(--cell) + var(--line));
+  width: calc(2 * var(--cell) - var(--line));
+  height: calc(var(--cell) - var(--line));
+  padding: var(--poster-title-text-top) 0 0 var(--poster-title-text-left);
+  background-color: var(--page-background);
+}
+
 /* הגריד נגמר בשורה שלמה, והפס של הפרויקטים הנוספים יושב בתחתית שלו */
 .page-shunra .full-project-grid {
   height: round(up, var(--grid-rows) * var(--cell) + var(--next-projects-height), var(--cell));
@@ -4010,7 +4033,8 @@ body {
   left: var(--shunra-posters-left);
   top: var(--shunra-posters-top);
   width: var(--shunra-posters-width);
-  aspect-ratio: 931 / 698;
+  aspect-ratio: 931 / 655;
+  overflow: hidden;
   padding: 0;
   border: 0;
   background: none;
@@ -4019,11 +4043,11 @@ body {
 
 .shunra-poster {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: var(--shunra-poster-crop-top);
   width: 100%;
-  height: 100%;
+  height: var(--shunra-poster-crop-height);
   max-width: none;
-  object-fit: cover;
   visibility: hidden;
 }
 
@@ -4066,10 +4090,10 @@ body {
 }
 
 .shunra-product--5 {
-  --number-right: 824; --number-top: 1053;
-  --image-left: 533; --image-top: 1029; --image-width: 98;
+  --number-right: 890; --number-top: 1053;
+  --image-left: 599; --image-top: 1076; --image-width: 98;
   --hover-x: -2.5; --hover-y: 8.4; --hover-rotate: -7.79deg; --hover-scale: 1.049;
-  --label-left: 589; --label-top: 1363; --label-width: 117; --label-text-width: 174; --label-justify: flex-start;
+  --label-left: 655; --label-top: 1410; --label-width: 117; --label-text-width: 174; --label-justify: flex-start;
 }
 
 .shunra-product--6 {
