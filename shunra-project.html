@@ -54,10 +54,12 @@
         <!-- מעל הגריד: הלוגו, והרשת מעליו -->
         <div class="shunra-hero">
           <img class="shunra-logo" src="Images/shunra/shunra-logo.svg" alt="Shunra logo">
-          <!-- הרשת: shunra-net.js מצייר אותה על ה-canvas -->
-          <canvas class="shunra-net" aria-hidden="true"></canvas>
-          <!-- גיבוי: מוצג רק למי שביקש צמצום תנועה -->
-          <img class="shunra-net-fallback" src="Images/shunra/shunra-net.png" alt="">
+          <!-- הרשת: shunra-net.js מצייר אותה על ה-canvas, לפי הגודל של הקופסה שעוטפת אותו -->
+          <div class="shunra-net-box">
+            <canvas class="shunra-net" aria-hidden="true"></canvas>
+            <!-- גיבוי: מוצג רק למי שביקש צמצום תנועה -->
+            <img class="shunra-net-fallback" src="Images/shunra/shunra-net.png" alt="">
+          </div>
         </div>
 
         <div class="full-project-grid grid-lines"></div>
