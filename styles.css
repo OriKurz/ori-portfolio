@@ -1228,6 +1228,13 @@
   --shunra-logo-title-top: calc(400 * var(--u));
   --menu-title-column: 0.12;  --menu-title-row: 0.346;
 
+  /* הפוסטרים ("image 7" בפיגמה: 931x698, ב-x=508 וב-y=1587) */
+  --shunra-posters-left: calc(0 * var(--u));
+  --shunra-posters-top: calc(1587 * var(--u));
+  --shunra-posters-width: calc(931 * var(--u));
+  /* כל כמה זמן הפוסטר מתחלף, באלפיות שנייה (script.js קורא את זה) */
+  --shunra-poster-interval: 700;
+
   /* מעל הגריד: הגובה עד הקו העליון של הגריד */
   --shunra-hero-height: calc(458 * var(--u));
   /* הלוגו (518.9x122 בפיגמה) */
@@ -3995,6 +4002,38 @@ body {
 .shunra-product-number:focus-visible,
 .shunra-product-image:focus-visible {
   outline: none;
+}
+
+/* ----- הפוסטרים: חמש תמונות באותה מסגרת, רק אחת מוצגת (is-shown). ההחלפה חדה, בלי מעבר ----- */
+.shunra-posters {
+  position: absolute;
+  left: var(--shunra-posters-left);
+  top: var(--shunra-posters-top);
+  width: var(--shunra-posters-width);
+  aspect-ratio: 931 / 698;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.shunra-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  visibility: hidden;
+}
+
+.shunra-poster.is-shown {
+  visibility: visible;
+}
+
+/* Focus: אין Hover שנראה, אז קו מתאר בצבע ובעובי קווי הגריד */
+.shunra-posters:focus-visible {
+  outline: var(--line) solid var(--grid-line-color);
 }
 
 /* המיקומים מהפיגמה (המלבנים 4-6 לא ממורכזים בפיגמה, הטקסט בהם מתחיל משמאל) */
