@@ -2,7 +2,7 @@
    Usage: <canvas id="shunra-net"></canvas> inside a box with aspect-ratio 932/381, then initShunraNet(canvasElement).
    Colors: CSS variables --shunra-net (front) and --shunra-net-back (folded side) on the canvas or an ancestor.
    Drawing space is always 932x381 and scales to the canvas size.
-   Interactions: hover brushes the threads; press and drag pulls a handful of the net; release throws the whole net;
+   Interactions: hover brushes the threads; press and drag pulls the net — the spot under the hand most, the rest of the body follows more softly with distance; release throws the whole net;
    drag a corner to peel the net off like a blanket (past a third of the width it stays peeled ~2.6s, then lays back). */
 function initShunraNet(canvas){
 
@@ -80,9 +80,11 @@ function step(settle){
   for(const p of P){if(p.pin)continue;
     if(!settle){p.x+=Math.sin(t*1.1+p.y*.025+p.x*.004)*.03;p.y+=Math.sin(t*.8+p.x*.012)*.02}   // a faint breeze: the net is never fully still
     if(p.w&&ptr){const tx=p.gx+(ptr.x-start.x)*p.w,ty=p.gy+(ptr.y-start.y)*p.w;p.px=p.x;p.py=p.y;p.x+=(tx-p.x)*.3;p.y+=(ty-p.y)*.3;continue}
+    // the rest of the net is drawn along with the hand, softer the farther it is, so the whole body moves together
+    if(p.f&&ptr){const tx=p.gx+(ptr.x-start.x)*p.f,ty=p.gy+(ptr.y-start.y)*p.f;p.x+=(tx-p.x)*.08;p.y+=(ty-p.y)*.08}
     let vx=(p.x-p.px)*.986,vy=(p.y-p.py)*.986;const vs=Math.hypot(vx,vy);if(vs>7){vx*=7/vs;vy*=7/vs}p.px=p.x;p.py=p.y;
     p.x+=vx;p.y+=vy+G;
-    const k=p.fold?Math.max(p.k,.05)*1.6:p.k*(p.k>.1?.5+.5*homeF:homeF);if(k){p.x+=((p.tx??p.hx)-p.x)*k;p.y+=((p.ty??p.hy)-p.y)*k}}
+    const k=p.fold?Math.max(p.k,.05)*1.6:p.k*(p.k>.1?.2+.8*homeF:homeF);if(k){p.x+=((p.tx??p.hx)-p.x)*k;p.y+=((p.ty??p.hy)-p.y)*k}}
   // re-tie: two seconds after the last cut, loose ends are drawn back together and knotted
   // re-tie: each cut thread is reconnected at its current length and gently reeled in to its true length
   if(now-lastCut>1500)for(const c of cons)if(c.broken){const A=P[c.a],B=P[c.b];c.broken=false;c.cur=Math.hypot(B.x-A.x,B.y-A.y);c.tying=true}
@@ -119,7 +121,8 @@ cv.addEventListener('pointermove',ev=>{if(ev.pointerType!=='mouse'&&!held)return
 cv.addEventListener('pointerdown',ev=>{ptr=start=toNet(ev);prevPtr=null;group=[];const RG=46;
   if(!peel){const cn=CORN.find(c=>Math.hypot(P[c.id].x-ptr.x,P[c.id].y-ptr.y)<34);
     if(cn){peel={...cn,phase:'drag',tx:ptr.x,ty:ptr.y,drag:0};P[cn.id].pin=true;held=true;cv.setPointerCapture(ev.pointerId);return}}
-  for(const p of P){if(p.pin)continue;const d=Math.hypot(p.x-ptr.x,p.y-ptr.y);if(d<RG){p.w=1-(d/RG)**2;p.gx=p.x;p.gy=p.y;group.push(p)}}
+  for(const p of P){if(p.pin)continue;const d=Math.hypot(p.x-ptr.x,p.y-ptr.y);p.gx=p.x;p.gy=p.y;if(d<RG){p.w=1-(d/RG)**2;group.push(p)}else p.f=Math.exp(-(d-RG)/230)*.85}
+  if(!group.length)for(const p of P)p.f=0;
   if(group.length){held=true;cv.setPointerCapture(ev.pointerId)}});
 const end=ev=>{if(peel&&peel.phase==='drag'){const c=P[peel.id];
     if(peel.drag>W*.3){peel.phase='hold';peel.t0=performance.now()}else{peel.phase='return';peel.t0=performance.now()-400;peel.fx=c.x;peel.fy=c.y}
@@ -128,7 +131,7 @@ const end=ev=>{if(peel&&peel.phase==='drag'){const c=P[peel.id];
     for(const p of P){if(p.pin)continue;const d=Math.hypot(p.x-rx,p.y-ry),f=Math.exp(-d/260)*.9;
       p.px-=v.x*f;p.py-=v.y*f;                                   // carry the throw outward
       p.py-=Math.min(sp,6)*.35*Math.exp(-d/420)}}                // and a soft bounce through the whole body
-  dragV={x:0,y:0};held=null;for(const p of group)p.w=0;group=[];if(ev.pointerType!=='mouse'){ptr=null;prevPtr=null}};
+  dragV={x:0,y:0};held=null;for(const p of group)p.w=0;for(const p of P)p.f=0;group=[];if(ev.pointerType!=='mouse'){ptr=null;prevPtr=null}};
 cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
 cv.addEventListener('pointerleave',()=>{if(!held){ptr=null;prevPtr=null}});
 build();size();addEventListener('resize',size);loop();
