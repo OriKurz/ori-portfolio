@@ -52,6 +52,15 @@
   font-display: swap;
 }
 
+/* Ezer Franzisca: המספרים של המוצרים בעמוד Shunra (תוכן של הפרויקט) */
+@font-face {
+  font-family: "Ezer Franzisca";
+  src: url("fonts/EzerFranziscaTRIALONLY-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* TheBasics: פונט גיבוי לעברית בלבד (unicode-range), כי ב-Telegraf אין אותיות עבריות.
    Regular לסגנונות ה-Regular, ו-Bold לסגנונות ה-UltraBold (המשקל הקרוב ביותר) */
 @font-face {
@@ -1186,6 +1195,12 @@
   --shunra-steel: #5c85b0;     /* ההמבורגר */
   --shunra-red: #e5262c;       /* הרשת */
   --shunra-red-dark: #a01a1f;  /* הצד האחורי של הרשת: גוון כהה יותר של אותו אדום */
+  --shunra-number: #da472a;    /* המספרים של המוצרים */
+  --shunra-paper: #fffaea;     /* הטקסט במלבן של שם המוצר */
+
+  /* הצגת המוצרים (הקומפוננטה Group 11 בפיגמה): תזמוני ה-hover */
+  --shunra-product-duration: 300ms;      /* המוצר גדל ומוטה, והמספר משנה צבע */
+  --shunra-label-duration: 200ms;        /* המלבן עם השם נפתח משמאל לימין */
 
   --page-background: var(--shunra-cream);
   --grid-line-color: var(--shunra-ink);
@@ -3852,6 +3867,146 @@ body {
   .shunra-net-fallback {
     display: block;
   }
+}
+
+/* ----- הצגת המוצרים (הקומפוננטה Group 11 בפיגמה, 963x1300) -----
+   שישה מוצרים, ולכל אחד מספר ומלבן עם השם. המיקומים הם פיקסלים מהפריים
+   "דף פרויקט שונרא", ביחס לתחילת הגריד (x=508). הקומפוננטה מתחילה ב-449/393.
+   Hover על המוצר או על המספר שלו (script.js מוסיף is-hover לקבוצה):
+   המוצר גדל ומוטה כמו בוריאנט שלו, המספר כתום, והמלבן נפתח משמאל לימין */
+.shunra-products {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.shunra-product-number,
+.shunra-product-image,
+.shunra-product-label {
+  position: absolute;
+}
+
+/* המספר: הקצה הימני שלו במקום מהפיגמה (הטקסט שם מיושר לימין) */
+.shunra-product-number {
+  left: calc(var(--number-right) * var(--u));
+  top: calc(var(--number-top) * var(--u));
+  translate: -100% 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: "Ezer Franzisca", serif;
+  font-weight: 400;
+  font-size: calc(300 * var(--u));
+  line-height: 1;
+  color: var(--shunra-number);
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color var(--shunra-product-duration) ease, scale var(--transition-speed) ease;
+}
+
+/* המוצר: בגודל ובמיקום של ה-Default. ב-Hover: ההזזה, ההגדלה וההטייה של הוריאנט */
+.shunra-product-image {
+  z-index: 1;
+  left: calc(var(--image-left) * var(--u));
+  top: calc(var(--image-top) * var(--u));
+  width: calc(var(--image-width) * var(--u));
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform var(--shunra-product-duration) ease, scale var(--transition-speed) ease;
+}
+
+.shunra-product-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* המלבן הכתום עם שם המוצר: 51 גובה, 7 ריווח פנימי. סגור עד ה-Hover */
+.shunra-product-label {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: var(--label-justify, center);
+  left: calc(var(--label-left) * var(--u));
+  top: calc(var(--label-top) * var(--u));
+  width: calc(var(--label-width) * var(--u));
+  height: calc(51 * var(--u));
+  padding: calc(7 * var(--u));
+  background-color: var(--color-orange);
+  color: var(--shunra-paper);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--shunra-label-duration) ease;
+}
+
+.shunra-product-label span {
+  flex-shrink: 0;
+  width: calc(var(--label-text-width) * var(--u));
+}
+
+/* Hover (וגם Focus ונגיעה בטלפון) */
+.shunra-product.is-hover .shunra-product-number {
+  color: var(--color-orange);
+}
+
+.shunra-product.is-hover .shunra-product-image {
+  transform: translate(calc(var(--hover-x) * var(--u)), calc(var(--hover-y) * var(--u))) rotate(var(--hover-rotate)) scale(var(--hover-scale));
+}
+
+.shunra-product.is-hover .shunra-product-label {
+  clip-path: inset(0 0 0 0);
+}
+
+/* Focus נראה בדיוק כמו Hover, בלי קו מתאר */
+.shunra-product-number:focus-visible,
+.shunra-product-image:focus-visible {
+  outline: none;
+}
+
+/* המיקומים מהפיגמה (המלבנים 4-6 לא ממורכזים בפיגמה, הטקסט בהם מתחיל משמאל) */
+.shunra-product--1 {
+  --number-right: 904; --number-top: 393;
+  --image-left: 489; --image-top: 491; --image-width: 282;
+  --hover-x: -18.5; --hover-y: 10.9; --hover-rotate: 5.92deg; --hover-scale: 1.132;
+  --label-left: 371; --label-top: 501; --label-width: 161; --label-text-width: 148;
+}
+
+.shunra-product--2 {
+  --number-right: 201; --number-top: 541;
+  --image-left: 205; --image-top: 640; --image-width: 284.1;
+  --hover-x: 6; --hover-y: 3.7; --hover-rotate: -4.21deg; --hover-scale: 1.043;
+  --label-left: 446; --label-top: 753; --label-width: 135; --label-text-width: 122;
+}
+
+.shunra-product--3 {
+  --number-right: 891; --number-top: 721;
+  --image-left: 446; --image-top: 827; --image-width: 286;
+  --hover-x: -13; --hover-y: 7.5; --hover-rotate: 7deg; --hover-scale: 1.091;
+  --label-left: 334; --label-top: 930; --label-width: 192; --label-text-width: 174;
+}
+
+.shunra-product--4 {
+  --number-right: 224; --number-top: 906;
+  --image-left: 242; --image-top: 906; --image-width: 92;
+  --hover-x: 5; --hover-y: -6; --hover-rotate: 6.45deg; --hover-scale: 1.107;
+  --label-left: 288; --label-top: 1219; --label-width: 111; --label-text-width: 174; --label-justify: flex-start;
+}
+
+.shunra-product--5 {
+  --number-right: 824; --number-top: 1053;
+  --image-left: 533; --image-top: 1029; --image-width: 98;
+  --hover-x: -2.5; --hover-y: 8.4; --hover-rotate: -7.79deg; --hover-scale: 1.049;
+  --label-left: 589; --label-top: 1363; --label-width: 117; --label-text-width: 174; --label-justify: flex-start;
+}
+
+.shunra-product--6 {
+  --number-right: 224; --number-top: 1259;
+  --image-left: 248; --image-top: 1323; --image-width: 236;
+  --hover-x: 5; --hover-y: 5.1; --hover-rotate: 10.69deg; --hover-scale: 1.042;
+  --label-left: 447; --label-top: 1461; --label-width: 94; --label-text-width: 90; --label-justify: flex-start;
 }
 
 /* במובייל: טור אחד והעמוד כולו נגלל כרגיל */

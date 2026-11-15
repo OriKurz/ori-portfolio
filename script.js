@@ -2820,3 +2820,62 @@ if (textTab) {
     setTimeout(function () { endIntro(true); }, introOpenTime);
   }
 }
+
+// =========================================
+// עמוד Shunra: הצגת המוצרים.
+// Hover על מוצר או על המספר שלו (רק עכבר) מוסיף לקבוצה is-hover:
+// המוצר גדל ומוטה, המספר כתום והמלבן עם השם נפתח (styles.css).
+// Focus מהמקלדת נראה בדיוק כמו Hover.
+// בטלפון (בלי עכבר): נגיעה במוצר או במספר פותחת, נגיעה נוספת סוגרת,
+// ונגיעה במוצר אחר מעבירה אליו.
+// =========================================
+const shunraProducts = document.querySelectorAll(".shunra-product");
+
+if (shunraProducts.length) {
+  const mousePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+  let hoveredProduct = null;  // המוצר שהעכבר עליו
+  let focusedProduct = null;  // המוצר שיש עליו פוקוס מהמקלדת
+  let tappedProduct = null;   // המוצר שנפתח בנגיעה (בטלפון)
+
+  function updateProducts() {
+    shunraProducts.forEach(function (product) {
+      const isOpen = product === hoveredProduct || product === focusedProduct || product === tappedProduct;
+      product.classList.toggle("is-hover", isOpen);
+    });
+  }
+
+  shunraProducts.forEach(function (product) {
+    product.querySelectorAll("button").forEach(function (button) {
+      button.addEventListener("pointerenter", function (event) {
+        if (event.pointerType !== "mouse") return;
+        hoveredProduct = product;
+        updateProducts();
+      });
+
+      button.addEventListener("pointerleave", function (event) {
+        if (event.pointerType !== "mouse" || hoveredProduct !== product) return;
+        hoveredProduct = null;
+        updateProducts();
+      });
+
+      button.addEventListener("focus", function () {
+        if (!button.matches(":focus-visible")) return;
+        focusedProduct = product;
+        updateProducts();
+      });
+
+      button.addEventListener("blur", function () {
+        if (focusedProduct !== product) return;
+        focusedProduct = null;
+        updateProducts();
+      });
+
+      // נגיעה בטלפון: פותחת, סוגרת, או מעבירה למוצר אחר
+      button.addEventListener("click", function () {
+        if (mousePointer.matches) return;
+        tappedProduct = tappedProduct === product ? null : product;
+        updateProducts();
+      });
+    });
+  });
+}
