@@ -1,7 +1,10 @@
 /* Shunra hanging net — interactive canvas.
    Usage: <canvas id="shunra-net"></canvas> inside a box with aspect-ratio 932/381, then initShunraNet(canvasElement).
    Colors: CSS variables --shunra-net (front) and --shunra-net-back (folded side) on the canvas or an ancestor.
-   Drawing space is always 932x381 and scales to the canvas size.
+   Drawing space is always 932x381 and scales to the box size. The canvas reaches past the box (sides, and far below)
+   and sits on top of the page (z-index 50), so a net pulled down over the content is drawn above it, not cut off.
+   The canvas itself ignores clicks; the box listens, so links under the overflow area keep working.
+   For the overflow to show, the box and its ancestors must not clip (no overflow:hidden).
    Interactions: hover brushes the threads; press and drag pulls the net — the spot under the hand most, the rest of the body follows more softly with distance; release throws the whole net;
    drag a corner to peel the net off like a blanket (past a third of the width it stays peeled ~2.6s, then lays back). */
 function initShunraNet(canvas){
@@ -9,6 +12,9 @@ function initShunraNet(canvas){
 const W=932,H=381,C=28,R=9,SAG=124,BOW=22,WOB=.07,TH=2.1,FRAME=3.6,M=FRAME,SUB=5;
 const G=.12, SLACK=1.05;
 const cv=canvas,ctx=cv.getContext('2d'),stage=canvas.parentElement;
+const PX=W*.4,PT=H*.35,PB=H*1.8;   // how far the drawing may spill past the box: sides, top, bottom (net units)
+if(getComputedStyle(stage).position==='static')stage.style.position='relative';
+Object.assign(cv.style,{position:'absolute',pointerEvents:'none',zIndex:'50',display:'block'});
 let homeF=1,peel=null,CORN=[],mode='pull',dragV={x:0,y:0},group=[],start=null,P=[],K=[],ropes=[],cons=[],held=null,ptr=null,prevPtr=null,lastCut=0;
 let a=12345;const rnd=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 const sagB=SAG*.9,Hn=H-2*M-sagB;
@@ -43,7 +49,9 @@ function build(){
   for(let i=0;i<120;i++)step(true);
 }
 
-function size(){const r=stage.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0)}
+function size(){const r=stage.getBoundingClientRect(),d=devicePixelRatio||1,s=r.width/W;
+  Object.assign(cv.style,{left:-PX*s+'px',top:-PT*s+'px',width:(W+2*PX)*s+'px',height:(H+PT+PB)*s+'px'});
+  cv.width=Math.round((W+2*PX)*s*d);cv.height=Math.round((H+PT+PB)*s*d);ctx.setTransform(s*d,0,0,s*d,PX*s*d,PT*s*d)}
 
 function cross(p1,p2,p3,p4){const d=(p2.x-p1.x)*(p4.y-p3.y)-(p2.y-p1.y)*(p4.x-p3.x);if(!d)return false;
   const t=((p3.x-p1.x)*(p4.y-p3.y)-(p3.y-p1.y)*(p4.x-p3.x))/d,u=((p3.x-p1.x)*(p2.y-p1.y)-(p3.y-p1.y)*(p2.x-p1.x))/d;return t>=0&&t<=1&&u>=0&&u<=1}
@@ -103,7 +111,7 @@ function path(ids){const p0=P[ids[0]];ctx.moveTo(p0.x,p0.y);
   for(let k=1;k<ids.length-1;k++){const p=P[ids[k]],q=P[ids[k+1]];ctx.quadraticCurveTo(p.x,p.y,(p.x+q.x)/2,(p.y+q.y)/2)}
   const l=P[ids[ids.length-1]];ctx.lineTo(l.x,l.y)}
 function draw(){
-  ctx.clearRect(0,0,W,H);const red=(getComputedStyle(cv).getPropertyValue('--shunra-net').trim()||'#d9363c');
+  ctx.clearRect(-PX,-PT,W+2*PX,H+PT+PB);const red=(getComputedStyle(cv).getPropertyValue('--shunra-net').trim()||'#d9363c');
   ctx.strokeStyle=ctx.fillStyle=red;ctx.lineCap='round';ctx.lineJoin='round';
   const back=(getComputedStyle(cv).getPropertyValue('--shunra-net-back').trim()||'#a3242a');
   for(const [frame,folded] of [[false,false],[true,false],[false,true],[true,true]]){ctx.strokeStyle=folded?back:red;ctx.lineWidth=frame?FRAME:TH;ctx.beginPath();
@@ -116,14 +124,14 @@ function draw(){
 }
 function loop(){step(false);draw();requestAnimationFrame(loop)}
 
-const toNet=ev=>{const r=cv.getBoundingClientRect();return{x:(ev.clientX-r.left)*W/r.width,y:(ev.clientY-r.top)*H/r.height}};
-cv.addEventListener('pointermove',ev=>{if(ev.pointerType!=='mouse'&&!held)return;ptr=toNet(ev)});
-cv.addEventListener('pointerdown',ev=>{ptr=start=toNet(ev);prevPtr=null;group=[];const RG=46;
+const toNet=ev=>{const r=stage.getBoundingClientRect();return{x:(ev.clientX-r.left)*W/r.width,y:(ev.clientY-r.top)*H/r.height}};
+stage.addEventListener('pointermove',ev=>{if(ev.pointerType!=='mouse'&&!held)return;ptr=toNet(ev)});
+stage.addEventListener('pointerdown',ev=>{ptr=start=toNet(ev);prevPtr=null;group=[];const RG=46;
   if(!peel){const cn=CORN.find(c=>Math.hypot(P[c.id].x-ptr.x,P[c.id].y-ptr.y)<34);
-    if(cn){peel={...cn,phase:'drag',tx:ptr.x,ty:ptr.y,drag:0};P[cn.id].pin=true;held=true;cv.setPointerCapture(ev.pointerId);return}}
+    if(cn){peel={...cn,phase:'drag',tx:ptr.x,ty:ptr.y,drag:0};P[cn.id].pin=true;held=true;stage.setPointerCapture(ev.pointerId);return}}
   for(const p of P){if(p.pin)continue;const d=Math.hypot(p.x-ptr.x,p.y-ptr.y);p.gx=p.x;p.gy=p.y;if(d<RG){p.w=1-(d/RG)**2;group.push(p)}else p.f=Math.exp(-(d-RG)/230)*.85}
   if(!group.length)for(const p of P)p.f=0;
-  if(group.length){held=true;cv.setPointerCapture(ev.pointerId)}});
+  if(group.length){held=true;stage.setPointerCapture(ev.pointerId)}});
 const end=ev=>{if(peel&&peel.phase==='drag'){const c=P[peel.id];
     if(peel.drag>W*.3){peel.phase='hold';peel.t0=performance.now()}else{peel.phase='return';peel.t0=performance.now()-400;peel.fx=c.x;peel.fy=c.y}
     held=null;if(ev.pointerType!=='mouse'){ptr=null;prevPtr=null}return}
@@ -132,8 +140,8 @@ const end=ev=>{if(peel&&peel.phase==='drag'){const c=P[peel.id];
       p.px-=v.x*f;p.py-=v.y*f;                                   // carry the throw outward
       p.py-=Math.min(sp,6)*.35*Math.exp(-d/420)}}                // and a soft bounce through the whole body
   dragV={x:0,y:0};held=null;for(const p of group)p.w=0;for(const p of P)p.f=0;group=[];if(ev.pointerType!=='mouse'){ptr=null;prevPtr=null}};
-cv.addEventListener('pointerup',end);cv.addEventListener('pointercancel',end);
-cv.addEventListener('pointerleave',()=>{if(!held){ptr=null;prevPtr=null}});
-build();size();addEventListener('resize',size);loop();
+stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);
+stage.addEventListener('pointerleave',()=>{if(!held){ptr=null;prevPtr=null}});
+build();size();addEventListener('resize',size);if(window.ResizeObserver)new ResizeObserver(size).observe(stage);loop();
 
 }
