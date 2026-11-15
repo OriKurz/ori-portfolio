@@ -37,16 +37,29 @@
       <div class="full-project-body">
       <!-- ===== החלק של הטקסט (בלי גריד, לא נגלל) ===== -->
       <section class="full-project-info">
-        <!-- ההמבורגר: פותח וסוגר את בר הבחירה -->
-        <button class="menu-button full-project-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
-          <span class="menu-button-line"></span>
-          <span class="menu-button-line"></span>
-          <span class="menu-button-line"></span>
-        </button>
+        <!-- התיאור: אזור גלילה משלו, עד השורה האחרונה. הוא נעלם מתחת לכותרת (כמו ב-Leftovers) -->
+        <div class="full-project-description-scroll">
+            <div class="full-project-description text-body">
+              <p>A branding project for Shunra, a high-end cat food brand based entirely on raw fish dishes. Every dish is made only from fresh fish, fruits and vegetables chosen for cats’ health. Shunra puts your cat first.</p>
+              <p>Our goal was to bring the sea into every layer of the brand, without ever showing it. A fishing net, stencil-sprayed numbers borrowed from shipping containers, fish market crates and a color palette of sea and port all carry it with them.</p>
+              <p>We designed packaging for three canned dishes, sashimi and ceviche, and two oils for seasoning them, salmon oil and oyster oil. We also created an illustrative language, posters and an Instagram page that introduce the brand and its flavors. Shunra also comes as merch: matching bandanas for cats and their owners, bags and stickers.</p>
+            </div>
+        </div>
 
-        <h1 class="full-project-title text-page-title">Shunra</h1>
-        <p class="full-project-tagline text-subtitle">*fragments that<br>were never meant<br>to persist, yet<br>somehow endured</p>
-        <p class="full-project-type text-subtitle">Graphic Design and<br>Data Visualization<br>Academic project<br>2026</p>
+        <!-- הכותרת: תמיד במקומה, מעל התיאור. הרקע שלה מסתיר את התיאור כשהוא עולה.
+             הגלגלת עוברת דרכה אל התיאור (pointer-events: none ב-CSS) -->
+        <div class="full-project-header">
+          <!-- ההמבורגר: פותח וסוגר את בר הבחירה -->
+          <button class="menu-button full-project-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
+            <span class="menu-button-line"></span>
+            <span class="menu-button-line"></span>
+            <span class="menu-button-line"></span>
+          </button>
+
+          <h1 class="full-project-title text-page-title">Shunra</h1>
+          <p class="full-project-tagline text-subtitle">Designed with<br>Amit Goldstein<br>Academic project<br>2026</p>
+          <p class="full-project-type text-subtitle">Branding, Visual<br>Language and<br>Packaging Design</p>
+        </div>
       </section>
 
       <!-- ===== החלק של הגריד ===== -->
@@ -60,9 +73,13 @@
             <!-- גיבוי: מוצג רק למי שביקש צמצום תנועה -->
             <img class="shunra-net-fallback" src="Images/shunra/shunra-net.png" alt="">
           </div>
+          <!-- כותרת הסעיף של הלוגו: מעל הקו העליון של הגריד -->
+          <p class="shunra-logo-title text-section-title">Brand Logo</p>
         </div>
 
-        <div class="full-project-grid grid-lines"></div>
+        <div class="full-project-grid grid-lines">
+          <p class="on-grid section-title text-section-title shunra-menu-title">The<br>Menu</p>
+        </div>
 
         <!-- הצגת המוצרים: לכל מוצר מספר, תמונה ומלבן עם השם.
              Hover על המספר או על התמונה מפעיל את כל המוצר (script.js). בטלפון: נגיעה -->
