@@ -1185,9 +1185,9 @@
 :root.page-shunra {
   --frame-cell: 66.4;
   --grid-columns: 14;
-  /* הגריד מתחיל בקו של y=458 בפיגמה, ונמשך עד הפס של הפרויקטים הנוספים (y=2972), במשבצות.
+  /* הגריד מתחיל בקו של y=458 בפיגמה, ונמשך עד הפס של הפרויקטים הנוספים (y=4083), במשבצות.
      הגריד עצמו מעוגל למעלה לשורה שלמה (.page-shunra .full-project-grid) */
-  --grid-rows: 37.861;
+  --grid-rows: 54.593;
 
   /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
   --shunra-cream: #fff8df;     /* רקע העמוד */
@@ -1230,7 +1230,7 @@
 
   /* כותרת הפוסטרים: משבצת מאוחדת של שתי משבצות בשורה 17 של הגריד.
      הטקסט בתוכה 6 משמאל ו-17 מלמעלה (פיקסלים מהפיגמה) */
-  --poster-title-column: 0;  --poster-title-row: 17;
+  --poster-title-column: 0;  --poster-title-row: 17;  --poster-title-columns: 2;
   --poster-title-text-left: calc(6 * var(--u));
   --poster-title-text-top: calc(17 * var(--u));
 
@@ -1239,8 +1239,21 @@
   --shunra-posters-left: calc(1 * var(--u));
   --shunra-posters-top: calc(1656 * var(--u));
   --shunra-posters-width: calc(931 * var(--u));
-  --shunra-poster-crop-top: -3.23%;
-  --shunra-poster-crop-height: 106.6%;
+  --shunra-poster-crop-top: -3.21%;
+  --shunra-poster-crop-height: 105.96%;
+
+  /* האינסטגרם: הכותרת (משבצת מאוחדת של שלוש משבצות בשורה 29, הטקסט 6 משמאל ו-20 מלמעלה),
+     הסרטון (306x640 בפיגמה, ב-x=1066 וב-y=2357, פינות של 48),
+     והכפתור (ממלא שלוש משבצות בשורה 37) */
+  --instagram-title-column: 3;  --instagram-title-row: 29;  --instagram-title-columns: 3;
+  --instagram-title-text-left: calc(6 * var(--u));
+  --instagram-title-text-top: calc(20 * var(--u));
+  --shunra-instagram-left: calc(558 * var(--u));
+  --shunra-instagram-top: calc(2357 * var(--u));
+  --shunra-instagram-width: calc(306 * var(--u));
+  --shunra-instagram-radius: calc(48 * var(--u));
+  --instagram-button-column: 3;  --instagram-button-row: 37;  --instagram-button-columns: 3;
+  --instagram-button-padding: calc(7 * var(--u));
   /* כל כמה זמן הפוסטר מתחלף, באלפיות שנייה (script.js קורא את זה) */
   --shunra-poster-interval: 700;
 
@@ -3848,18 +3861,66 @@ body {
 
 .shunra-menu-title { --column: var(--menu-title-column); --row: var(--menu-title-row); }
 
-/* "Poster Campaign": במחשב משבצת מאוחדת של שתי משבצות, ברקע של העמוד שמכסה
-   את הקו הפנימי (Rectangle 132 בפיגמה). במובייל: כמו כל כותרות הסעיפים בגריד */
+/* "Poster Campaign" ו-"Find Us on Instagram Too!": במחשב משבצת מאוחדת של כמה משבצות,
+   ברקע של העמוד שמכסה את הקווים הפנימיים (Rectangle 132 ו-133 בפיגמה).
+   במובייל: כמו כל כותרות הסעיפים בגריד */
 .shunra-poster-title {
   --column: var(--poster-title-column);
   --row: var(--poster-title-row);
+  --box-columns: var(--poster-title-columns);
+  --text-left: var(--poster-title-text-left);
+  --text-top: var(--poster-title-text-top);
+}
+
+.shunra-instagram-title {
+  --column: var(--instagram-title-column);
+  --row: var(--instagram-title-row);
+  --box-columns: var(--instagram-title-columns);
+  --text-left: var(--instagram-title-text-left);
+  --text-top: var(--instagram-title-text-top);
+}
+
+.shunra-poster-title,
+.shunra-instagram-title {
   position: absolute;
   left: calc(var(--column) * var(--cell) + var(--line));
   top: calc(var(--row) * var(--cell) + var(--line));
-  width: calc(2 * var(--cell) - var(--line));
+  width: calc(var(--box-columns) * var(--cell) - var(--line));
   height: calc(var(--cell) - var(--line));
-  padding: var(--poster-title-text-top) 0 0 var(--poster-title-text-left);
+  padding: var(--text-top) 0 0 var(--text-left);
   background-color: var(--page-background);
+}
+
+/* הסרטון של האינסטגרם (כבר בתוך מסגרת של טלפון): מתנגן לבד בלופ, בלי סאונד ובלי כפתורים */
+.shunra-instagram {
+  position: absolute;
+  left: var(--shunra-instagram-left);
+  top: var(--shunra-instagram-top);
+  width: var(--shunra-instagram-width);
+  aspect-ratio: 306 / 640;
+  border-radius: var(--shunra-instagram-radius);
+  object-fit: cover;
+}
+
+/* הכפתור הכתום: קישור לעמוד האינסטגרם. הרקע ממלא בדיוק את השטח שבין קווי הגריד.
+   Pressed: ההתכווצות הכללית. Focus: קו מתאר (אין Hover שנראה) */
+.shunra-instagram-button {
+  position: absolute;
+  left: calc(var(--instagram-button-column) * var(--cell) + var(--line));
+  top: calc(var(--instagram-button-row) * var(--cell) + var(--line));
+  width: calc(var(--instagram-button-columns) * var(--cell) - var(--line));
+  height: calc(var(--cell) - var(--line));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--instagram-button-padding);
+  background-color: var(--color-orange);
+  color: var(--shunra-paper);
+  text-decoration: none;
+}
+
+.shunra-instagram-button:focus-visible {
+  outline: var(--line) solid var(--grid-line-color);
 }
 
 /* הגריד נגמר בשורה שלמה, והפס של הפרויקטים הנוספים יושב בתחתית שלו */
