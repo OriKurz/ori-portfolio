@@ -1197,6 +1197,9 @@
   --shunra-red-dark: #a01a1f;  /* הצד האחורי של הרשת: גוון כהה יותר של אותו אדום */
   --shunra-number: #da472a;    /* המספרים של המוצרים */
   --shunra-paper: #fffaea;     /* הטקסט במלבן של שם המוצר */
+  --shunra-teal: #286b7e;      /* ריבועי המרצ'נדייז */
+  --shunra-periwinkle: #7482c5;
+  --shunra-brick: #da472a;
 
   /* הצגת המוצרים (הקומפוננטה Group 11 בפיגמה): תזמוני ה-hover */
   --shunra-product-duration: 300ms;      /* המוצר גדל ומוטה, והמספר משנה צבע */
@@ -1242,17 +1245,29 @@
   --shunra-poster-crop-top: -3.21%;
   --shunra-poster-crop-height: 105.96%;
 
-  /* האינסטגרם: הכותרת (משבצת מאוחדת של שלוש משבצות בשורה 29, הטקסט 6 משמאל ו-20 מלמעלה),
-     הסרטון (306x640 בפיגמה, ב-x=1066 וב-y=2357, פינות של 48),
-     והכפתור (ממלא שלוש משבצות בשורה 37) */
-  --instagram-title-column: 3;  --instagram-title-row: 29;  --instagram-title-columns: 3;
-  --instagram-title-text-left: calc(6 * var(--u));
-  --instagram-title-text-top: calc(20 * var(--u));
-  --shunra-instagram-left: calc(558 * var(--u));
-  --shunra-instagram-top: calc(2357 * var(--u));
-  --shunra-instagram-width: calc(306 * var(--u));
-  --shunra-instagram-radius: calc(48 * var(--u));
-  --instagram-button-column: 3;  --instagram-button-row: 37;  --instagram-button-columns: 3;
+  /* המרצ'נדייז (הקומפוננטה Group 12 בפיגמה, 820x962, ב-x=586 וב-y=2349):
+     הכותרת "Merch" בגריד (משבצות), והריבועים, התמונות והמלבנים עם השם (בפיקסלים, בתוך כל קבוצה) */
+  --merch-title-column: 0.075;  --merch-title-row: 29.623;
+
+  /* הטלפונים: שני סרטונים זה לצד זה (279x583 בפיגמה, ב-y=3377).
+     השפה האיורית ב-x=586 עם פינות של 45, והאינסטגרם ב-x=1127 עם פינות של 48 */
+  --phone-video-top: calc(3377 * var(--u));
+  --phone-video-width: calc(279 * var(--u));
+  --illustrations-video-left: calc(78 * var(--u));
+  --illustrations-video-radius: calc(45 * var(--u));
+  --instagram-video-left: calc(619 * var(--u));
+  --instagram-video-radius: calc(48 * var(--u));
+  /* הכותרת של האינסטגרם: מלבן של 182x64 ב-x=918 וב-y=3377 (Rectangle 133), הטקסט 8 משמאל ו-16 מלמעלה.
+     במובייל היא נכנסת למשבצות הגריד (עמודה ושורה) */
+  --instagram-title-left: calc(410 * var(--u));
+  --instagram-title-top: calc((3377 - 458) * var(--u));
+  --instagram-title-width: calc(182 * var(--u));
+  --instagram-title-height: calc(64 * var(--u));
+  --instagram-title-column: 6.175;  --instagram-title-row: 43.96;
+  --instagram-title-text-left: calc(8 * var(--u));
+  --instagram-title-text-top: calc(16 * var(--u));
+  /* הכפתור: ממלא שלוש משבצות בשורה 52 */
+  --instagram-button-column: 6;  --instagram-button-row: 52;  --instagram-button-columns: 3;
   --instagram-button-padding: calc(7 * var(--u));
   /* כל כמה זמן הפוסטר מתחלף, באלפיות שנייה (script.js קורא את זה) */
   --shunra-poster-interval: 700;
@@ -3875,7 +3890,6 @@ body {
 .shunra-instagram-title {
   --column: var(--instagram-title-column);
   --row: var(--instagram-title-row);
-  --box-columns: var(--instagram-title-columns);
   --text-left: var(--instagram-title-text-left);
   --text-top: var(--instagram-title-text-top);
 }
@@ -3891,15 +3905,95 @@ body {
   background-color: var(--page-background);
 }
 
-/* הסרטון של האינסטגרם (כבר בתוך מסגרת של טלפון): מתנגן לבד בלופ, בלי סאונד ובלי כפתורים */
-.shunra-instagram {
+/* כותרת האינסטגרם במחשב: מלבן בפיקסלים מהפיגמה (לא על הקווים) */
+.shunra-instagram-title {
+  left: var(--instagram-title-left);
+  top: var(--instagram-title-top);
+  width: var(--instagram-title-width);
+  height: var(--instagram-title-height);
+}
+
+.shunra-merch-title { --column: var(--merch-title-column); --row: var(--merch-title-row); }
+
+/* ----- המרצ'נדייז: ארבעה ריבועים צבעוניים עם תמונות מעליהם -----
+   Hover על ריבוע (וגם Focus ונגיעה בטלפון) פותח את המלבן הכתום עם השם,
+   כמו במוצרים (אותן מחלקות: shunra-product ו-shunra-product-label, script.js) */
+.shunra-merch-square {
   position: absolute;
-  left: var(--shunra-instagram-left);
-  top: var(--shunra-instagram-top);
-  width: var(--shunra-instagram-width);
-  aspect-ratio: 306 / 640;
-  border-radius: var(--shunra-instagram-radius);
+  left: calc(var(--square-left) * var(--u));
+  top: calc(var(--square-top) * var(--u));
+  width: calc(var(--square-width) * var(--u));
+  height: calc(var(--square-height) * var(--u));
+  padding: 0;
+  border: 0;
+  background-color: var(--square-color);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Focus נראה בדיוק כמו Hover, בלי קו מתאר */
+.shunra-merch-square:focus-visible {
+  outline: none;
+}
+
+/* התמונות מעל הריבועים. הן לא תופסות את העכבר, כדי שה-Hover יהיה של הריבוע שמתחתן */
+.shunra-merch-image {
+  position: absolute;
+  z-index: 1;
+  left: calc(var(--image-left) * var(--u));
+  top: calc(var(--image-top) * var(--u));
+  width: calc(var(--image-width) * var(--u));
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+}
+
+.shunra-merch-image--net-bag-1 {
+  --image-left: 78; --image-top: 2875; --image-width: 217;
+  border-radius: calc(28 * var(--u));
+}
+.shunra-merch-image--bandanas-1 { --image-left: 108; --image-top: 2349; --image-width: 350; }
+.shunra-merch-image--bandanas-2 { --image-left: 515; --image-top: 2907; --image-width: 350; }
+.shunra-merch-image--net-bag-2  { --image-left: 508; --image-top: 2553; --image-width: 390; }
+
+/* הריבועים והמלבנים עם השם (כל מלבן לפי הווריאנט שלו בקומפוננטה) */
+.shunra-merch--bandanas-1 {
+  --square-left: 108; --square-top: 2382; --square-width: 395; --square-height: 459; --square-color: var(--shunra-periwinkle);
+  --label-left: 426; --label-top: 2586; --label-width: 192; --label-text-width: 167;
+}
+
+.shunra-merch--net-bag-2 {
+  --square-left: 571; --square-top: 2383; --square-width: 265; --square-height: 459; --square-color: var(--shunra-teal);
+  --label-left: 529; --label-top: 2507; --label-width: 89; --label-text-width: 174; --label-justify: flex-start;
+}
+
+.shunra-merch--net-bag-1 {
+  --square-left: 113; --square-top: 2876; --square-width: 287; --square-height: 434; --square-color: var(--shunra-teal);
+  --label-left: 350; --label-top: 3041; --label-width: 89; --label-text-width: 174; --label-justify: flex-start;
+}
+
+.shunra-merch--bandanas-2 {
+  --square-left: 466; --square-top: 2877; --square-width: 304; --square-height: 434; --square-color: var(--shunra-brick);
+  --label-left: 419; --label-top: 3206; --label-width: 192; --label-text-width: 167;
+}
+
+/* ----- הטלפונים: שני סרטונים (כבר בתוך מסגרת של טלפון), מתנגנים לבד בלופ, בלי סאונד ובלי כפתורים ----- */
+.shunra-phone-video {
+  position: absolute;
+  top: var(--phone-video-top);
+  width: var(--phone-video-width);
+  aspect-ratio: 279 / 583;
   object-fit: cover;
+}
+
+.shunra-phone-video--illustrations {
+  left: var(--illustrations-video-left);
+  border-radius: var(--illustrations-video-radius);
+}
+
+.shunra-phone-video--instagram {
+  left: var(--instagram-video-left);
+  border-radius: var(--instagram-video-radius);
 }
 
 /* הכפתור הכתום: קישור לעמוד האינסטגרם. הרקע ממלא בדיוק את השטח שבין קווי הגריד.
