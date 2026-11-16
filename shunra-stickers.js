@@ -6,9 +6,14 @@
    While held it grows a little. Drop it anywhere on the page, over anything: it shrinks back and stays there.
    The stickers live in their own layer on top of everything else in the grid area (.full-project-grid),
    so they scroll with it (on desktop only the grid area scrolls, on mobile the whole page does).
-   They keep their place relative to the container when the window is resized. No shadow, no fold. */
+   They keep their place relative to the container when the window is resized. No shadow, no fold.
+   Mouse hover: the sticker grows a little (less than when it is lifted). Not while dragging, not on touch.
+   Entrance: the first time the stickers come into view, each one starts a bit bigger and shrinks to its size,
+   one after the other, as if it was being stuck on. Once per page load, and not with reduced motion. */
 function initShunraStickers(root){
   const HOLD_MOUSE=110, HOLD_TOUCH=300, LIFT=1.08;
+  const HOVER=1.04, HOVER_MS=200;                      // mouse hover: a little smaller than the lift
+  const ENTER=1.12, ENTER_MS=500, ENTER_GAP=80;        // entrance: start size, length, delay between stickers
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const css=document.createElement('style');
   css.textContent=`#shunra-sticker-layer{position:absolute;left:0;top:0;width:0;height:0;z-index:990;pointer-events:none}
@@ -40,13 +45,38 @@ function initShunraStickers(root){
       const it={el,img,fx:(r.left-a.x-b.x)/b.w,fy:(r.top-a.y-b.y)/b.w,fw:r.width/b.w,s:1,anim:null};
       img.removeAttribute('style');img.classList.remove('shunra-sticker');el.appendChild(img);layer.appendChild(el);
       el.addEventListener('pointerdown',e=>down(e,it));
+      el.addEventListener('pointerenter',e=>hover(e,it,true));
+      el.addEventListener('pointerleave',e=>hover(e,it,false));
+      if(!reduce){it.waiting=true;setScale(it,ENTER)}    // waits, a bit bigger, for its entrance
       items.push(it);place(it);
     });
+    if(!reduce)watchEntrance();
     addEventListener('resize',placeAll);
     if(window.ResizeObserver){const ro=new ResizeObserver(placeAll);ro.observe(root);ro.observe(document.body)}
   }
   // wait until images and layout have settled, so the starting places are read correctly
   if(document.readyState==='complete')setup();else addEventListener('load',setup,{once:true});
+
+  // entrance: once, the first time the stickers come into view, one after the other
+  function watchEntrance(){
+    const start=()=>items.forEach((it,i)=>setTimeout(()=>{
+      if(!it.waiting||heldItem()===it)return;
+      it.waiting=false;animate(it,1,ENTER_MS);
+    },i*ENTER_GAP));
+    if(!window.IntersectionObserver){start();return}
+    const io=new IntersectionObserver(entries=>{
+      if(!entries.some(en=>en.isIntersecting))return;
+      io.disconnect();start();
+    },{threshold:0.2});
+    io.observe(root);
+  }
+
+  // mouse hover only, and never while a sticker is being held
+  function hover(e,it,over){
+    if(e.pointerType!=='mouse'||held)return;
+    it.waiting=false;
+    animate(it,over?HOVER:1,HOVER_MS);
+  }
 
   function setScale(it,s){it.s=s;it.el.style.transform=s===1?'':`scale(${s})`}
   function animate(it,toS,ms,done){
@@ -60,6 +90,7 @@ function initShunraStickers(root){
   let held=null;const heldItem=()=>held&&held.it;
   function down(e,it){
     if(e.button>0||held)return;e.preventDefault();
+    it.waiting=false;
     const r=it.el.getBoundingClientRect(),touch=e.pointerType!=='mouse';
     held={it,id:e.pointerId,sx:e.clientX,sy:e.clientY,ox:(e.clientX-r.left)/it.s,oy:(e.clientY-r.top)/it.s,up:false,touch};
     held.timer=setTimeout(lift,touch?HOLD_TOUCH:HOLD_MOUSE);
@@ -100,6 +131,8 @@ function initShunraStickers(root){
     if(!h.up)return;
     const it=h.it,b=rootBox();
     it.fx=(parseFloat(it.el.style.left)-b.x)/b.w;it.fy=(parseFloat(it.el.style.top)-b.y)/b.w;   // remember the new place
-    animate(it,1,220,()=>it.el.classList.remove('up'));
+    // back to its size (or to the hover size, if the mouse is still on it)
+    const stillOver=!h.touch&&it.el.matches(':hover');
+    animate(it,stillOver?HOVER:1,220,()=>it.el.classList.remove('up'));
   }
 }
