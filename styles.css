@@ -1210,6 +1210,9 @@
   --shunra-label-duration: 200ms;        /* המלבן עם השם נפתח משמאל לימין */
   --shunra-merch-image-hover-scale: 1.04; /* התמונה של המרצ'נדייז ב-Hover */
 
+  /* בר הבחירה הפתוח מעל שכבת המדבקות (shunra-stickers.js שם אותה ב-z-index 990) */
+  --layer-nav-bar: 1000;
+
   --page-background: var(--shunra-cream);
   --grid-line-color: var(--shunra-ink);
   --menu-line-color: var(--shunra-steel);
@@ -3993,7 +3996,8 @@ body {
 
 /* ----- המדבקות: מסביב ללוגו השני -----
    הפריים של הכותרת: כל רוחב הגריד, משורה 57 עד שורה 66. בתוכו המדבקות זזות.
-   האינטראקציה כולה ב-shunra-stickers.js, שעוטף כל מדבקה ב-div (stk) ומזיז ומגדיל אותו.
+   האינטראקציה כולה ב-shunra-stickers.js, שעוטף כל מדבקה ב-div (stk), מעביר אותו לשכבה משלו
+   מעל כל העמוד (#shunra-sticker-layer), ומזיז ומגדיל אותו.
    כאן אין למדבקות צל, transition או transform. ארבע מדבקות מסובבות כמו בפיגמה,
    עם rotate על העטיפה (מאפיין נפרד מ-transform, כך שלא מפריע להגדלה של הסקריפט) */
 .shunra-stickers-area {
@@ -4017,10 +4021,10 @@ body {
   height: auto;
 }
 
-.shunra-stickers-frame .stk:has(> img[src$="06-seahorse.png"]) { rotate: 14.31deg; }
-.shunra-stickers-frame .stk:has(> img[src$="02-red-fish.png"])  { rotate: -47.24deg; }
-.shunra-stickers-frame .stk:has(> img[src$="05-ray.png"])       { rotate: 15.86deg; }
-.shunra-stickers-frame .stk:has(> img[src$="03-oysters.png"])   { rotate: 39.43deg; }
+#shunra-sticker-layer .stk:has(> img[src$="06-seahorse.png"]) { rotate: 14.31deg; }
+#shunra-sticker-layer .stk:has(> img[src$="02-red-fish.png"])  { rotate: -47.24deg; }
+#shunra-sticker-layer .stk:has(> img[src$="05-ray.png"])       { rotate: 15.86deg; }
+#shunra-sticker-layer .stk:has(> img[src$="03-oysters.png"])   { rotate: 39.43deg; }
 
 /* הכפתור הכתום: קישור לעמוד האינסטגרם. הרקע ממלא בדיוק את השטח שבין קווי הגריד.
    Pressed: ההתכווצות הכללית. Focus: קו מתאר (אין Hover שנראה) */
