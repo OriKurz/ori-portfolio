@@ -906,9 +906,11 @@
   /* Hover על תמונה: כיסוי בשקיפות 50% ושם הפרויקט בצהוב */
   --next-project-overlay: color-mix(in srgb, var(--color-orange) 50%, transparent);
   --next-project-name-color: var(--color-yellow);
-  --next-projects-height: calc(284 * var(--strip-px));
+  /* מסגרת אחידה של 11 מהרקע השקוף סביב כל תמונה: 11 בין התמונות, ו-11 למעלה ולמטה (258 + 11 + 11).
+     משותף לכל עמודי הפרויקטים */
   --next-project-size: calc(258 * var(--strip-px));
-  --next-project-gap: calc(30 * var(--strip-px));
+  --next-project-gap: calc(11 * var(--strip-px));
+  --next-projects-height: calc(var(--next-project-size) + 2 * var(--next-project-gap));
   /* הרשימה של הפרויקטים ברצועה (תמונה, קישור וחיתוך) נמצאת ב-script.js: nextProjectsList */
 
   /* באנר יצירת קשר */
@@ -1104,11 +1106,10 @@
   --timeline-year-color: var(--color-orange);   /* שאר השנים */
   --timeline-pressed-scale: 0.9;
 
-  /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50%, וקצת נמוך יותר */
+  /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50% */
   --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
   /* Hover על תמונה: הכחול הכהה של הפרויקט (מהפיגמה) בשקיפות 50% */
   --next-project-overlay: color-mix(in srgb, var(--leftovers-ink) 50%, transparent);
-  --next-projects-height: calc(277.79 * var(--strip-px));
 }
 
 /* הזכוכית המגדלת בטלפון: עיגול של 6 משבצות, מגדיל פי 2.5 */
@@ -1261,7 +1262,6 @@
 
   /* פרויקטים נוספים: פס כחול בשקיפות 50%, כמו בפיגמה */
   --next-projects-background: color-mix(in srgb, var(--shunra-ink) 50%, transparent);
-  --next-projects-height: calc(277.79 * var(--strip-px));
 }
 
 @media (max-width: 767.98px) and (orientation: portrait) {
