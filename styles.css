@@ -1208,6 +1208,7 @@
   /* הצגת המוצרים (הקומפוננטה Group 11 בפיגמה): תזמוני ה-hover */
   --shunra-product-duration: 300ms;      /* המוצר גדל ומוטה, והמספר משנה צבע */
   --shunra-label-duration: 200ms;        /* המלבן עם השם נפתח משמאל לימין */
+  --shunra-merch-image-hover-scale: 1.04; /* התמונה של המרצ'נדייז ב-Hover */
 
   /* המדבקות: הרמה (לחיצה ארוכה), והדבקה מחדש בשחרור */
   --sticker-hold-delay: 350;             /* כמה זמן מחזיקים עד שהמדבקה מתרוממת, באלפיות שנייה (script.js) */
@@ -3844,7 +3845,8 @@ body {
 }
 
 /* כותרות הסעיפים: במחשב כל אחת במשבצת מאוחדת של משבצות שלמות (--column, --row, --box-columns),
-   ברקע של העמוד שמכסה את הקווים הפנימיים. הטקסט במרחק מהפינה כמו בפיגמה (--text-left, --text-top).
+   ברקע של העמוד שמכסה את הקווים הפנימיים. הטקסט בפינה השמאלית התחתונה, 6 מהקו השמאלי ומהקו התחתון
+   (כמו בפיגמה), כך שכל הכותרות יושבות באותו גובה.
    במובייל: כמו כותרות הסעיפים בכל עמודי הפרויקט (script.js) */
 .shunra-title-box {
   position: absolute;
@@ -3853,19 +3855,22 @@ body {
   top: calc(var(--row) * var(--cell) + var(--line));
   width: calc(var(--box-columns, 2) * var(--cell) - var(--line));
   height: calc(var(--cell) - var(--line));
-  padding: calc(var(--text-top) * var(--u)) 0 0 calc(var(--text-left) * var(--u));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 calc(6 * var(--u)) calc(6 * var(--u));
   background-color: var(--page-background);
 }
 
-.shunra-logo-title          { --column: 0; --row: 2;  --text-left: 7;  --text-top: 31.4; }
-.shunra-menu-title          { --column: 0; --row: 4;  --text-left: 5;  --text-top: 17.8; }
-.shunra-poster-title        { --column: 0; --row: 21; --text-left: 6;  --text-top: 16.7; }
-/* "Merch": משבצת אחת, כי המשבצת השנייה מתחת לתמונה של המרצ'נדייז */
-.shunra-merch-title         { --column: 0; --row: 33; --text-left: 2;  --text-top: 39.1; --box-columns: 1; }
-.shunra-instagram-title     { --column: 5; --row: 48; --text-left: 12; --text-top: 20.6; --box-columns: 4; }
-.shunra-illustrations-title { --column: 0; --row: 57; --text-left: 5;  --text-top: 18.9; }
-.shunra-palette-title       { --column: 0; --row: 66; --text-left: 5;  --text-top: 21.2; }
-.shunra-next-title          { --column: 0; --row: 69; --text-left: 4;  --text-top: 24.3; }
+.shunra-logo-title          { --column: 0; --row: 2; }
+.shunra-menu-title          { --column: 0; --row: 4; }
+.shunra-poster-title        { --column: 0; --row: 21; }
+/* "Merch": משבצת אחת */
+.shunra-merch-title         { --column: 0; --row: 33; --box-columns: 1; }
+.shunra-instagram-title     { --column: 5; --row: 48; --box-columns: 4; }
+.shunra-illustrations-title { --column: 0; --row: 57; }
+.shunra-palette-title       { --column: 0; --row: 66; }
+.shunra-next-title          { --column: 0; --row: 69; }
 
 /* הלוגו (שם הפרויקט): מלבן של משבצות שלמות, ברקע של העמוד, והלוגו בדיוק באמצע */
 .shunra-logo-box {
@@ -3906,10 +3911,10 @@ body {
    כמו במוצרים (אותן מחלקות: shunra-product ו-shunra-product-label, script.js) */
 .shunra-merch-square {
   position: absolute;
-  left: calc(var(--square-left) * var(--u));
-  top: calc(var(--square-top) * var(--u));
-  width: calc(var(--square-width) * var(--u));
-  height: calc(var(--square-height) * var(--u));
+  left: calc(var(--square-column) * var(--cell) + var(--line));
+  top: calc(var(--square-row) * var(--cell) + var(--line));
+  width: calc(var(--square-columns) * var(--cell) - var(--line));
+  height: calc(var(--square-rows) * var(--cell) - var(--line));
   padding: 0;
   border: 0;
   background-color: var(--square-color);
@@ -3923,44 +3928,53 @@ body {
   outline: none;
 }
 
-/* התמונות מעל הריבועים. הן לא תופסות את העכבר, כדי שה-Hover יהיה של הריבוע שמתחתן */
+/* התמונות מעל הריבועים. הן לא תופסות את העכבר, כדי שה-Hover יהיה של הריבוע שמתחתן.
+   כל תמונה עומדת על הקו התחתון של הריבוע שלה (--image-bottom: כמה מעליו, בפיקסלים מהפיגמה).
+   Hover (וגם Focus ונגיעה): התמונה גדלה קצת, רק כלפי מעלה, באותו קצב של המלבן הכתום */
 .shunra-merch-image {
   position: absolute;
   z-index: 1;
   left: calc(var(--image-left) * var(--u));
-  top: calc(var(--image-top) * var(--u));
+  top: calc((var(--square-row) + var(--square-rows)) * var(--cell) - var(--image-bottom, 0) * var(--u));
+  translate: 0 -100%;
   width: calc(var(--image-width) * var(--u));
   max-width: none;
   height: auto;
   pointer-events: none;
+  transform-origin: 50% 100%;
+  transition: scale var(--shunra-label-duration) ease;
+}
+
+.shunra-product.is-hover .shunra-merch-image {
+  scale: var(--shunra-merch-image-hover-scale);
 }
 
 .shunra-merch-image--net-bag-1 {
-  --image-left: 78; --image-top: 2680; --image-width: 217;
+  --image-left: 78; --image-width: 217;
   border-radius: calc(28 * var(--u));
 }
-.shunra-merch-image--bandanas-1 { --image-left: 108; --image-top: 2154; --image-width: 350; }
-.shunra-merch-image--bandanas-2 { --image-left: 515; --image-top: 2712; --image-width: 350; }
-.shunra-merch-image--net-bag-2  { --image-left: 508; --image-top: 2358; --image-width: 390; }
+.shunra-merch-image--bandanas-1 { --image-left: 108; --image-width: 350; }
+.shunra-merch-image--bandanas-2 { --image-left: 515; --image-width: 350; }
+.shunra-merch-image--net-bag-2  { --image-left: 508; --image-width: 390; --image-bottom: 17; }
 
-/* הריבועים והמלבנים עם השם (כל מלבן לפי הווריאנט שלו בקומפוננטה) */
+/* הריבועים: טורים ושורות שלמים, מקו לקו. והמלבנים עם השם (כל מלבן לפי הווריאנט שלו בקומפוננטה) */
 .shunra-merch--bandanas-1 {
-  --square-left: 108; --square-top: 2187; --square-width: 395; --square-height: 459; --square-color: var(--shunra-periwinkle);
+  --square-column: 2; --square-row: 33; --square-columns: 6; --square-rows: 7; --square-color: var(--shunra-periwinkle);
   --label-left: 426; --label-top: 2391; --label-width: 192; --label-text-width: 167;
 }
 
 .shunra-merch--net-bag-2 {
-  --square-left: 571; --square-top: 2188; --square-width: 265; --square-height: 459; --square-color: var(--shunra-teal);
+  --square-column: 9; --square-row: 33; --square-columns: 4; --square-rows: 7; --square-color: var(--shunra-teal);
   --label-left: 529; --label-top: 2312; --label-width: 89; --label-text-width: 174; --label-justify: flex-start;
 }
 
 .shunra-merch--net-bag-1 {
-  --square-left: 113; --square-top: 2681; --square-width: 287; --square-height: 434; --square-color: var(--shunra-teal);
+  --square-column: 2; --square-row: 41; --square-columns: 4; --square-rows: 6; --square-color: var(--shunra-teal);
   --label-left: 350; --label-top: 2846; --label-width: 89; --label-text-width: 174; --label-justify: flex-start;
 }
 
 .shunra-merch--bandanas-2 {
-  --square-left: 466; --square-top: 2682; --square-width: 304; --square-height: 434; --square-color: var(--shunra-brick);
+  --square-column: 7; --square-row: 41; --square-columns: 5; --square-rows: 6; --square-color: var(--shunra-brick);
   --label-left: 419; --label-top: 3011; --label-width: 192; --label-text-width: 167;
 }
 
