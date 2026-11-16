@@ -161,6 +161,7 @@
   --text-display-large-size: 200;
   --text-display-medium-size: 220;
   --text-display-mobile-size: 60;
+  --text-display-error-size: 300;
   --text-page-title-size: 80;
   --text-banner-size: 40;
   --text-button-size: 25;
@@ -1449,6 +1450,83 @@
   }
 }
 
+/* ----- דף 404 (404.html) -----
+   הפריים בפיגמה: 1440x810, משבצת של 80px (18 טורים), גריד שממלא את המסך כמו ב-Say Hi.
+   הגריד בפיגמה מתחיל ב-(4, 4.7) ומשבצת = 80.12, אז המיקומים כאן במשבצות:
+   (x - 4) / 80.12 ו-(y - 4.7) / 80.12 */
+:root.page-404 {
+  --frame-cell: 80;
+  --grid-columns: 18;
+  --grid-rows: calc(810 / 80);
+  --line: var(--line-desktop);
+  /* פיקסל אחד בפיגמה */
+  --u: calc(var(--cell) / var(--frame-cell));
+  --type-px: var(--u);
+
+  --page-background: var(--color-mint);
+  --grid-line-color: var(--color-orange);
+  /* המסגרת הכתומה סביב החלון, ושני קווים צמודים בקצה מתאחדים (כמו ב-Say Hi).
+     כאן עד 12px, כי ב-1440x810 השורה האחרונה נגמרת 10px לפני הקצה */
+  --frame-border: var(--line);
+  --edge-snap: 12px;
+  --left-gap: mod(var(--grid-left), var(--cell));
+  --top-gap: mod(var(--grid-top), var(--cell));
+  --right-gap: mod(100vw - var(--grid-left), var(--cell));
+  --bottom-gap: mod(100dvh - var(--grid-top), var(--cell));
+  --frame-left: calc(var(--frame-border) + min(var(--left-gap), max(0px, (var(--edge-snap) - var(--left-gap)) * 1000)));
+  --frame-top: calc(var(--frame-border) + min(var(--top-gap), max(0px, (var(--edge-snap) - var(--top-gap)) * 1000)));
+  --frame-right: max(var(--frame-border), min(var(--right-gap), max(0px, (var(--edge-snap) - var(--right-gap)) * 1000)));
+  --frame-bottom: max(var(--frame-border), min(var(--bottom-gap), max(0px, (var(--edge-snap) - var(--bottom-gap)) * 1000)));
+
+  /* ההמבורגר: שלושה קווים כתומים (30x24 בפיגמה), במרכז המשבצת הראשונה */
+  --menu-width: calc(30 * var(--u));
+  --menu-line-height: calc(4 * var(--u));
+  --menu-gap: calc(6 * var(--u));
+  --menu-line-color: var(--color-orange);
+
+  /* הטור הראשון של העיצוב (במובייל זז 5 טורים שמאלה) */
+  --error-first-column: 0;
+  /* הטקסטים הקטנים (Button). במחשב כמו שאר העמוד */
+  --error-text-type-px: var(--u);
+  /* 404: הקצה הימני ב-1001 והקצה העליון ב-164 בפיגמה */
+  --error-title-right: calc((1001 - 4) / 80.12);
+  --error-title-top: calc((164 - 4.7) / 80.12);
+  /* הקו האלכסוני ("Line 11"): 178.8x44, מסובב ב-127.96 מעלות, המרכז ב-(707, 386.5) */
+  --error-slash-x: calc((707 - 4) / 80.12);
+  --error-slash-y: calc((386.5 - 4.7) / 80.12);
+  --error-slash-length: calc(178.832 * var(--u));
+  --error-slash-thickness: calc(44 * var(--u));
+  --error-slash-angle: 127.96deg;
+  /* "Hmm, nothing here.": 6 משבצות מהטור 6, בשורה 2 */
+  --error-box-column: 6;
+  --error-box-columns: 6;
+  --error-box-row: 2;
+  /* הכפתור: 4 משבצות מהטור 7, בשורה 7 */
+  --error-button-column: 7;
+  --error-button-columns: 4;
+  --error-button-row: 7;
+  /* Pressed: מתכווץ, ומחכה רגע לפני המעבר (script.js קורא את ההשהיה) */
+  --error-button-pressed-scale: 0.95;
+  --error-button-delay: 150ms;
+}
+
+/* ----- דף 404 במובייל -----
+   אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב, אותו סידור במשבצות כמו במחשב,
+   ממורכז לרוחב (5 טורים פחות משמאל) ולגובה (שורות שלמות). הטקסטים הקטנים ב-Button/Mobile */
+@media (max-width: 767.98px) and (orientation: portrait) {
+  :root.page-404 {
+    --grid-columns: 8;
+    --grid-rows: 9;
+    --line: var(--line-mobile);
+    --menu-width: calc(var(--cell) * 0.5);
+    --menu-line-height: calc(var(--cell) * 0.07);
+    --menu-gap: calc(var(--cell) * 0.1);
+    --error-first-column: -5;
+    /* Button/Mobile (17px) כמו ב-Say Hi במובייל: משבצת = 49.06px בפריים המובייל */
+    --error-text-type-px: calc(var(--cell) / 49.06);
+  }
+}
+
 /* ----- עמוד אינדקס הפרויקטים (projects.html) -----
    הפריים INDEX בפיגמה: 1440x810, בלי קווי גריד. 16x9 משבצות של 90px ממלאות אותו בדיוק,
    ולכן הוא גדל עם החלון בשיטת הגריד שממלא את המסך (כמו Say Hi): אזור העיצוב ממורכז ושלם.
@@ -1630,6 +1708,15 @@ body {
 .text-display-large  { font-size: calc(var(--text-display-large-size) * var(--type-px)); }
 .text-display-medium { font-size: calc(var(--text-display-medium-size) * var(--type-px)); }
 .text-display-mobile { font-size: calc(var(--text-display-mobile-size) * var(--type-px)); }
+
+/* Display/Error: ה-404 בדף שלא קיים. Reisinger Light */
+.text-display-error {
+  font-family: var(--font-title);
+  font-weight: 300;
+  font-size: calc(var(--text-display-error-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0;
+}
 
 /* Page Title: כותרת עמוד */
 .text-page-title {
@@ -5748,4 +5835,134 @@ body {
   height: 100lvh;
   z-index: var(--layer-page-transition);
   background-color: var(--page-transition-color);
+}
+
+/* =========================================
+   דף 404
+   ========================================= */
+
+/* עמוד של מסך אחד, בלי גלילה */
+.page-404,
+.page-404 body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.page-404 body {
+  height: 100dvh;
+}
+
+/* המסגרת הכתומה סביב החלון, כמו בפריים בפיגמה */
+.page-404 body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  border: 0 solid var(--grid-line-color);
+  border-width: var(--frame-top) var(--frame-right) var(--frame-bottom) var(--frame-left);
+  pointer-events: none;
+}
+
+/* ההמבורגר: במשבצת השלמה הראשונה בפינה השמאלית העליונה של המסך, ממורכז בין הקווים */
+.error-menu {
+  --menu-height: calc(3 * var(--menu-line-height) + 2 * var(--menu-gap));
+  position: fixed;
+  left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
+  top: calc(var(--top-gap) + (var(--cell) + var(--line) - var(--menu-height)) / 2);
+}
+
+.error-menu .menu-button-line {
+  border-radius: var(--menu-line-height);
+}
+
+/* אזור העיצוב מהפיגמה, ממורכז בחלון */
+.error-grid {
+  position: absolute;
+  left: calc(var(--grid-left) + var(--error-first-column) * var(--cell));
+  top: var(--grid-top);
+  width: calc(var(--grid-columns) * var(--cell));
+  height: calc(var(--grid-rows) * var(--cell));
+}
+
+/* 404: מיושר לימין. מורידים אותו ב---title-font-offset, כמו שאר הכותרות ב-Reisinger */
+.error-title {
+  position: absolute;
+  left: calc(var(--error-title-right) * var(--cell));
+  top: calc(var(--error-title-top) * var(--cell));
+  translate: -100% 0;
+  padding-top: var(--title-font-offset);
+  color: var(--color-orange);
+  white-space: nowrap;
+}
+
+/* הקו האלכסוני שחוצה את ה-0 */
+.error-slash {
+  position: absolute;
+  left: calc(var(--error-slash-x) * var(--cell));
+  top: calc(var(--error-slash-y) * var(--cell));
+  width: var(--error-slash-length);
+  height: var(--error-slash-thickness);
+  translate: -50% -50%;
+  rotate: var(--error-slash-angle);
+  background-color: var(--color-orange);
+}
+
+/* המלבן עם "Hmm, nothing here.": רקע בצבע העמוד ומסגרת על קווי הגריד */
+.error-box {
+  --column: var(--error-box-column);
+  --columns: var(--error-box-columns);
+  --row: var(--error-box-row);
+  --rows: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--page-background);
+  border-color: var(--grid-line-color);
+  color: var(--color-orange);
+}
+
+.error-box .text-button,
+.error-back-button {
+  --type-px: var(--error-text-type-px);
+  white-space: nowrap;
+}
+
+/* ----- הכפתור "Back to the good stuff" (הקומפוננטה Frame 40 בפיגמה) -----
+   Default: רקע כתום וטקסט מנטה | Hover ו-Focus: רקע ורוד וטקסט כתום |
+   Pressed: מתכווץ ל-0.95 (והמעבר מחכה 150ms, script.js) */
+.error-back-button {
+  --column: var(--error-button-column);
+  --columns: var(--error-button-columns);
+  --row: var(--error-button-row);
+  --rows: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-orange);
+  border-color: var(--color-orange);
+  color: var(--color-mint);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, scale var(--transition-speed) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .error-back-button:hover {
+    background-color: var(--color-pink);
+    color: var(--color-orange);
+  }
+}
+
+.error-back-button:focus-visible,
+.error-back-button.is-hover,
+.error-back-button.is-focus {
+  outline: none;
+  background-color: var(--color-pink);
+  color: var(--color-orange);
+}
+
+.error-back-button:active,
+.error-back-button.is-pressed {
+  scale: var(--error-button-pressed-scale);
 }

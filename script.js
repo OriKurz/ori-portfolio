@@ -1389,17 +1389,17 @@ if (sourceTimeline) {
 //
 // הרשימה של הפרויקטים ברצועה: מקום אחד לכל עמודי הפרויקט.
 // כדי להוסיף פרויקט, מוסיפים אותו לרשימה:
-//   image: התמונה | alt: תיאור התמונה | href: העמוד שלו (בלי href: עוד לא מוביל לשום מקום)
+//   image: התמונה | alt: תיאור התמונה | href: העמוד שלו (פרויקט שעוד אין לו עמוד: 404.html, דף בהקמה)
 //   name: השם שמופיע ב-hover (\n = שורה חדשה, כמו בפיגמה)
 //   width: הרוחב בפיגמה, אם הוא לא 258 | fit: "cover" או "fill"
 //   crop: גודל ומיקום התמונה בתוך הריבוע, כמו בפיגמה (width, height, left, top באחוזים)
 // =========================================
 const nextProjectsList = [
   { image: "Images/next-projects/project-1.png", alt: "The Perfect Crime", name: "The\nPerfect\nCrime", href: "the-perfect-crime-project.html", fit: "fill" },
-  { image: "Images/next-projects/project-2.png", alt: "Hora", name: "Hora", width: 259, fit: "cover" },
+  { image: "Images/next-projects/project-2.png", alt: "Hora", name: "Hora", href: "404.html", width: 259, fit: "cover" },
   { image: "Images/next-projects/project-3.png", alt: "Leftovers*", name: "Leftovers*", href: "leftovers-project.html", crop: { width: "123.11%", height: "153.68%", left: "-11.36%", top: "-12.98%" } },
   { image: "Images/next-projects/project-4.png", alt: "Shunra", name: "Shunra", href: "shunra-project.html", crop: { width: "102.56%", height: "152.87%", left: "-1.07%", top: "-36.22%" } },
-  { image: "Images/next-projects/project-5.png", alt: "Touch Grass", name: "Touch\nGrass", crop: { width: "100%", height: "100%", left: "0%", top: "0%" } },
+  { image: "Images/next-projects/project-5.png", alt: "Touch Grass", name: "Touch\nGrass", href: "404.html", crop: { width: "100%", height: "100%", left: "0%", top: "0%" } },
 ];
 
 // התנועה: הרצועה זזה לאט מימין לשמאל, בלופ בלי קפיצה (הרשימה חוזרת על עצמה ברצף).
@@ -2925,4 +2925,35 @@ if (shunraPosters) {
   });
 
   schedulePoster();
+}
+
+// =========================================
+// דף 404: הכפתור "Back to the good stuff".
+// חוזר לדף הקודם שבו המשתמש היה באתר. אם אין כזה (למשל נכנסו מקישור חיצוני),
+// נשאר הקישור לאינדקס (projects.html) שכתוב ב-HTML.
+// בלחיצה הכפתור מתכווץ, ורק אחרי --error-button-delay (150ms) עוברים לעמוד.
+// =========================================
+const errorBackButton = document.querySelector(".error-back-button");
+
+if (errorBackButton) {
+  // הדף הקודם: רק דף מתוך האתר, ולא הדף הזה עצמו
+  if (document.referrer) {
+    const previousPage = new URL(document.referrer);
+    if (previousPage.origin === window.location.origin && previousPage.href !== window.location.href) {
+      errorBackButton.href = previousPage.href;
+    }
+  }
+
+  const pressDelay = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--error-button-delay")) || 150;
+
+  errorBackButton.addEventListener("click", function (event) {
+    // Cmd/Ctrl וכו': כמו קישור רגיל
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    errorBackButton.classList.add("is-pressed");
+    setTimeout(function () {
+      errorBackButton.classList.remove("is-pressed");
+      goToPage(errorBackButton.href); // מעבר בין עמודים (page-transition.js)
+    }, pressDelay);
+  });
 }
