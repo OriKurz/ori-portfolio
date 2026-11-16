@@ -173,18 +173,21 @@
         <video class="shunra-phone-video shunra-phone-video--illustrations" src="video/shunra-illustrations.mp4" autoplay muted loop playsinline aria-label="Shunra illustrative language"></video>
         <video class="shunra-phone-video shunra-phone-video--instagram" src="video/shunra-instagram.mp4" autoplay muted loop playsinline aria-label="Shunra Instagram page"></video>
 
-        <!-- המדבקות סביב הלוגו השני. לחיצה ארוכה מרימה מדבקה, גוררים אותה, ובשחרור היא נדבקת במקום החדש (script.js).
-             --x ו---y = מרכז המדבקה, --w ו---h = הגודל, --r = הסיבוב (פיקסלים מהפיגמה, ביחס לתחילת הגריד) -->
-        <div class="shunra-stickers">
-          <div class="shunra-sticker" style="--x: 723.66; --y: 4157.43; --w: 93.264; --h: 206.213; --r: 14.31deg;"><img src="Images/shunra-stickers/shunra-sticker-06-seahorse.png" alt="Seahorse sticker"></div>
-          <div class="shunra-sticker" style="--x: 552.92; --y: 4155.5;  --w: 159.84; --h: 159;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-12-oyster-pearl.png" alt="Oyster pearl sticker"></div>
-          <div class="shunra-sticker" style="--x: 128.2;  --y: 4187.44; --w: 98.474; --h: 198.23;  --r: -47.24deg;"><img src="Images/shunra-stickers/shunra-sticker-02-red-fish.png" alt="Red fish sticker"></div>
-          <div class="shunra-sticker" style="--x: 222.5;  --y: 3989.5;  --w: 93;     --h: 165;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-10-hook.png" alt="Hook sticker"></div>
-          <div class="shunra-sticker" style="--x: 828.5;  --y: 4272.5;  --w: 125;    --h: 181;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-08-cat-with-fish.png" alt="Cat with fish sticker"></div>
-          <div class="shunra-sticker" style="--x: 422.5;  --y: 3920.5;  --w: 177;    --h: 189;     --r: 15.86deg;"><img src="Images/shunra-stickers/shunra-sticker-05-ray.png" alt="Ray sticker"></div>
-          <div class="shunra-sticker" style="--x: 74;     --y: 3953.5;  --w: 138;    --h: 181;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-07-tentacle.png" alt="Tentacle sticker"></div>
-          <div class="shunra-sticker" style="--x: 347;    --y: 4233.5;  --w: 166;    --h: 155;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-09-salmon.png" alt="Salmon sticker"></div>
-          <div class="shunra-sticker" style="--x: 760.89; --y: 3925.45; --w: 147.82; --h: 185.164; --r: 39.43deg;"><img src="Images/shunra-stickers/shunra-sticker-03-oysters.png" alt="Oysters sticker"></div>
+        <!-- המדבקות סביב הלוגו השני: בתוך הפריים של הכותרת (שורות 57 עד 66 של הגריד).
+             shunra-stickers.js מטפל בכל האינטראקציה: לחיצה ארוכה מרימה מדבקה, גוררים אותה בתוך הפריים,
+             ובשחרור היא נשארת במקום החדש. המיקומים והגדלים מהפיגמה (פיקסלים, ביחס לפינה של הפריים) -->
+        <div class="shunra-stickers-area">
+          <div class="shunra-stickers-frame">
+              <img class="shunra-sticker" src="Images/shunra-stickers/shunra-sticker-06-seahorse.png" alt="Seahorse sticker" style="left: calc(677.03 * var(--u)); top: calc(275.22 * var(--u)); width: calc(93.264 * var(--u));">
+              <img class="shunra-sticker" src="Images/shunra-stickers/shunra-sticker-12-oyster-pearl.png" alt="Oyster pearl sticker" style="left: calc(473.00 * var(--u)); top: calc(296.90 * var(--u)); width: calc(159.84 * var(--u));">
+              <img class="shunra-sticker" src="Images/shunra-stickers/shunra-sticker-02-red-fish.png" alt="Red fish sticker" style="left: calc(78.96 * var(--u)); top: calc(309.22 * var(--u)); width: calc(98.474 * var(--u));">
+              <img class="shunra-sticker" src="Images/shunra-stickers/shunra-sticker-10-hook.png" alt="Hook sticker" style="left: calc(176.00 * var(--u)); top: calc(127.90 * var(--u)); width: calc(93 * var(--u));">
+              <img class="shunra-sticker" src="Images/shunra-stickers/shunra-sticker-08-cat-with-fish.png" alt="Cat with fish sticker" style="left: calc(766.00 * var(--u)); top: calc(402.90 * var(--u)); width: calc(125 * var(--u));">
+              <img class="shunra-sticker" src="Images/shunra-stickers/shunra-sticker-05-ray.png" alt="Ray sticker" style="left: calc(334.00 * var(--u)); top: calc(46.90 * var(--u)); width: calc(177 * var(--u));">
+              <img class="shunra-sticker" src="Images/shunra-stickers/shunra-sticker-07-tentacle.png" alt="Tentacle sticker" style="left: calc(5.00 * var(--u)); top: calc(83.90 * var(--u)); width: calc(138 * var(--u));">
+              <img class="shunra-sticker" src="Images/shunra-stickers/shunra-sticker-09-salmon.png" alt="Salmon sticker" style="left: calc(264.00 * var(--u)); top: calc(376.90 * var(--u)); width: calc(166 * var(--u));">
+              <img class="shunra-sticker" src="Images/shunra-stickers/shunra-sticker-03-oysters.png" alt="Oysters sticker" style="left: calc(686.98 * var(--u)); top: calc(53.77 * var(--u)); width: calc(147.82 * var(--u));">
+          </div>
         </div>
       </section>
       </div>
@@ -230,5 +233,10 @@
   <script src="script.js"></script>
   <script src="keyboard-nav.js"></script>
   <script src="cursor.js"></script>
+  <!-- המדבקות: אחרי שהן כבר בעמוד -->
+  <script src="shunra-stickers.js"></script>
+  <script>
+    initShunraStickers(document.querySelector(".shunra-stickers-frame"));
+  </script>
 </body>
 </html>
