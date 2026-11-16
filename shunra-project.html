@@ -64,28 +64,38 @@
 
       <!-- ===== החלק של הגריד ===== -->
       <section class="full-project-panel">
-        <!-- מעל הגריד: הלוגו, והרשת מעליו -->
-        <div class="shunra-hero">
-          <img class="shunra-logo" src="Images/shunra/shunra-logo.svg" alt="Shunra logo">
-          <!-- הרשת: shunra-net.js מצייר אותה על ה-canvas, לפי הגודל של הקופסה שעוטפת אותו -->
-          <div class="shunra-net-box">
-            <canvas class="shunra-net" aria-hidden="true"></canvas>
-            <!-- גיבוי: מוצג רק למי שביקש צמצום תנועה -->
-            <img class="shunra-net-fallback" src="Images/shunra/shunra-net.png" alt="">
-          </div>
-          <!-- כותרת הסעיף של הלוגו: מעל הקו העליון של הגריד -->
-          <p class="shunra-logo-title text-section-title">Brand Logo</p>
-        </div>
-
         <div class="full-project-grid grid-lines">
-          <p class="on-grid section-title text-section-title shunra-menu-title">The<br>Menu</p>
-          <!-- כותרת הפוסטרים: משבצת מאוחדת שמעל הפוסטרים -->
-          <p class="section-title text-section-title shunra-poster-title">Poster <br>Campaign</p>
-          <!-- המרצ'נדייז: הכותרת -->
-          <p class="on-grid section-title text-section-title shunra-merch-title">Merch</p>
-          <!-- האינסטגרם: הכותרת, והכפתור שמוביל לעמוד (בלשונית חדשה) -->
-          <p class="section-title text-section-title shunra-instagram-title">Find Us on <br>Instagram Too!</p>
+          <!-- הלוגו: שם הפרויקט, במלבן של משבצות שלמות (הרקע מכסה את הקווים שבפנים), והלוגו באמצע -->
+          <div class="shunra-logo-box shunra-logo-box--top">
+            <img class="shunra-logo" src="Images/shunra/shunra-logo-orange.svg" alt="Shunra logo">
+          </div>
+
+          <!-- כותרות הסעיפים: כל אחת במשבצת מאוחדת על הגריד (במחשב לפי הפיגמה, במובייל script.js) -->
+          <p class="section-title text-section-title shunra-title-box shunra-logo-title">Brand Logo</p>
+          <p class="section-title text-section-title shunra-title-box shunra-menu-title">The<br>Menu</p>
+          <p class="section-title text-section-title shunra-title-box shunra-poster-title">Poster <br>Campaign</p>
+          <p class="section-title text-section-title shunra-title-box shunra-merch-title">Merch</p>
+          <!-- האינסטגרם: הכותרת, והכפתור שמוביל לעמוד (בלשונית חדשה), בין שני הטלפונים -->
+          <p class="section-title text-section-title shunra-title-box shunra-instagram-title">Find Us on Instagram Too!</p>
           <a class="shunra-instagram-button text-hint" href="https://www.instagram.com/shunra.for_cats" target="_blank" rel="noopener">[shunra.for_cats]</a>
+          <p class="section-title text-section-title shunra-title-box shunra-illustrations-title">Illustrative <br>Language</p>
+          <p class="section-title text-section-title shunra-title-box shunra-palette-title">Color palette</p>
+          <p class="section-title text-section-title shunra-title-box shunra-next-title">What’s Next?</p>
+
+          <!-- הלוגו שוב, אחרי הטלפונים -->
+          <div class="shunra-logo-box shunra-logo-box--bottom">
+            <img class="shunra-logo" src="Images/shunra/shunra-logo-orange-2.svg" alt="Shunra logo">
+          </div>
+
+          <!-- פלטת הצבעים: עיגול בכל משבצת שנייה, באותה שורה -->
+          <div class="shunra-palette" aria-hidden="true">
+            <span class="shunra-palette-color" style="--palette-column: 2;  --palette-color: var(--shunra-wine);"></span>
+            <span class="shunra-palette-color" style="--palette-column: 4;  --palette-color: var(--shunra-sea);"></span>
+            <span class="shunra-palette-color" style="--palette-column: 6;  --palette-color: var(--shunra-sand);"></span>
+            <span class="shunra-palette-color" style="--palette-column: 8;  --palette-color: var(--shunra-periwinkle);"></span>
+            <span class="shunra-palette-color" style="--palette-column: 10; --palette-color: var(--shunra-brick);"></span>
+            <span class="shunra-palette-color" style="--palette-column: 12; --palette-color: var(--shunra-teal);"></span>
+          </div>
         </div>
 
         <!-- הצגת המוצרים: לכל מוצר מספר, תמונה ומלבן עם השם.
@@ -158,10 +168,24 @@
           <img class="shunra-merch-image shunra-merch-image--net-bag-2" src="Images/shunra/merch-net-bag-2.png" alt="">
         </div>
 
-        <!-- הטלפונים: השפה האיורית והאינסטגרם, זה לצד זה. כל סרטון כבר בתוך מסגרת של טלפון,
-             ומתנגן לבד בלופ -->
+        <!-- הטלפונים: השפה האיורית והאינסטגרם, ובאמצע ביניהם הכותרת והכפתור של האינסטגרם.
+             כל סרטון כבר בתוך מסגרת של טלפון, ומתנגן לבד בלופ -->
         <video class="shunra-phone-video shunra-phone-video--illustrations" src="video/shunra-illustrations.mp4" autoplay muted loop playsinline aria-label="Shunra illustrative language"></video>
         <video class="shunra-phone-video shunra-phone-video--instagram" src="video/shunra-instagram.mp4" autoplay muted loop playsinline aria-label="Shunra Instagram page"></video>
+
+        <!-- המדבקות סביב הלוגו השני. לחיצה ארוכה מרימה מדבקה, גוררים אותה, ובשחרור היא נדבקת במקום החדש (script.js).
+             --x ו---y = מרכז המדבקה, --w ו---h = הגודל, --r = הסיבוב (פיקסלים מהפיגמה, ביחס לתחילת הגריד) -->
+        <div class="shunra-stickers">
+          <div class="shunra-sticker" style="--x: 723.66; --y: 4157.43; --w: 93.264; --h: 206.213; --r: 14.31deg;"><img src="Images/shunra-stickers/shunra-sticker-06-seahorse.png" alt="Seahorse sticker"></div>
+          <div class="shunra-sticker" style="--x: 552.92; --y: 4155.5;  --w: 159.84; --h: 159;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-12-oyster-pearl.png" alt="Oyster pearl sticker"></div>
+          <div class="shunra-sticker" style="--x: 128.2;  --y: 4187.44; --w: 98.474; --h: 198.23;  --r: -47.24deg;"><img src="Images/shunra-stickers/shunra-sticker-02-red-fish.png" alt="Red fish sticker"></div>
+          <div class="shunra-sticker" style="--x: 222.5;  --y: 3989.5;  --w: 93;     --h: 165;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-10-hook.png" alt="Hook sticker"></div>
+          <div class="shunra-sticker" style="--x: 828.5;  --y: 4272.5;  --w: 125;    --h: 181;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-08-cat-with-fish.png" alt="Cat with fish sticker"></div>
+          <div class="shunra-sticker" style="--x: 422.5;  --y: 3920.5;  --w: 177;    --h: 189;     --r: 15.86deg;"><img src="Images/shunra-stickers/shunra-sticker-05-ray.png" alt="Ray sticker"></div>
+          <div class="shunra-sticker" style="--x: 74;     --y: 3953.5;  --w: 138;    --h: 181;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-07-tentacle.png" alt="Tentacle sticker"></div>
+          <div class="shunra-sticker" style="--x: 347;    --y: 4233.5;  --w: 166;    --h: 155;     --r: 0deg;"><img src="Images/shunra-stickers/shunra-sticker-09-salmon.png" alt="Salmon sticker"></div>
+          <div class="shunra-sticker" style="--x: 760.89; --y: 3925.45; --w: 147.82; --h: 185.164; --r: 39.43deg;"><img src="Images/shunra-stickers/shunra-sticker-03-oysters.png" alt="Oysters sticker"></div>
+        </div>
       </section>
       </div>
 
@@ -206,18 +230,5 @@
   <script src="script.js"></script>
   <script src="keyboard-nav.js"></script>
   <script src="cursor.js"></script>
-  <script src="shunra-net.js"></script>
-  <script>
-    // הרשת: רק בלי צמצום תנועה. אם shunra-net.js לא נטען, מוצגת התמונה
-    (function () {
-      const hero = document.querySelector(".shunra-hero");
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      if (typeof initShunraNet !== "function") {
-        hero.classList.add("is-net-static");
-        return;
-      }
-      initShunraNet(hero.querySelector(".shunra-net"));
-    })();
-  </script>
 </body>
 </html>

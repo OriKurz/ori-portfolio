@@ -1179,31 +1179,42 @@
 
 /* ----- עמוד הפרויקט Shunra (shunra-project.html) -----
    אותה תבנית כמו עמוד פרויקט מלא, עם הצבעים של הפרויקט.
-   מספרים כמו 458 * var(--u) הם פיקסלים מהפריים "דף פרויקט שונרא" בפיגמה.
-   14 משבצות של 66.4px באותו רוחב של 933, כמו ב-Leftovers.
-   מעל הגריד: הלוגו והרשת (canvas מ-shunra-net.js) */
+   מספרים כמו 2187 * var(--u) הם פיקסלים מהפריים "דף פרויקט שונרא" בפיגמה,
+   ביחס לפינה של הגריד (x=508, y=-3 בפיגמה).
+   14 משבצות באותו רוחב של 933. בפיגמה משבצת = 66.3 (כך יוצאות השורות).
+   כל מלבן (כותרת, לוגו, פוסטרים, כפתור, צבע) ממוקם בטורים ובשורות שלמים, מקו לקו */
 :root.page-shunra {
-  --frame-cell: 66.4;
+  --frame-cell: 66.3;
   --grid-columns: 14;
-  /* הגריד מתחיל בקו של y=458 בפיגמה, ונמשך עד הפס של הפרויקטים הנוספים (y=4083), במשבצות.
-     הגריד עצמו מעוגל למעלה לשורה שלמה (.page-shunra .full-project-grid) */
-  --grid-rows: 54.593;
+  /* הגריד מתחיל בראש העמוד. הפס של הפרויקטים הנוספים מתחיל בדיוק על הקו של שורה 70, כמו בפיגמה */
+  --grid-rows: 70;
 
   /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
   --shunra-cream: #fff8df;     /* רקע העמוד */
   --shunra-ink: #265687;       /* קווי הגריד */
   --shunra-steel: #5c85b0;     /* ההמבורגר */
-  --shunra-red: #e5262c;       /* הרשת */
+  --shunra-red: #e5262c;       /* הרשת (מושבתת כרגע) */
   --shunra-red-dark: #a01a1f;  /* הצד האחורי של הרשת: גוון כהה יותר של אותו אדום */
   --shunra-number: #da472a;    /* המספרים של המוצרים */
   --shunra-paper: #fffaea;     /* הטקסט במלבן של שם המוצר */
   --shunra-teal: #286b7e;      /* ריבועי המרצ'נדייז */
   --shunra-periwinkle: #7482c5;
   --shunra-brick: #da472a;
+  /* פלטת הצבעים (עם teal, periwinkle ו-brick) */
+  --shunra-wine: #88281c;
+  --shunra-sea: #5e9e9e;
+  --shunra-sand: #eddcb9;
 
   /* הצגת המוצרים (הקומפוננטה Group 11 בפיגמה): תזמוני ה-hover */
   --shunra-product-duration: 300ms;      /* המוצר גדל ומוטה, והמספר משנה צבע */
   --shunra-label-duration: 200ms;        /* המלבן עם השם נפתח משמאל לימין */
+
+  /* המדבקות: הרמה (לחיצה ארוכה), והדבקה מחדש בשחרור */
+  --sticker-hold-delay: 350;             /* כמה זמן מחזיקים עד שהמדבקה מתרוממת, באלפיות שנייה (script.js) */
+  --sticker-lift-duration: 260ms;
+  --sticker-drop-duration: 380ms;
+  --sticker-lift-scale: 1.08;
+  --sticker-shadow-color: color-mix(in srgb, var(--shunra-ink) 35%, transparent);
 
   --page-background: var(--shunra-cream);
   --grid-line-color: var(--shunra-ink);
@@ -1226,66 +1237,33 @@
   /* המרווח שנשאר מתחת לשורה האחרונה כשגוללים את התיאור עד הסוף (כמו ב-Leftovers) */
   --description-bottom-space: calc(38 * var(--px));
 
-  /* כותרות הסעיפים: "Brand Logo" מעל הגריד (פיקסלים), ו-"The Menu" בגריד (משבצות) */
-  --shunra-logo-title-left: calc(1 * var(--u));
-  --shunra-logo-title-top: calc(400 * var(--u));
-  --menu-title-column: 0.12;  --menu-title-row: 0.346;
-
-  /* כותרת הפוסטרים: משבצת מאוחדת של שתי משבצות בשורה 17 של הגריד.
-     הטקסט בתוכה 6 משמאל ו-17 מלמעלה (פיקסלים מהפיגמה) */
-  --poster-title-column: 0;  --poster-title-row: 17;  --poster-title-columns: 2;
-  --poster-title-text-left: calc(6 * var(--u));
-  --poster-title-text-top: calc(17 * var(--u));
-
-  /* הפוסטרים ("image 7" בפיגמה: מסגרת של 931x655, ב-x=509 וב-y=1656).
+  /* הפוסטרים ("image 7" בפיגמה): 14 טורים ו-10 שורות שלמים, מהשורה 22.
      התמונה (4:3) ברוחב המסגרת, וחתוכה למעלה ולמטה כמו בפיגמה */
-  --shunra-posters-left: calc(1 * var(--u));
-  --shunra-posters-top: calc(1656 * var(--u));
-  --shunra-posters-width: calc(931 * var(--u));
-  --shunra-poster-crop-top: -3.21%;
-  --shunra-poster-crop-height: 105.96%;
-
-  /* המרצ'נדייז (הקומפוננטה Group 12 בפיגמה, 820x962, ב-x=586 וב-y=2349):
-     הכותרת "Merch" בגריד (משבצות), והריבועים, התמונות והמלבנים עם השם (בפיקסלים, בתוך כל קבוצה) */
-  --merch-title-column: 0.075;  --merch-title-row: 29.623;
-
-  /* הטלפונים: שני סרטונים זה לצד זה (279x583 בפיגמה, ב-y=3377).
-     השפה האיורית ב-x=586 עם פינות של 45, והאינסטגרם ב-x=1127 עם פינות של 48 */
-  --phone-video-top: calc(3377 * var(--u));
-  --phone-video-width: calc(279 * var(--u));
-  --illustrations-video-left: calc(78 * var(--u));
-  --illustrations-video-radius: calc(45 * var(--u));
-  --instagram-video-left: calc(619 * var(--u));
-  --instagram-video-radius: calc(48 * var(--u));
-  /* הכותרת של האינסטגרם: מלבן של 182x64 ב-x=918 וב-y=3377 (Rectangle 133), הטקסט 8 משמאל ו-16 מלמעלה.
-     במובייל היא נכנסת למשבצות הגריד (עמודה ושורה) */
-  --instagram-title-left: calc(410 * var(--u));
-  --instagram-title-top: calc((3377 - 458) * var(--u));
-  --instagram-title-width: calc(182 * var(--u));
-  --instagram-title-height: calc(64 * var(--u));
-  --instagram-title-column: 6.175;  --instagram-title-row: 43.96;
-  --instagram-title-text-left: calc(8 * var(--u));
-  --instagram-title-text-top: calc(16 * var(--u));
-  /* הכפתור: ממלא שלוש משבצות בשורה 52 */
-  --instagram-button-column: 6;  --instagram-button-row: 52;  --instagram-button-columns: 3;
-  --instagram-button-padding: calc(7 * var(--u));
+  --shunra-posters-row: 22;
+  --shunra-posters-rows: 10;
+  --shunra-poster-crop-top: -3.18%;
+  --shunra-poster-crop-height: 105%;
   /* כל כמה זמן הפוסטר מתחלף, באלפיות שנייה (script.js קורא את זה) */
   --shunra-poster-interval: 700;
 
-  /* מעל הגריד: הגובה עד הקו העליון של הגריד */
-  --shunra-hero-height: calc(458 * var(--u));
-  /* הלוגו (518.9x122 בפיגמה) */
-  --shunra-logo-left: calc(224 * var(--u));
-  --shunra-logo-top: calc(199 * var(--u));
-  --shunra-logo-width: calc(518.888 * var(--u));
-  --shunra-logo-height: calc(122.034 * var(--u));
-  /* הרשת: 932x381 בפיגמה, מעל הלוגו */
-  --shunra-net-left: calc(1 * var(--u));
-  --shunra-net-top: calc(56 * var(--u));
-  --shunra-net-width: calc(932 * var(--u));
+  /* הטלפונים: שני סרטונים (279x583 בפיגמה).
+     השפה האיורית עם פינות של 45, והאינסטגרם עם פינות של 48 */
+  --phone-video-width: calc(279 * var(--u));
+  --illustrations-video-left: calc(36 * var(--u));
+  --illustrations-video-top: calc(3184 * var(--u));
+  --illustrations-video-radius: calc(45 * var(--u));
+  --instagram-video-left: calc(619 * var(--u));
+  --instagram-video-top: calc(3182 * var(--u));
+  --instagram-video-radius: calc(48 * var(--u));
+  /* הכפתור של האינסטגרם: ארבע משבצות בשורה 56, בין הטלפונים */
+  --instagram-button-column: 5;  --instagram-button-row: 56;  --instagram-button-columns: 4;
+  --instagram-button-padding: calc(7 * var(--u));
 
-  /* פרויקטים נוספים: פס מנטה בשקיפות 50%, כמו בפיגמה */
-  --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
+  /* פלטת הצבעים: בשורה 67 */
+  --palette-row: 67;
+
+  /* פרויקטים נוספים: פס כחול בשקיפות 50%, כמו בפיגמה */
+  --next-projects-background: color-mix(in srgb, var(--shunra-ink) 50%, transparent);
   --next-projects-height: calc(277.79 * var(--strip-px));
 }
 
@@ -1861,7 +1839,7 @@ body {
 
 /* רכיבים שיש להם מצב Pressed משלהם (לא התכווצות של כל הרכיב): בלי ההתכווצות הכללית.
    כשמוסיפים רכיב עם Pressed משלו, מוסיפים אותו לרשימה */
-:where(.nav-button, .balls-toggle, .nav-bar-link, .video-player, .contact-banner, .magnifier-button, .timeline-year):where(:active, .is-pressed) {
+:where(.nav-button, .balls-toggle, .nav-bar-link, .video-player, .contact-banner, .magnifier-button, .timeline-year, .shunra-merch-square):where(:active, .is-pressed) {
   scale: none;
 }
 
@@ -3865,55 +3843,63 @@ body {
   left: var(--type-left);
 }
 
-/* כותרות הסעיפים: "Brand Logo" מעל הגריד, ו-"The Menu" בגריד */
-.shunra-logo-title {
+/* כותרות הסעיפים: במחשב כל אחת במשבצת מאוחדת של משבצות שלמות (--column, --row, --box-columns),
+   ברקע של העמוד שמכסה את הקווים הפנימיים. הטקסט במרחק מהפינה כמו בפיגמה (--text-left, --text-top).
+   במובייל: כמו כותרות הסעיפים בכל עמודי הפרויקט (script.js) */
+.shunra-title-box {
   position: absolute;
-  left: var(--shunra-logo-title-left);
-  top: var(--shunra-logo-title-top);
-  color: var(--color-orange);
-  white-space: nowrap;
-}
-
-.shunra-menu-title { --column: var(--menu-title-column); --row: var(--menu-title-row); }
-
-/* "Poster Campaign" ו-"Find Us on Instagram Too!": במחשב משבצת מאוחדת של כמה משבצות,
-   ברקע של העמוד שמכסה את הקווים הפנימיים (Rectangle 132 ו-133 בפיגמה).
-   במובייל: כמו כל כותרות הסעיפים בגריד */
-.shunra-poster-title {
-  --column: var(--poster-title-column);
-  --row: var(--poster-title-row);
-  --box-columns: var(--poster-title-columns);
-  --text-left: var(--poster-title-text-left);
-  --text-top: var(--poster-title-text-top);
-}
-
-.shunra-instagram-title {
-  --column: var(--instagram-title-column);
-  --row: var(--instagram-title-row);
-  --text-left: var(--instagram-title-text-left);
-  --text-top: var(--instagram-title-text-top);
-}
-
-.shunra-poster-title,
-.shunra-instagram-title {
-  position: absolute;
+  z-index: 1;
   left: calc(var(--column) * var(--cell) + var(--line));
   top: calc(var(--row) * var(--cell) + var(--line));
-  width: calc(var(--box-columns) * var(--cell) - var(--line));
+  width: calc(var(--box-columns, 2) * var(--cell) - var(--line));
   height: calc(var(--cell) - var(--line));
-  padding: var(--text-top) 0 0 var(--text-left);
+  padding: calc(var(--text-top) * var(--u)) 0 0 calc(var(--text-left) * var(--u));
   background-color: var(--page-background);
 }
 
-/* כותרת האינסטגרם במחשב: מלבן בפיקסלים מהפיגמה (לא על הקווים) */
-.shunra-instagram-title {
-  left: var(--instagram-title-left);
-  top: var(--instagram-title-top);
-  width: var(--instagram-title-width);
-  height: var(--instagram-title-height);
+.shunra-logo-title          { --column: 0; --row: 2;  --text-left: 7;  --text-top: 31.4; }
+.shunra-menu-title          { --column: 0; --row: 4;  --text-left: 5;  --text-top: 17.8; }
+.shunra-poster-title        { --column: 0; --row: 21; --text-left: 6;  --text-top: 16.7; }
+/* "Merch": משבצת אחת, כי המשבצת השנייה מתחת לתמונה של המרצ'נדייז */
+.shunra-merch-title         { --column: 0; --row: 33; --text-left: 2;  --text-top: 39.1; --box-columns: 1; }
+.shunra-instagram-title     { --column: 5; --row: 48; --text-left: 12; --text-top: 20.6; --box-columns: 4; }
+.shunra-illustrations-title { --column: 0; --row: 57; --text-left: 5;  --text-top: 18.9; }
+.shunra-palette-title       { --column: 0; --row: 66; --text-left: 5;  --text-top: 21.2; }
+.shunra-next-title          { --column: 0; --row: 69; --text-left: 4;  --text-top: 24.3; }
+
+/* הלוגו (שם הפרויקט): מלבן של משבצות שלמות, ברקע של העמוד, והלוגו בדיוק באמצע */
+.shunra-logo-box {
+  position: absolute;
+  left: calc(var(--column) * var(--cell) + var(--line));
+  top: calc(var(--row) * var(--cell) + var(--line));
+  width: calc(var(--columns) * var(--cell) - var(--line));
+  height: calc(var(--rows) * var(--cell) - var(--line));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--page-background);
 }
 
-.shunra-merch-title { --column: var(--merch-title-column); --row: var(--merch-title-row); }
+.shunra-logo-box--top    { --column: 5; --row: 1;  --columns: 8; --rows: 2; }
+.shunra-logo-box--bottom { --column: 3; --row: 60; --columns: 8; --rows: 2; }
+
+.shunra-logo {
+  width: calc(449 * var(--u));
+  max-width: none;
+  height: auto;
+}
+
+/* פלטת הצבעים: עיגול שממלא משבצת, עם קו בצבע קווי הגריד */
+.shunra-palette-color {
+  position: absolute;
+  left: calc(var(--palette-column) * var(--cell) + var(--line));
+  top: calc(var(--palette-row) * var(--cell) + var(--line));
+  width: calc(var(--cell) - var(--line));
+  height: calc(var(--cell) - var(--line));
+  border: calc(2 * var(--u)) solid var(--shunra-ink);
+  border-radius: 50%;
+  background-color: var(--palette-color);
+}
 
 /* ----- המרצ'נדייז: ארבעה ריבועים צבעוניים עם תמונות מעליהם -----
    Hover על ריבוע (וגם Focus ונגיעה בטלפון) פותח את המלבן הכתום עם השם,
@@ -3927,8 +3913,9 @@ body {
   padding: 0;
   border: 0;
   background-color: var(--square-color);
-  cursor: pointer;
+  cursor: default;
   pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Focus נראה בדיוק כמו Hover, בלי קו מתאר */
@@ -3949,38 +3936,37 @@ body {
 }
 
 .shunra-merch-image--net-bag-1 {
-  --image-left: 78; --image-top: 2875; --image-width: 217;
+  --image-left: 78; --image-top: 2680; --image-width: 217;
   border-radius: calc(28 * var(--u));
 }
-.shunra-merch-image--bandanas-1 { --image-left: 108; --image-top: 2349; --image-width: 350; }
-.shunra-merch-image--bandanas-2 { --image-left: 515; --image-top: 2907; --image-width: 350; }
-.shunra-merch-image--net-bag-2  { --image-left: 508; --image-top: 2553; --image-width: 390; }
+.shunra-merch-image--bandanas-1 { --image-left: 108; --image-top: 2154; --image-width: 350; }
+.shunra-merch-image--bandanas-2 { --image-left: 515; --image-top: 2712; --image-width: 350; }
+.shunra-merch-image--net-bag-2  { --image-left: 508; --image-top: 2358; --image-width: 390; }
 
 /* הריבועים והמלבנים עם השם (כל מלבן לפי הווריאנט שלו בקומפוננטה) */
 .shunra-merch--bandanas-1 {
-  --square-left: 108; --square-top: 2382; --square-width: 395; --square-height: 459; --square-color: var(--shunra-periwinkle);
-  --label-left: 426; --label-top: 2586; --label-width: 192; --label-text-width: 167;
+  --square-left: 108; --square-top: 2187; --square-width: 395; --square-height: 459; --square-color: var(--shunra-periwinkle);
+  --label-left: 426; --label-top: 2391; --label-width: 192; --label-text-width: 167;
 }
 
 .shunra-merch--net-bag-2 {
-  --square-left: 571; --square-top: 2383; --square-width: 265; --square-height: 459; --square-color: var(--shunra-teal);
-  --label-left: 529; --label-top: 2507; --label-width: 89; --label-text-width: 174; --label-justify: flex-start;
+  --square-left: 571; --square-top: 2188; --square-width: 265; --square-height: 459; --square-color: var(--shunra-teal);
+  --label-left: 529; --label-top: 2312; --label-width: 89; --label-text-width: 174; --label-justify: flex-start;
 }
 
 .shunra-merch--net-bag-1 {
-  --square-left: 113; --square-top: 2876; --square-width: 287; --square-height: 434; --square-color: var(--shunra-teal);
-  --label-left: 350; --label-top: 3041; --label-width: 89; --label-text-width: 174; --label-justify: flex-start;
+  --square-left: 113; --square-top: 2681; --square-width: 287; --square-height: 434; --square-color: var(--shunra-teal);
+  --label-left: 350; --label-top: 2846; --label-width: 89; --label-text-width: 174; --label-justify: flex-start;
 }
 
 .shunra-merch--bandanas-2 {
-  --square-left: 466; --square-top: 2877; --square-width: 304; --square-height: 434; --square-color: var(--shunra-brick);
-  --label-left: 419; --label-top: 3206; --label-width: 192; --label-text-width: 167;
+  --square-left: 466; --square-top: 2682; --square-width: 304; --square-height: 434; --square-color: var(--shunra-brick);
+  --label-left: 419; --label-top: 3011; --label-width: 192; --label-text-width: 167;
 }
 
 /* ----- הטלפונים: שני סרטונים (כבר בתוך מסגרת של טלפון), מתנגנים לבד בלופ, בלי סאונד ובלי כפתורים ----- */
 .shunra-phone-video {
   position: absolute;
-  top: var(--phone-video-top);
   width: var(--phone-video-width);
   aspect-ratio: 279 / 583;
   object-fit: cover;
@@ -3988,12 +3974,89 @@ body {
 
 .shunra-phone-video--illustrations {
   left: var(--illustrations-video-left);
+  top: var(--illustrations-video-top);
   border-radius: var(--illustrations-video-radius);
 }
 
 .shunra-phone-video--instagram {
   left: var(--instagram-video-left);
+  top: var(--instagram-video-top);
   border-radius: var(--instagram-video-radius);
+}
+
+/* ----- המדבקות: מסביב ללוגו השני. אפשר להרים כל אחת ולהזיז אותה (script.js) -----
+   כל מדבקה ממוקמת לפי המרכז שלה (--x, --y), בגודל ובסיבוב מהפיגמה.
+   בהרמה: גדלה קצת, מקבלת צל, והפינה הימנית התחתונה מתקלפת (--peel, script.js מנפיש אותו).
+   הפינה המקולפת: התמונה נחתכת לאורך קו הקיפול, והחלק שנחתך מתהפך מעל הקו (הצד האחורי, בהיר) */
+.shunra-stickers {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.shunra-sticker {
+  --peel: 0px;
+  --sticker-width: calc(var(--w) * var(--u));
+  --sticker-height: calc(var(--h) * var(--u));
+  position: absolute;
+  left: calc(var(--x) * var(--u));
+  top: calc(var(--y) * var(--u));
+  width: var(--sticker-width);
+  height: var(--sticker-height);
+  translate: -50% -50%;
+  rotate: var(--r);
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  /* בהדבקה: חוזרת לגודל עם שקיעה קטנה, כאילו לוחצים אותה לקיר */
+  transition:
+    scale var(--sticker-drop-duration) cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter var(--sticker-drop-duration) ease;
+}
+
+.shunra-sticker img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+/* הפנים של המדבקה: בלי החלק שמעבר לקו הקיפול */
+.shunra-sticker-face {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--peel)), calc(100% - var(--peel)) 100%, 0 100%);
+}
+
+/* הצד האחורי: אותה פינה, משתקפת מעבר לקו הקיפול (x + y = רוחב + גובה - peel) */
+.shunra-sticker-flap {
+  --fold: calc(var(--sticker-width) + var(--sticker-height) - var(--peel));
+  clip-path: polygon(100% calc(100% - var(--peel)), 100% 100%, calc(100% - var(--peel)) 100%);
+  transform-origin: 0 0;
+  transform: translate(var(--fold), var(--fold)) matrix(0, -1, -1, 0, 0, 0);
+  filter: brightness(0) invert(0.94) drop-shadow(0 0 calc(2 * var(--u)) var(--sticker-shadow-color));
+}
+
+/* מורמת: מעל כל השאר, קצת גדולה, עם צל */
+.shunra-sticker.is-lifted {
+  z-index: 1;
+  scale: var(--sticker-lift-scale);
+  filter: drop-shadow(0 calc(14 * var(--u)) calc(16 * var(--u)) var(--sticker-shadow-color));
+  transition:
+    scale var(--sticker-lift-duration) ease-out,
+    filter var(--sticker-lift-duration) ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shunra-sticker,
+  .shunra-sticker.is-lifted {
+    transition: none;
+  }
 }
 
 /* הכפתור הכתום: קישור לעמוד האינסטגרם. הרקע ממלא בדיוק את השטח שבין קווי הגריד.
@@ -4017,27 +4080,8 @@ body {
   outline: var(--line) solid var(--grid-line-color);
 }
 
-/* הגריד נגמר בשורה שלמה, והפס של הפרויקטים הנוספים יושב בתחתית שלו */
-.page-shunra .full-project-grid {
-  height: round(up, var(--grid-rows) * var(--cell) + var(--next-projects-height), var(--cell));
-}
-
-/* מעל הגריד: הלוגו, והרשת מעליו */
-.shunra-hero {
-  position: relative;
-  height: var(--shunra-hero-height);
-}
-
-.shunra-logo {
-  position: absolute;
-  left: var(--shunra-logo-left);
-  top: var(--shunra-logo-top);
-  width: var(--shunra-logo-width);
-  height: var(--shunra-logo-height);
-  max-width: none;
-}
-
-/* הרשת (shunra-net.js מצייר אותה ומגיב לעכבר ולנגיעה).
+/* הרשת: מושבתת כרגע (העמוד לא טוען את shunra-net.js). הסגנונות נשארים לפעם הבאה.
+   shunra-net.js מצייר אותה ומגיב לעכבר ולנגיעה.
    הקופסה במיקום ובגודל של הרשת. הסקריפט קובע בעצמו את המיקום והגודל של ה-canvas,
    שיוצא מהקופסה ומצויר גם מעל הגריד, ולכן לקופסה ולמה שעוטף אותה אין overflow: hidden.
    touch-action: pan-y: בטלפון היא לא חוסמת את הגלילה של העמוד */
@@ -4185,10 +4229,10 @@ body {
 /* ----- הפוסטרים: חמש תמונות באותה מסגרת, רק אחת מוצגת (is-shown). ההחלפה חדה, בלי מעבר ----- */
 .shunra-posters {
   position: absolute;
-  left: var(--shunra-posters-left);
-  top: var(--shunra-posters-top);
-  width: var(--shunra-posters-width);
-  aspect-ratio: 931 / 655;
+  left: var(--line);
+  top: calc(var(--shunra-posters-row) * var(--cell) + var(--line));
+  width: calc(var(--grid-columns) * var(--cell) - var(--line));
+  height: calc(var(--shunra-posters-rows) * var(--cell) - var(--line));
   overflow: hidden;
   padding: 0;
   border: 0;
@@ -4203,6 +4247,8 @@ body {
   width: 100%;
   height: var(--shunra-poster-crop-height);
   max-width: none;
+  /* אם המסגרת צרה מהתמונה, חותכים קצת בצדדים */
+  object-fit: cover;
   visibility: hidden;
 }
 
@@ -4217,45 +4263,45 @@ body {
 
 /* המיקומים מהפיגמה (המלבנים 4-6 לא ממורכזים בפיגמה, הטקסט בהם מתחיל משמאל) */
 .shunra-product--1 {
-  --number-right: 904; --number-top: 393;
-  --image-left: 489; --image-top: 491; --image-width: 282;
+  --number-right: 904; --number-top: 198;
+  --image-left: 489; --image-top: 296; --image-width: 282;
   --hover-x: -18.5; --hover-y: 10.9; --hover-rotate: 5.92deg; --hover-scale: 1.132;
-  --label-left: 371; --label-top: 501; --label-width: 161; --label-text-width: 148;
+  --label-left: 371; --label-top: 306; --label-width: 161; --label-text-width: 148;
 }
 
 .shunra-product--2 {
-  --number-right: 201; --number-top: 541;
-  --image-left: 205; --image-top: 640; --image-width: 284.1;
+  --number-right: 201; --number-top: 346;
+  --image-left: 205; --image-top: 445; --image-width: 284.1;
   --hover-x: 6; --hover-y: 3.7; --hover-rotate: -4.21deg; --hover-scale: 1.043;
-  --label-left: 446; --label-top: 753; --label-width: 135; --label-text-width: 122;
+  --label-left: 446; --label-top: 558; --label-width: 135; --label-text-width: 122;
 }
 
 .shunra-product--3 {
-  --number-right: 891; --number-top: 721;
-  --image-left: 446; --image-top: 827; --image-width: 286;
+  --number-right: 891; --number-top: 526;
+  --image-left: 446; --image-top: 632; --image-width: 286;
   --hover-x: -13; --hover-y: 7.5; --hover-rotate: 7deg; --hover-scale: 1.091;
-  --label-left: 334; --label-top: 930; --label-width: 192; --label-text-width: 174;
+  --label-left: 334; --label-top: 735; --label-width: 192; --label-text-width: 174;
 }
 
 .shunra-product--4 {
-  --number-right: 224; --number-top: 906;
-  --image-left: 242; --image-top: 906; --image-width: 92;
+  --number-right: 224; --number-top: 711;
+  --image-left: 242; --image-top: 711; --image-width: 92;
   --hover-x: 5; --hover-y: -6; --hover-rotate: 6.45deg; --hover-scale: 1.107;
-  --label-left: 288; --label-top: 1219; --label-width: 111; --label-text-width: 174; --label-justify: flex-start;
+  --label-left: 288; --label-top: 1024; --label-width: 111; --label-text-width: 174; --label-justify: flex-start;
 }
 
 .shunra-product--5 {
-  --number-right: 890; --number-top: 1053;
-  --image-left: 599; --image-top: 1076; --image-width: 98;
+  --number-right: 890; --number-top: 858;
+  --image-left: 599; --image-top: 881; --image-width: 98;
   --hover-x: -2.5; --hover-y: 8.4; --hover-rotate: -7.79deg; --hover-scale: 1.049;
-  --label-left: 655; --label-top: 1410; --label-width: 117; --label-text-width: 174; --label-justify: flex-start;
+  --label-left: 655; --label-top: 1215; --label-width: 117; --label-text-width: 174; --label-justify: flex-start;
 }
 
 .shunra-product--6 {
-  --number-right: 224; --number-top: 1259;
-  --image-left: 248; --image-top: 1323; --image-width: 236;
+  --number-right: 224; --number-top: 1064;
+  --image-left: 248; --image-top: 1128; --image-width: 236;
   --hover-x: 5; --hover-y: 5.1; --hover-rotate: 10.69deg; --hover-scale: 1.042;
-  --label-left: 447; --label-top: 1461; --label-width: 94; --label-text-width: 90; --label-justify: flex-start;
+  --label-left: 447; --label-top: 1266; --label-width: 94; --label-text-width: 90; --label-justify: flex-start;
 }
 
 /* במובייל: טור אחד והעמוד כולו נגלל כרגיל */
@@ -4264,12 +4310,6 @@ body {
   .page-shunra .full-project-info {
     position: relative;
     height: auto;
-  }
-
-  /* "Brand Logo": כמו כותרות הסעיפים במובייל */
-  .shunra-logo-title {
-    left: var(--margin-mobile);
-    font-size: var(--section-title-mobile-size);
   }
 
   .full-project-description-scroll {
