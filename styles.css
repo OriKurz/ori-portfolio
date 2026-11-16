@@ -985,6 +985,11 @@
   }
 }
 
+/* ----- עמוד הפרויקט The Perfect Crime (the-perfect-crime-project.html): התיאור בכתום ----- */
+:root.page-perfect-crime {
+  --description-color: var(--color-orange);
+}
+
 /* ----- עמוד הפרויקט Leftovers* (leftovers-project.html) -----
    אותה תבנית כמו עמוד פרויקט מלא, עם הצבעים של הפרויקט.
    מספרים כמו 418 * var(--px) הם פיקסלים מהפריים "דף פרויקט שאריות" בפיגמה.
