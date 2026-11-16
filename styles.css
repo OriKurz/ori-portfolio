@@ -158,7 +158,7 @@
 
   /* סגנונות טקסט: הגודל של כל סגנון בפיקסלים של פריים 1440 בפיגמה.
      המחלקות עצמן (.text-...) מוגדרות בהמשך, בחלק "סגנונות טקסט" */
-  --text-display-large-size: 275;
+  --text-display-large-size: 200;
   --text-display-medium-size: 220;
   --text-display-mobile-size: 60;
   --text-page-title-size: 80;
@@ -224,9 +224,9 @@
   /* המרחק מהקו העליון של המשבצת לטקסט, כמו בפיגמה */
   --text-offset: calc(var(--cell) * 0.4);
 
-  /* הכותרת ORI KURZ: מיושרת לימין, 1.53 משבצות מהקצה הימני של אזור העיצוב */
-  --title-top: calc(var(--cell) * 2.46);
-  --title-right: calc(var(--cell) * 1.53);
+  /* הכותרת ORI KURZ: מיושרת לימין, כמו בפיגמה: הקצה העליון ב-244 והקצה הימני ב-1143 (משבצת = 96) */
+  --title-top: calc(var(--cell) * 244 / 96);
+  --title-right: calc(var(--cell) * (1440 - 1143) / 96);
   /* פיגמה והדפדפן קוראים את מדדי הגובה של הפונט Reisinger אחרת
      (הפרש של 0.2em), לכן מורידים את הטקסט כדי שישב כמו בפיגמה */
   --title-font-offset: 0.2em;

@@ -53,7 +53,7 @@
 
 | סגנון | מחלקה | פונט ומשקל | גודל | גובה שורה | ריווח | איפה |
 |---|---|---|---|---|---|---|
-| Display/Large | `text-display-large` | Reisinger Bold | 275 | 100% | 0 | ORI KURZ בבית מחשב |
+| Display/Large | `text-display-large` | Reisinger Bold | 200 | 100% | 0 | ORI KURZ בבית מחשב |
 | Display/Medium | `text-display-medium` | Reisinger Bold | 220 | 100% | 0 | Say hi |
 | Display/Mobile | `text-display-mobile` | Reisinger Bold | 60 | 100% | 0 | ORI KURZ בבית מובייל |
 | Page Title | `text-page-title` | Telegraf UltraBold | 80 | 95.5% | 0 | The Perfect Crime, וכל כותרת עמוד בעתיד |
