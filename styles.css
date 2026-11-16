@@ -4474,9 +4474,20 @@ body {
 }
 
 .leftovers-map-image {
+  position: relative;
+  z-index: 0;   /* מתחת לעיגול של הזכוכית המגדלת (z-index: 2), גם בפעם הראשונה */
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* באייפון: לחיצה ארוכה על המפה לא הופכת את התמונה לאובייקט שגוררים ולא פותחת תפריט */
+.leftovers-map,
+.leftovers-map-image {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* מיקום לפי פיקסלים של קובץ התמונה (--x, --y), באחוזים מגודל המפה */

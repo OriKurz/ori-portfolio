@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leftovers* — Project — Ori Kurz</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- התמונה של המפה נטענת מראש, כדי שהעיגול של הזכוכית המגדלת לא יופיע ריק בפעם הראשונה -->
+  <link rel="preload" as="image" href="Images/mape1.png">
   <!-- מעבר בין עמודים: נטען ב-head כדי לכסות את העמוד החדש מהציור הראשון -->
   <script src="page-transition.js"></script>
 </head>
@@ -103,7 +105,7 @@
                x ו-y של האות חושבו מהמידות של הפונט: מרכז הציור של האות = מרכז העיגול
                map-sketch: אזור שקוף מעל הציור התואם במקרא שבתחתית הפוסטר -->
           <div class="on-grid leftovers-map is-magnifying">
-            <img class="leftovers-map-image" src="Images/mape1.png" alt="Leftovers* map of Villa Epecuén, Argentina">
+            <img class="leftovers-map-image" src="Images/mape1.png" draggable="false" alt="Leftovers* map of Villa Epecuén, Argentina">
             <!-- העיגול של הזכוכית המגדלת: מציג את מה שמתחת לעכבר מוגדל, מהקובץ המקורי -->
             <div class="magnifier-lens" aria-hidden="true"></div>
 

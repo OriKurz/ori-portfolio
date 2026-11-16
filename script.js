@@ -1180,6 +1180,11 @@ if (leftoversMap) {
     if (lensHeld) event.preventDefault();
   }, { passive: false });
 
+  // באייפון: לחיצה ארוכה לא מתחילה את הגרירה המובנית של התמונה
+  leftoversMap.addEventListener("dragstart", function (event) {
+    event.preventDefault();
+  });
+
   // נגיעה ארוכה לא פותחת את התפריט של הדפדפן
   leftoversMap.addEventListener("contextmenu", function (event) {
     if (magnifying && lastPointerType !== "mouse") event.preventDefault();
