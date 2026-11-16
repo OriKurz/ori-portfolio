@@ -2887,24 +2887,19 @@ if (shunraProducts.length) {
 
 // =========================================
 // עמוד Shunra: הפוסטרים.
-// חמש תמונות באותה מסגרת, מתחלפות לפי הסדר כל --shunra-poster-interval
-// (0.7 שניות), בהחלפה חדה.
-// במחשב: hover עוצר על התמונה הנוכחית, ולחיצה עוברת לתמונה הבאה.
-// במקלדת: Focus עוצר, והחצים ימינה ושמאלה עוברים בין התמונות
-// (keyboard-nav.js לא מזיז את הפוקוס, כי האירוע כבר טופל כאן).
-// בטלפון: נגיעה עוצרת, ונגיעה נוספת עוברת לתמונה הבאה וממשיכה את ההחלפה.
+// חמש תמונות באותה מסגרת (תמונה בלבד, לא כפתור), מתחלפות לפי הסדר בלופ, בהחלפה חדה,
+// ואף פעם לא נעצרות. כל פוסטר מוצג --shunra-poster-interval (0.7 שניות),
+// וכשהעכבר מעל הפריים --shunra-poster-hover-interval (1.4 שניות).
 // =========================================
 const shunraPosters = document.querySelector(".shunra-posters");
 
 if (shunraPosters) {
   const posterImages = shunraPosters.querySelectorAll(".shunra-poster");
-  const mousePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
-  const posterInterval = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--shunra-poster-interval")) || 700;
+  const rootStyle = getComputedStyle(document.documentElement);
+  const posterInterval = parseFloat(rootStyle.getPropertyValue("--shunra-poster-interval")) || 700;
+  const posterHoverInterval = parseFloat(rootStyle.getPropertyValue("--shunra-poster-hover-interval")) || 1400;
   let currentPoster = 0;
-  let isHovered = false;     // העכבר על התמונה
-  let isFocused = false;     // פוקוס מהמקלדת
-  let isTapStopped = false;  // נעצר בנגיעה (בטלפון)
-  let posterTimer = null;
+  let isHovered = false;     // העכבר על הפריים
 
   function showPoster(index) {
     currentPoster = (index + posterImages.length) % posterImages.length;
@@ -2913,60 +2908,20 @@ if (shunraPosters) {
     });
   }
 
-  // מתזמן את ההחלפה הבאה, רק כשאין סיבה לעצור
+  // מתזמן את ההחלפה הבאה, במהירות שמתאימה לרגע הזה
   function schedulePoster() {
-    clearTimeout(posterTimer);
-    if (isHovered || isFocused || isTapStopped) return;
-    posterTimer = setTimeout(function () {
+    setTimeout(function () {
       showPoster(currentPoster + 1);
       schedulePoster();
-    }, posterInterval);
+    }, isHovered ? posterHoverInterval : posterInterval);
   }
 
   shunraPosters.addEventListener("pointerenter", function (event) {
-    if (event.pointerType !== "mouse") return;
-    isHovered = true;
-    schedulePoster();
+    if (event.pointerType === "mouse") isHovered = true;
   });
 
   shunraPosters.addEventListener("pointerleave", function (event) {
-    if (event.pointerType !== "mouse") return;
-    isHovered = false;
-    schedulePoster();
-  });
-
-  shunraPosters.addEventListener("focus", function () {
-    if (!shunraPosters.matches(":focus-visible")) return;
-    isFocused = true;
-    schedulePoster();
-  });
-
-  shunraPosters.addEventListener("blur", function () {
-    isFocused = false;
-    schedulePoster();
-  });
-
-  shunraPosters.addEventListener("click", function () {
-    if (mousePointer.matches) {
-      // במחשב (וגם Enter במקלדת): התמונה הבאה
-      showPoster(currentPoster + 1);
-    } else if (isTapStopped) {
-      // בטלפון, נגיעה שנייה: התמונה הבאה, וההחלפה ממשיכה
-      isTapStopped = false;
-      showPoster(currentPoster + 1);
-    } else {
-      // בטלפון, נגיעה ראשונה: עוצרת
-      isTapStopped = true;
-    }
-    schedulePoster();
-  });
-
-  // החצים ימינה ושמאלה: התמונה הבאה או הקודמת
-  shunraPosters.addEventListener("keydown", function (event) {
-    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-    event.preventDefault();
-    showPoster(currentPoster + (event.key === "ArrowRight" ? 1 : -1));
+    if (event.pointerType === "mouse") isHovered = false;
   });
 
   schedulePoster();

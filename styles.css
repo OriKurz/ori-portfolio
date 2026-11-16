@@ -1246,8 +1246,9 @@
   --shunra-posters-rows: 10;
   --shunra-poster-crop-top: -3.18%;
   --shunra-poster-crop-height: 105%;
-  /* כל כמה זמן הפוסטר מתחלף, באלפיות שנייה (script.js קורא את זה) */
+  /* כל כמה זמן הפוסטר מתחלף, באלפיות שנייה (script.js קורא את זה). כשהעכבר מעל הפריים: לאט יותר */
   --shunra-poster-interval: 700;
+  --shunra-poster-hover-interval: 1400;
 
   /* הטלפונים: שני סרטונים (279x583 בפיגמה).
      השפה האיורית עם פינות של 45, והאינסטגרם עם פינות של 48 */
@@ -4206,10 +4207,6 @@ body {
   width: calc(var(--grid-columns) * var(--cell) - var(--line));
   height: calc(var(--shunra-posters-rows) * var(--cell) - var(--line));
   overflow: hidden;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
 }
 
 .shunra-poster {
@@ -4226,11 +4223,6 @@ body {
 
 .shunra-poster.is-shown {
   visibility: visible;
-}
-
-/* Focus: אין Hover שנראה, אז קו מתאר בצבע ובעובי קווי הגריד */
-.shunra-posters:focus-visible {
-  outline: var(--line) solid var(--grid-line-color);
 }
 
 /* המיקומים מהפיגמה (המלבנים 4-6 לא ממורכזים בפיגמה, הטקסט בהם מתחיל משמאל) */
