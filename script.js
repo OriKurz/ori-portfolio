@@ -531,6 +531,62 @@ if (contactBalls.length > 0) {
     return ball;
   });
 
+  // הכדור של המייל: לחיצה (גם נגיעה, גם Enter) מעתיקה את הכתובת ופותחת לידו את התווית.
+  // התווית נפתחת ליד המקום שבו הכדור נמצא ברגע הלחיצה (מימין, ואם אין מקום משמאל),
+  // תמיד כולה בתוך המסך. אחרי 3 שניות היא נסגרת, ולחיצה בכל מקום אחר סוגרת אותה מיד.
+  // אם ההעתקה נכשלת, התווית נפתחת רק עם הכתובת, כדי להעתיק ידנית
+  const emailBall = document.querySelector(".contact-ball--email");
+  const emailLabel = document.querySelector(".email-label");
+  if (emailBall && emailLabel) {
+    const emailAddress = emailLabel.querySelector(".email-label-address").textContent;
+    let closeTimer = null;
+
+    function closeEmailLabel() {
+      clearTimeout(closeTimer);
+      emailLabel.classList.remove("is-open");
+    }
+
+    function openEmailLabel(ballBox, copied) {
+      const labelWidth = emailLabel.offsetWidth;
+      const labelHeight = emailLabel.offsetHeight;
+      const gap = parseFloat(getComputedStyle(emailLabel).getPropertyValue("--email-label-gap")) || 0;
+      let left = ballBox.right + gap;
+      if (left + labelWidth > window.innerWidth) left = ballBox.left - gap - labelWidth;
+      let top = ballBox.top + ballBox.height / 2 - labelHeight / 2;
+      // כולה בתוך המסך
+      left = Math.min(Math.max(left, 0), window.innerWidth - labelWidth);
+      top = Math.min(Math.max(top, 0), window.innerHeight - labelHeight);
+      emailLabel.style.left = left + "px";
+      emailLabel.style.top = top + "px";
+      emailLabel.classList.toggle("is-copy-failed", !copied);
+      emailLabel.classList.add("is-open");
+      clearTimeout(closeTimer);
+      const openTime = parseFloat(getComputedStyle(emailLabel).getPropertyValue("--email-label-time")) || 3000;
+      closeTimer = setTimeout(closeEmailLabel, openTime);
+    }
+
+    emailBall.addEventListener("click", function () {
+      // המקום של הכדור ברגע הלחיצה (הוא ממשיך לזוז בזמן ההעתקה)
+      const ballBox = emailBall.getBoundingClientRect();
+      // ההעתקה בתוך הלחיצה (אחרת דפדפנים חוסמים אותה)
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(emailAddress).then(
+          function () { openEmailLabel(ballBox, true); },
+          function () { openEmailLabel(ballBox, false); }
+        );
+      } else {
+        openEmailLabel(ballBox, false);
+      }
+    });
+
+    // לחיצה בכל מקום אחר (לא על הכדור ולא על התווית) סוגרת מיד
+    document.addEventListener("pointerdown", function (event) {
+      if (!emailLabel.classList.contains("is-open")) return;
+      if (emailBall.contains(event.target) || emailLabel.contains(event.target)) return;
+      closeEmailLabel();
+    });
+  }
+
   // הקירות: האזור הוורוד שגלוי. מהצדדים ומלמעלה החלון פחות המסגרת הכתומה,
   // ומלמטה הקו שבו מתחיל החלק הכתום. הכול ביחס למסך (שכבת הכדורים קבועה על המסך),
   // כך שבמובייל, כשהכתום עולה בגלילה, הקיר התחתון עולה איתו ודוחף את הכדורים.

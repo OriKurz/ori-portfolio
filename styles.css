@@ -1396,6 +1396,11 @@
   --contact-ball-type-px: calc(var(--u) * var(--contact-ball-scale));
   --contact-ball-text-width: calc(65 * var(--u) * var(--contact-ball-scale));
   --layer-contact-balls: 3;
+
+  /* התווית של המייל (בפיגמה 173x46, ריווח פנימי 7): פיקסל בפיגמה. נפתחת 10 מהכדור */
+  --email-label-px: var(--u);
+  --email-label-gap: calc(10 * var(--email-label-px));
+  --email-label-time: 3000ms; /* כמה זמן התווית פתוחה */
 }
 
 /* ----- עמוד Say Hi במובייל -----
@@ -1463,6 +1468,9 @@
     --contact-ball-size: calc(var(--cell) * 1.75 * var(--contact-ball-scale) * var(--contact-ball-mobile-scale));
     --contact-ball-type-px: calc(var(--cell) / 49.06 * var(--contact-ball-scale) * var(--contact-ball-mobile-scale));
     --contact-ball-text-width: calc(var(--contact-ball-size) * 65 / 87);
+
+    /* התווית של המייל: אין עיצוב למובייל, אז היא בגודל של פיגמה בפריים say-hi-m */
+    --email-label-px: var(--about-px);
   }
 }
 
@@ -5379,6 +5387,41 @@ body {
 .contact-ball:active,
 .contact-ball.is-pressed {
   scale: var(--contact-ball-pressed-scale);
+}
+
+/* ----- התווית של המייל (הקומפוננטה בפיגמה): מלבן כתום, הכתובת ו-[ Copied ] במנטה -----
+   script.js מציב אותה ליד הכדור, כולה בתוך המסך. סגורה עד הלחיצה,
+   ונפתחת משמאל לימין כמו המלבנים הכתומים בשונרא (clip-path) */
+.email-label {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: var(--layer-contact-balls);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(173 * var(--email-label-px));
+  height: calc(46 * var(--email-label-px));
+  padding: calc(7 * var(--email-label-px));
+  --type-px: var(--email-label-px);
+  background-color: var(--color-orange);
+  color: var(--color-mint);
+  text-align: center;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--shunra-label-duration) ease;
+}
+
+.email-label.is-open {
+  clip-path: inset(0 0 0 0);
+  pointer-events: auto; /* אפשר לסמן את הכתובת */
+}
+
+/* ההעתקה נכשלה (יש דפדפנים שחוסמים): רק הכתובת, כדי להעתיק ידנית */
+.email-label.is-copy-failed .email-label-copied {
+  display: none;
 }
 
 /* =========================================

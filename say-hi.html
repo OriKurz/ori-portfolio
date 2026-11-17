@@ -55,15 +55,24 @@
 
     <!-- כדורי יצירת הקשר: מסתובבים באזור הוורוד שגלוי כל הזמן (script.js).
          השכבה שלהם קבועה על המסך, והקצה העליון של החלק הכתום הוא הקיר התחתון.
-         כל כדור הוא קישור ליעד שלו. כולם נפתחים בלשונית חדשה (המייל: הודעה חדשה ב-Gmail).
+         כל כדור הוא קישור ליעד שלו, שנפתח בלשונית חדשה. חוץ מהמייל: הוא כפתור שמעתיק את הכתובת
+         ופותח לידו את התווית עם הכתובת (script.js).
          draggable="false": כדי שגרירה בעכבר לא תתפוס את הקישור כמו כפתור רגיל -->
     <div class="contact-balls">
       <a draggable="false" class="contact-ball text-contact-ball contact-ball--instagram" href="https://www.instagram.com/ori_kurz/" target="_blank" rel="noopener" aria-label="Instagram"><span class="contact-ball-label">INSTA<br>GRAM</span></a>
-      <a draggable="false" class="contact-ball text-contact-ball contact-ball--email" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=orikurz1@gmail.com" target="_blank" rel="noopener" aria-label="E-mail"><span class="contact-ball-label">E-MAIL</span></a>
+      <button draggable="false" class="contact-ball text-contact-ball contact-ball--email" type="button" aria-label="E-mail: copy orikurz1@gmail.com"><span class="contact-ball-label">E-MAIL</span></button>
       <a draggable="false" class="contact-ball text-contact-ball contact-ball--whatsapp" href="https://wa.me/972525014266" target="_blank" rel="noopener" aria-label="WhatsApp"><span class="contact-ball-label">WHATS<br>APP</span></a>
       <!-- CV: פותח את קובץ קורות החיים (PDF) בלשונית חדשה -->
       <a draggable="false" class="contact-ball text-contact-ball contact-ball--cv" href="Ori-kurz-cv.pdf" target="_blank" rel="noopener" aria-label="CV"><span class="contact-ball-label">CV</span></a>
     </div>
+
+    <!-- התווית של המייל (הקומפוננטה בפיגמה): הכתובת, ומתחתיה [ Copied ].
+         נפתחת ליד הכדור בלחיצה, משמאל לימין כמו המלבנים הכתומים בשונרא. הכתובת טקסט רגיל שאפשר לסמן.
+         מחוץ לשכבת הכדורים, כי במובייל השכבה נחתכת בקצה הכתום, והתווית לא נחתכת אף פעם -->
+    <p class="email-label text-label" role="status" aria-live="polite">
+      <span class="email-label-address">orikurz1@gmail.com</span>
+      <span class="email-label-copied">[ Copied ]</span>
+    </p>
 
     <!-- הרצועה הכתומה: עליי. במחשב צמודה לתחתית החלון. במובייל עולה מעל החלק הוורוד בגלילה.
          כל טור ברוחב שלו בפיגמה. br = שורה ריקה או פסקה חדשה.
