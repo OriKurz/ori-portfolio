@@ -1561,7 +1561,7 @@
   --projects-image-gap: calc(15 * var(--u));
   --projects-strip-start: calc(-34 * var(--u));
   /* מהירות הרצועה: כמה משבצות בשנייה (script.js) */
-  --projects-strip-speed: 2;
+  --projects-strip-speed: 1.5;
 }
 
 /* ----- עמוד אינדקס הפרויקטים במובייל -----
