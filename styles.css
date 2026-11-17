@@ -1528,66 +1528,48 @@
 }
 
 /* ----- עמוד אינדקס הפרויקטים (projects.html) -----
-   הפריים INDEX בפיגמה: 1440x810, בלי קווי גריד. 16x9 משבצות של 90px ממלאות אותו בדיוק,
-   ולכן הוא גדל עם החלון בשיטת הגריד שממלא את המסך (כמו Say Hi): אזור העיצוב ממורכז ושלם.
-   מספרים כמו 238 * var(--u) הם פיקסלים מהפיגמה. */
+   הפריים INDEX2 בפיגמה: 1440x772, משבצת של 96px (15 טורים, 8 שורות), גריד שממלא את המסך
+   כמו בעמוד הבית. הגריד בפיגמה מתחיל ב-(0, 4), אז המיקומים כאן במשבצות: x / 96 ו-(y - 4) / 96.
+   מספרים כמו 15 * var(--u) הם פיקסלים מהפיגמה. */
 :root.page-projects {
-  --frame-cell: 90;
-  --grid-columns: 16;
-  --grid-rows: 9;
+  --grid-rows: 8;
   --line: var(--line-desktop);
   /* פיקסל אחד בפיגמה */
-  --u: calc(var(--cell) / var(--frame-cell));
+  --u: calc(var(--cell) / 96);
   --type-px: var(--u);
 
-  --page-background: var(--color-green);
+  --page-background: var(--color-blue);
+  --grid-line-color: var(--color-pink);
 
-  /* ההמבורגר: צהוב (30x24 בפיגמה), 12 מהשמאל ו-14 מלמעלה.
-     ה-hover הרגיל ירוק ולא היה נראה על הרקע הירוק, אז כאן הוא כחול */
-  --menu-left: calc(12 * var(--u));
-  --menu-top: calc(14 * var(--u));
+  /* ההמבורגר: שלושה קווים ורודים (30x24 בפיגמה), במרכז המשבצת הראשונה */
   --menu-width: calc(30 * var(--u));
   --menu-line-height: calc(4 * var(--u));
   --menu-gap: calc(6 * var(--u));
-  --pill-radius: calc(32 * var(--u));
-  --menu-line-color: var(--color-yellow);
-  --menu-hover-color: var(--color-blue);
 
-  /* שולי העמוד: 50px בפיגמה, מקצוות החלון. ההמבורגר לא תלוי בהם */
-  --projects-margin: calc(50 * var(--u));
+  /* INDEX ב-(99, 112), ו-Project & more ב-(402, 137) */
+  --projects-title-column: calc(99 / 96);
+  --projects-title-row: calc((112 - 4) / 96);
+  --projects-subtitle-column: calc(402 / 96);
+  --projects-subtitle-row: calc((137 - 4) / 96);
 
-  /* INDEX ו-Project & more: הכותרת צמודה לשוליים השמאליים, והשורה שמתחתיה זזה איתה (5px ימינה ממנה) */
-  --projects-title-left: var(--projects-margin);
-  --projects-title-top: calc(68 * var(--u));
-  --projects-subtitle-left: calc(var(--projects-margin) + 5 * var(--u));
-  --projects-subtitle-top: calc(133 * var(--u));
-
-  /* מבנה העיגולים: צמוד לשוליים הימניים והתחתונים.
-     הגבולות שלו בפיגמה: מ-(596, 252) עד (1377, 754), כלומר 781x502 */
-  --projects-list-x: 596;
-  --projects-list-y: 252;
-  --projects-list-width: calc(781 * var(--u));
-  --projects-list-height: calc(502 * var(--u));
-
-  /* העיגולים: 238px בפיגמה, עם מסגרת צהובה בעובי הקו */
-  --project-circle-size: calc(238 * var(--u));
-  /* הטקסט מתחת לעיגול הממורכז: מופיע ברכות אחרי שהעיגול התייצב */
-  --project-text-fade: 0.4s;
+  /* רצועת התמונות: בשורות 3 עד 5. כל תמונה ריבוע של 3 משבצות (מקו לקו),
+     עם מסגרת כתומה בעובי הקו, ו-15px בין תמונה לתמונה.
+     בטעינה התמונה הראשונה מתחילה ב-x = -34 */
+  --projects-strip-row: 3;
+  --projects-strip-rows: 3;
+  --projects-image-size: calc(var(--projects-strip-rows) * var(--cell) + var(--line));
+  --projects-image-gap: calc(15 * var(--u));
+  --projects-strip-start: calc(-34 * var(--u));
+  /* מהירות הרצועה: כמה משבצות בשנייה (script.js) */
+  --projects-strip-speed: 2;
 }
 
 /* ----- עמוד אינדקס הפרויקטים במובייל -----
-   אין עיצוב מובייל בפיגמה. הכותרת כמו בעמודי הפרויקט במובייל (לפי 508px של הפיגמה),
-   והעיגולים יורדים בשני טורים, עם 33px ביניהם כמו בפיגמה. העמוד נגלל */
+   אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב, אותו סידור במשבצות כמו במחשב */
 @media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-projects {
     --design-columns: 8;
-    --design-rows: 1;
     --line: var(--line-mobile);
-    --u: calc(100vw / 508);
-    --projects-list-top: calc(200 * var(--u));
-    --projects-margin: var(--margin-mobile);
-    --projects-gap: calc(33 * var(--u));
-    --project-circle-size: calc((100vw - 2 * var(--projects-margin) - var(--projects-gap)) / 2);
   }
 }
 
@@ -5602,7 +5584,7 @@ body {
    עמוד אינדקס הפרויקטים (projects.html)
    ========================================= */
 
-/* עמוד של מסך אחד, בלי גלילה במחשב. במובייל נגלל, ראו למטה */
+/* עמוד של מסך אחד, בלי גלילה */
 .page-projects,
 .page-projects body {
   height: 100%;
@@ -5610,169 +5592,101 @@ body {
   overscroll-behavior: none;
 }
 
-/* ההמבורגר בפינה של החלון */
-.projects-menu {
-  position: absolute;
-  left: var(--menu-left);
-  top: var(--menu-top);
+.page-projects body {
+  height: 100dvh;
 }
 
-/* העמוד ממלא את החלון. השוליים נמדדים מקצוות החלון */
+/* ההמבורגר: במשבצת הראשונה בפינה השמאלית העליונה של המסך, ממורכז בין הקווים */
+.projects-menu {
+  --menu-height: calc(3 * var(--menu-line-height) + 2 * var(--menu-gap));
+  position: fixed;
+  left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
+  top: calc(mod(var(--grid-top), var(--cell)) + (var(--cell) + var(--line) - var(--menu-height)) / 2);
+}
+
+.projects-menu .menu-button-line {
+  border-radius: var(--menu-line-height);
+}
+
+/* אזור העיצוב מהפיגמה, ממורכז בחלון */
 .projects-page {
   position: absolute;
-  inset: 0;
-  color: var(--color-yellow);
+  left: var(--grid-left);
+  top: var(--grid-top);
+  width: calc(var(--design-columns) * var(--cell));
+  height: calc(var(--grid-rows) * var(--cell));
+  color: var(--color-orange);
 }
 
 .projects-title,
 .projects-subtitle {
   position: absolute;
+  margin: 0;
   white-space: nowrap;
 }
 
 .projects-title {
-  left: var(--projects-title-left);
-  top: var(--projects-title-top);
+  left: calc(var(--projects-title-column) * var(--cell));
+  top: calc(var(--projects-title-row) * var(--cell));
 }
 
 .projects-subtitle {
-  left: var(--projects-subtitle-left);
-  top: var(--projects-subtitle-top);
+  left: calc(var(--projects-subtitle-column) * var(--cell));
+  top: calc(var(--projects-subtitle-row) * var(--cell));
 }
 
-.projects-list {
-  position: absolute;
-  right: var(--projects-margin);
-  bottom: var(--projects-margin);
-  width: var(--projects-list-width);
-  height: var(--projects-list-height);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* ----- עיגול של פרויקט -----
-   במחשב: במיקום שלו בפיגמה (--x, --y), ביחס לפינה של מבנה העיגולים.
-   אחרי שהעמוד נטען, script.js מזיז את העיגולים ומשנה את הגודל שלהם (left, top, width, height),
-   גם בסידור של שתי השורות וגם בסידור סביב עיגול ממורכז.
-   המסגרת הצהובה בתוך הגודל של העיגול */
-.project-circle {
-  position: absolute;
-  left: calc((var(--x) - var(--projects-list-x)) * var(--u));
-  top: calc((var(--y) - var(--projects-list-y)) * var(--u));
-  display: block;
-  width: var(--project-circle-size);
-  height: var(--project-circle-size);
-  border: var(--line) solid var(--color-yellow);
-  border-radius: 50%;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* התמונה חתוכה לעיגול, בתוך המסגרת. script.js נותן לה גודל קבוע (הכי גדול שהעיגול מגיע אליו)
-   ומקטין אותה ב-transform, כדי שהתנועה תהיה חלקה בלי לצייר מחדש את התמונה בכל פריים */
-.project-circle-frame {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 100%;
-  height: 100%;
+/* ----- רצועת התמונות -----
+   לרוחב כל החלון, על השורות שלה. script.js משכפל את התמונות כמה שצריך
+   ומזיז את projects-track מימין לשמאל בלופ */
+.projects-strip {
+  position: fixed;
+  left: 0;
+  top: calc(var(--grid-top) + var(--projects-strip-row) * var(--cell));
+  width: 100vw;
+  height: var(--projects-image-size);
   overflow: hidden;
-  border-radius: 50%;
-  translate: -50% -50%;
+}
+
+.projects-track {
+  display: flex;
+  width: max-content;
   will-change: transform;
 }
 
-/* החיתוך כמו בפיגמה. בלי חיתוך: התמונה נמתחת על כל העיגול (כמו בפיגמה) */
-.project-circle-image {
+/* תמונה: ריבוע עם מסגרת כתומה, והתמונה חתוכה בתוכה כמו בפיגמה */
+.projects-image {
+  position: relative;
+  flex: none;
+  display: block;
+  width: var(--projects-image-size);
+  height: var(--projects-image-size);
+  margin-right: var(--projects-image-gap);
+  border: var(--line) solid var(--color-orange);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.projects-image-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* החיתוך כמו בפיגמה (--crop-...). בלי חיתוך: ממלאת את הריבוע בלי להימתח (--fit) */
+.projects-image img {
   position: absolute;
   left: var(--crop-left, 0);
   top: var(--crop-top, 0);
   width: var(--crop-width, 100%);
   height: var(--crop-height, 100%);
   max-width: none;
+  object-fit: var(--fit, fill);
+  object-position: var(--fit-position, center);
 }
 
-/* הכיסוי: כחול בשקיפות 50% בצורת העיגול (גם מעל המסגרת), ועליו השם בצהוב, במרכז */
-.project-circle-overlay {
-  position: absolute;
-  inset: calc(-1 * var(--line));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background-color: color-mix(in srgb, var(--color-blue) 50%, transparent);
-  color: var(--color-yellow);
-  text-align: center;
-  opacity: 0;
-  transition: opacity var(--transition-speed) ease;
-}
-
-/* Hover (רק במחשב): הכיסוי מופיע במעבר רך */
-@media (hover: hover) and (pointer: fine) {
-  .project-circle:hover .project-circle-overlay {
-    opacity: 1;
-  }
-}
-
-/* העיגול הממורכז: הכיסוי עם השם מופיע קבוע, כל עוד הוא ממורכז */
-.project-circle.is-centered .project-circle-overlay {
-  opacity: 1;
-}
-
-/* הטקסט מתחת לעיגול הממורכז: script.js ממקם אותו ומציג אותו רק אחרי שהעיגול התייצב.
-   כשבוחרים עיגול אחר הוא נעלם מיד */
-.project-circle-text {
-  position: absolute;
-  left: 0;
-  top: 0;
-  margin: 0;
-  translate: -50% 0;
-  text-align: center;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.project-circle-text.is-visible {
-  opacity: 1;
-  visibility: visible;
-  transition: opacity var(--project-text-fade) ease;
-}
-
-/* Focus במקלדת: כמו hover, בלי קו מתאר */
-.project-circle:focus-visible {
-  outline: none;
-}
-
-.project-circle:focus-visible .project-circle-overlay,
-.project-circle.is-hover .project-circle-overlay,
-.project-circle.is-focus .project-circle-overlay {
-  opacity: 1;
-}
-
-/* במובייל: העמוד נגלל, והעיגולים בשני טורים מתחת לכותרת */
-@media (max-width: 767.98px) and (orientation: portrait) {
-  .page-projects,
-  .page-projects body {
-    height: auto;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-
-  .projects-page {
-    position: relative;
-    padding-top: var(--projects-list-top);
-    padding-bottom: var(--projects-margin);
-  }
-
-  /* הגובה של מבנה העיגולים: script.js קובע לפי הסידורים */
-  .projects-list {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    width: 100%;
-  }
+/* Focus במקלדת: אין hover שנראה, אז קו מתאר בצבע ובעובי קווי הגריד */
+.projects-image:focus-visible,
+.projects-image.is-focus {
+  outline: var(--line) solid var(--grid-line-color);
 }
 
 /* =========================================

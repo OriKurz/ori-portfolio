@@ -10,7 +10,7 @@
   <!-- גודל הגריד לפי החלון: נטען לפני שהעמוד מצויר -->
   <script src="grid.js"></script>
 </head>
-<body>
+<body class="grid-lines">
   <!-- בר הבחירה (התפריט): סגור בטעינה. ההמבורגר פותח אותו, והוא מחליק פנימה מלמעלה (script.js) -->
   <nav class="nav-bar" id="nav-bar" aria-label="Main">
     <!-- ההמבורגר של הבר: סוגר אותו -->
@@ -27,69 +27,43 @@
     </ul>
   </nav>
 
-  <!-- ההמבורגר: בפינה השמאלית העליונה של החלון (12, 14 בפיגמה). פותח את בר הבחירה -->
+  <!-- ההמבורגר: במשבצת הראשונה בפינה השמאלית העליונה של המסך. פותח את בר הבחירה -->
   <button class="menu-button projects-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
     <span class="menu-button-line"></span>
     <span class="menu-button-line"></span>
     <span class="menu-button-line"></span>
   </button>
 
-  <!-- אינדקס הפרויקטים: הפריים INDEX מהפיגמה (1440x810), ממורכז בחלון -->
+  <!-- אינדקס הפרויקטים: הפריים INDEX2 מהפיגמה (1440x772), ממורכז בחלון -->
   <main class="projects-page">
     <h1 class="projects-title text-page-title">INDEX</h1>
-    <p class="projects-subtitle text-subtitle">Project &amp; more</p>
-
-    <!-- העיגולים: כל פרויקט הוא עיגול עם תמונה.
-         --x ו---y: הפינה השמאלית העליונה של העיגול בפיגמה (פיקסלים בפריים), במצב של שתי השורות.
-         התמונה חתוכה כמו בפיגמה (--crop-...), והשם מופיע ב-hover ובפוקוס.
-         לחיצה על עיגול ממרכזת אותו וכל השאר מסתדרים סביבו (script.js).
-         לחיצה על העיגול הממורכז מובילה לעמוד שלו.
-         פרויקט שעוד אין לו עמוד: href="404.html" (דף בהקמה).
-         כדי לחבר לו עמוד: מחליפים את ה-href לעמוד שלו.
-         פרויקט חדש: עוד li באותו מבנה, והוא מצטרף לבד למעגל -->
-    <ul class="projects-list">
-      <li>
-        <a class="project-circle" href="leftovers-project.html" aria-label="Leftovers*" style="--x: 867; --y: 252">
-          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-3.png" alt="" style="--crop-width: 123.11%; --crop-height: 153.68%; --crop-left: -11.36%; --crop-top: -12.98%"></span>
-          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Leftovers*</span></span>
-        </a>
-        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
-        <p class="project-circle-text text-subtitle">The story of<br>Villa Epecuén<br>Map Design<br>&amp; Data Visualization<br>2026</p>
-      </li>
-      <li>
-        <a class="project-circle" href="404.html" aria-label="Touch Grass" style="--x: 1139; --y: 252">
-          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-5.png" alt="" style="--crop-width: 100%; --crop-height: 100%; --crop-left: 0%; --crop-top: 0%"></span>
-          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Touch Grass</span></span>
-        </a>
-        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
-        <p class="project-circle-text text-subtitle">motion elements<br>for conference<br>Motion Graphics<br>&amp; Branding<br>2026</p>
-      </li>
-      <li>
-        <a class="project-circle" href="the-perfect-crime-project.html" aria-label="The Perfect Crime" style="--x: 596; --y: 516">
-          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-1.png" alt=""></span>
-          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">The<br>Perfect<br>Crime</span></span>
-        </a>
-        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
-        <p class="project-circle-text text-subtitle">A sound-driven<br>short film<br>Motion Graphics<br>2026</p>
-      </li>
-      <li>
-        <a class="project-circle" href="shunra-project.html" aria-label="Shunra" style="--x: 867; --y: 515">
-          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-4.png" alt="" style="--crop-width: 102.56%; --crop-height: 152.87%; --crop-left: -1.07%; --crop-top: -36.22%"></span>
-          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Shunra</span></span>
-        </a>
-        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
-        <p class="project-circle-text text-subtitle">A raw fish<br>brand for cats<br>Branding<br>2026</p>
-      </li>
-      <li>
-        <a class="project-circle" href="404.html" aria-label="Hora" style="--x: 1138; --y: 515">
-          <span class="project-circle-frame"><img class="project-circle-image" src="Images/next-projects/project-2.png" alt="" style="--crop-width: 100.15%; --crop-height: 100%; --crop-left: -0.07%; --crop-top: 0.28%"></span>
-          <span class="project-circle-overlay" aria-hidden="true"><span class="project-circle-name text-timeline-year">Hora</span></span>
-        </a>
-        <!-- הטקסט מתחת לכדור, כשהוא ממורכז -->
-        <p class="project-circle-text text-subtitle">An MTV ident- style<br>animation<br>Motion Graphics<br>2025</p>
-      </li>
-    </ul>
+    <p class="projects-subtitle text-subtitle">Project<br>&amp; more</p>
   </main>
+
+  <!-- רצועת התמונות: כל תמונה היא פרויקט, בסדר של הפיגמה.
+       התמונות נעות בלופ מימין לשמאל, ו-hover או פוקוס עוצרים אותן (script.js).
+       החיתוך כמו בפיגמה (--crop-...).
+       פרויקט שעוד אין לו עמוד: href="404.html". כדי לחבר לו עמוד: מחליפים את ה-href.
+       פרויקט חדש: עוד a באותו מבנה, והוא מצטרף לבד ללופ -->
+  <div class="projects-strip">
+    <div class="projects-track">
+      <a class="projects-image" href="404.html" aria-label="Touch Grass">
+        <span class="projects-image-frame"><img src="Images/next-projects/touch-grass-index.png" alt="" draggable="false" style="--crop-width: 215.56%; --crop-height: 372.41%; --crop-left: -37.37%; --crop-top: -264.15%"></span>
+      </a>
+      <a class="projects-image" href="the-perfect-crime-project.html" aria-label="The Perfect Crime">
+        <span class="projects-image-frame"><img src="Images/next-projects/project-1.png" alt="" draggable="false" style="--fit: cover; --fit-position: bottom"></span>
+      </a>
+      <a class="projects-image" href="shunra-project.html" aria-label="Shunra">
+        <span class="projects-image-frame"><img src="Images/next-projects/project-4.png" alt="" draggable="false" style="--crop-width: 102.56%; --crop-height: 152.87%; --crop-left: -1.07%; --crop-top: -36.22%"></span>
+      </a>
+      <a class="projects-image" href="leftovers-project.html" aria-label="Leftovers*">
+        <span class="projects-image-frame"><img src="Images/next-projects/project-3.png" alt="" draggable="false" style="--crop-width: 123.11%; --crop-height: 153.68%; --crop-left: -11.36%; --crop-top: -12.98%"></span>
+      </a>
+      <a class="projects-image" href="404.html" aria-label="Hora">
+        <span class="projects-image-frame"><img src="Images/next-projects/project-2.png" alt="" draggable="false" style="--crop-width: 100.15%; --crop-height: 100%; --crop-left: -0.07%; --crop-top: 0.28%"></span>
+      </a>
+    </div>
+  </div>
 
   <script src="script.js"></script>
   <script src="keyboard-nav.js"></script>

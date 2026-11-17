@@ -1853,694 +1853,112 @@ if (descriptionScroll && projectPageScroll && bottomArea) {
 }
 
 // =========================================
-// אינדקס הפרויקטים (projects.html): לחיצה על עיגול ממרכזת אותו
-// במצב הרגיל העיגולים בשתי שורות. לחיצה על עיגול: הוא גדל וזז למרכז,
-// וכל השאר קטנים ומסתדרים סביבו במעגל (היחסים מהפיגמה). המעגל גדל כמה שאפשר
-// בשטח הפנוי: בתוך השוליים של 50, בלי לעלות על הכותרת.
-// לחיצה על העיגול הממורכז מובילה לעמוד שלו (אם יש לו).
-// לחיצה מחוץ לעיגולים, או Esc: חוזרים לשתי השורות.
-// התנועה: כמו בועות במים. כל עיגול נע לאט, עם האצה והאטה רכות, ומתנודד כשהוא מתייצב.
-// בכל שינוי כל העיגולים מגיבים: גל יוצא מהעיגול שנלחץ ודוחף את כולם,
-// והעיגולים הקטנים במעגל מסתובבים מקום אחד בכיוון השעון.
-// העיגולים לא נוגעים זה בזה: ביניהם פועל כוח דחייה רך, כמו מגנטים הפוכים.
-// ב-prefers-reduced-motion המעבר מיידי.
+// אינדקס הפרויקטים (projects.html): רצועת התמונות נעה בלופ מימין לשמאל.
+// התמונות חוזרות על עצמן ברצף, עם אותו ריווח גם בנקודת החיבור, בלי קפיצה.
+// המהירות: --projects-strip-speed ב-styles.css (משבצות בשנייה).
+// hover על תמונה (עכבר) או פוקוס במקלדת עוצרים את הרצועה, וכשיוצאים היא ממשיכה.
 // =========================================
+const projectsStrip = document.querySelector(".projects-strip");
 
-const projectsList = document.querySelector(".projects-list");
+if (projectsStrip) {
+  const track = projectsStrip.querySelector(".projects-track");
+  const projects = Array.from(track.children);
 
-if (projectsList) {
-  const items = Array.from(projectsList.querySelectorAll("li")).map(function (li) {
-    const circle = li.querySelector(".project-circle");
-    return {
-      circle: circle,
-      frame: circle.querySelector(".project-circle-frame"),
-      image: circle.querySelector(".project-circle-image"),
-      text: li.querySelector(".project-circle-text"),
-      // המיקום בשתי השורות בפיגמה (הפינה השמאלית העליונה)
-      figmaX: parseFloat(circle.style.getPropertyValue("--x")),
-      figmaY: parseFloat(circle.style.getPropertyValue("--y")),
-      // המצב בתנועה: מרכז, רדיוס ומהירויות (בפיקסלים של המסך, ביחס למבנה העיגולים)
-      x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0,
-      // מאיפה יצא ולאן הוא הולך
-      fromX: 0, fromY: 0, fromR: 0,
-      tx: 0, ty: 0, tr: 0,
-      // הגל: לאיזה כיוון הוא נדחף, כמה, ומתי הגל מגיע אליו
-      bumpX: 0, bumpY: 0, delay: 0,
-      // עיגול קטן שעובר ממקום למקום במעגל: נע בקשת סביב העיגול הגדול, ולא בקו ישר דרכו
-      arc: null
-    };
-  });
-  const title = document.querySelector(".projects-title");
-  const subtitle = document.querySelector(".projects-subtitle");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+  let setWidth = 0;          // הרוחב של סבב אחד של התמונות (כולל הריווחים)
+  let offset = 0;            // כמה הרצועה זזה שמאלה (בתוך סבב אחד)
+  let speed = 0;             // המהירות (פיקסלים לשנייה)
+  let mouse = null;          // איפה העכבר עכשיו (כדי לדעת אם הוא על תמונה, גם כשהתמונה זזה מתחתיו)
+  let focused = false;       // פוקוס במקלדת על אחת התמונות
+  let lastTime = null;
 
-  // ----- המידות מהפיגמה (פיקסלים בפריים של 1440) -----
-  const design = {
-    // שתי השורות: הפינה של המבנה, הרוחב שלו וגודל עיגול
-    listX: 596, listY: 252, listWidth: 781,
-    size: 238,
-    // הסידור סביב עיגול ממורכז: העיגול הגדול, העיגולים הקטנים והטקסט
-    bigX: 932, bigY: 279, bigSize: 256.5,
-    smallSize: 151.25,
-    // העיגולים הקטנים: 88% מהפיגמה (80%, ועוד 10%)
-    smallScale: 0.88,
-    smallSlots: [[781, 128], [1188, 128], [781, 530], [1188, 530]],
-    // הקומפוזיציה הסגורה: המרווח בין העיגול הגדול לכל עיגול קטן
-    ringGap: 40,
-    textTop: 553,
-    // הגבולות של הסידור הממורכז
-    groupX: 781, groupY: 128, groupWidth: 558.5, groupHeight: 553.25,
-    margin: 50,
-    gap: 33
-  };
-
-  // ----- התנועה -----
-  const duration = 1.6;      // כמה זמן לוקח המעבר (שניות)
-  const spring = 45;         // כמה חזק כל עיגול נמשך אחרי המסלול הרך שלו
-  const damping = 5.5;       // כמה מהר ההתנודדות נרגעת (פחות = יותר מתנודד)
-  const sizeSpring = 50;
-  const sizeDamping = 6.5;
-  const bumpSize = 34;       // כמה רחוק הגל דוחף כל עיגול (פיקסלים בפיגמה)
-  const bumpGrow = 0.06;     // כמה העיגולים "נושמים" (גדלים מעט) כשהגל עובר
-  const waveDelay = 0.22;    // כמה זמן לוקח לגל להגיע לעיגול הכי רחוק (שניות)
-  // הדחייה בין העיגולים (פיקסלים בפיגמה)
-  // (בכל זוג לא יותר מהמרווח שלהם במנוחה, כדי שבמנוחה אין כוח והם יושבים בדיוק במקום)
-  const repelRange = 90;     // מאיזה מרחק בין הקצוות עיגול מתחיל להידחף מהשכן
-  const minGap = 24;         // המרווח הקטן ביותר: קרוב מזה הם אף פעם לא מגיעים
-  const repelStrength = 9000; // כמה חזק הכוח (גדל ככל שהם מתקרבים)
-  const lookAhead = 0.25;    // כמה זמן קדימה (שניות) הדחייה צופה את ההתקרבות
-  const sidePush = 1.2;      // כמה עיגולים שנעים זה מול זה מתגלגלים הצידה (ביחס לדחייה)
-  const step = 1 / 120;      // צעד החישוב (שניות)
-
-  let centered = null;       // העיגול הממורכז, או null במצב של שתי השורות
-  let ring = [];             // העיגולים הקטנים במעגל, לפי הסדר בכיוון השעון (מתחילים משמאל למעלה)
-  let pixel = 1;             // פיקסל בפיגמה במסך (לכוח הדחייה)
-  let running = false;
-  let lastTime = 0;
-  let startTime = 0;
-  // החזרה לשתי השורות: הדחייה כבויה עד שכולם במקום, והעיגולים נעים בגודל הקטן של המעגל
-  let returning = false;
-  let returnSize = 0;        // הרדיוס של עיגול קטן במעגל, שבו נעים בחזרה
-  const returnGrowAt = 0.9;  // באיזה חלק מהדרך עיגול גדל חזרה לגודל שלו בשורות
-  let startGaps = [];        // המרווח בין כל שני עיגולים בתחילת המעבר
-  let textPosition = null;   // איפה הטקסט מתחת לעיגול הממורכז
-  let textShown = false;
-  let frameSize = 0;         // הגודל הקבוע של התמונה בכל עיגול (הכי גדול שהעיגול מגיע אליו)
-  let line = 0;              // עובי המסגרת הצהובה
-  // במובייל, כשיש עיגול ממורכז: האליפסה של העיגולים הקטנים, האזור הפנוי מתחת לעיגול
-  // הממורכז (בגודל הטקסט), וגבולות המסך. במחשב: null
-  let ellipse = null;
-  let clearZone = null;
-  let screenBounds = null;
-
-  // פיקסל בפיגמה במסך (במחשב: --u של העמוד)
-  function unit() {
-    return parseFloat(getComputedStyle(projectsList).width) / design.listWidth;
+  // קורא אורך מ-styles.css (בפיקסלים), גם כשהוא חישוב
+  function readLength(value) {
+    const probe = document.createElement("div");
+    probe.style.cssText = "position:absolute;visibility:hidden;width:" + value;
+    projectsStrip.appendChild(probe);
+    const length = probe.getBoundingClientRect().width;
+    probe.remove();
+    return length;
   }
 
-  // ----- היעדים של כל עיגול, לפי הסידור הנוכחי -----
-  // מחזיר את המיקום של הטקסט מתחת לעיגול הממורכז (או null)
-  function computeTargets() {
-    const listBox = projectsList.getBoundingClientRect();
-    let groupScale, groupLeft, groupTop;
-
-    if (mobileScreen.matches) {
-      // במובייל (אין עיצוב): שני טורים עם רווח של 33 ושוליים של 20 (--projects-margin),
-      // והסידור הממורכז מוקטן לרוחב המסך
-      const width = projectsList.clientWidth;
-      const gap = design.gap * width / 508;
-      const margin = parseFloat(getComputedStyle(projectsList).getPropertyValue("--projects-margin")) || gap;
-      const size = (width - 2 * margin - gap) / 2;
-      const rows = Math.ceil(items.length / 2);
-      const rowsHeight = rows * size + (rows - 1) * gap;
-      groupScale = (width - 2 * gap) / design.groupWidth;
-      groupLeft = gap;
-      groupTop = 0;
-      projectsList.style.height = Math.max(rowsHeight, design.groupHeight * groupScale) + "px";
-
-      if (!centered) {
-        ellipse = null;
-        clearZone = null;
-        // שני הטורים יכולים להיות גבוהים מהמסך, אז שומרים רק על הצדדים
-        screenBounds = { left: 0, right: width, top: -Infinity, bottom: Infinity };
-        items.forEach(function (item, index) {
-          item.tx = margin + (index % 2) * (size + gap) + size / 2;
-          item.ty = Math.floor(index / 2) * (size + gap) + size / 2;
-          item.tr = size / 2;
-        });
-        return null;
-      }
-      return mobileEllipse(listBox, width, gap, margin, groupScale);
-    } else {
-      ellipse = null;
-      clearZone = null;
-      screenBounds = null;
-      projectsList.style.height = "";
-      const u = unit();
-
-      if (!centered) {
-        // שתי השורות: ביחס לפינה של המבנה (שצמוד לשוליים הימניים והתחתונים)
-        items.forEach(function (item) {
-          item.tx = (item.figmaX - design.listX + design.size / 2) * u;
-          item.ty = (item.figmaY - design.listY + design.size / 2) * u;
-          item.tr = design.size / 2 * u;
-        });
-        return null;
-      }
-
-      // המעגל: הכי גדול שנכנס בתוך השוליים, צמוד לשוליים הימניים והתחתונים
-      const margin = design.margin * u;
-      const right = window.innerWidth - margin;
-      const bottom = window.innerHeight - margin;
-      groupScale = Math.min((bottom - margin) / design.groupHeight, (right - margin) / design.groupWidth);
-      // אם הוא עולה על הכותרת: הגדול ביותר שנכנס מימין לה או מתחתיה
-      const titleBox = title.getBoundingClientRect();
-      const subtitleBox = subtitle.getBoundingClientRect();
-      const titleRight = Math.max(titleBox.right, subtitleBox.right) + margin;
-      const titleBottom = subtitleBox.bottom + margin;
-      const overlapsTitle = right - design.groupWidth * groupScale < titleRight && bottom - design.groupHeight * groupScale < titleBottom;
-      if (overlapsTitle) {
-        const besideTitle = Math.min((right - titleRight) / design.groupWidth, (bottom - margin) / design.groupHeight);
-        const belowTitle = Math.min((bottom - titleBottom) / design.groupHeight, (right - margin) / design.groupWidth);
-        groupScale = Math.max(besideTitle, belowTitle);
-      }
-      groupLeft = right - design.groupWidth * groupScale - listBox.left;
-      groupTop = bottom - design.groupHeight * groupScale - listBox.top;
-    }
-
-    // מפיגמה לפיקסלים במסך, ביחס למבנה העיגולים
-    function toX(figmaX) { return groupLeft + (figmaX - design.groupX) * groupScale; }
-    function toY(figmaY) { return groupTop + (figmaY - design.groupY) * groupScale; }
-
-    // הסידור הממורכז: הנבחר גדול במרכז, השאר קטנים במעגל סביבו
-    const bigCenterX = design.bigX + design.bigSize / 2;
-    const bigCenterY = design.bigY + design.bigSize / 2;
-    centered.tx = toX(bigCenterX);
-    centered.ty = toY(bigCenterY);
-    centered.tr = design.bigSize / 2 * groupScale;
-
-    ringSlots(ring.length, bigCenterX, bigCenterY).forEach(function (slot, index) {
-      const item = ring[index];
-      item.tx = toX(slot[0]);
-      item.ty = toY(slot[1]);
-      item.tr = design.smallSize * design.smallScale / 2 * groupScale;
-    });
-
-    // הטקסט: מתחת לעיגול הגדול, באותו מרחק כמו בפיגמה
-    return { x: toX(bigCenterX), y: toY(design.textTop) };
+  // שומר את ההזזה בתוך סבב אחד (לופ)
+  function wrap(value) {
+    return ((value % setWidth) + setWidth) % setWidth;
   }
 
-  // ----- הסידור הממורכז במובייל: אליפסה אנכית -----
-  // העיגול הממורכז והטקסט שמתחתיו באמצע, והעיגולים הקטנים על אליפסה אנכית סביבם,
-  // שמתפרסת על רוב הגובה שבין הכותרת לתחתית המסך (בתוך השוליים). הכול ממורכז בחלל הזה.
-  // מתחת לעיגול הממורכז, לכל הרוחב והגובה של הטקסט, יש אזור פנוי (clearZone)
-  // שאף עיגול קטן לא נכנס אליו, ואף עיגול לא יוצא מהמסך (screenBounds), גם בזמן התנועה
-  function mobileEllipse(listBox, width, gap, margin, groupScale) {
-    const bigR = design.bigSize / 2 * groupScale;
-    const smallR = design.smallSize * design.smallScale / 2 * groupScale;
-    const bigCenterY = design.bigY + design.bigSize / 2;
-    // הטקסט: באותו מרחק מהעיגול הגדול כמו במחשב
-    const textOffset = (design.textTop - bigCenterY) * groupScale;
-    const textWidth = centered.text.offsetWidth;
-    const textHeight = centered.text.offsetHeight;
-
-    // החלל: מתחת לכותרת ועד תחתית המסך, בתוך השוליים (ביחס למבנה העיגולים)
-    const top = subtitle.getBoundingClientRect().bottom + gap - listBox.top;
-    const bottom = window.innerHeight - margin - listBox.top;
-    const left = margin;
-    const right = width - margin;
-
-    // האליפסה: ממורכזת בחלל, והעיגולים הקטנים נוגעים בשוליים שלו
-    const centerX = (left + right) / 2;
-    const centerY = (top + bottom) / 2;
-    const radiusX = (right - left) / 2 - smallR;
-    const radiusY = (bottom - top) / 2 - smallR;
-    ellipse = { x: centerX, y: centerY, a: radiusX, b: radiusY };
-
-    // העיגול הממורכז והטקסט יחד ממורכזים באליפסה
-    const coreTop = -bigR;
-    const coreBottom = textOffset + textHeight;
-    const bigY = centerY - (coreTop + coreBottom) / 2;
-    centered.tx = centerX;
-    centered.ty = bigY;
-    centered.tr = bigR;
-
-    // ארבעה עיגולים: שניים למעלה ושניים למטה, 30 מעלות מהציר האנכי (בכיוון השעון,
-    // מתחילים משמאל למעלה), כדי שהאליפסה תתפרס על רוב הגובה. מספר אחר: במרווחים שווים
-    const count = ring.length;
-    const tilt = Math.PI / 6;
-    const fourAngles = [-Math.PI / 2 - tilt, -Math.PI / 2 + tilt, Math.PI / 2 - tilt, Math.PI / 2 + tilt];
-    ring.forEach(function (item, index) {
-      const angle = count === 4 ? fourAngles[index] : -3 * Math.PI / 4 + (index / count) * Math.PI * 2;
-      item.tx = centerX + radiusX * Math.cos(angle);
-      item.ty = centerY + radiusY * Math.sin(angle);
-      item.tr = smallR;
-    });
-
-    clearZone = {
-      left: centerX - textWidth / 2,
-      right: centerX + textWidth / 2,
-      top: bigY + textOffset,
-      bottom: bigY + textOffset + textHeight,
-      gap: gap / 2
-    };
-    screenBounds = {
-      left: 0,
-      right: width,
-      top: -listBox.top,
-      bottom: window.innerHeight - listBox.top
-    };
-    projectsList.style.height = Math.max(parseFloat(projectsList.style.height) || 0, bottom + margin) + "px";
-
-    return { x: centerX, y: bigY + textOffset };
-  }
-
-  // המקומות של העיגולים הקטנים (מרכזים), בכיוון השעון, מתחילים משמאל למעלה.
-  // קומפוזיציה סגורה ומהודקת: כל עיגול קטן במרחק ringGap מהעיגול הגדול,
-  // בכיוון של הפינה שלו בפיגמה. ארבעה: הפינות. מספר אחר: במעגל באותו מרחק מהמרכז
-  function ringSlots(count, centerX, centerY) {
-    const half = design.smallSize / 2;
-    const bigCenterX = design.bigX + design.bigSize / 2;
-    const bigCenterY = design.bigY + design.bigSize / 2;
-    const reach = design.bigSize / 2 + design.ringGap + half * design.smallScale;
-    const corners = design.smallSlots.map(function (slot) {
-      const dx = slot[0] + half - bigCenterX;
-      const dy = slot[1] + half - bigCenterY;
-      const length = Math.hypot(dx, dy);
-      return [centerX + dx / length * reach, centerY + dy / length * reach];
-    });
-    if (count === corners.length) {
-      // בפיגמה: שמאל למעלה, ימין למעלה, שמאל למטה, ימין למטה. בכיוון השעון:
-      return [corners[0], corners[1], corners[3], corners[2]];
-    }
-    const radius = Math.hypot(corners[0][0] - centerX, corners[0][1] - centerY);
-    const slots = [];
-    for (let i = 0; i < count; i++) {
-      const angle = -3 * Math.PI / 4 + (i / count) * Math.PI * 2;
-      slots.push([centerX + radius * Math.cos(angle), centerY + radius * Math.sin(angle)]);
-    }
-    return slots;
-  }
-
-  // המעגל בפעם הראשונה (משתי השורות): העיגולים לפי סדר הקריאה, כמו בפיגמה
-  function firstRing() {
-    const others = items.filter(function (item) { return item !== centered; });
-    const slots = ringSlots(others.length, 0, 0);
-    const readingOrder = slots.map(function (slot, index) { return index; }).sort(function (a, b) {
-      return Math.round(slots[a][1] - slots[b][1]) || slots[a][0] - slots[b][0];
-    });
-    const result = [];
-    readingOrder.forEach(function (slotIndex, k) { result[slotIndex] = others[k]; });
-    return result;
-  }
-
-  // עיגול חדש ממורכז כשכבר יש מעגל: הממורכז הקודם נכנס למקום של החדש,
-  // וכל העיגולים במעגל מסתובבים מקום אחד בכיוון השעון (הסדר ביניהם נשמר)
-  function turnRing(previous) {
-    const swapped = ring.map(function (item) { return item === centered ? previous : item; });
-    return swapped.map(function (item, index) { return swapped[(index - 1 + swapped.length) % swapped.length]; });
-  }
-
-  // ----- הכנה מראש (בטעינה ובשינוי גודל החלון) -----
-  // התמונה בכל עיגול מצוירת פעם אחת בגודל הכי גדול שהעיגול מגיע אליו (הממורכז),
-  // ובתנועה רק מוקטנת ב-transform. כך הדפדפן לא מצייר מחדש תמונות גדולות בכל פריים,
-  // וגם המעבר הראשון חלק כמו הבאים
-  function prepareFrames() {
-    line = parseFloat(getComputedStyle(items[0].circle).borderLeftWidth) || 0;
-    // היעדים של סידור ממורכז לדוגמה, רק כדי למדוד את העיגול הגדול
-    const savedCentered = centered;
-    const savedRing = ring;
-    centered = items[0];
-    ring = firstRing();
-    computeTargets();
-    let largest = centered.tr * 2;
-    centered = savedCentered;
-    ring = savedRing;
-    computeTargets();
-    items.forEach(function (item) { largest = Math.max(largest, item.tr * 2); });
-    frameSize = Math.ceil(largest - 2 * line);
-    items.forEach(function (item) {
-      item.frame.style.width = frameSize + "px";
-      item.frame.style.height = frameSize + "px";
-    });
-  }
-
-  // ----- ציור -----
   function draw() {
-    items.forEach(function (item) {
-      const size = Math.max(0, item.r * 2);
-      item.circle.style.left = (item.x - item.r) + "px";
-      item.circle.style.top = (item.y - item.r) + "px";
-      item.circle.style.width = size + "px";
-      item.circle.style.height = size + "px";
-      item.frame.style.transform = "scale(" + Math.max(0, size - 2 * line) / frameSize + ")";
-    });
+    track.style.transform = "translateX(" + (-offset) + "px)";
   }
 
-  // הטקסט של הממורכז הקודם נעלם מיד, והעיגול הממורכז מקבל את הכיסוי עם השם
-  function placeText(position) {
-    textPosition = position;
-    textShown = false;
-    items.forEach(function (item) {
-      item.text.classList.remove("is-visible");
-      item.circle.classList.toggle("is-centered", item === centered);
-    });
-  }
+  // בונה את הרצועה: הסבב חוזר כמה פעמים שצריך כדי למלא את החלון, ועוד סבב אחד,
+  // כך שכשסבב יוצא משמאל, הסבב הבא כבר נמצא בדיוק במקומו.
+  // keepPlace: בשינוי גודל החלון הרצועה נשארת באותה נקודה בלופ
+  function buildStrip(keepPlace) {
+    const place = keepPlace && setWidth ? offset / setWidth : null;
+    track.textContent = "";
+    projects.forEach(function (project) { track.appendChild(project); });
 
-  // הטקסט מופיע כשהעיגול הממורכז כמעט הגיע (tick), או מיד כשאין תנועה
-  function showText() {
-    if (!centered || !textPosition || textShown) return;
-    textShown = true;
-    centered.text.style.left = textPosition.x + "px";
-    centered.text.style.top = textPosition.y + "px";
-    centered.text.classList.add("is-visible");
-  }
+    const step = projects[0].getBoundingClientRect().width + readLength("var(--projects-image-gap)");
+    setWidth = step * projects.length;
+    speed = readLength("calc(var(--projects-strip-speed) * var(--cell))");
+    const copies = Math.ceil(projectsStrip.clientWidth / setWidth) + 1;
+    for (let i = 1; i < copies; i++) {
+      projects.forEach(function (project) { track.appendChild(project.cloneNode(true)); });
+    }
 
-  // קופץ ישר ליעד, בלי תנועה (בטעינה, בשינוי גודל החלון, ובצמצום תנועה)
-  function snap() {
-    items.forEach(function (item) {
-      item.x = item.tx; item.y = item.ty; item.r = item.tr;
-      item.vx = 0; item.vy = 0; item.vr = 0;
-    });
+    // בטעינה: התמונה הראשונה במקום שלה בפיגמה (x = -34 מתחילת אזור העיצוב)
+    offset = place === null
+      ? wrap(-readLength("calc(var(--grid-left) + var(--projects-strip-start))"))
+      : wrap(place * setWidth);
     draw();
-    showText();
   }
 
-  // האצה והאטה רכות ומודגשות
-  function easeInOut(t) {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  // האם העכבר על אחת התמונות
+  function isHovered() {
+    if (!mouse) return false;
+    const target = document.elementFromPoint(mouse.x, mouse.y);
+    return Boolean(target && target.closest(".projects-image") && projectsStrip.contains(target));
   }
 
-  // ----- הפיזיקה -----
-  // כל עיגול נמשך בקפיץ רך אחרי נקודה שנעה לאט מהמקום הקודם שלו ליעד (עם האצה והאטה),
-  // ועוד דחיפה קטנה של הגל שעולה ויורדת. הקפיץ מוסיף את ההתנודדות העדינה בסוף
-  // טווח הדחייה והמרווח הקטן ביותר של שני עיגולים: לפי ההגדרות,
-  // אבל לא יותר מהמרווח שלהם במנוחה (בשתי השורות הם קרובים יותר מאשר במעגל),
-  // וגם לא יותר מהמרווח שלהם בתחילת המעבר. אחרת, ביציאה משתי השורות הצפופות
-  // הכוח פועל כבר מהפריים הראשון, נדלק ונכבה בכל צעד, והעיגולים רועדים
-  function pairLimits(i, j) {
-    const a = items[i];
-    const b = items[j];
-    const restGap = Math.min(startGaps[i][j], Math.hypot(b.tx - a.tx, b.ty - a.ty) - a.tr - b.tr);
-    return {
-      range: Math.min(repelRange * pixel, restGap * 0.9),
-      smallest: Math.min(minGap * pixel, restGap * 0.6)
-    };
+  function moveStrip(time) {
+    if (lastTime === null) lastTime = time;
+    const seconds = Math.min((time - lastTime) / 1000, 0.1);
+    lastTime = time;
+
+    if (!focused && !isHovered()) {
+      offset = wrap(offset + speed * seconds);
+      draw();
+    }
+    requestAnimationFrame(moveStrip);
   }
 
-  function simulate(dt, time) {
-    items.forEach(function (item) {
-      const progress = Math.min(1, Math.max(0, (time - item.delay) / duration));
-      const eased = easeInOut(progress);
-      const wave = Math.sin(Math.PI * eased);
-      let goalX = item.fromX + (item.tx - item.fromX) * eased + item.bumpX * wave;
-      let goalY = item.fromY + (item.ty - item.fromY) * eased + item.bumpY * wave;
-      if (item.arc) {
-        const angle = item.arc.fromAngle + item.arc.turn * eased;
-        const reach = item.arc.fromReach + (item.arc.toReach - item.arc.fromReach) * eased;
-        goalX = item.arc.x + Math.cos(angle) * reach * item.arc.scaleX + item.bumpX * wave;
-        goalY = item.arc.y + Math.sin(angle) * reach * item.arc.scaleY + item.bumpY * wave;
-      }
-      let goalR = (item.fromR + (item.tr - item.fromR) * eased) * (1 + bumpGrow * wave);
-      // בחזרה: כל העיגולים (גם הממורכז, מיד) בגודל הקטן של המעגל,
-      // ורק כשעיגול עבר 90% מהדרך הוא גדל לגודל שלו בשורות
-      if (returning) {
-        const grow = Math.max(0, (eased - returnGrowAt) / (1 - returnGrowAt));
-        goalR = returnSize + (item.tr - returnSize) * grow;
-      }
-      item.vx += (spring * (goalX - item.x) - damping * item.vx) * dt;
-      item.vy += (spring * (goalY - item.y) - damping * item.vy) * dt;
-      item.vr += (sizeSpring * (goalR - item.r) - sizeDamping * item.vr) * dt;
-    });
+  // העכבר בלבד (באצבע אין hover: נגיעה מובילה ישר לעמוד)
+  window.addEventListener("pointermove", function (event) {
+    mouse = event.pointerType === "mouse" ? { x: event.clientX, y: event.clientY } : null;
+  });
+  document.documentElement.addEventListener("pointerleave", function () {
+    mouse = null;
+  });
 
-    // דחייה רכה, כמו מגנטים הפוכים: כשעיגול מתקרב לשכן (פחות מ-repelRange בין הקצוות)
-    // שניהם נדחפים זה מזה, וככל שהם קרובים יותר הכוח חזק יותר. עיגול קטן זז יותר מגדול.
-    // עיגולים שנעים זה מול זה גם מתגלגלים הצידה, במקום להיתקע ראש בראש.
-    // בחזרה לשתי השורות הדחייה כבויה, כדי שלא תחסום אותם בדרך
-    if (!returning) applyRepel(dt);
-
-    items.forEach(function (item) {
-      item.x += item.vx * dt;
-      item.y += item.vy * dt;
-      item.r += item.vr * dt;
-    });
-
-    if (!returning) keepMinGap();
-
-    // במובייל: אף עיגול קטן לא נכנס לאזור הטקסט שמתחת לעיגול הממורכז
-    if (centered && clearZone) {
-      items.forEach(function (item) {
-        if (item === centered) return;
-        keepOutOfZone(item, clearZone);
-      });
-    }
-
-    // במובייל: כל העיגולים נשארים שלמים בתוך המסך
-    if (screenBounds) {
-      items.forEach(function (item) {
-        const r = Math.max(0, item.r);
-        if (item.x - r < screenBounds.left) { item.x = screenBounds.left + r; item.vx = Math.max(0, item.vx); }
-        if (item.x + r > screenBounds.right) { item.x = screenBounds.right - r; item.vx = Math.min(0, item.vx); }
-        if (item.y - r < screenBounds.top) { item.y = screenBounds.top + r; item.vy = Math.max(0, item.vy); }
-        if (item.y + r > screenBounds.bottom) { item.y = screenBounds.bottom - r; item.vy = Math.min(0, item.vy); }
-      });
-    }
-  }
-
-  // הדחייה בין כל שני עיגולים (משנה את המהירויות)
-  function applyRepel(dt) {
-    for (let i = 0; i < items.length; i++) {
-      for (let j = i + 1; j < items.length; j++) {
-        const a = items[i];
-        const b = items[j];
-        let dx = b.x - a.x;
-        let dy = b.y - a.y;
-        let distance = Math.hypot(dx, dy);
-        const gap = distance - a.r - b.r;
-        const limits = pairLimits(i, j);
-        const range = limits.range;
-        const smallest = limits.smallest;
-        if (distance < 0.001) { dx = 1; dy = 0; distance = 1; }
-        const nx = dx / distance;
-        const ny = dy / distance;
-        const weightA = b.r / (a.r + b.r);
-        const weightB = a.r / (a.r + b.r);
-        // מסתכלים קצת קדימה: עיגולים שמתקרבים מהר (או גדלים) נדחפים מוקדם יותר, כדי שיאטו ברכות
-        const closing = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny - a.vr - b.vr;
-        const aheadGap = gap + Math.min(0, closing) * lookAhead;
-        if (aheadGap >= range) continue;
-        const closeness = Math.min(1.5, (range - aheadGap) / (range - smallest));
-        const force = repelStrength * pixel * closeness * closeness * dt;
-        const side = Math.sign(nx * (b.ty - a.ty) - ny * (b.tx - a.tx)) || 1;
-        const fx = nx * force - ny * side * force * sidePush;
-        const fy = ny * force + nx * side * force * sidePush;
-        a.vx -= fx * weightA;
-        a.vy -= fy * weightA;
-        b.vx += fx * weightB;
-        b.vy += fy * weightB;
-      }
-    }
-  }
-
-  // ביטחון: אף פעם לא קרובים יותר מהמרווח הקטן ביותר (וגם לא ממשיכים להתקרב)
-  function keepMinGap() {
-    for (let i = 0; i < items.length; i++) {
-      for (let j = i + 1; j < items.length; j++) {
-        const a = items[i];
-        const b = items[j];
-        const distance = Math.hypot(b.x - a.x, b.y - a.y) || 0.001;
-        const gap = distance - a.r - b.r;
-        const smallest = pairLimits(i, j).smallest;
-        if (gap >= smallest) continue;
-        const nx = (b.x - a.x) / distance;
-        const ny = (b.y - a.y) / distance;
-        const weightA = b.r / (a.r + b.r);
-        const weightB = a.r / (a.r + b.r);
-        const fix = smallest - gap;
-        a.x -= nx * fix * weightA;
-        a.y -= ny * fix * weightA;
-        b.x += nx * fix * weightB;
-        b.y += ny * fix * weightB;
-        const approaching = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
-        if (approaching < 0) {
-          a.vx += nx * approaching * weightA;
-          a.vy += ny * approaching * weightA;
-          b.vx -= nx * approaching * weightB;
-          b.vy -= ny * approaching * weightB;
-        }
-      }
-    }
-  }
-
-  // דוחף עיגול אל מחוץ למלבן (ועוד מרווח), לצד הקרוב, ועוצר את התנועה שלו פנימה
-  function keepOutOfZone(item, zone) {
-    const r = Math.max(0, item.r) + zone.gap;
-    const nearestX = Math.min(Math.max(item.x, zone.left), zone.right);
-    const nearestY = Math.min(Math.max(item.y, zone.top), zone.bottom);
-    let dx = item.x - nearestX;
-    let dy = item.y - nearestY;
-    let distance = Math.hypot(dx, dy);
-    if (distance >= r) return;
-    if (distance < 0.001) {
-      // המרכז בתוך המלבן: יוצאים מהצלע הקרובה
-      const exits = [
-        [item.x - zone.left, -1, 0], [zone.right - item.x, 1, 0],
-        [item.y - zone.top, 0, -1], [zone.bottom - item.y, 0, 1]
-      ].sort(function (p, q) { return p[0] - q[0]; });
-      dx = exits[0][1]; dy = exits[0][2];
-      item.x += dx * (exits[0][0] + r);
-      item.y += dy * (exits[0][0] + r);
-    } else {
-      dx /= distance; dy /= distance;
-      item.x += dx * (r - distance);
-      item.y += dy * (r - distance);
-    }
-    const inward = item.vx * dx + item.vy * dy;
-    if (inward < 0) {
-      item.vx -= dx * inward;
-      item.vy -= dy * inward;
-    }
-  }
-
-  function isSettled(time) {
-    return time > duration + waveDelay && items.every(function (item) {
-      return Math.abs(item.tx - item.x) < 0.2 && Math.abs(item.ty - item.y) < 0.2 && Math.abs(item.tr - item.r) < 0.2 &&
-        Math.abs(item.vx) < 0.5 && Math.abs(item.vy) < 0.5 && Math.abs(item.vr) < 0.5;
-    });
-  }
-
-  function tick(now) {
-    let elapsed = Math.min(0.05, (now - lastTime) / 1000);
-    lastTime = now;
-    while (elapsed > 0) {
-      const dt = Math.min(step, elapsed);
-      simulate(dt, (now - startTime) / 1000 - elapsed + dt);
-      elapsed -= step;
-    }
-    // הטקסט: רק כשהעיגול הממורכז עבר 90% מהדרך שלו למקום (גם אם הוא עוד מתנודד מעט)
-    if (centered && !textShown) {
-      const path = Math.hypot(centered.tx - centered.fromX, centered.ty - centered.fromY);
-      const left = Math.hypot(centered.tx - centered.x, centered.ty - centered.y);
-      if (left <= path * 0.1) showText();
-    }
-    if (isSettled((now - startTime) / 1000)) {
-      running = false;
-      returning = false;
-      snap();
-      return;
-    }
+  // מקלדת: פוקוס על תמונה עוצר את הרצועה. אם התמונה חתוכה בקצה, מזיזים אותה פנימה
+  projectsStrip.addEventListener("focusin", function (event) {
+    focused = true;
+    const box = projectsStrip.getBoundingClientRect();
+    const imageBox = event.target.getBoundingClientRect();
+    if (imageBox.left < box.left) offset = wrap(offset - (box.left - imageBox.left));
+    else if (imageBox.right > box.right) offset = wrap(offset + (imageBox.right - box.right));
     draw();
-    requestAnimationFrame(tick);
-  }
-
-  // ----- מעבר לסידור חדש -----
-  // source: העיגול שממנו יוצא הגל (זה שנלחץ, או הממורכז כשחוזרים לשתי השורות)
-  function arrange(newCentered, source) {
-    const previous = centered;
-    // חוזרים לשתי השורות: נעים בגודל של עיגול קטן במעגל, בלי דחייה
-    returning = !newCentered;
-    if (returning && ring.length) returnSize = ring[0].tr;
-    centered = newCentered;
-    if (!centered) ring = [];
-    else if (!previous) ring = firstRing();
-    else ring = turnRing(previous);
-    placeText(computeTargets());
-    if (reducedMotion.matches) {
-      returning = false;
-      snap();
-      return;
-    }
-
-    // הגל: כל עיגול נדחף מעט הרחק מהעיגול שנלחץ (גם מי שהיעד שלו כמעט לא משתנה),
-    // ומי שרחוק יותר מקבל את הגל קצת אחר כך
-    const u = mobileScreen.matches ? projectsList.clientWidth / 508 : unit();
-    pixel = u;
-    const farthest = Math.max.apply(null, items.map(function (item) {
-      return Math.hypot(item.x - source.x, item.y - source.y);
-    })) || 1;
-    items.forEach(function (item) {
-      item.fromX = item.x; item.fromY = item.y; item.fromR = item.r;
-      // במעגל שמסתובב: מי שהיה קטן ונשאר קטן נע בקשת סביב המרכז (בכיוון השעון)
-      item.arc = null;
-      // (במחשב סביב העיגול הממורכז. במובייל לאורך האליפסה, כדי לא לצאת מהמסך)
-      if (previous && centered && item !== previous && item !== centered) {
-        const arcX = ellipse ? ellipse.x : centered.tx;
-        const arcY = ellipse ? ellipse.y : centered.ty;
-        const scaleX = ellipse ? ellipse.a : 1;
-        const scaleY = ellipse ? ellipse.b : 1;
-        const fromAngle = Math.atan2((item.y - arcY) / scaleY, (item.x - arcX) / scaleX);
-        const toAngle = Math.atan2((item.ty - arcY) / scaleY, (item.tx - arcX) / scaleX);
-        item.arc = {
-          x: arcX, y: arcY, scaleX: scaleX, scaleY: scaleY,
-          fromAngle: fromAngle,
-          turn: ((toAngle - fromAngle) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI),
-          fromReach: Math.hypot((item.x - arcX) / scaleX, (item.y - arcY) / scaleY),
-          toReach: Math.hypot((item.tx - arcX) / scaleX, (item.ty - arcY) / scaleY)
-        };
-      }
-      let dx = item.x - source.x;
-      let dy = item.y - source.y;
-      const distance = Math.hypot(dx, dy);
-      if (distance < 1) { dx = 0; dy = -1; } else { dx /= distance; dy /= distance; }
-      const strength = bumpSize * u * (item === source ? 0.4 : 1 - 0.4 * distance / farthest);
-      item.bumpX = dx * strength;
-      item.bumpY = dy * strength;
-      item.delay = waveDelay * distance / farthest;
-    });
-    startGaps = items.map(function (a) {
-      return items.map(function (b) { return Math.hypot(b.x - a.x, b.y - a.y) - a.r - b.r; });
-    });
-
-    startTime = performance.now();
-    if (!running) {
-      running = true;
-      lastTime = startTime;
-      requestAnimationFrame(tick);
-    }
-  }
-
-  // לחיצה (וגם Enter, וגם נגיעה בטלפון): עיגול שלא ממורכז מתמרכז.
-  // העיגול הממורכז: הקישור עובד כרגיל (בלי עמוד: לא קורה כלום)
-  function activate(item, event) {
-    if (item === centered) return;
-    event.preventDefault();
-    arrange(item, item);
-  }
-
-  items.forEach(function (item) {
-    item.circle.addEventListener("click", function (event) {
-      activate(item, event);
-    });
-    // קישור בלי href לא מקבל click מ-Enter, אז מטפלים בו כאן
-    item.circle.addEventListener("keydown", function (event) {
-      if (event.key === "Enter" && !item.circle.hasAttribute("href")) activate(item, event);
-    });
+  });
+  projectsStrip.addEventListener("focusout", function (event) {
+    if (!projectsStrip.contains(event.relatedTarget)) focused = false;
   });
 
-  // לחיצה מחוץ לעיגולים, או Esc: חוזרים לשתי השורות
-  document.addEventListener("click", function (event) {
-    if (centered && !event.target.closest(".project-circle")) arrange(null, centered);
-  });
-  document.addEventListener("keydown", function (event) {
-    if (event.key === "Escape" && centered) arrange(null, centered);
-  });
-
-  // שינוי גודל החלון: הכול במקום, בלי תנועה
   window.addEventListener("resize", function () {
-    prepareFrames();
-    placeText(computeTargets());
-    items.forEach(function (item) { item.bumpX = 0; item.bumpY = 0; item.fromX = item.tx; item.fromY = item.ty; item.fromR = item.tr; });
-    snap();
+    buildStrip(true);
   });
 
-  prepareFrames();
-  placeText(computeTargets());
-  snap();
-  // מפענחים את התמונות מראש, כדי שלא יפוענחו באמצע התנועה הראשונה
-  items.forEach(function (item) {
-    if (item.image && item.image.decode) item.image.decode().catch(function () {});
-  });
+  buildStrip(false);
+  requestAnimationFrame(moveStrip);
 }
 
 // =========================================
