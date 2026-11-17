@@ -16,7 +16,7 @@
 
   const SCRIPT = document.currentScript;
   const BASE = SCRIPT && SCRIPT.src ? new URL(".", SCRIPT.src).href : "elements-anim/";
-  const IMG = name => `${BASE}img/${name}.png`;
+  const IMG = name => `${BASE}img/${name}.webp`;
   const LOTTIE_URL = `${BASE}vendor/lottie.min.js`;
   const NS = "http://www.w3.org/2000/svg";
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;

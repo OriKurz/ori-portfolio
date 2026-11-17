@@ -434,7 +434,7 @@
   /* "From Figma to site": ברוחב כל הגריד, מתחת ל-09/11 */
   --figma-to-site-column: 0; --figma-to-site-row: 50.06; --figma-to-site-columns: 14; --figma-to-site-rows: 7.25;
 
-  /* שלושה חיתוכים מאותו צילום מסך (direction-one-board.png), כמו בפיגמה:
+  /* שלושה חיתוכים מאותו צילום מסך (direction-one-board.webp), כמו בפיגמה:
      רוחב, גובה, ומיקום התמונה בתוך המסגרת */
   --board-crop-width: 212.01%;  --board-crop-height: 142.09%;  --board-crop-left: -108.1%;  --board-crop-top: -4.38%;
   --green-crop-width: 212.61%;  --green-crop-height: 389.33%;  --green-crop-left: -2.24%;   --green-crop-top: -10.67%;
@@ -1717,6 +1717,13 @@
   /* במק הדפדפן מציג טקסט עבה יותר מפיגמה. ההחלקה הזו מציגה אותו דק, כמו בפיגמה */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ה-width וה-height בתגיות img רק שומרים מקום לתמונה בזמן הטעינה (יחס רוחב/גובה).
+   הגודל עצמו נקבע רק ב-CSS, כמו קודם */
+img {
+  width: auto;
+  height: auto;
 }
 
 body {
@@ -4199,10 +4206,10 @@ body {
   height: auto;
 }
 
-#shunra-sticker-layer .stk:has(> img[src$="06-seahorse.png"]) { rotate: 14.31deg; }
-#shunra-sticker-layer .stk:has(> img[src$="02-red-fish.png"])  { rotate: -47.24deg; }
-#shunra-sticker-layer .stk:has(> img[src$="05-ray.png"])       { rotate: 15.86deg; }
-#shunra-sticker-layer .stk:has(> img[src$="03-oysters.png"])   { rotate: 39.43deg; }
+#shunra-sticker-layer .stk:has(> img[src$="06-seahorse.webp"]) { rotate: 14.31deg; }
+#shunra-sticker-layer .stk:has(> img[src$="02-red-fish.webp"])  { rotate: -47.24deg; }
+#shunra-sticker-layer .stk:has(> img[src$="05-ray.webp"])       { rotate: 15.86deg; }
+#shunra-sticker-layer .stk:has(> img[src$="03-oysters.webp"])   { rotate: 39.43deg; }
 
 /* הכפתור הכתום: קישור לעמוד האינסטגרם. הרקע ממלא בדיוק את השטח שבין קווי הגריד.
    Pressed: ההתכווצות הכללית. Focus: קו מתאר (אין Hover שנראה) */
@@ -4910,7 +4917,7 @@ body {
   border: var(--line) solid var(--magnifier-color);
   border-radius: 50%;
   background-color: var(--page-background);
-  background-image: url("Images/mape1.png");
+  background-image: url("Images/mape1.webp");
   background-repeat: no-repeat;
   background-size: var(--lens-bg-width, 0px) auto;
   background-position: var(--lens-bg-x, 0) var(--lens-bg-y, 0);
