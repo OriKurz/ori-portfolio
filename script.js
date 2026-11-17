@@ -302,6 +302,16 @@ if (videoPlayer) {
   let isSeeking = false;  // האם גוררים עכשיו את הבר
   let progressFrame = null;
 
+  // הסרטון לא מעכב את פתיחת הדף: בהתחלה נטען רק המידע הבסיסי (preload="metadata").
+  // אחרי שהדף סיים להיטען, הסרטון מתחיל לרדת ברקע, כך שהוא מוכן כשמגיעים אליו
+  if (video) {
+    const startVideoDownload = function () {
+      video.preload = "auto";
+    };
+    if (document.readyState === "complete") startVideoDownload();
+    else window.addEventListener("load", startVideoDownload, { once: true });
+  }
+
   // מפעיל (עם סאונד) או עוצר
   function togglePlay() {
     if (video.paused) {
