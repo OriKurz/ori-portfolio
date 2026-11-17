@@ -204,11 +204,7 @@
 
   /* כפתורים בעמוד הבית: עמודה ושורה */
   --index-button-column: 4;   --index-button-row: 1;
-  --process-column: 7;        --process-row: 1;
   --say-hi-button-column: 9;  --say-hi-button-row: 1;
-  /* PROCESS: במחשב משבצת אחת, והטקסט נשבר לשתי שורות */
-  --process-columns: 1;
-  --process-line-break: inline;
 
   /* בלחיצה הטקסט קטן מ-25px ל-20px, כמו ב-State3 בפיגמה (20/25 = 0.8) */
   --pressed-scale: 0.8;
@@ -322,10 +318,7 @@
     --type-px: calc(var(--cell) / 49.06);
     --button-padding: calc(var(--cell) * 10 / 49.06);
 
-    /* כפתורים: עמודה ושורה. PROCESS כאן ברוחב 2 משבצות, בשורה אחת */
-    --process-column: 3;  --process-row: 1;
-    --process-columns: 2;
-    --process-line-break: none;
+    /* כפתורים: עמודה ושורה */
     --index-button-column: 1;   --index-button-row: 3;
     --say-hi-button-column: 5;  --say-hi-button-row: 3;
 
@@ -2307,19 +2300,6 @@ body {
 .nav-button--say-hi {
   --column: var(--say-hi-button-column);
   --row: var(--say-hi-button-row);
-}
-
-/* PROCESS: במחשב משבצת אחת, והטקסט נשבר לשתי שורות (PRO / CESS) */
-.nav-button--process {
-  --column: var(--process-column);
-  --row: var(--process-row);
-  --columns: var(--process-columns);
-  text-align: center;
-}
-
-/* שבירת השורה בין PRO ל-CESS: רק במחשב */
-.process-line-break {
-  display: var(--process-line-break);
 }
 
 /* ----- מובייל ----- */
