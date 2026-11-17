@@ -114,6 +114,9 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
   function clickableAt(target) {
     if (!target || !target.closest) return null;
     if (target.closest(".is-magnifying")) return null;
+    // אלמנט עם תווית (תמונה באינדקס): בכל נקודה בו בוחרים אותו, ולא את מה שבתוכו
+    const labeled = target.closest("[data-cursor-label]");
+    if (labeled) return labeled;
     for (let element = target; element && element !== document.body; element = element.parentElement) {
       if (element.classList.contains("has-ball-cursor")) return element;
       if (element.matches(clickableSelector) || getComputedStyle(element).cursor === "pointer") return element;
