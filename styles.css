@@ -220,6 +220,8 @@
   /* ברירת המחדל של Pressed לכל כפתור וקישור: התכווצות קלה */
   --pressed-default-scale: 0.9;
   --menu-pressed-scale: 0.9;
+  /* אזור הנגיעה של ההמבורגר במכשירי מגע (לפחות 44x44), בלי לשנות את האייקון */
+  --menu-touch-size: 44px;
   --contact-ball-pressed-scale: 0.92;
   --play-icon-pressed-scale: 0.9;
 
@@ -292,13 +294,13 @@
   :root { --device-px: calc(1px / 3); }
 }
 
-/* ----- עמוד הבית במובייל (מסכים צרים מ-768px) -----
+/* ----- עמוד הבית במובייל (מסך לאורך, עד 1024px: טלפון וטאבלט) -----
    הפריים iPhone בפיגמה: 8 משבצות לרוחב המסך (משבצת = 49.06px בפיגמה),
    ואזור העיצוב הוא 17 שורות. העמוד ממלא בדיוק את המסך, בלי גלילה.
    מסך גבוה: בדיוק 8 משבצות לרוחב, ולמטה נשארת שורה חלקית.
    מסך נמוך (כל 17 השורות לא נכנסות): מוסיפים טורים (זוגי, חצי מכל צד)
    והמשבצות קטנות, כמו במחשב (--cell ו---grid-left מ-:root). */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-home,
   .vars-home {
     --grid-columns: 8;
@@ -512,7 +514,7 @@
    מלבן שבו התמונות אחת מתחת לשנייה, ברוחב מלא. גלילה רגילה של העמוד.
    כל מלבן הוא מספר שלם של שורות, והתוכן ממורכז בו לגובה.
    הגדלים של הטקסט והכפתור כמו בעמוד הבית במובייל. */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-process {
     --grid-columns: 8;
     --grid-rows: 141;
@@ -712,7 +714,7 @@
    אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב המסך (כמו עמוד הבית במובייל),
    והאלמנטים יורדים בטור: הסרגל העליון, בר האינדקס, הסרטון, ריבועי השם, הטקסט והכפתור.
    העמוד נגלל לגובה, וקווי הגריד ממשיכים עד קצות המסך. */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-project {
     --grid-columns: 8;
     --grid-rows: 13;
@@ -944,7 +946,7 @@
 /* ----- עמוד פרויקט מלא במובייל -----
    אין עדיין עיצוב מובייל בפיגמה. בינתיים: טור אחד, הטקסט ואחריו הגריד
    (10 משבצות לרוחב המסך), עם גלילה רגילה של העמוד. */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-full-project,
   .vars-full-project {
     /* הגריד ממלא את כל רוחב המסך: טורים שלמים, והקו הימני של הגריד על הקצה הימני.
@@ -1131,7 +1133,7 @@
 }
 
 /* הזכוכית המגדלת בטלפון: עיגול של 6 משבצות, מגדיל פי 2.5 */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-leftovers {
     --magnifier-lens-size: calc(var(--cell) * 6);
     --magnifier-zoom: 2.5;
@@ -1283,7 +1285,7 @@
   --next-projects-background: color-mix(in srgb, var(--shunra-ink) 50%, transparent);
 }
 
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-shunra {
     /* השוליים של 20 במובייל (במחשב הם מהפיגמה, למעלה) */
     --title-left: var(--margin-mobile);
@@ -1407,7 +1409,7 @@
    אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב המסך, ואותו סידור כמו במחשב
    (המלבן בשורה 3, ברוחב 6 משבצות). הגריד מתחיל בראש המסך,
    והרצועה הכתומה בתחתית: שלושת הטקסטים אחד מתחת לשני, והעמוד נגלל. */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-say-hi,
   .vars-say-hi {
     --grid-columns: 8;
@@ -1539,7 +1541,7 @@
 /* ----- דף 404 במובייל -----
    אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב, אותו סידור במשבצות כמו במחשב,
    ממורכז לרוחב (5 טורים פחות משמאל) ולגובה (שורות שלמות). הטקסטים הקטנים ב-Button/Mobile */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-404 {
     --grid-columns: 8;
     --grid-rows: 9;
@@ -1601,7 +1603,7 @@
 /* ----- עמוד אינדקס הפרויקטים במובייל -----
    הפריים indexM בפיגמה (393x852): 8 משבצות לרוחב (49.125px), הגריד מתחיל בפינה העליונה.
    מספרים כמו 15 * var(--u) הם פיקסלים בפריים (הגריד בפיגמה מתחיל ב-y = -3, אז לגובה מוסיפים 3) */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-projects {
     --design-columns: 8;
     --line: var(--line-mobile);
@@ -1676,7 +1678,7 @@
 /* מובייל (אין עיצוב בפיגמה): בר נמוך יותר, המבורגר בגודל ההמבורגר של העמודים במובייל,
    טקסט Nav/Mobile (14), והמילים מתפזרות ברווחים שווים עד הקצה הימני.
    פיקסל אחד עד רוחב 375, וקטן יותר בטלפונים צרים יותר כדי שהשורה תמיד תיכנס */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root {
     --nav-px: min(1px, 100vw / 375);
     --nav-height: calc(52 * var(--nav-px));
@@ -1928,9 +1930,9 @@ body {
   letter-spacing: 0;
 }
 
-/* במובייל (צר מ-768px) הסגנונות שיש להם גרסת מובייל עוברים אליה:
+/* במובייל (מסך לאורך, עד 1024px) הסגנונות שיש להם גרסת מובייל עוברים אליה:
    Display/Large → Display/Mobile, Button → Button/Mobile, Button/Strong → Button/Mobile Strong, Nav → Nav/Mobile */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   .text-display-large  { font-size: calc(var(--text-display-mobile-size) * var(--type-px)); }
   .text-display-letter { font-size: calc(var(--text-display-letter-mobile-size) * var(--type-px)); }
   .text-button         { font-size: calc(var(--text-button-mobile-size) * var(--type-px)); }
@@ -2290,7 +2292,7 @@ body {
 .home-letter--z  { --column: var(--letter-z-column);  --row: var(--letter-z-row); }
 
 /* ה-O במובייל: הגודל שלו מהפיגמה */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   .home-letter--o {
     font-size: calc(var(--letter-o-size) * var(--type-px));
   }
@@ -2321,7 +2323,7 @@ body {
 }
 
 /* ----- מובייל ----- */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   /* אזור העיצוב ברוחב 8 משבצות בדיוק
      (הקו הימני ביותר נמצא בכל מקרה מתחת למסגרת) */
   .home {
@@ -2599,7 +2601,7 @@ body {
 }
 
 /* במובייל: העמוד נגלל לגובה, בלי גלילה לרוחב */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   .page-project body {
     height: auto;
     overflow-x: hidden;
@@ -2687,6 +2689,25 @@ body {
 
 .menu-button {
   transition: scale var(--transition-speed) ease;
+}
+
+/* במכשירי מגע: אזור לחיץ שקוף של לפחות 44x44 סביב האייקון, ממורכז עליו.
+   האייקון עצמו לא זז ולא גדל */
+@media (pointer: coarse) {
+  .menu-button::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, var(--menu-touch-size));
+    height: max(100%, var(--menu-touch-size));
+    translate: -50% -50%;
+  }
+
+  /* ההמבורגר שבתוך הבר לא ממוקם, אז האזור הלחיץ צריך נקודת ייחוס */
+  .nav-bar-menu {
+    position: relative;
+  }
 }
 
 /* מעבר עכבר: הקווים ירוקים (גם בעמוד Say Hi, שבו הם כתומים), אלא אם העמוד קובע אחרת (--menu-hover-color) */
@@ -3642,7 +3663,7 @@ body {
 }
 
 /* ----- מובייל: טור אחד, והעמוד כולו נגלל ----- */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   .page-full-project body {
     height: auto;
     overflow-x: hidden;
@@ -3775,7 +3796,7 @@ body {
   display: none;
 }
 
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-perfect-crime {
     /* הלשונית: 315x513 בפיגמה, מתחת לשורה הראשונה של הגריד (שבה ההמבורגר).
        סגורה: זזה ברוחב שלה שמאלה, והפס הוורוד בקצה שלה נעלם מתחת לקו הגריד השמאלי */
@@ -3952,7 +3973,7 @@ body {
   }
 }
 
-@media (max-width: 767.98px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
+@media (max-width: 1024px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
   .page-perfect-crime .text-tab,
   .page-perfect-crime .text-tab-handle,
   .page-perfect-crime .text-tab.is-handle-hidden .text-tab-handle {
@@ -4456,7 +4477,7 @@ body {
 }
 
 /* במובייל: טור אחד והעמוד כולו נגלל כרגיל */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   .page-leftovers .full-project-info,
   .page-shunra .full-project-info {
     position: relative;
@@ -5163,7 +5184,7 @@ body {
   white-space: nowrap;
 }
 
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   .say-hi-title {
     font-size: var(--say-hi-title-size);
   }
@@ -5206,7 +5227,7 @@ body {
 /* במובייל: החלק הוורוד (הגריד, הכותרת וההמבורגר) קבוע במקום, ורק החלק הכתום נגלל.
    הוא עולה מעל הוורוד עד הקו התחתון של השורה הראשונה, ואם הטקסט ארוך יותר
    הוא ממשיך לעלות אל מתחת לשורה הראשונה (שמעליו), כך שהקצה שלו נראה עומד והטקסט נגלל */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   .page-say-hi,
   .page-say-hi body {
     height: auto;
@@ -5462,7 +5483,7 @@ body {
 }
 
 /* במובייל: שוליים צרים, ושני הכפתורים אחד מתחת לשני */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   :root.page-styleguide {
     --styleguide-gutter: calc(16 * var(--styleguide-type-px));
     --styleguide-section-gap: calc(64 * var(--styleguide-type-px));
@@ -5814,7 +5835,7 @@ body {
 }
 
 /* במובייל (Rectangle 71 בפיגמה): הטור של הקרוסלה, מאחרי הקו שלו ועד הקצה הימני, לכל הגובה */
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   .projects-strip-background {
     left: calc(var(--projects-strip-column) * var(--cell) + var(--line));
     top: 0;
@@ -5924,7 +5945,7 @@ body {
   display: none;
 }
 
-@media (max-width: 767.98px) and (orientation: portrait) {
+@media (max-width: 1024px) and (orientation: portrait) {
   .projects-title,
   .projects-subtitle,
   .projects-name {

@@ -21,7 +21,7 @@
   const NS = "http://www.w3.org/2000/svg";
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   // on mobile (portrait phone) the moves are stronger (P) and last longer (T); the numbers are in styles.css
-  const mobile = matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+  const mobile = matchMedia("(max-width: 1024px) and (orientation: portrait)");
   let P = 1, T = 1, M = reduce ? 0.35 : 1;
   function readMobileBoost() {
     const css = getComputedStyle(document.querySelector("[data-ea]") || document.documentElement);

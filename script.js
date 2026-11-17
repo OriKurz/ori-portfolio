@@ -464,7 +464,7 @@ const contactBalls = document.querySelectorAll(".contact-ball");
 
 if (contactBalls.length > 0) {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+  const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
 
   // המהירות: כמה קטרים של כדור בשנייה. במובייל לאט יותר.
   // המהירות המקורית (0.4 ו-0.22), פי 2 ועוד 50% (פי 3 בסך הכול),
@@ -1479,7 +1479,7 @@ if (nextProjectsStrip) {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const secondsPerProject = 7;  // המהירות הרגילה: כמה שניות לוקח לפרויקט אחד לעבור
   const mobileSpeedUp = 2.25;   // במובייל הרצועה מהירה פי 2.25
-  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+  const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
   const maxPush = 5;            // כמה מהר יותר (פי) כשהעכבר צמוד לקצה השמאלי
   const pushArea = 0.5;         // החלק השמאלי של הרצועה שבו העכבר דוחף (חצי מהרוחב)
   const easeTime = 0.6;         // כמה רך שינוי המהירות (בשניות)
@@ -1615,7 +1615,7 @@ if (nextProjectsStrip) {
 const gridSectionTitles = document.querySelectorAll(".full-project-grid .section-title");
 
 if (gridSectionTitles.length) {
-  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+  const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
 
   // האם הטקסט נכנס בתוך המלבן (בלי המסגרת והריווח הפנימי)
   function titleFits(title) {
@@ -1934,7 +1934,7 @@ const projectsStrip = document.querySelector(".projects-strip");
 if (projectsStrip) {
   const track = projectsStrip.querySelector(".projects-track");
   const projects = Array.from(track.children);
-  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+  const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
 
   let vertical = false;      // במובייל הרצועה נעה לאורך
   let setWidth = 0;          // האורך של סבב אחד של התמונות (כולל הריווחים)
@@ -2127,7 +2127,7 @@ const textTab = document.querySelector(".text-tab");
 if (textTab) {
   const textTabHandle = textTab.querySelector(".text-tab-handle");
   const textTabContent = textTab.querySelector(".text-tab-content");
-  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
+  const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const root = document.documentElement;
 
