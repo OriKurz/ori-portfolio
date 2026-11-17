@@ -5798,13 +5798,13 @@ body {
   margin-right: var(--projects-image-gap);
 }
 
-/* תמונה: ריבוע עם מסגרת כתומה, והתמונה חתוכה בתוכה כמו בפיגמה */
+/* תמונה: ריבוע עם מסגרת ורודה (כמו קווי הגריד), והתמונה חתוכה בתוכה כמו בפיגמה */
 .projects-image {
   position: relative;
   display: block;
   width: var(--projects-image-size);
   height: var(--projects-image-size);
-  border: var(--line) solid var(--color-orange);
+  border: var(--line) solid var(--color-pink);
   -webkit-tap-highlight-color: transparent;
 }
 
