@@ -178,6 +178,9 @@
   --text-tagline-size: 22;
   --text-body-size: 20;
   --text-body-line-height: 28;
+  /* Body/Mobile: הטקסט הרץ בעמודי הפרויקטים במובייל. בפיקסלים של המסך (לא כפול --type-px) */
+  --text-body-mobile-size: 17;
+  --text-body-mobile-line-height: 21;
   --text-hint-size: 20;
   --text-contact-ball-size: 17;
   --text-caption-size: 15;
@@ -1931,6 +1934,13 @@ body {
   .text-button         { font-size: calc(var(--text-button-mobile-size) * var(--type-px)); }
   .text-button-strong  { font-size: calc(var(--text-button-mobile-strong-size) * var(--type-px)); }
   .text-nav            { font-size: calc(var(--text-nav-mobile-size) * var(--type-px)); }
+
+  /* Body/Mobile: הטקסט הרץ בעמודי הפרויקטים. מופיע יחד עם text-body באותו אלמנט,
+     ובמובייל מחליף אותו: 17px עם גובה שורה של 21px, בכל רוחב מסך */
+  .text-body-mobile {
+    font-size: calc(var(--text-body-mobile-size) * 1px);
+    line-height: calc(var(--text-body-mobile-line-height) * 1px);
+  }
 
   /* About/Mobile ו-About/Mobile Small: הטקסט ברצועה הכתומה ב-Say Hi במובייל.
      מופיעים יחד עם text-about באותו אלמנט, ובמובייל מחליפים אותו */
@@ -3712,6 +3722,11 @@ body {
     font-size: var(--section-title-mobile-size);
   }
 
+  /* כותרת שחייבת להיכנס בשורה אחת (script.js) */
+  .full-project-grid .section-title.is-single-line {
+    white-space: nowrap;
+  }
+
   /* כשהשבירות של הפיגמה לא נכנסות, הטקסט נשבר לבד לפי הרוחב */
   .full-project-grid .section-title.is-reflowed br {
     display: none;
@@ -3760,204 +3775,176 @@ body {
 }
 
 /* =========================================
-   לשונית הטקסט (The Perfect Crime, רק במובייל)
-   הפריים "Frame 31" בפיגמה: הטקסט של הפרויקט בלשונית בצד שמאל.
-   סגורה: רק הידית הוורודה גלויה בקצה השמאלי. פתוחה: מלבן מנטה עם הטקסט.
-   הפתיחה, הסגירה, הגרירה והרמז בכניסה ב-script.js
+   The Perfect Crime במובייל (הפריים tpcM בפיגמה, 393 לרוחב)
+   גריד של 7 משבצות. הטקסטים של הפרויקט פזורים בתוך הגריד: הכותרת חופשית על הקווים,
+   ושורת המשנה ופסקאות התיאור במשבצות מאוחדות (כמו כותרות הסעיפים).
+   כל המיקומים בשורות ובעמודות. השורות של מה שמתחת לפסקאות נגזרות מהגובה שלהן,
+   כך שאם פסקה צריכה עוד שורה (script.js), כל מה שמתחתיה יורד איתה.
+   במחשב: בלי שינוי
    ========================================= */
 
-/* במחשב הלשונית "שקופה": הטקסט במקום הרגיל שלו, והידית לא קיימת */
-.text-tab,
-.text-tab-content {
-  display: contents;
-}
-
-.text-tab-handle {
+/* הפסיק לפני 2026: רק במובייל */
+.full-project-type-comma {
   display: none;
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
   :root.page-perfect-crime {
-    /* הלשונית: 315x513 בפיגמה, מתחת לשורה הראשונה של הגריד (שבה ההמבורגר).
-       סגורה: זזה ברוחב שלה שמאלה, והפס הוורוד בקצה שלה נעלם מתחת לקו הגריד השמאלי */
-    --text-tab-width: 315px;
-    --text-tab-height: 513px;
-    --text-tab-top: calc(var(--cell) + var(--line));
-    --text-tab-border: 2px;
-    --text-tab-padding-top: 13px;
-    --text-tab-gap: 13px;
-    /* הפס הוורוד לאורך הקצה הימני (Rectangle 131): 12 רוחב, בולט 2 מעבר לקו */
-    --text-tab-strip-width: 12px;
-    --text-tab-strip-overhang: 2px;
-    /* הידית המקוצרת (Vector 20): 30x184 עם הקו, צמודה לתחתית הלשונית */
-    --text-tab-handle-width: 30px;
-    --text-tab-handle-height: 184px;
-    --text-tab-handle-bottom: -1px;
-    /* הטקסט בלשונית, בגדלים מהפיגמה */
-    --text-tab-title-size: 30px;
-    --text-tab-title-width: 124px;
-    --text-tab-subtitle-size: 17px;
-    --text-tab-body-size: 17px;
-    --text-tab-body-line-height: 20px;
-    --text-tab-body-width: 268px;
-    /* תנועה: רכה, עם האטה בסוף */
-    --text-tab-duration: 0.5s;
-    --text-tab-ease: cubic-bezier(0.22, 1, 0.36, 1);
-    /* הסגירה הראשונה, אחרי שהלשונית מוצגת פתוחה בכניסה לעמוד */
-    --text-tab-intro-duration: 0.55s;
-    --text-tab-intro-ease: cubic-bezier(0.65, 0, 0.35, 1);
-    /* הידית נעלמת בגלילה ובנגיעה, וחוזרת ברכות (ההשהיה לפני החזרה ב-script.js) */
-    --text-tab-handle-hide-duration: 0.2s;
-    --text-tab-handle-show-duration: 0.45s;
-    --layer-text-tab: 8;
+    --grid-columns: 7;
+    /* פיקסל אחד בפריים tpcM: משבצת = 55.64 בפיגמה */
+    --px: calc(var(--cell) / 55.64);
+
+    /* ההמבורגר: בדיוק במרכז המשבצת הראשונה (בין הקווים) */
+    --menu-left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
+    --menu-top: calc((var(--cell) + var(--line) - 3 * var(--menu-line-height) - 2 * var(--menu-gap)) / 2);
+
+    /* כותרות הסעיפים ו-"Tap to play": 17, כמו בפיגמה */
+    --section-title-mobile-size: 17px;
+
+    /* הכותרת: חופשית על הגריד, מהשורה השנייה */
+    --title-mobile-size: calc(61 * var(--px));
+    --title-left: var(--margin-mobile);
+    --title-row: 1;
+
+    /* שורת המשנה: 4 משבצות בשורה 4 */
+    --type-row: 4;
+    --type-columns: 4;
+    --type-size: 17px;
+
+    /* הסרטון: כל הרוחב, 4 שורות שלמות (6 עד 9). הסרטון ממלא את המסגרת (cover) */
+    --video-column: 0;        --video-row: 6;
+    --video-columns: 7;       --video-rows: 4;
+
+    /* הפסקה הראשונה: משורה 11, אחרי שורה ריקה מתחת לסרטון.
+       --description-intro-rows: כמה שורות היא תופסת (script.js, לפחות 2) */
+    --description-intro-row: 11;
+    --description-intro-rows: 2;
+
+    /* Little Things Magic ו-Tap to play: מיד מתחת לפסקה. החפצים: שורה וחצי מתחתם */
+    --section-title-elements-row: calc(var(--description-intro-row) + var(--description-intro-rows));
+    --elements-board-row: calc(var(--section-title-elements-row) + 1.5);
+    /* השורות שהחפצים מקבלים לפני הפסקה השנייה. אם הם ארוכים יותר, מה שמתחתם יורד (--elements-shift) */
+    --elements-board-rows: 13;
+
+    /* הפסקה השנייה: 15 שורות מתחת ל-Little Things Magic */
+    --description-story-rows: 2;
+    --description-story-row: calc(var(--section-title-elements-row) + 15 + var(--elements-shift, 0));
+
+    /* Color palette מיד מתחת לפסקה, העיגולים ב-5 השורות שמתחת, ו-What's Next אחרי שורה ריקה.
+       (גם ככה יורדים ב---elements-shift, כי הם אחרי החפצים בגריד) */
+    --section-title-palette-row: calc(var(--section-title-elements-row) + 15 + var(--description-story-rows));
+    --section-title-next-row: calc(var(--section-title-palette-row) + 7);
+    --grid-rows: calc(var(--section-title-next-row) + 1 + var(--elements-shift, 0));
+
+    /* פלטת הצבעים: שחמט בעמודות 1-5, כמו בפיגמה (הלבן לא מופיע בפריים) */
+    --swatch-2-column: 1;   --swatch-2-row: calc(var(--section-title-palette-row) + 1);
+    --swatch-1-column: 3;   --swatch-1-row: calc(var(--section-title-palette-row) + 1);
+    --swatch-4-column: 5;   --swatch-4-row: calc(var(--section-title-palette-row) + 1);
+    --swatch-5-column: 2;   --swatch-5-row: calc(var(--section-title-palette-row) + 2);
+    --swatch-3-column: 4;   --swatch-3-row: calc(var(--section-title-palette-row) + 2);
+    --swatch-7-column: 1;   --swatch-7-row: calc(var(--section-title-palette-row) + 3);
+    --swatch-6-column: 3;   --swatch-6-row: calc(var(--section-title-palette-row) + 3);
+    --swatch-10-column: 5;  --swatch-10-row: calc(var(--section-title-palette-row) + 3);
+    --swatch-12-column: 2;  --swatch-12-row: calc(var(--section-title-palette-row) + 4);
+    --swatch-9-column: 4;   --swatch-9-row: calc(var(--section-title-palette-row) + 4);
+    --swatch-13-column: 1;  --swatch-13-row: calc(var(--section-title-palette-row) + 5);
+    --swatch-14-column: 3;  --swatch-14-row: calc(var(--section-title-palette-row) + 5);
+    --swatch-8-column: 5;   --swatch-8-row: calc(var(--section-title-palette-row) + 5);
   }
 
-  /* הטקסט כבר לא בתחילת העמוד: הגריד מתחיל למעלה, וההמבורגר יושב במשבצת הראשונה שלו */
+  /* החלק של הטקסט לא תופס מקום: הגריד מתחיל למעלה, והטקסטים ממוקמים עליו */
   .page-perfect-crime .full-project-info {
     height: 0;
     z-index: auto;
   }
 
-  /* הלשונית: קבועה על המסך. --text-tab-progress: 0 סגורה, 1 פתוחה (script.js) */
-  .page-perfect-crime .text-tab {
-    display: block;
-    position: fixed;
-    left: 0;
-    top: var(--text-tab-top);
-    z-index: var(--layer-text-tab);
-    width: var(--text-tab-width);
-    height: min(var(--text-tab-height), 100dvh - var(--text-tab-top) - var(--margin-mobile));
-    transform: translateX(calc((var(--text-tab-progress, 0) - 1) * var(--text-tab-width)));
-    transition: transform var(--text-tab-duration) var(--text-tab-ease);
-    /* גרירה לרוחב בקוד, גלילה לגובה בדפדפן */
-    touch-action: pan-y;
+  .page-perfect-crime .full-project-title {
+    z-index: 1;
+    left: var(--title-left);
+    top: calc(var(--title-row) * var(--cell));
+    /* כל מילה בשורה משלה, כמו בפיגמה */
+    width: min-content;
+    font-size: var(--title-mobile-size);
   }
 
-  .page-perfect-crime .text-tab.is-dragging,
-  .page-perfect-crime .text-tab.is-instant {
-    transition: none;
+  /* התיאור עצמו לא תופס מקום: כל פסקה ממוקמת לבד */
+  .page-perfect-crime .full-project-description {
+    display: contents;
   }
 
-  .page-perfect-crime .text-tab.is-intro-closing {
-    transition-duration: var(--text-tab-intro-duration);
-    transition-timing-function: var(--text-tab-intro-ease);
-  }
-
-  /* הפס הוורוד לאורך הקצה הימני של הלשונית, מעל הקו שלה */
-  .page-perfect-crime .text-tab::after {
-    content: "";
+  /* שורת המשנה ופסקאות התיאור: משבצת מאוחדת של משבצות שלמות, מקו לקו.
+     המסגרת על קווי הגריד, הרקע מכסה את הקווים שבפנים, והטקסט ממורכז לגובה,
+     20 מקצוות המסך */
+  .page-perfect-crime .full-project-type,
+  .page-perfect-crime .full-project-description-intro,
+  .page-perfect-crime .full-project-description-story {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    right: calc(-1 * var(--text-tab-strip-overhang));
-    width: var(--text-tab-strip-width);
-    background-color: var(--grid-line-color);
-    pointer-events: none;
-  }
-
-  /* המלבן עם הטקסט. הקו השמאלי מחוץ למסך, כמו בפיגמה.
-     טקסט ארוך מהלשונית נגלל בתוכה */
-  .page-perfect-crime .text-tab-content {
+    z-index: 1;
+    left: 0;
+    top: calc(var(--box-row) * var(--cell));
+    width: calc(var(--box-columns) * var(--cell) + var(--line));
+    height: calc(var(--box-rows) * var(--cell) + var(--line));
     display: flex;
     flex-direction: column;
-    gap: var(--text-tab-gap);
-    height: 100%;
-    padding: var(--text-tab-padding-top) var(--margin-mobile) var(--margin-mobile);
-    border: var(--text-tab-border) solid var(--grid-line-color);
-    border-left: 0;
+    justify-content: center;
+    margin: 0;
+    padding: 0 calc(var(--margin-mobile) - var(--line));
+    border: var(--line) solid var(--grid-line-color);
     background-color: var(--page-background);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: none;
   }
 
-  .page-perfect-crime .text-tab-content::-webkit-scrollbar {
+  .page-perfect-crime .full-project-type {
+    --box-row: var(--type-row);
+    --box-columns: var(--type-columns);
+    --box-rows: 1;
+    font-size: var(--type-size);
+  }
+
+  .page-perfect-crime .full-project-type-comma {
+    display: inline;
+  }
+
+  .page-perfect-crime .full-project-type-break {
     display: none;
   }
 
-  .page-perfect-crime .text-tab .full-project-title,
-  .page-perfect-crime .text-tab .full-project-type,
-  .page-perfect-crime .text-tab .full-project-description {
-    position: static;
-    flex-shrink: 0;
-    color: var(--color-orange);
+  .page-perfect-crime .full-project-description-intro {
+    --box-row: var(--description-intro-row);
+    --box-columns: var(--grid-columns);
+    --box-rows: var(--description-intro-rows);
   }
 
-  .page-perfect-crime .text-tab .full-project-title {
-    width: var(--text-tab-title-width);
-    font-size: var(--text-tab-title-size);
+  .page-perfect-crime .full-project-description-story {
+    --box-row: var(--description-story-row);
+    --box-columns: var(--grid-columns);
+    --box-rows: var(--description-story-rows);
   }
 
-  .page-perfect-crime .text-tab .full-project-type {
-    font-size: var(--text-tab-subtitle-size);
+  /* לא מופיעים בפריים במובייל */
+  .page-perfect-crime .full-project-description-credit,
+  .page-perfect-crime .section-title--scenes,
+  .page-perfect-crime .shot,
+  .page-perfect-crime .swatch--11 {
+    display: none;
   }
 
-  .page-perfect-crime .text-tab .full-project-description {
-    width: var(--text-tab-body-width);
-    font-size: var(--text-tab-body-size);
-    line-height: var(--text-tab-body-line-height);
+  /* כותרות הסעיפים: בשורה אחת, ברוחב המשבצות מהפיגמה. במסך צר שבו השורה לא נכנסת,
+     הכותרת נשברת כמו במחשב באותה משבצת (script.js) */
+  .page-perfect-crime .section-title--elements { --title-mobile-columns: 3; }
+  .page-perfect-crime .section-title--palette,
+  .page-perfect-crime .section-title--next     { --title-mobile-columns: 2; }
+
+  /* "Tap to play" בשורה אחת, באות גדולה כמו בפיגמה */
+  .page-perfect-crime .play-hint-touch br {
+    display: none;
   }
 
-  /* הידית: הצורה הוורודה מהפיגמה, צמודה לקצה הימני של המלבן, בתחתית שלו.
-     אזור הנגיעה הרחב יותר שסביבה ב-script.js (כדי לא לחסום את האיורים) */
-  .page-perfect-crime .text-tab-handle {
-    display: block;
-    position: absolute;
-    left: calc(100% - 1px);
-    bottom: var(--text-tab-handle-bottom);
-    width: var(--text-tab-handle-width);
-    height: var(--text-tab-handle-height);
-    padding: 0;
-    border: 0;
-    background: none;
-    cursor: pointer;
-    touch-action: none;
-    -webkit-tap-highlight-color: transparent;
-    /* Pressed (ברירת המחדל): הידית מתכווצת אל המלבן */
-    transform-origin: left center;
-    transition:
-      scale var(--transition-speed) ease,
-      translate var(--text-tab-handle-show-duration) var(--text-tab-ease);
+  .page-perfect-crime .play-hint-touch {
+    white-space: nowrap;
   }
 
-  /* בזמן גלילה או נגיעה במסך: הידית נאספת שמאלה אל מחוץ למסך */
-  .page-perfect-crime .text-tab.is-handle-hidden .text-tab-handle {
-    translate: calc(-1 * var(--text-tab-handle-width)) 0;
-    pointer-events: none;
-    transition:
-      scale var(--transition-speed) ease,
-      translate var(--text-tab-handle-hide-duration) ease-in;
-  }
-
-  /* הצורה עצמה (קובץ ה-SVG כמסכה), כדי שהצבע יבוא מהמשתנה */
-  .page-perfect-crime .text-tab-handle::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-color: var(--grid-line-color);
-    -webkit-mask: url("Images/text-tab-handle.svg") 0 0 / 100% 100% no-repeat;
-    mask: url("Images/text-tab-handle.svg") 0 0 / 100% 100% no-repeat;
-  }
-
-  /* Focus: אין Hover בטלפון, אז קו מתאר בצבע ובעובי קווי הגריד */
-  .page-perfect-crime .text-tab-handle:focus-visible,
-  .page-perfect-crime .text-tab-handle.is-focus {
-    outline: var(--line) solid var(--grid-line-color);
-    outline-offset: var(--line);
-  }
-
-  /* כשהלשונית פתוחה העמוד שמאחוריה לא נגלל */
-  :root.page-perfect-crime.is-text-tab-open,
-  :root.page-perfect-crime.is-text-tab-open body {
-    overflow: hidden;
-  }
-}
-
-@media (max-width: 1024px) and (orientation: portrait) and (prefers-reduced-motion: reduce) {
-  .page-perfect-crime .text-tab,
-  .page-perfect-crime .text-tab-handle,
-  .page-perfect-crime .text-tab.is-handle-hidden .text-tab-handle {
-    transition: none;
+  .page-perfect-crime .play-hint-touch::first-letter {
+    text-transform: uppercase;
   }
 }
 

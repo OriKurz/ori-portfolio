@@ -1635,7 +1635,7 @@ if (gridSectionTitles.length) {
 
   function fitSectionTitles() {
     gridSectionTitles.forEach(function (title) {
-      title.classList.remove("is-reflowed");
+      title.classList.remove("is-reflowed", "is-single-line");
       title.style.removeProperty("--title-columns");
       if (!mobileScreen.matches) return;
 
@@ -1644,12 +1644,22 @@ if (gridSectionTitles.length) {
       const startColumn = Math.floor(parseFloat(style.getPropertyValue("--column")));
       const maxColumns = Math.max(1, gridColumns - startColumn);
 
+      // עמוד עם פריים מובייל בפיגמה קובע את רוחב המשבצת (--title-mobile-columns): קודם בשורה אחת,
+      // ואם לא נכנס (מסך צר), עם השבירות של הפיגמה באותה משבצת. רק אם גם זה לא נכנס, מוסיפים משבצות
+      const fixedColumns = parseFloat(style.getPropertyValue("--title-mobile-columns"));
       const tries = [];
-      for (let columns = 1; columns <= Math.min(2, maxColumns); columns++) tries.push({ reflow: false, columns: columns });
-      for (let columns = 1; columns <= maxColumns; columns++) tries.push({ reflow: true, columns: columns });
+      if (fixedColumns) {
+        tries.push({ reflow: true, singleLine: true, columns: fixedColumns });
+        tries.push({ reflow: false, columns: fixedColumns });
+        for (let columns = fixedColumns + 1; columns <= maxColumns; columns++) tries.push({ reflow: true, singleLine: true, columns: columns });
+      } else {
+        for (let columns = 1; columns <= Math.min(2, maxColumns); columns++) tries.push({ reflow: false, columns: columns });
+        for (let columns = 1; columns <= maxColumns; columns++) tries.push({ reflow: true, columns: columns });
+      }
 
       for (const attempt of tries) {
         title.classList.toggle("is-reflowed", attempt.reflow);
+        title.classList.toggle("is-single-line", Boolean(attempt.singleLine));
         title.style.setProperty("--title-columns", attempt.columns);
         if (titleFits(title)) break;
       }
@@ -1675,18 +1685,49 @@ if (gridSectionTitles.length) {
     if (!elementsBoard) return;
     document.documentElement.style.removeProperty("--elements-shift");
     if (!mobileScreen.matches) return;
-    const cellProbe = document.createElement("div");
-    cellProbe.style.width = "var(--cell)";
-    elementsBoard.parentNode.appendChild(cellProbe);
-    const cell = cellProbe.getBoundingClientRect().width;
-    cellProbe.remove();
+    const cell = measureCell();
     const boardRows = elementsBoard.getBoundingClientRect().height / cell;
     const desktopRows = parseFloat(getComputedStyle(elementsBoard).getPropertyValue("--elements-board-rows"));
     const shift = Math.max(0, Math.ceil(boardRows - desktopRows - 0.01));
     document.documentElement.style.setProperty("--elements-shift", shift);
   }
 
+  // גודל המשבצת בפיקסלים (מודדים אלמנט ברוחב --cell)
+  function measureCell() {
+    const cellProbe = document.createElement("div");
+    cellProbe.style.width = "var(--cell)";
+    gridPanel.appendChild(cellProbe);
+    const cell = cellProbe.getBoundingClientRect().width;
+    cellProbe.remove();
+    return cell;
+  }
+
+  // The Perfect Crime במובייל: פסקאות התיאור יושבות במשבצות מאוחדות ברוחב הגריד.
+  // כל משבצת כזו גבוהה בשורות שלמות, כמה שצריך כדי שהטקסט ייכנס (לפחות 2, כמו בפיגמה).
+  // מספר השורות נשמר במשתנה שכתוב ב-data-rows-var, וכל מה שמתחתיה יורד איתו (styles.css)
+  const textBoxes = document.querySelectorAll("[data-rows-var]");
+  const textBoxPadding = 4; // מרווח מינימלי מעל ומתחת לטקסט, בתוך המשבצת
+  function sizeTextBoxes() {
+    textBoxes.forEach(function (box) {
+      document.documentElement.style.removeProperty(box.dataset.rowsVar);
+    });
+    if (!mobileScreen.matches) return;
+    textBoxes.forEach(function (box) {
+      const style = getComputedStyle(box);
+      const cell = measureCell();
+      const minRows = parseFloat(style.getPropertyValue(box.dataset.rowsVar)) || 1;
+      if (!cell) return;
+      const range = document.createRange();
+      range.selectNodeContents(box);
+      const textHeight = range.getBoundingClientRect().height;
+      const border = parseFloat(style.borderTopWidth);
+      const rows = Math.max(minRows, Math.ceil((textHeight + 2 * textBoxPadding + border) / cell - 0.01));
+      document.documentElement.style.setProperty(box.dataset.rowsVar, rows);
+    });
+  }
+
   function layoutGrid() {
+    sizeTextBoxes();
     shiftBelowElements();
     snapGridToPixels();
     fitSectionTitles();
@@ -2110,289 +2151,6 @@ if (projectsStrip) {
 
   buildStrip(false);
   requestAnimationFrame(moveStrip);
-}
-
-// =========================================
-// לשונית הטקסט (The Perfect Crime, רק במובייל)
-// הטקסט של הפרויקט בלשונית בצד שמאל.
-// כניסה לעמוד: הלשונית כבר פתוחה, ואחרי כ-1.5 שניות נסגרת ברכות
-// (נגיעה במסך או גלילה סוגרות אותה מיד). פעם אחת בכל כניסה.
-// פתיחה וסגירה: נגיעה בידית, או גרירה לרוחב (הלשונית עוקבת אחרי האצבע,
-// ובשחרור נפתחת או נסגרת לפי המרחק והמהירות). נגיעה מחוץ ללשונית או Esc סוגרות.
-// הידית נעלמת בזמן גלילה ובזמן שאצבע על המסך, וחוזרת כ-0.4 שנייה אחרי.
-// במחשב: בלי שינוי (CSS)
-// =========================================
-const textTab = document.querySelector(".text-tab");
-
-if (textTab) {
-  const textTabHandle = textTab.querySelector(".text-tab-handle");
-  const textTabContent = textTab.querySelector(".text-tab-content");
-  const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const root = document.documentElement;
-
-  // מהירות גרירה (פיקסלים למילישנייה) שמספיקה כדי לפתוח או לסגור, גם במרחק קצר
-  const flickSpeed = 0.3;
-  // תזוזה מינימלית לפני שמחליטים אם זו גרירה לרוחב או גלילה לגובה
-  const dragThreshold = 8;
-  // אזור הנגיעה של הידית: עוד 16 פיקסלים מימין לחלק הנראה, ו-8 למעלה ולמטה
-  const handleReachX = 16;
-  const handleReachY = 8;
-  // כמה זמן הלשונית פתוחה בכניסה לעמוד, וכמה זמן הידית מחכה לפני שהיא חוזרת
-  const introOpenTime = 1500;
-  const handleReturnDelay = 400;
-
-  let isOpen = false;
-  // הלשונית פתוחה בכניסה לעמוד: העמוד עדיין נגלל, וכל נגיעה או גלילה סוגרות אותה
-  let introActive = false;
-  let drag = null;
-  // אחרי גרירה, או נגיעה שסגרה את הלשונית: הלחיצה שבאה אחריה לא מפעילה כלום
-  let swallowNextClick = false;
-  let touchCount = 0;
-  let handleTimer = null;
-
-  // 0 = סגורה, 1 = פתוחה
-  function setProgress(progress) {
-    textTab.style.setProperty("--text-tab-progress", progress);
-  }
-
-  function setOpen(open) {
-    isOpen = open;
-    if (open) textTab.classList.remove("is-intro-closing");
-    setProgress(open ? 1 : 0);
-    textTabHandle.setAttribute("aria-expanded", open ? "true" : "false");
-    // כשהלשונית פתוחה העמוד שמאחוריה לא נגלל (חוץ מבכניסה לעמוד)
-    root.classList.toggle("is-text-tab-open", open && !introActive);
-    if (open) showHandle();
-  }
-
-  // ----- הכניסה לעמוד -----
-  function startIntro() {
-    introActive = true;
-    textTab.classList.add("is-instant");
-    setOpen(true);
-    textTab.getBoundingClientRect();
-    textTab.classList.remove("is-instant");
-  }
-
-  // slow: הסגירה הרכה בסוף הזמן. בלי: נגיעה או גלילה, סוגרים מיד בתנועה הרגילה
-  function endIntro(slow) {
-    if (!introActive) return;
-    introActive = false;
-    if (slow) {
-      textTab.classList.add("is-intro-closing");
-      textTab.addEventListener("transitionend", function done(event) {
-        if (event.target !== textTab) return;
-        textTab.removeEventListener("transitionend", done);
-        textTab.classList.remove("is-intro-closing");
-      });
-    }
-    setOpen(false);
-  }
-
-  if (mobileScreen.matches && !reducedMotion.matches) startIntro();
-
-  // ----- נגיעה בידית (וגם Enter במקלדת) -----
-  textTabHandle.addEventListener("click", function () {
-    if (introActive) {
-      endIntro(false);
-      return;
-    }
-    setOpen(!isOpen);
-  });
-
-  document.addEventListener("keydown", function (event) {
-    swallowNextClick = false;
-    if (event.key !== "Escape") return;
-    if (introActive) endIntro(false);
-    else if (isOpen) setOpen(false);
-  });
-
-  // ----- אזור הנגיעה המורחב של הידית: רק על שטח שאין בו רכיב לחיץ,
-  // כך שהאיורים שליד הידית נשארים לחיצים -----
-  function isNearHandle(x, y, target) {
-    if (isOpen || textTab.classList.contains("is-handle-hidden")) return false;
-    if (textTab.contains(target)) return false;
-    if (target.closest && target.closest('a, button, [role="button"], [data-ea], [tabindex]')) return false;
-    const box = textTabHandle.getBoundingClientRect();
-    return x >= box.left && x <= box.right + handleReachX &&
-      y >= box.top - handleReachY && y <= box.bottom + handleReachY;
-  }
-
-  // ----- גרירה: על הידית, באזור הנגיעה שלה, או על הלשונית הפתוחה -----
-  function startPointer(event, fromReach) {
-    drag = {
-      id: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      startProgress: isOpen ? 1 : 0,
-      progress: isOpen ? 1 : 0,
-      active: false,
-      // נגיעה באזור הנגיעה (לא על הידית עצמה): בלי גרירה היא פותחת כמו לחיצה
-      fromReach: fromReach,
-      // הנקודות האחרונות, לחישוב המהירות בשחרור
-      samples: [{ x: event.clientX, time: event.timeStamp }]
-    };
-  }
-
-  textTab.addEventListener("pointerdown", function (event) {
-    if (!mobileScreen.matches || (event.pointerType === "mouse" && event.button !== 0)) return;
-    startPointer(event, false);
-  });
-
-  // התנועה והשחרור נבדקים בכל העמוד, כי האצבע יוצאת מהידית מיד
-  document.addEventListener("pointermove", function (event) {
-    if (!drag || event.pointerId !== drag.id) return;
-    const dx = event.clientX - drag.startX;
-    const dy = event.clientY - drag.startY;
-
-    if (!drag.active) {
-      // תנועה לגובה קודם: זו גלילה, לא גרירה
-      if (Math.abs(dy) > dragThreshold && Math.abs(dy) > Math.abs(dx)) {
-        drag = null;
-        return;
-      }
-      if (Math.abs(dx) < dragThreshold) return;
-      drag.active = true;
-      textTab.classList.add("is-dragging");
-    }
-
-    drag.progress = Math.min(1, Math.max(0, drag.startProgress + dx / textTab.offsetWidth));
-    setProgress(drag.progress);
-    drag.samples.push({ x: event.clientX, time: event.timeStamp });
-    if (drag.samples.length > 5) drag.samples.shift();
-  });
-
-  function endDrag(event) {
-    if (!drag || event.pointerId !== drag.id) return;
-    const ended = drag;
-    drag = null;
-
-    if (!ended.active) {
-      // נגיעה קצרה באזור הנגיעה שליד הידית: כמו לחיצה על הידית
-      if (ended.fromReach && event.type === "pointerup") setOpen(!isOpen);
-      return;
-    }
-
-    // המהירות ב-5 הנקודות האחרונות: הנפה מהירה מכריעה גם במרחק קצר
-    const first = ended.samples[0];
-    const last = ended.samples[ended.samples.length - 1];
-    const speed = last.time > first.time ? (last.x - first.x) / (last.time - first.time) : 0;
-    let open = ended.progress > 0.5;
-    if (speed > flickSpeed) open = true;
-    if (speed < -flickSpeed) open = false;
-
-    textTab.classList.remove("is-dragging");
-    // הגרירה לא נחשבת לחיצה (על הידית או על מה שמתחת לאצבע)
-    swallowNextClick = true;
-    setOpen(open);
-  }
-
-  document.addEventListener("pointerup", endDrag);
-  document.addEventListener("pointercancel", endDrag);
-
-  // ----- נגיעה במסך -----
-  // בכניסה לעמוד: כל נגיעה סוגרת את הלשונית.
-  // לשונית פתוחה: נגיעה מחוץ לה סוגרת, ולא מפעילה את מה שמתחתיה
-  // (חוץ מההמבורגר ובר הבחירה, שנשארים לחיצים).
-  // לשונית סגורה: נגיעה ליד הידית מתחילה גרירה או לחיצה שלה
-  document.addEventListener("pointerdown", function (event) {
-    swallowNextClick = false;
-    if (!mobileScreen.matches) return;
-    const onMenu = event.target.closest(".menu-button, .nav-bar");
-
-    if (introActive) {
-      endIntro(false);
-      if (!onMenu) swallowNextClick = true;
-      // הנגיעה רק סוגרת: לא מתחילה גרירה של הלשונית
-      if (textTab.contains(event.target)) event.stopPropagation();
-      return;
-    }
-
-    if (isOpen) {
-      if (textTab.contains(event.target)) return;
-      setOpen(false);
-      if (!onMenu) swallowNextClick = true;
-      return;
-    }
-
-    if (isNearHandle(event.clientX, event.clientY, event.target)) startPointer(event, true);
-  }, true);
-
-  document.addEventListener("click", function (event) {
-    if (!swallowNextClick) return;
-    swallowNextClick = false;
-    event.preventDefault();
-    event.stopPropagation();
-  }, true);
-
-  // ----- כשהלשונית פתוחה העמוד שמאחוריה לא נגלל (גם בספארי בטלפון).
-  // רק הטקסט שבתוך הלשונית נגלל. וגרירה של הלשונית לא גוללת את העמוד -----
-  document.addEventListener("touchmove", function (event) {
-    if (drag && drag.active) {
-      event.preventDefault();
-      return;
-    }
-    if (isOpen && !introActive && !textTabContent.contains(event.target)) event.preventDefault();
-  }, { passive: false });
-
-  // ----- הידית נעלמת בגלילה ובנגיעה (כשהלשונית סגורה), וחוזרת אחרי השהיה -----
-  function hideHandle() {
-    if (isOpen) return;
-    clearTimeout(handleTimer);
-    textTab.classList.add("is-handle-hidden");
-  }
-
-  function showHandle() {
-    clearTimeout(handleTimer);
-    textTab.classList.remove("is-handle-hidden");
-  }
-
-  // חוזרת רק כשאין אצבע על המסך והגלילה נעצרה (כל גלילה מאפסת את הזמן)
-  function scheduleShowHandle() {
-    clearTimeout(handleTimer);
-    handleTimer = setTimeout(function () {
-      if (touchCount === 0) showHandle();
-    }, handleReturnDelay);
-  }
-
-  document.addEventListener("touchstart", function (event) {
-    touchCount = event.touches.length;
-    // נגיעה בידית או באזור הנגיעה שלה (הגרירה כבר התחילה) לא מעלימה אותה
-    if (!mobileScreen.matches || drag || textTab.contains(event.target)) return;
-    hideHandle();
-  }, { passive: true });
-
-  function touchEnded(event) {
-    touchCount = event.touches.length;
-    if (touchCount === 0 && textTab.classList.contains("is-handle-hidden")) scheduleShowHandle();
-  }
-
-  document.addEventListener("touchend", touchEnded, { passive: true });
-  document.addEventListener("touchcancel", touchEnded, { passive: true });
-
-  window.addEventListener("scroll", function () {
-    if (!mobileScreen.matches) return;
-    // גלילה בכניסה לעמוד סוגרת את הלשונית מיד
-    if (introActive) endIntro(false);
-    if (isOpen) return;
-    hideHandle();
-    scheduleShowHandle();
-  }, { passive: true });
-
-  // ----- מעבר למחשב (סיבוב הטלפון לרוחב): הלשונית נסגרת -----
-  mobileScreen.addEventListener("change", function () {
-    if (mobileScreen.matches) return;
-    introActive = false;
-    if (isOpen) setOpen(false);
-    showHandle();
-  });
-
-  // ----- הסגירה הרכה בכניסה: 1.5 שניות מפתיחת העמוד
-  // (לא מחכים לטעינה של הסרטון או לסוף המעבר בקוביות) -----
-  if (introActive) {
-    setTimeout(function () { endIntro(true); }, introOpenTime);
-  }
 }
 
 // =========================================

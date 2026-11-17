@@ -49,22 +49,17 @@
           <span class="menu-button-line"></span>
         </button>
 
-        <!-- הטקסט של הפרויקט. במחשב: במקום הרגיל (הלשונית "שקופה" לפריסה).
-             במובייל: לשונית צד משמאל, שנפתחת בנגיעה או בגרירה של הידית (script.js) -->
-        <div class="text-tab" id="text-tab">
-          <div class="text-tab-content">
-            <h1 class="full-project-title text-page-title">The Perfect Crime</h1>
-            <p class="full-project-type text-subtitle">Motion Graphics<br>Academic project<br>2026</p>
+        <!-- הטקסט של הפרויקט. במובייל הוא פזור בתוך הגריד, לפי הפריים tpcM בפיגמה (styles.css).
+             הפסיק לפני 2026 מופיע רק במובייל, ושבירת השורה לפניו רק במחשב -->
+        <h1 class="full-project-title text-page-title">The Perfect Crime</h1>
+        <p class="full-project-type text-subtitle"><span>Motion Graphics<br>Academic project<span class="full-project-type-comma">,</span><br class="full-project-type-break"> 2026</span></p>
 
-            <div class="full-project-description text-body">
-              <p>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
-              <p>An audio-driven animation and sound design based on a soundbite from the sitcom The Office. Since the soundbite already tells the whole story, the challenge was finding a new one to tell.</p>
-              <p>Created as part of<br>a motion design studio course</p>
-            </div>
-          </div>
-
-          <!-- הידית (רק במובייל): תמיד גלויה בצד שמאל של המסך -->
-          <button class="text-tab-handle" type="button" aria-label="About the project" aria-controls="text-tab" aria-expanded="false"></button>
+        <!-- במובייל כל פסקה במשבצת מאוחדת משלה. data-rows-var: המשתנה שבו script.js
+             שומר כמה שורות המשבצת צריכה כדי שהטקסט ייכנס -->
+        <div class="full-project-description text-body text-body-mobile">
+          <p class="full-project-description-intro" data-rows-var="--description-intro-rows">What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
+          <p class="full-project-description-story" data-rows-var="--description-story-rows">An audio-driven animation and sound design based on a soundbite from the sitcom The Office. Since the soundbite already tells the whole story, the challenge was finding a new one to tell.</p>
+          <p class="full-project-description-credit">Created as part of<br>a motion design studio course</p>
         </div>
       </section>
 
@@ -111,7 +106,7 @@
           <!-- במחשב "hover to play", ובמסך מגע "tap to play" (styles.css) -->
           <p class="on-grid play-hint text-hint">
             <span class="play-hint-mouse">hover<br>to play</span>
-            <span class="play-hint-touch">tap<br>to play</span>
+            <span class="play-hint-touch">tap <br>to play</span>
           </p>
           <div class="on-grid elements-board">
             <div class="elements-board-item elements-board-item--tape" data-ea="tape" role="button" tabindex="0" aria-label="Tape dispenser"></div>
