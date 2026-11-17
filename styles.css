@@ -1591,11 +1591,38 @@
 }
 
 /* ----- עמוד אינדקס הפרויקטים במובייל -----
-   אין עיצוב מובייל בפיגמה. 8 משבצות לרוחב, אותו סידור במשבצות כמו במחשב */
+   הפריים indexM בפיגמה (393x852): 8 משבצות לרוחב (49.125px), הגריד מתחיל בפינה העליונה.
+   מספרים כמו 15 * var(--u) הם פיקסלים בפריים (הגריד בפיגמה מתחיל ב-y = -3, אז לגובה מוסיפים 3) */
 @media (max-width: 767.98px) and (orientation: portrait) {
   :root.page-projects {
     --design-columns: 8;
     --line: var(--line-mobile);
+    --grid-top: 0px;
+    --u: calc(100vw / 393);
+
+    /* ההמבורגר נשאר בגודל שהיה לו */
+    --menu-width: calc(30 * var(--cell) / 96);
+    --menu-line-height: calc(4 * var(--cell) / 96);
+    --menu-gap: calc(6 * var(--cell) / 96);
+
+    /* הטקסטים: 20px מהקצה השמאלי. INDEX (30) ב-y = 63, ו-Project & more (17) ב-y = 100.
+       ORI KURZ צמוד לשורה השלמה האחרונה במסך, כמו בפיגמה (2px מעל הקו שלה) */
+    --text-page-title-size: 30;
+    --text-subtitle-size: 17;
+    --projects-mobile-title-top: calc(66 * var(--u));
+    --projects-mobile-subtitle-top: calc(103 * var(--u));
+    --projects-mobile-name-top: calc(round(down, 100dvh, var(--cell)) - var(--cell) - 2 * var(--u));
+    --projects-mobile-name-width: calc(116 * var(--u));
+
+    /* הקרוסלה: טור לאורך, צמוד לקצה הימני של המסך. תמונות של 192, ו-15 ביניהן.
+       בטעינה התמונה הראשונה מתחילה ב-y = -38.5 */
+    --projects-image-size: calc(192 * var(--u));
+    --projects-image-gap: calc(15 * var(--u));
+    --projects-strip-start: calc(-38.5 * var(--u));
+    /* התגיות: 12 ביניהן ו-12 מהתמונה */
+    --projects-tag-gap: calc(12 * var(--u));
+    /* הזמן שבו הקרוסלה זזה עד שהתמונה שנלחצה ממורכזת (script.js) */
+    --projects-center-duration: 700ms;
   }
 }
 
@@ -5814,6 +5841,97 @@ body {
 .projects-image:focus-visible ~ .projects-caption .projects-caption-box,
 .projects-image.is-focus ~ .projects-caption .projects-caption-box {
   clip-path: inset(0 0 0 0);
+}
+
+/* ----- התגיות (מובייל בלבד): טור של מלבנים כתומים משמאל לתמונה, צמודים לימין -----
+   הקומפוננטה בפיגמה: שם הפרויקט ועוד שתי תגיות. נפתחות משמאל לימין כמו המלבנים בשונרא,
+   כשהתמונה מסומנת (is-selected, script.js) */
+.projects-tags {
+  display: none;
+}
+
+@media (max-width: 767.98px) and (orientation: portrait) {
+  .projects-title,
+  .projects-subtitle,
+  .projects-name {
+    left: var(--margin-mobile);
+  }
+
+  .projects-title {
+    top: var(--projects-mobile-title-top);
+  }
+
+  .projects-subtitle {
+    top: var(--projects-mobile-subtitle-top);
+  }
+
+  .projects-name {
+    top: var(--projects-mobile-name-top);
+    width: var(--projects-mobile-name-width);
+    white-space: normal;
+  }
+
+  /* הקרוסלה: כל המסך (רק התמונות לחיצות), והטור צמוד לקצה הימני */
+  .projects-strip {
+    top: 0;
+    height: 100dvh;
+    pointer-events: none;
+  }
+
+  .projects-track {
+    position: absolute;
+    top: 0;
+    right: 0;
+    flex-direction: column;
+    width: var(--projects-image-size);
+    pointer-events: auto;
+  }
+
+  .projects-item {
+    margin-right: 0;
+    margin-bottom: var(--projects-image-gap);
+  }
+
+  .projects-caption {
+    display: none;
+  }
+
+  .projects-tags {
+    position: absolute;
+    top: 0;
+    right: calc(100% + var(--projects-tag-gap));
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--projects-tag-gap);
+    margin: 0;
+    pointer-events: none;
+  }
+
+  .projects-tag {
+    display: flex;
+    align-items: center;
+    width: calc(var(--box-width) * var(--u));
+    height: calc(47 * var(--u));
+    padding: calc(7 * var(--u));
+    background-color: var(--color-orange);
+    color: var(--color-mint);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--projects-label-duration) ease;
+  }
+
+  .projects-tag--name {
+    justify-content: center;
+  }
+
+  .projects-tag span {
+    flex-shrink: 0;
+    width: calc(var(--text-width) * var(--u));
+  }
+
+  .projects-item.is-selected .projects-tag {
+    clip-path: inset(0 0 0 0);
+  }
 }
 
 /* ----- התווית שבמקום הסמן (הקומפוננטה בפיגמה): שם הפרויקט, ממורכזת על העכבר -----

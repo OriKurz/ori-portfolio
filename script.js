@@ -1854,24 +1854,35 @@ if (descriptionScroll && projectPageScroll && bottomArea) {
 
 // =========================================
 // אינדקס הפרויקטים (projects.html): רצועת התמונות נעה בלופ מימין לשמאל.
+// במובייל: הקרוסלה היא טור, והתמונות נעות מלמעלה למטה.
 // התמונות חוזרות על עצמן ברצף, עם אותו ריווח גם בנקודת החיבור, בלי קפיצה.
 // המהירות: --projects-strip-speed ב-styles.css (משבצות בשנייה).
 // hover על תמונה (עכבר) או פוקוס במקלדת עוצרים את הרצועה, וכשיוצאים היא ממשיכה.
 // התמונה שמתחת לעכבר מסומנת ב-is-hover, והכותרת שמתחתיה נפתחת (styles.css).
+// במובייל: נגיעה ראשונה בתמונה עוצרת את הלופ, מזיזה אותה ברכות למרכז המסך ופותחת
+// את התגיות שלה (is-selected). נגיעה נוספת בה נכנסת לעמוד, נגיעה בתמונה אחרת עוברת אליה,
+// ונגיעה מחוץ לקרוסלה סוגרת את התגיות והלופ ממשיך.
 // =========================================
 const projectsStrip = document.querySelector(".projects-strip");
 
 if (projectsStrip) {
   const track = projectsStrip.querySelector(".projects-track");
   const projects = Array.from(track.children);
+  const mobileScreen = window.matchMedia("(max-width: 767.98px) and (orientation: portrait)");
 
-  let setWidth = 0;          // הרוחב של סבב אחד של התמונות (כולל הריווחים)
-  let offset = 0;            // כמה הרצועה זזה שמאלה (בתוך סבב אחד)
+  let vertical = false;      // במובייל הרצועה נעה לאורך
+  let setWidth = 0;          // האורך של סבב אחד של התמונות (כולל הריווחים)
+  let offset = 0;            // כמה הרצועה זזה (בתוך סבב אחד)
   let speed = 0;             // המהירות (פיקסלים לשנייה)
   let mouse = null;          // איפה העכבר עכשיו (כדי לדעת אם הוא על תמונה, גם כשהתמונה זזה מתחתיו)
   let hovered = null;        // התמונה שמתחת לעכבר
   let focused = false;       // פוקוס במקלדת על אחת התמונות
   let lastTime = null;
+  let selected = null;       // במובייל: מספר הפרויקט שהתגיות שלו פתוחות (או null)
+  let centering = null;      // במובייל: התנועה למרכז { from, distance, start, duration }
+
+  // מספר הפרויקט של כל תמונה (גם בשכפולים), כדי לסמן את כל העותקים שלו
+  projects.forEach(function (project, index) { project.dataset.project = index; });
 
   // קורא אורך מ-styles.css (בפיקסלים), גם כשהוא חישוב
   function readLength(value) {
@@ -1888,31 +1899,41 @@ if (projectsStrip) {
     return ((value % setWidth) + setWidth) % setWidth;
   }
 
+  // במחשב הרצועה זזה שמאלה. במובייל היא זזה למטה (ההזזה קטנה)
   function draw() {
-    track.style.transform = "translateX(" + (-offset) + "px)";
+    track.style.transform = vertical
+      ? "translateY(" + (-offset) + "px)"
+      : "translateX(" + (-offset) + "px)";
   }
 
   // בונה את הרצועה: הסבב חוזר כמה פעמים שצריך כדי למלא את החלון, ועוד סבב אחד,
-  // כך שכשסבב יוצא משמאל, הסבב הבא כבר נמצא בדיוק במקומו.
+  // כך שכשסבב יוצא מהקצה, הסבב הבא כבר נמצא בדיוק במקומו.
   // keepPlace: בשינוי גודל החלון הרצועה נשארת באותה נקודה בלופ
   function buildStrip(keepPlace) {
     const place = keepPlace && setWidth ? offset / setWidth : null;
+    vertical = mobileScreen.matches;
     hovered = null;
+    centering = null;
     track.textContent = "";
     projects.forEach(function (project) { track.appendChild(project); });
 
-    const step = projects[0].getBoundingClientRect().width + readLength("var(--projects-image-gap)");
+    const box = projects[0].getBoundingClientRect();
+    const step = (vertical ? box.height : box.width) + readLength("var(--projects-image-gap)");
     setWidth = step * projects.length;
     speed = readLength("calc(var(--projects-strip-speed) * var(--cell))");
-    const copies = Math.ceil(projectsStrip.clientWidth / setWidth) + 1;
+    const length = vertical ? projectsStrip.clientHeight : projectsStrip.clientWidth;
+    const copies = Math.ceil(length / setWidth) + 1;
     for (let i = 1; i < copies; i++) {
       projects.forEach(function (project) { track.appendChild(project.cloneNode(true)); });
     }
+    if (selected !== null) select(vertical ? selected : null);
 
-    // בטעינה: התמונה הראשונה במקום שלה בפיגמה (x = -34 מתחילת אזור העיצוב)
-    offset = place === null
-      ? wrap(-readLength("calc(var(--grid-left) + var(--projects-strip-start))"))
-      : wrap(place * setWidth);
+    // בטעינה: התמונה הראשונה במקום שלה בפיגמה
+    // (במובייל ההתחלה שלילית, אז קוראים אותה הפוכה: רוחב לא יכול להיות שלילי)
+    const start = vertical
+      ? readLength("calc(-1 * var(--projects-strip-start))")
+      : -readLength("calc(var(--grid-left) + var(--projects-strip-start))");
+    offset = place === null ? wrap(start) : wrap(place * setWidth);
     draw();
   }
 
@@ -1926,18 +1947,73 @@ if (projectsStrip) {
     if (hovered) hovered.classList.add("is-hover");
   }
 
+  // מסמן פרויקט (התגיות שלו נפתחות), או null לסגירה. מסמנים את כל העותקים שלו,
+  // כי בנקודת החיבור של הלופ עותק אחר תופס את המקום
+  function select(index) {
+    selected = index;
+    Array.from(track.children).forEach(function (item) {
+      item.classList.toggle("is-selected", index !== null && item.dataset.project === String(index));
+    });
+  }
+
+  // תנועה רכה בהתחלה ובסוף
+  function easeInOut(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
   function moveStrip(time) {
     if (lastTime === null) lastTime = time;
     const seconds = Math.min((time - lastTime) / 1000, 0.1);
     lastTime = time;
 
     updateHovered();
-    if (!focused && !hovered) {
-      offset = wrap(offset + speed * seconds);
+    if (centering) {
+      // התמונה שנלחצה זזה למרכז, ובסוף התגיות שלה נפתחות
+      if (centering.start === null) centering.start = time;
+      const progress = Math.min((time - centering.start) / centering.duration, 1);
+      offset = wrap(centering.from + centering.distance * easeInOut(progress));
+      draw();
+      if (progress === 1) {
+        select(centering.project);
+        centering = null;
+      }
+    } else if (!focused && !hovered && selected === null) {
+      offset = wrap(offset + (vertical ? -speed : speed) * seconds);
       draw();
     }
     requestAnimationFrame(moveStrip);
   }
+
+  // במובייל: נגיעה בתמונה
+  track.addEventListener("click", function (event) {
+    if (!vertical) return;
+    const image = event.target.closest(".projects-image");
+    if (!image) return;
+    const item = image.closest(".projects-item");
+    const project = Number(item.dataset.project);
+    // נגיעה נוספת בתמונה המסומנת: נכנסים לעמוד (הקישור עצמו)
+    if (selected === project && !centering) return;
+    event.preventDefault();
+    // התגיות של התמונה הקודמת נסגרות, והקרוסלה זזה ברכות עד שהתמונה ממורכזת במסך
+    select(null);
+    const imageBox = image.getBoundingClientRect();
+    const stripBox = projectsStrip.getBoundingClientRect();
+    const distance = (imageBox.top + imageBox.height / 2) - (stripBox.top + stripBox.height / 2);
+    centering = {
+      project: project,
+      from: offset,
+      distance: distance,
+      start: null,
+      duration: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--projects-center-duration")) || 0
+    };
+  });
+
+  // במובייל: נגיעה מחוץ לקרוסלה סוגרת את התגיות, והלופ ממשיך
+  document.addEventListener("pointerdown", function (event) {
+    if (!vertical || track.contains(event.target)) return;
+    centering = null;
+    select(null);
+  });
 
   // העכבר בלבד (באצבע אין hover: נגיעה מובילה ישר לעמוד)
   window.addEventListener("pointermove", function (event) {
@@ -1952,8 +2028,10 @@ if (projectsStrip) {
     focused = true;
     const box = projectsStrip.getBoundingClientRect();
     const imageBox = event.target.getBoundingClientRect();
-    if (imageBox.left < box.left) offset = wrap(offset - (box.left - imageBox.left));
-    else if (imageBox.right > box.right) offset = wrap(offset + (imageBox.right - box.right));
+    const start = vertical ? "top" : "left";
+    const end = vertical ? "bottom" : "right";
+    if (imageBox[start] < box[start]) offset = wrap(offset - (box[start] - imageBox[start]));
+    else if (imageBox[end] > box[end]) offset = wrap(offset + (imageBox[end] - box[end]));
     draw();
   });
   projectsStrip.addEventListener("focusout", function (event) {
