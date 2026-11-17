@@ -333,7 +333,9 @@
 
   INIT.siren = item => {
     beaconCanvas(item, "siren").then(({ cv, img, scale }) => {
-      const b = beacon(img, cv, scale, { blue: true, edge: 14, line: 4.4, rest: 0 });
+      // only the dome (the top 79.5%): at some screen sizes a few edge pixels of the dark-blue base
+      // read as dome blue, and then the whole base row would flash with the dome
+      const b = beacon(img, cv, scale, { blue: true, edge: 14, line: 4.4, rest: 0, maxY: 0.795 });
       hover(item, () => b.start(), () => b.stop());
     }).catch(() => {});
   };

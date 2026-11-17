@@ -965,8 +965,10 @@
     --banner-bottom-space: env(safe-area-inset-bottom, 0px);
     /* רולר הפרויקטים: כל תמונה ברוחב 40% מהמסך (258 ברוחב בפיגמה) */
     --strip-px: calc(100vw * 0.4 / 258);
-    /* כותרות הסעיפים בגריד: הריווח הפנימי מהפינה השמאלית התחתונה של המשבצת */
-    --section-title-padding: 3px;
+    /* כותרות הסעיפים בגריד: הריווח הפנימי מהפינה השמאלית התחתונה של המשבצת המאוחדת,
+       5 מהקו השמאלי ו-4 מהקו התחתון (הפריים tpcM בפיגמה) */
+    --section-title-padding: 5px;
+    --section-title-padding-bottom: 4px;
     --section-title-mobile-size: 14px;
 
     /* החפצים המאוירים במובייל: הפריים "Group 10" בפיגמה (359x684), ברוחב המסך פחות השוליים.
@@ -3691,19 +3693,20 @@ body {
 
   /* כותרות הסעיפים ו-"tap to play" בגריד: משבצת מאוחדת של משבצות שלמות, מקו לקו
      (כמו grid-box), כמו המשבצות המאוחדות בפיגמה. המסגרת החיצונית על קווי הגריד,
-     והרקע בצבע העמוד מכסה רק את הקווים שבפנים. הטקסט לשמאל עם ריווח קטן, וממורכז לגובה.
+     והרקע בצבע העמוד מכסה רק את הקווים שבפנים.
+     חוק קבוע: הטקסט בפינה השמאלית התחתונה של המשבצת, עם ריווח פנימי (--section-title-padding...).
      רוחב המשבצת (--title-columns) נקבע ב-script.js: משבצת אחת, ואם הטקסט לא נכנס, שתיים או יותר */
   .full-project-grid .section-title,
   .full-project-grid .play-hint {
     z-index: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     left: calc(round(down, var(--column), 1) * var(--cell));
     top: calc(round(down, var(--row), 1) * var(--cell));
     width: calc(var(--title-columns, 1) * var(--cell) + var(--line));
     height: calc(var(--cell) + var(--line));
-    padding: 0 var(--section-title-padding);
+    padding: 0 var(--section-title-padding) var(--section-title-padding-bottom);
     border: var(--line) solid var(--grid-line-color);
     background-color: var(--page-background);
   }
@@ -3725,6 +3728,18 @@ body {
   /* כותרת שחייבת להיכנס בשורה אחת (script.js) */
   .full-project-grid .section-title.is-single-line {
     white-space: nowrap;
+  }
+
+  /* זמני, עד אישור: ב-Leftovers ובשונרא הכותרות עדיין ממורכזות לגובה, עם הריווח הקודם (3) */
+  :root.page-leftovers,
+  :root.page-shunra {
+    --section-title-padding: 3px;
+  }
+
+  .page-leftovers .full-project-grid .section-title,
+  .page-shunra .full-project-grid .section-title {
+    justify-content: center;
+    padding-bottom: 0;
   }
 
   /* כשהשבירות של הפיגמה לא נכנסות, הטקסט נשבר לבד לפי הרוחב */
