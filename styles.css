@@ -1614,13 +1614,14 @@
     --projects-mobile-name-top: calc(round(down, 100dvh, var(--cell)) - var(--cell) - 2 * var(--u));
     --projects-mobile-name-width: calc(116 * var(--u));
 
-    /* הקרוסלה: טור לאורך, צמוד לקצה הימני של המסך. תמונות של 192, ו-15 ביניהן.
-       בטעינה התמונה הראשונה מתחילה ב-y = -38.5 */
+    /* הקרוסלה: טור לאורך, שמתחיל על קו הגריד של הטור החמישי (ומימין נשארים שוליים דקים).
+       תמונות של 192, ו-15 ביניהן. בטעינה התמונה הראשונה מתחילה ב-y = -35.5 */
+    --projects-strip-column: 4;
     --projects-image-size: calc(192 * var(--u));
     --projects-image-gap: calc(15 * var(--u));
-    --projects-strip-start: calc(-38.5 * var(--u));
-    /* התגיות: 12 ביניהן ו-12 מהתמונה */
-    --projects-tag-gap: calc(12 * var(--u));
+    --projects-strip-start: calc(-35.5 * var(--u));
+    /* התגיות: 10 ביניהן ו-10 מהתמונה */
+    --projects-tag-gap: calc(10 * var(--u));
     /* הזמן שבו הקרוסלה זזה עד שהתמונה שנלחצה ממורכזת (script.js) */
     --projects-center-duration: 700ms;
   }
@@ -5871,7 +5872,7 @@ body {
     white-space: normal;
   }
 
-  /* הקרוסלה: כל המסך (רק התמונות לחיצות), והטור צמוד לקצה הימני */
+  /* הקרוסלה: כל המסך (רק התמונות לחיצות), והטור מתחיל על קו הגריד */
   .projects-strip {
     top: 0;
     height: 100dvh;
@@ -5881,7 +5882,7 @@ body {
   .projects-track {
     position: absolute;
     top: 0;
-    right: 0;
+    left: calc(var(--projects-strip-column) * var(--cell));
     flex-direction: column;
     width: var(--projects-image-size);
     pointer-events: auto;
@@ -5912,7 +5913,7 @@ body {
     display: flex;
     align-items: center;
     width: calc(var(--box-width) * var(--u));
-    height: calc(47 * var(--u));
+    height: calc(var(--box-height, 47) * var(--u));
     padding: calc(7 * var(--u));
     background-color: var(--color-orange);
     color: var(--color-mint);
@@ -5920,7 +5921,7 @@ body {
     transition: clip-path var(--projects-label-duration) ease;
   }
 
-  .projects-tag--name {
+  .projects-tag--center {
     justify-content: center;
   }
 
