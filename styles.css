@@ -1505,12 +1505,14 @@
   /* 404: הקצה הימני ב-1044 והקצה העליון ב-253 בפיגמה */
   --error-title-right: calc((1044 - 4) / 80.12);
   --error-title-top: calc((253 - 4.7) / 80.12);
-  /* הקו האלכסוני ("Line 11"): 178.8x44, מסובב ב-127.96 מעלות, המרכז ב-(817, 386.5) */
-  --error-slash-x: calc((817 - 4) / 80.12);
-  --error-slash-y: calc((386.5 - 4.7) / 80.12);
-  --error-slash-length: calc(178.832 * var(--u));
-  --error-slash-thickness: calc(44 * var(--u));
+  /* הקו האלכסוני ("Line 11"): 178.8x44 מתוך 404 בגודל 300 (ביחידות em, כדי שיגדל עם ה-404),
+     מסובב ב-127.96 מעלות, והמרכז שלו במרכז ה-0 */
+  --error-slash-length: calc(178.832em / 300);
+  --error-slash-thickness: calc(44em / 300);
   --error-slash-angle: 127.96deg;
+  /* מרכז ה-0 לגובה, מהקצה העליון של השורה: ב-Telegraf הבסיס 0.76em מתחת לקצה העליון,
+     והספרות בגובה 0.665em, אז המרכז ב-0.76em - 0.3325em */
+  --error-zero-center: 0.4275em;
   /* "Hmm, nothing here.": 6 משבצות מהטור 6, בשורה 2 */
   --error-box-column: 6;
   --error-box-columns: 6;
@@ -5866,11 +5868,16 @@ body {
   white-space: nowrap;
 }
 
-/* הקו האלכסוני שחוצה את ה-0 */
+/* ה-0: הקו ממוקם ביחס אליו */
+.error-zero {
+  position: relative;
+}
+
+/* הקו האלכסוני שחוצה את ה-0 בדיוק במרכז שלו */
 .error-slash {
   position: absolute;
-  left: calc(var(--error-slash-x) * var(--cell));
-  top: calc(var(--error-slash-y) * var(--cell));
+  left: 50%;
+  top: var(--error-zero-center);
   width: var(--error-slash-length);
   height: var(--error-slash-thickness);
   translate: -50% -50%;
