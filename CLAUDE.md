@@ -45,18 +45,19 @@
 - כל טקסט בעמוד (גם בעמוד חדש) משתמש באחד מהסגנונות האלה. אם טקסט בפיגמה לא מתאים לאף סגנון, שאל אותי לפני שאתה ממציא סגנון חדש.
 - כל סגנון הוא מחלקה ב-`styles.css` (העמודה "מחלקה"). הצבע לא חלק מהסגנון.
 - הגדלים לפי פריים של 1440 בפיגמה. הגודל במסך = הגודל בטבלה כפול `--type-px` (פיקסל אחד בפיגמה), שכל עמוד קובע לפי השיטה שבה הוא גדל עם המסך.
-- פונט הטקסט הוא PP Telegraf (UltraLight=200, Regular=400, UltraBold=800). כל הסגנונות חוץ מ-Display ב-Telegraf.
+- פונט הטקסט הוא PP Telegraf (UltraLight=200, Regular=400, UltraBold=800). כל הסגנונות ב-Telegraf, חוץ מ-Display/Large ו-Display/Mobile (Reisinger, כבר לא בשימוש באף עמוד, אבל נשארים באתר).
 - **ריווח בין אותיות**: יש רק שני ערכים. טקסט באותיות גדולות: 4%. כל שאר הטקסטים: 0 (חוץ מ-About, שהוא 4% לפי הפיגמה).
 - **עברית**: TheBasics הוא פונט גיבוי אחרי Telegraf (`--font-text`), רק לאותיות עבריות. נשארים ממנו Regular (400) ו-Bold (700, לסגנונות ה-UltraBold).
-- במובייל `text-display-large`, `text-button`, `text-button-strong` ו-`text-nav` עוברים לבד לגרסת המובייל שלהם.
+- במובייל `text-display-large`, `text-display-letter`, `text-button`, `text-button-strong` ו-`text-nav` עוברים לבד לגרסת המובייל שלהם.
 - סגנונות ה-About/Mobile (הגדלים לפי הפריים say-hi-m בפיגמה, 393 לרוחב) מוגדרים רק במובייל: האלמנט מקבל גם `text-about` וגם את גרסת המובייל, ובמובייל היא מחליפה אותו.
 
 | סגנון | מחלקה | פונט ומשקל | גודל | גובה שורה | ריווח | איפה |
 |---|---|---|---|---|---|---|
 | Display/Large | `text-display-large` | Reisinger Bold | 200 | 100% | 0 | ORI KURZ בבית מחשב |
-| Display/Medium | `text-display-medium` | Reisinger Bold | 220 | 100% | 0 | Say hi |
+| Display/Medium | `text-display-medium` | Telegraf UltraBold | 220 | 100% | 0 | SAY HI (במובייל לפי המשבצת: 82 בפריים say-hi-m) |
 | Display/Mobile | `text-display-mobile` | Reisinger Bold | 60 | 100% | 0 | ORI KURZ בבית מובייל |
-| Display/Error | `text-display-error` | Reisinger Light | 300 | 100% | 0 | 404 בדף ה-404 |
+| Display/Error | `text-display-error` | Telegraf UltraBold | 300 | 100% | 0 | 404 בדף ה-404 |
+| Display/Letter | `text-display-letter` | Telegraf UltraBold | 143 (מובייל 70, ה-O 68) | 125% | 0 | כל אות של ORI KURZ בעמוד הבית, במשבצת משלה |
 | Page Title | `text-page-title` | Telegraf UltraBold | 80 | 95.5% | 0 | The Perfect Crime, וכל כותרת עמוד בעתיד |
 | Banner | `text-banner` | Telegraf UltraBold | 40 | 100% | 4% | הבאנר הרץ |
 | Button | `text-button` | Telegraf Regular | 25 | 100% | 4% | כפתורים במחשב, HI, IM |

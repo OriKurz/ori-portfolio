@@ -162,6 +162,10 @@
   --text-display-medium-size: 220;
   --text-display-mobile-size: 60;
   --text-display-error-size: 300;
+  /* Display/Letter: כל אות של ORI KURZ בעמוד הבית (במובייל 70) */
+  --text-display-letter-size: 143;
+  --text-display-letter-mobile-size: 70;
+  --text-display-letter-line-height: 1.25;
   --text-page-title-size: 80;
   --text-banner-size: 40;
   --text-button-size: 25;
@@ -217,27 +221,27 @@
   --contact-ball-pressed-scale: 0.92;
   --play-icon-pressed-scale: 0.9;
 
-  /* "HI, IM": עמודה, שורה ורוחב (במשבצות) */
-  --greeting-column: 1;
+  /* "HI, IM": עמודה, שורה ורוחב (במשבצות). הטקסט ממורכז במלבן, כמו בפיגמה */
+  --greeting-column: 3;
   --greeting-row: 2;
   --greeting-columns: 2;
   --info-text-color: var(--color-pink);
-  /* המרחק מהקו העליון של המשבצת לטקסט, כמו בפיגמה */
-  --text-offset: calc(var(--cell) * 0.4);
 
-  /* הכותרת ORI KURZ: מיושרת לימין, כמו בפיגמה: הקצה העליון ב-244 והקצה הימני ב-1143 (משבצת = 96) */
-  --title-top: calc(var(--cell) * 244 / 96);
-  --title-right: calc(var(--cell) * (1440 - 1143) / 96);
-  /* פיגמה והדפדפן קוראים את מדדי הגובה של הפונט Reisinger אחרת
-     (הפרש של 0.2em), לכן מורידים את הטקסט כדי שישב כמו בפיגמה */
-  --title-font-offset: 0.2em;
+  /* ORI KURZ: כל אות במשבצת משלה (עמודה, שורה), כמו בפיגמה */
+  --letter-o-column: 5;   --letter-o-row: 3;
+  --letter-r1-column: 7;  --letter-r1-row: 3;
+  --letter-i-column: 9;   --letter-i-row: 3;
+  --letter-k-column: 4;   --letter-k-row: 5;
+  --letter-u-column: 6;   --letter-u-row: 5;
+  --letter-r2-column: 8;  --letter-r2-row: 5;
+  --letter-z-column: 10;  --letter-z-row: 5;
 
   /* הפולרויד: מרכז התמונה וגודלה (במשבצות) */
-  --photo-center-column: 11.38;
-  --photo-center-row: 6.36;
+  --photo-center-column: 12.1;
+  --photo-center-row: 6.04;
   --photo-width: calc(var(--cell) * 2.771);
   --photo-height: calc(var(--cell) * 3.169);
-  --photo-rotation: 29.72deg;
+  --photo-rotation: -11.73deg;
 
   /* מעבר רך בין מצבי הכפתור */
   --transition-speed: 0.25s;
@@ -249,11 +253,11 @@
   --ball-color-3: var(--color-green);
   --ball-color-4: var(--color-pink);
 
-  /* הכפתור PEEK / PLAY: במחשב הוא ממלא בדיוק 3 משבצות בעמודות 6-8 ושורה 7,
+  /* הכפתור PEEK / PLAY: במחשב הוא ממלא בדיוק 2 משבצות בעמודות 6-7 ושורה 7,
      את כל השטח שבין קווי הגריד (מתחיל אחרי הקו, ונגמר בקו הבא) */
   --toggle-column: 6;
   --toggle-row: 7;
-  --toggle-columns: 3;
+  --toggle-columns: 2;
   --toggle-left: calc(var(--toggle-column) * var(--cell) + var(--line));
   --toggle-top: calc(var(--toggle-row) * var(--cell) + var(--line));
   --toggle-width: calc(var(--toggle-columns) * var(--cell) - var(--line));
@@ -300,9 +304,9 @@
     --line: var(--line-mobile);
     --frame-border: 3px;
 
-    /* הכפתור PEEK / PLAY: ממלא 2 משבצות בעמודות 3-4 ושורה 14 (טקסט 14px) */
-    --toggle-column: 3;
-    --toggle-row: 14;
+    /* הכפתור PEEK / PLAY: ממלא 2 משבצות בעמודות 5-6 ושורה 8 (טקסט 14px) */
+    --toggle-column: 5;
+    --toggle-row: 8;
     --toggle-columns: 2;
     --toggle-left: calc(var(--toggle-column) * var(--cell) + var(--line));
     --toggle-top: calc(var(--toggle-row) * var(--cell) + var(--line));
@@ -318,25 +322,31 @@
     --process-column: 3;  --process-row: 1;
     --process-columns: 2;
     --process-line-break: none;
-    --index-button-column: 1;   --index-button-row: 4;
-    --say-hi-button-column: 5;  --say-hi-button-row: 4;
+    --index-button-column: 1;   --index-button-row: 3;
+    --say-hi-button-column: 5;  --say-hi-button-row: 3;
 
     /* "HI, IM": ורוד, על מלבן שמאחד 2 משבצות */
     --greeting-column: 1;
-    --greeting-row: 6;
+    --greeting-row: 5;
     --greeting-columns: 2;
-    --text-offset: calc(var(--cell) * 15 / 49.06);
 
-    /* הכותרת ORI KURZ: מיושרת לימין. המיקום לגובה נמדד מול קווי הגריד בפיגמה:
-       ראש האותיות על הקו העליון של השורה, והבסיס על הקו התחתון */
-    --title-top: calc(var(--cell) * 6.669);
-    --title-right: calc(var(--cell) * 1.335);
+    /* ORI KURZ: כל אות במשבצת משלה */
+    --letter-o-column: 1;   --letter-o-row: 6;
+    --letter-r1-column: 3;  --letter-r1-row: 6;
+    --letter-i-column: 5;   --letter-i-row: 6;
+    --letter-k-column: 1;   --letter-k-row: 8;
+    --letter-u-column: 3;   --letter-u-row: 8;
+    --letter-r2-column: 3;  --letter-r2-row: 10;
+    --letter-z-column: 5;   --letter-z-row: 10;
+    /* ה-O קטן מעט משאר האותיות (68 ולא 70), כמו בפיגמה */
+    --letter-o-size: 68;
 
     /* הפולרויד */
-    --photo-center-column: 4.526;
-    --photo-center-row: 9.645;
+    --photo-center-column: 5.473;
+    --photo-center-row: 13.243;
     --photo-width: calc(var(--cell) * 3.182);
     --photo-height: calc(var(--cell) * 3.638);
+    --photo-rotation: 29.72deg;
   }
 }
 
@@ -1339,10 +1349,11 @@
   --say-hi-text-offset: calc((312 - 279) * var(--u));
   --say-hi-text-right: calc((930 - 875.2) * var(--u));
 
-  /* הכותרת Say hi: מיושרת לימין, לנקודה 1017px בפיגמה.
-     4px מהקו העליון, שורה אחת למטה מהפיגמה (כמו המלבן) */
-  --say-hi-title-top: calc(var(--cell) + 4 * var(--u));
-  --say-hi-title-right: calc((1440 - 1017.2) * var(--u));
+  /* הכותרת SAY HI: מיושרת לימין, לנקודה 1100px בפיגמה.
+     לגובה: כמו בפיגמה ביחס למלבן שמתחתיה, הקצה העליון של השורה 203px מעל הקו העליון של המלבן
+     (שורה אחת למטה מהפיגמה, יחד עם המלבן) */
+  --say-hi-title-top: calc(var(--say-hi-box-row) * var(--cell) - 203 * var(--u));
+  --say-hi-title-right: calc((1440 - 1100) * var(--u));
   --say-hi-title-align: right;
 
   /* הגובה: העמוד תמיד בגובה המסך, בלי גלילה. הגריד הוורוד מתחיל בשורה שלמה בראש המסך.
@@ -1418,10 +1429,13 @@
        svh: גובה המסך כשסרגל הדפדפן פתוח, כדי שהחלוקה לא תקפוץ כשהסרגל נעלם בגלילה */
     --say-hi-pink-height: 75svh;
     --say-hi-top-row-height: calc(var(--cell) + var(--line));
-    /* "Say hi" והשורה שמתחתיו ממורכזים בחלק הוורוד, על שורות שלמות של הגריד:
-       הכותרת תופסת 3 שורות, והמלבן עם הטקסט הקטן בשורה שמתחתיה (4 שורות יחד) */
-    --say-hi-box-top: calc(round(nearest, (var(--say-hi-pink-height) - 4 * var(--cell)) / 2, var(--cell)) + 3 * var(--cell));
-    --say-hi-title-top: calc(var(--say-hi-box-top) - 3 * var(--cell) + 4 * var(--u));
+    /* "SAY HI" והשורה שמתחתיו ממורכזים בחלק הוורוד, על שורות שלמות של הגריד:
+       הכותרת בשורה אחת, והמלבן עם הטקסט הקטן בשורה שמתחתיה (2 שורות יחד).
+       בפריים say-hi-m המשבצת היא 56.83px: הכותרת 82px, והבסיס שלה 6px מעל הקו העליון של המלבן.
+       כאן הגודל והמיקום באותו יחס למשבצת, כך שהכותרת יושבת על השורה שלה */
+    --say-hi-box-top: calc(round(nearest, (var(--say-hi-pink-height) - 2 * var(--cell)) / 2, var(--cell)) + var(--cell));
+    --say-hi-title-size: calc(82 / 56.83 * var(--cell));
+    --say-hi-title-top: calc(var(--say-hi-box-top) - (6 + 0.78 * 82) / 56.83 * var(--cell));
 
     /* הטקסטים ברצועה הכתומה: פיקסל בפריים say-hi-m בפיגמה (393 לרוחב) */
     --about-type-px: calc(100vw / 393);
@@ -1438,7 +1452,7 @@
     --about-tools-top: calc((926 - 585 - 14 * 22.5) * var(--about-px));
     --about-tools-width: calc(345 * var(--about-px));
 
-    /* הכותרת באותו גודל במשבצות כמו במחשב, ממורכזת לרוחב */
+    /* הכותרת ממורכזת לרוחב */
     --say-hi-title-right: 0px;
     --say-hi-title-align: center;
 
@@ -1488,11 +1502,11 @@
   --error-first-column: 0;
   /* הטקסטים הקטנים (Button). במחשב כמו שאר העמוד */
   --error-text-type-px: var(--u);
-  /* 404: הקצה הימני ב-1001 והקצה העליון ב-164 בפיגמה */
-  --error-title-right: calc((1001 - 4) / 80.12);
-  --error-title-top: calc((164 - 4.7) / 80.12);
-  /* הקו האלכסוני ("Line 11"): 178.8x44, מסובב ב-127.96 מעלות, המרכז ב-(707, 386.5) */
-  --error-slash-x: calc((707 - 4) / 80.12);
+  /* 404: הקצה הימני ב-1044 והקצה העליון ב-253 בפיגמה */
+  --error-title-right: calc((1044 - 4) / 80.12);
+  --error-title-top: calc((253 - 4.7) / 80.12);
+  /* הקו האלכסוני ("Line 11"): 178.8x44, מסובב ב-127.96 מעלות, המרכז ב-(817, 386.5) */
+  --error-slash-x: calc((817 - 4) / 80.12);
   --error-slash-y: calc((386.5 - 4.7) / 80.12);
   --error-slash-length: calc(178.832 * var(--u));
   --error-slash-thickness: calc(44 * var(--u));
@@ -1677,9 +1691,8 @@ body {
    ריווח בין אותיות באחוזים מהגודל (em), כמו בפיגמה. יש רק שני ערכים: 4% לטקסט באותיות גדולות, 0 לכל השאר.
    ========================================= */
 
-/* Display: הכותרות הגדולות ב-Reisinger */
+/* Display/Large ו-Display/Mobile: הכותרות הגדולות ב-Reisinger */
 .text-display-large,
-.text-display-medium,
 .text-display-mobile {
   font-family: var(--font-title);
   font-weight: 700;
@@ -1688,13 +1701,21 @@ body {
 }
 
 .text-display-large  { font-size: calc(var(--text-display-large-size) * var(--type-px)); }
-.text-display-medium { font-size: calc(var(--text-display-medium-size) * var(--type-px)); }
 .text-display-mobile { font-size: calc(var(--text-display-mobile-size) * var(--type-px)); }
 
-/* Display/Error: ה-404 בדף שלא קיים. Reisinger Light */
+/* Display/Medium: SAY HI. Telegraf UltraBold */
+.text-display-medium {
+  font-family: var(--font-text);
+  font-weight: 800;
+  font-size: calc(var(--text-display-medium-size) * var(--type-px));
+  line-height: var(--line-height);
+  letter-spacing: 0;
+}
+
+/* Display/Error: ה-404 בדף שלא קיים. Telegraf UltraBold */
 .text-display-error {
-  font-family: var(--font-title);
-  font-weight: 300;
+  font-family: var(--font-text);
+  font-weight: 800;
   font-size: calc(var(--text-display-error-size) * var(--type-px));
   line-height: var(--line-height);
   letter-spacing: 0;
@@ -1834,10 +1855,20 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* Display/Letter: כל אות של ORI KURZ בעמוד הבית. Telegraf UltraBold */
+.text-display-letter {
+  font-family: var(--font-text);
+  font-weight: 800;
+  font-size: calc(var(--text-display-letter-size) * var(--type-px));
+  line-height: var(--text-display-letter-line-height);
+  letter-spacing: 0;
+}
+
 /* במובייל (צר מ-768px) הסגנונות שיש להם גרסת מובייל עוברים אליה:
    Display/Large → Display/Mobile, Button → Button/Mobile, Button/Strong → Button/Mobile Strong, Nav → Nav/Mobile */
 @media (max-width: 767.98px) and (orientation: portrait) {
   .text-display-large  { font-size: calc(var(--text-display-mobile-size) * var(--type-px)); }
+  .text-display-letter { font-size: calc(var(--text-display-letter-mobile-size) * var(--type-px)); }
   .text-button         { font-size: calc(var(--text-button-mobile-size) * var(--type-px)); }
   .text-button-strong  { font-size: calc(var(--text-button-mobile-strong-size) * var(--type-px)); }
   .text-nav            { font-size: calc(var(--text-nav-mobile-size) * var(--type-px)); }
@@ -2139,11 +2170,12 @@ body {
   --row: var(--greeting-row);
   --columns: var(--greeting-columns);
   --rows: 1;
-  padding-top: var(--text-offset);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--color-blue);
   border-color: var(--grid-line-color);
   color: var(--info-text-color);
-  text-align: center;
   white-space: nowrap;
 }
 
@@ -2167,15 +2199,37 @@ body {
     translateY(50%);
 }
 
-/* ----- הכותרת "ORI KURZ": מיושרת לימין ----- */
-.title {
+/* ----- הכותרת "ORI KURZ": כל אות במשבצת משלה -----
+   האות ממורכזת בשטח של המשבצת (מאמצע הקו ועד אמצע הקו הבא), לרוחב ולגובה.
+   לגובה ממרכזים את האות הגדולה עצמה ולא את השורה: ב-Telegraf (מדדי hhea: 760/200,
+   גובה אות גדולה 665 מתוך 1000) מרכז האות נמצא 0.0525em מעל מרכז שורה בגובה 1.25,
+   ולכן מורידים אותה ב-0.0525em */
+.home-letter {
   position: absolute;
-  left: 0;
-  right: var(--title-right);
-  top: var(--title-top);
-  padding-top: var(--title-font-offset);
-  text-align: right;
+  left: calc(var(--column) * var(--cell) + var(--line) / 2);
+  top: calc(var(--row) * var(--cell) + var(--line) / 2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cell);
+  height: var(--cell);
+  translate: 0 0.0525em;
   white-space: nowrap;
+}
+
+.home-letter--o  { --column: var(--letter-o-column);  --row: var(--letter-o-row); }
+.home-letter--r1 { --column: var(--letter-r1-column); --row: var(--letter-r1-row); }
+.home-letter--i  { --column: var(--letter-i-column);  --row: var(--letter-i-row); }
+.home-letter--k  { --column: var(--letter-k-column);  --row: var(--letter-k-row); }
+.home-letter--u  { --column: var(--letter-u-column);  --row: var(--letter-u-row); }
+.home-letter--r2 { --column: var(--letter-r2-column); --row: var(--letter-r2-row); }
+.home-letter--z  { --column: var(--letter-z-column);  --row: var(--letter-z-row); }
+
+/* ה-O במובייל: הגודל שלו מהפיגמה */
+@media (max-width: 767.98px) and (orientation: portrait) {
+  .home-letter--o {
+    font-size: calc(var(--letter-o-size) * var(--type-px));
+  }
 }
 
 /* ----- המיקום של כל כפתור על הרשת ----- */
@@ -5034,17 +5088,21 @@ body {
   white-space: nowrap;
 }
 
-/* ----- הכותרת Say hi -----
-   כמו portfolio בעמוד הבית: מורידים את הטקסט ב---title-font-offset,
-   כי פיגמה והדפדפן קוראים את מדדי הגובה של Reisinger אחרת */
+/* ----- הכותרת SAY HI -----
+   במובייל הגודל לפי המשבצת (--say-hi-title-size) */
 .say-hi-title {
   position: absolute;
   left: 0;
   right: var(--say-hi-title-right);
   top: var(--say-hi-title-top);
-  padding-top: var(--title-font-offset);
   text-align: var(--say-hi-title-align);
-  white-space: pre; /* בפיגמה יש שני רווחים בין Say ל-hi, ו-pre שומר את שניהם */
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) and (orientation: portrait) {
+  .say-hi-title {
+    font-size: var(--say-hi-title-size);
+  }
 }
 
 /* ----- הרצועה הכתומה (עליי) -----
@@ -5798,13 +5856,12 @@ body {
   height: calc(var(--grid-rows) * var(--cell));
 }
 
-/* 404: מיושר לימין. מורידים אותו ב---title-font-offset, כמו שאר הכותרות ב-Reisinger */
+/* 404: מיושר לימין */
 .error-title {
   position: absolute;
   left: calc(var(--error-title-right) * var(--cell));
   top: calc(var(--error-title-top) * var(--cell));
   translate: -100% 0;
-  padding-top: var(--title-font-offset);
   color: var(--color-orange);
   white-space: nowrap;
 }

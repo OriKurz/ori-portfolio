@@ -147,13 +147,12 @@ if (ballCanvas) {
     const rects = Array.from(elements, function (element) {
       return element.getBoundingClientRect();
     });
-    // הכותרת ORI KURZ: מודדים את הטקסט עצמו, ולא את כל השורה
-    const title = document.querySelector(".title");
-    if (title) {
+    // האותיות של ORI KURZ: מודדים כל אות עצמה, ולא את כל המשבצת
+    document.querySelectorAll(".home-letter").forEach(function (letter) {
       const range = document.createRange();
-      range.selectNodeContents(title);
+      range.selectNodeContents(letter);
       rects.push(range.getBoundingClientRect());
-    }
+    });
     const grow = ballRadius + keepOutMargin * cell;
     return rects.map(function (rect) {
       return { left: rect.left - grow, top: rect.top - grow, right: rect.right + grow, bottom: rect.bottom + grow };
