@@ -1130,69 +1130,101 @@
   --next-project-overlay: color-mix(in srgb, var(--leftovers-ink) 50%, transparent);
 }
 
-/* הזכוכית המגדלת בטלפון: עיגול של 6 משבצות, מגדיל פי 2.5 */
+/* ----- Leftovers במובייל (הפריים LeftM בפיגמה, 393 לרוחב) -----
+   גריד של 7 משבצות, כמו The Perfect Crime במובייל. הטקסטים פזורים בתוך הגריד.
+   כל המיקומים בשורות. מה שמתחת לתיבת טקסט או לגלריה יורד איתן, כשהן צריכות עוד שורות */
 @media (max-width: 1024px) and (orientation: portrait) {
   :root.page-leftovers {
-    --magnifier-lens-size: calc(var(--cell) * 6);
-    --magnifier-zoom: 2.5;
-    /* שורת המשנה הימנית זזה יחד עם הכותרת (226 מימין לה, כמו בפיגמה) */
-    --type-left: calc(var(--margin-mobile) + 226 * var(--px));
-
-    /* הגריד: 10 טורים, אותה משבצת ואותו קו כמו ב-The Perfect Crime במובייל */
-    --grid-columns: 10;
-    /* הטקסטים, הבאנר וכל מה שלא הוגדל כאן נשארים בגודל שהיה להם בגריד של 14 טורים */
+    --grid-columns: 7;
+    /* פיקסל אחד בפריים LeftM: משבצת = 55.64 בפיגמה */
+    --px: calc(var(--cell) / 55.64);
+    /* הבאנר והרולר נשארים בגודל שהיה להם במובייל (לפי משבצת של גריד של 14 טורים) */
     --leftovers-old-cell: round(down, (100vw - var(--line)) / 14, var(--device-px));
     --u: calc(var(--leftovers-old-cell) / var(--frame-cell));
-    /* המפה, הגלריה וציר הזמן: ברוחב המסך פחות השוליים */
+
+    /* ההמבורגר: בדיוק במרכז המשבצת הראשונה (בין הקווים) */
+    --menu-left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
+    --menu-top: calc((var(--cell) + var(--line) - 3 * var(--menu-line-height) - 2 * var(--menu-gap)) / 2);
+
+    /* כותרות הסעיפים והתוויות בתיבות: 17, כמו ב-The Perfect Crime */
+    --section-title-mobile-size: 17px;
+
+    /* הכותרת: חופשית על הגריד, מהשורה השנייה */
+    --title-mobile-size: calc(61 * var(--px));
+    --title-left: var(--margin-mobile);
+    --title-row: 1;
+
+    /* שתי שורות המשנה: 6 משבצות, אחת מתחת לשנייה, משורה 2.
+       --tagline-rows ו---type-rows: כמה שורות כל אחת תופסת (script.js, לפחות 1) */
+    --tagline-row: 2;
+    --tagline-rows: 1;
+    --type-row: calc(var(--tagline-row) + var(--tagline-rows));
+    --type-rows: 1;
+    --type-columns: 6;
+    --type-size: 17px;
+
+    /* השורה שמעל המפה: המקום (3 משבצות), הזכוכית המגדלת, והקואורדינטות (3 משבצות). אחרי שורה ריקה */
+    --leftovers-top-row: calc(var(--type-row) + var(--type-rows) + 1);
+    --place-column: 0;              --place-row: var(--leftovers-top-row);
+    --magnifier-column: 3;          --magnifier-row: var(--leftovers-top-row);
+    --coordinates-label-column: 4;  --coordinates-label-columns: 3;
+
+    /* המפה: 9 שורות בין הקווים, ברוחב לפי הפרופורציות של התמונה, ממורכזת */
+    --leftovers-map-row: calc(var(--leftovers-top-row) + 1);
+    --leftovers-map-height: calc(9 * var(--cell) - var(--line));
+    --leftovers-map-width: calc(var(--leftovers-map-height) * var(--map-image-width) / var(--map-image-height));
+    --map-label-column: 0;          --map-label-row: calc(var(--leftovers-map-row) + 9);
+
+    /* הפסקה הראשונה: אחרי שורה ריקה מתחת ל-Main map. לפחות 5 שורות (script.js) */
+    --description-intro-row: calc(var(--map-label-row) + 2);
+    --description-intro-rows: 5;
+
+    /* הזכוכית המגדלת: עיגול ברוחב 60% מהתוכן, מגדיל פי 2.5 (כמו קודם) */
     --leftovers-content-width: calc(100vw - 2 * var(--margin-mobile));
-
-    /* משבצות הטקסט: מהטור הראשון משמאל (או עד האחרון מימין), 3 משבצות לפחות.
-       הטקסט בתוכן בדיוק בשוליים של 20, כך שהוא מתיישר לקצוות של המפה */
-    --leftovers-label-columns: 3;
-    --leftovers-label-padding-left: calc(var(--margin-mobile) - var(--line));
-    --leftovers-label-padding-right: calc(var(--grid-columns) * var(--cell) - 100vw + var(--margin-mobile));
-    /* השורה שמעל המפה: המקום משמאל, הקואורדינטות בשלוש המשבצות האחרונות מימין,
-       והזכוכית המגדלת במשבצת שמשמאלן */
-    --label-box-place-column: 0;        --place-column: 0;
-    --label-box-coordinates-column: 7;  --label-box-coordinates-columns: 3;
-    --magnifier-column: 6;
-
-    /* המפה: מתחת לקו של השורה שמעליה, בפרופורציות של התמונה */
-    --leftovers-map-top: calc(2 * var(--cell) + var(--line));
-    --leftovers-map-height: calc(var(--leftovers-content-width) * var(--map-image-height) / var(--map-image-width));
-    /* העיגולים והזכוכית גדלים יחד עם המפה (664 = רוחב המפה בפיגמה) */
-    --marker-dot-size: calc(8 * var(--leftovers-content-width) / 664);
-    --marker-hit-size: calc(20 * var(--leftovers-content-width) / 664);
     --magnifier-lens-size: calc(var(--leftovers-content-width) * 0.6);
+    --magnifier-zoom: 2.5;
 
-    /* מה שמתחת למפה: מתחיל בשורה השלמה הראשונה אחרי המפה, מהטור הראשון (כמו שם המקום).
-       "drag to show" מיד אחרי "Locations gallery" */
-    --label-box-map-column: 0;          --label-box-map-columns: 3;      --map-label-column: 0;
-    --label-box-gallery-column: 0;      --label-box-gallery-columns: 3;
-    --label-box-hint-column: 3;
-    --leftovers-below-map: round(up, var(--leftovers-map-top) + var(--leftovers-map-height), var(--cell));
-
-    /* הגלריה: 2x4 לוקיישנים ברוחב התוכן (779 = רוחב הגלריה בפיגמה).
+    /* הגלריה: אחרי שורה ריקה, "Locations gallery" ו-"Drag to show", ומתחתן הרקע של הגלריה.
+       הגלריה עצמה כמו שהייתה במובייל: 2x4 לוקיישנים ברוחב התוכן (779 = רוחב הגלריה בפיגמה של המחשב).
        הכיתובים 14. כיתוב ארוך נשבר לשתי שורות, והמרווח בין השורות גדל כדי ששתיהן ייכנסו */
+    --gallery-label-row: calc(var(--description-intro-row) + var(--description-intro-rows) + 1);
+    --leftovers-caption-size: 14px;
     --leftovers-gallery-u: calc(var(--leftovers-content-width) / 779);
     --gallery-column-gap: calc(36 * var(--leftovers-gallery-u));
     --caption-gap: calc(5 * var(--leftovers-gallery-u));
-    --leftovers-caption-space: calc(var(--caption-gap) + var(--section-title-mobile-size) + 9 * var(--leftovers-gallery-u));
-    --gallery-row-gap: max(29 * var(--leftovers-gallery-u), var(--leftovers-caption-space) + var(--section-title-mobile-size));
+    --leftovers-caption-space: calc(var(--caption-gap) + var(--leftovers-caption-size) + 9 * var(--leftovers-gallery-u));
+    --gallery-row-gap: max(29 * var(--leftovers-gallery-u), var(--leftovers-caption-space) + var(--leftovers-caption-size));
     --leftovers-gallery-height: calc(4 * 245.5 * var(--leftovers-gallery-u) + 3 * var(--gallery-row-gap));
-    /* הרקע מאחורי הגלריה: מהקו שאחרי התוויות ועד מיד מתחת לשורה האחרונה של הכיתובים */
-    --leftovers-gallery-box-top: calc(var(--leftovers-below-map) + 2 * var(--cell));
     --leftovers-gallery-padding: calc(16 * var(--leftovers-gallery-u));
-    --leftovers-gallery-box-height: calc(var(--line) + var(--leftovers-gallery-padding) + var(--leftovers-gallery-height) + var(--leftovers-caption-space));
+    /* הרקע: מהקו שמתחת לתוויות, עד הקו השלם הראשון מתחת לכיתובים של השורה האחרונה */
+    --leftovers-gallery-box-top: calc((var(--gallery-label-row) + 1) * var(--cell));
+    --leftovers-gallery-box-bottom: round(up, var(--leftovers-gallery-box-top) + var(--line) + var(--leftovers-gallery-padding) + var(--leftovers-gallery-height) + var(--leftovers-caption-space), var(--cell));
 
-    /* Source Material: בשורה השלמה הראשונה אחרי הגלריה. ציר הזמן ברוחב התוכן (878 בפיגמה) */
-    --leftovers-source-top: round(up, var(--leftovers-gallery-box-top) + var(--leftovers-gallery-box-height), var(--cell));
-    --leftovers-timeline-u: calc(var(--leftovers-content-width) / var(--timeline-width));
-    --leftovers-timeline-top: calc(var(--leftovers-source-top) + 1.266 * var(--cell));
-    --source-background-width: calc(359 * var(--leftovers-timeline-u));
-    --source-background-height: calc(423 * var(--leftovers-timeline-u));
-    /* אורך הגריד: עד הפרויקטים הנוספים, באותו מרחק מהציר כמו בפיגמה, מעוגל לשורה שלמה */
-    --leftovers-grid-height: round(up, var(--leftovers-timeline-top) + 563.9 * var(--leftovers-timeline-u) + var(--next-projects-height), var(--cell));
+    /* הפסקה השנייה: אחרי שורה ריקה מתחת לגלריה. לפחות 4 שורות (script.js) */
+    --leftovers-story-top: calc(var(--leftovers-gallery-box-bottom) + var(--cell));
+    --description-story-rows: 4;
+
+    /* Source Material: אחרי שורה ריקה מתחת לפסקה, 3 משבצות מהטור השלישי */
+    --leftovers-source-top: calc(var(--leftovers-story-top) + (var(--description-story-rows) + 1) * var(--cell));
+    --source-label-column: 2;
+
+    /* ציר הזמן לאורך: הקומפוננטה (878 גובה) מתחילה 11 פיקסלים מעל הקו שמתחת ל-Source Material,
+       כך שהשנתה הראשונה 12 מתחת לקו (כמו בפיגמה). כל המספרים בתוכו בפיקסלים של LeftM */
+    --leftovers-timeline-top: calc(var(--leftovers-source-top) + var(--cell) - 11 * var(--px));
+    --timeline-mobile-axis-x: 358;      /* מרכז הקו של הציר */
+    --timeline-mobile-hit-left: 270;    /* האזור של כל שנה: מ-270 עד 380 לרוחב */
+    --timeline-mobile-hit-width: 110;
+    --timeline-mobile-year-x: 310;      /* מרכז מספר השנה */
+    --timeline-mobile-tick-left: 347;   /* השנתה: 22 לרוחב */
+    /* התצלום: 267 רוחב (הדוגמה בפיגמה), צמוד לשמאל המסך, ממורכז מול השנה שלו.
+       הוא לא עולה מעל השנה הראשונה ולא יורד מתחת לשנה האחרונה (8 מהשנתה, כמו בדוגמה בפיגמה) */
+    --timeline-mobile-photo-width: 267;
+    --timeline-mobile-first-top: calc(23 - 8);
+    --timeline-mobile-last-bottom: calc(847 + 8);
+
+    /* What's Next: 17 שורות מתחת ל-Source Material (אחרי ציר הזמן), ואחריו הרולר והבאנר */
+    --leftovers-next-top: calc(var(--leftovers-source-top) + 17 * var(--cell));
+    --section-title-next-column: 0;
   }
 }
 
@@ -3730,13 +3762,11 @@ body {
     white-space: nowrap;
   }
 
-  /* זמני, עד אישור: ב-Leftovers ובשונרא הכותרות עדיין ממורכזות לגובה, עם הריווח הקודם (3) */
-  :root.page-leftovers,
+  /* זמני, עד אישור: בשונרא הכותרות עדיין ממורכזות לגובה, עם הריווח הקודם (3) */
   :root.page-shunra {
     --section-title-padding: 3px;
   }
 
-  .page-leftovers .full-project-grid .section-title,
   .page-shunra .full-project-grid .section-title {
     justify-content: center;
     padding-bottom: 0;
@@ -4460,7 +4490,6 @@ body {
 
 /* במובייל: טור אחד והעמוד כולו נגלל כרגיל */
 @media (max-width: 1024px) and (orientation: portrait) {
-  .page-leftovers .full-project-info,
   .page-shunra .full-project-info {
     position: relative;
     height: auto;
@@ -4470,37 +4499,150 @@ body {
     position: relative;
     overflow: visible;
   }
+}
 
+/* במחשב: שורה ריקה בין שני החלקים של התיאור (כמו בין הפסקאות) */
+.page-leftovers .full-project-description-story {
+  margin-top: 1lh;
+}
+
+/* What's Next בגריד: רק במובייל */
+.page-leftovers .section-title--next {
+  display: none;
+}
+
+/* =========================================
+   Leftovers במובייל (הפריים LeftM בפיגמה, 393 לרוחב)
+   גריד של 7 משבצות. הטקסטים של הפרויקט פזורים בתוך הגריד: הכותרת חופשית על הקווים,
+   ושורות המשנה, הפסקאות והתוויות במשבצות מאוחדות. המשתנים ב-:root.page-leftovers (למעלה).
+   במחשב: בלי שינוי
+   ========================================= */
+@media (max-width: 1024px) and (orientation: portrait) {
   .page-leftovers .full-project-panel {
     margin-left: 0;
   }
 
-  /* ----- Leftovers במובייל: המיקומים מחושבים מהמשתנים --leftovers-... (ב-:root.page-leftovers) ----- */
-
-  /* המפה: ברוחב התוכן, השכבה העליונה באזור שלה */
-  .page-leftovers .leftovers-map {
-    left: var(--margin-mobile);
-    top: var(--leftovers-map-top);
-    width: var(--leftovers-content-width);
-    height: var(--leftovers-map-height);
-    z-index: 2;
+  /* החלק של הטקסט לא תופס מקום: הגריד מתחיל למעלה, והטקסטים ממוקמים עליו */
+  .page-leftovers .full-project-info {
+    position: relative;
+    height: 0;
+    z-index: auto;
   }
 
-  /* הקואורדינטות, "Locations gallery" ו-"drag to show": בגודל של כותרות הסעיפים (14),
-     בתוך המלבן שלהם, לשמאל וממורכזים לגובה (כמו כותרות הסעיפים) */
+  /* הכותרת והתיאור לא עטופים יותר באזורים משלהם: כל טקסט ממוקם לבד על הגריד */
+  .page-leftovers .full-project-header,
+  .page-leftovers .full-project-description-scroll {
+    position: static;
+    height: auto;
+    padding: 0;
+    background: none;
+  }
+
+  .page-leftovers .full-project-description {
+    display: contents;
+  }
+
+  .page-leftovers .full-project-title {
+    z-index: 1;
+    left: var(--title-left);
+    top: calc(var(--title-row) * var(--cell));
+    width: min-content;
+    font-size: var(--title-mobile-size);
+  }
+
+  /* שורות המשנה ושתי הפסקאות: משבצת מאוחדת של משבצות שלמות, מקו לקו.
+     המסגרת על קווי הגריד, הרקע מכסה את הקווים שבפנים, והטקסט ממורכז לגובה,
+     20 מקצוות המסך */
+  .page-leftovers .full-project-tagline,
+  .page-leftovers .full-project-type,
+  .page-leftovers .full-project-description-intro,
+  .page-leftovers .full-project-description-story {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: calc(var(--box-row) * var(--cell));
+    width: calc(var(--box-columns) * var(--cell) + var(--line));
+    height: calc(var(--box-rows) * var(--cell) + var(--line));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0;
+    padding: 0 calc(var(--margin-mobile) - var(--line));
+    border: var(--line) solid var(--grid-line-color);
+    background-color: var(--page-background);
+    white-space: normal;
+  }
+
+  .page-leftovers .full-project-tagline,
+  .page-leftovers .full-project-type {
+    --box-columns: var(--type-columns);
+    /* התיבה לא מגיעה לקצה הימני של המסך, אז מימין רק הריווח של התיבות (כמו בפיגמה,
+       כדי ש-"Graphic Design and Data Visualization" יישאר בשורה אחת) */
+    padding-right: var(--section-title-padding);
+    font-size: var(--type-size);
+  }
+
+  .page-leftovers .full-project-tagline {
+    --box-row: var(--tagline-row);
+    --box-rows: var(--tagline-rows);
+  }
+
+  .page-leftovers .full-project-type {
+    --box-row: var(--type-row);
+    --box-rows: var(--type-rows);
+  }
+
+  /* השבירות של המחשב לא קיימות במובייל (הטקסט נשבר לפי הרוחב, כמו בפיגמה) */
+  .page-leftovers .full-project-tagline br,
+  .page-leftovers .full-project-type-break,
+  .page-leftovers .full-project-description-break {
+    display: none;
+  }
+
+  .page-leftovers .full-project-type-comma {
+    display: inline;
+  }
+
+  .page-leftovers .full-project-description-intro {
+    --box-row: var(--description-intro-row);
+    --box-columns: var(--grid-columns);
+    --box-rows: var(--description-intro-rows);
+  }
+
+  .page-leftovers .full-project-description-story {
+    --box-columns: var(--grid-columns);
+    --box-rows: var(--description-story-rows);
+    top: var(--leftovers-story-top);
+  }
+
+  /* במובייל כל התוויות מציירות את התיבה שלהן בעצמן */
+  .page-leftovers .leftovers-label-box {
+    display: none;
+  }
+
+  /* התוויות שאינן כותרות סעיף (הקואורדינטות, "Locations gallery" ו-"Drag to show"):
+     אותה תיבה כמו כותרות הסעיפים, באותו חוק קבוע: הטקסט בפינה השמאלית התחתונה */
   .page-leftovers .leftovers-coordinates,
   .page-leftovers .leftovers-gallery-label,
   .page-leftovers .leftovers-gallery-hint {
+    z-index: 1;
     left: calc(var(--label-column) * var(--cell));
-    top: var(--label-top);
+    top: calc(var(--label-row) * var(--cell));
     width: calc(var(--label-columns) * var(--cell) + var(--line));
     height: calc(var(--cell) + var(--line));
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 0 var(--section-title-padding);
-    border: var(--line) solid transparent;
+    justify-content: flex-end;
+    padding: 0 var(--section-title-padding) var(--section-title-padding-bottom);
+    border: var(--line) solid var(--grid-line-color);
+    background-color: var(--page-background);
     font-size: var(--section-title-mobile-size);
+  }
+
+  .page-leftovers .leftovers-coordinates {
+    --label-column: var(--coordinates-label-column);
+    --label-columns: var(--coordinates-label-columns);
+    --label-row: var(--leftovers-top-row);
   }
 
   /* כל שורה של הקואורדינטות היא span נפרד, אז ה-br לא נחוץ בתוך ה-flex */
@@ -4508,56 +4650,56 @@ body {
     display: none;
   }
 
-  .page-leftovers .leftovers-coordinates {
-    --label-column: var(--label-box-coordinates-column);
-    --label-columns: var(--label-box-coordinates-columns);
-    --label-top: calc(var(--label-box-coordinates-row) * var(--cell));
-  }
-
   .page-leftovers .leftovers-gallery-label,
   .page-leftovers .leftovers-gallery-hint {
-    --label-top: calc(var(--leftovers-below-map) + var(--cell));
+    --label-row: var(--gallery-label-row);
+    --label-columns: 2;
   }
 
-  .page-leftovers .leftovers-gallery-label { --label-column: var(--label-box-gallery-column); --label-columns: var(--label-box-gallery-columns); }
-  .page-leftovers .leftovers-gallery-hint  { --label-column: var(--label-box-hint-column);    --label-columns: var(--label-box-hint-columns); }
+  .page-leftovers .leftovers-gallery-label { --label-column: 0; }
+  .page-leftovers .leftovers-gallery-hint  { --label-column: 2; }
 
-  /* משבצות הטקסט שמשמאל: הטקסט מתחיל 20 מהקצה השמאלי של המסך (כמו המפה),
-     והמשבצת המאוחדת לפחות 3 משבצות (script.js מוסיף משבצות אם הטקסט לא נכנס) */
-  .page-leftovers .full-project-grid .leftovers-place,
-  .page-leftovers .full-project-grid .leftovers-map-label {
-    width: calc(max(var(--leftovers-label-columns), var(--title-columns, 1)) * var(--cell) + var(--line));
-    padding-left: var(--leftovers-label-padding-left);
+  /* "Drag to show", באות גדולה כמו בפיגמה */
+  .page-leftovers .leftovers-gallery-hint .play-hint-touch::first-letter {
+    text-transform: uppercase;
   }
 
-  .page-leftovers .leftovers-gallery-label {
-    padding-left: var(--leftovers-label-padding-left);
+  /* כותרות הסעיפים: ברוחב המשבצות מהפיגמה (בשורה אחת אם נכנס, script.js) */
+  .page-leftovers .leftovers-place        { --title-mobile-columns: 3; }
+  .page-leftovers .leftovers-map-label    { --title-mobile-columns: 2; }
+  .page-leftovers .leftovers-source-label { --title-mobile-columns: 3; }
+  .page-leftovers .section-title--next    { --title-mobile-columns: 2; }
+
+  .page-leftovers .full-project-grid .leftovers-source-label {
+    top: var(--leftovers-source-top);
   }
 
-  /* הקואורדינטות: מיושרות לימין, 20 מהקצה הימני של המסך (כמו המפה) */
-  .page-leftovers .leftovers-coordinates {
-    align-items: flex-end;
-    text-align: right;
-    padding-right: var(--leftovers-label-padding-right);
+  .page-leftovers .full-project-grid .section-title--next {
+    display: flex;
+    top: var(--leftovers-next-top);
+    color: var(--leftovers-sky);
   }
 
-  /* "Main map, 50×70, print": בשורה הראשונה מתחת למפה */
-  .page-leftovers .leftovers-label-box--map,
-  .page-leftovers .leftovers-map-label {
-    top: var(--leftovers-below-map);
+  /* המפה: 9 שורות בין הקווים, ממורכזת לרוחב. העיגולים הסגולים לא מופיעים במובייל */
+  .page-leftovers .leftovers-map {
+    left: calc((var(--grid-columns) * var(--cell) + var(--line) - var(--leftovers-map-width)) / 2);
+    top: calc(var(--leftovers-map-row) * var(--cell) + var(--line));
+    width: var(--leftovers-map-width);
+    height: var(--leftovers-map-height);
+    z-index: 2;
   }
 
-  .page-leftovers .leftovers-label-box--gallery,
-  .page-leftovers .leftovers-label-box--hint {
-    top: calc(var(--leftovers-below-map) + var(--cell));
+  .page-leftovers .map-marker,
+  .page-leftovers .map-sketch {
+    display: none;
   }
 
-  /* הרקע מאחורי הגלריה: מקו לקו לרוחב, ועד מיד מתחת לכיתובים של השורה האחרונה */
+  /* הרקע מאחורי הגלריה: מקו לקו, לכל רוחב הגריד */
   .page-leftovers .leftovers-gallery-box {
     left: 0;
     top: var(--leftovers-gallery-box-top);
     width: calc(var(--grid-columns) * var(--cell) + var(--line));
-    height: var(--leftovers-gallery-box-height);
+    height: calc(var(--leftovers-gallery-box-bottom) - var(--leftovers-gallery-box-top) + var(--line));
   }
 
   .page-leftovers .leftovers-gallery {
@@ -4570,46 +4712,68 @@ body {
   .page-leftovers .location-caption {
     width: 100%;
     white-space: normal;
-    font-size: var(--section-title-mobile-size);
+    font-size: var(--leftovers-caption-size);
   }
 
-  /* Source Material: משבצת מאוחדת אחת של 4 משבצות באמצע הגריד, הטקסט בשורה אחת וממורכז */
-  .page-leftovers .leftovers-label-box--source {
+  /* האיורים שמאחורי ציר הזמן לא מופיעים בפריים במובייל */
+  .page-leftovers .source-background {
     display: none;
   }
 
-  .page-leftovers .full-project-grid .leftovers-source-label {
-    --title-columns: 4 !important;
-    left: calc((var(--grid-columns) - 4) / 2 * var(--cell));
-    top: var(--leftovers-source-top);
-    align-items: center;
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  /* ציר הזמן ברוחב התוכן: כל המספרים שבתוכו (בפיקסלים של הפיגמה) לפי יחידה משלו.
-     השנים נשארות בגודל שלהן (--type-px) */
+  /* ----- ציר הזמן לאורך: השנים בטור, והתצלום של השנה שנבחרה משמאל להן -----
+     כל המספרים בפיקסלים של LeftM (--px). --tick (מה-HTML) הוא כאן הגובה של השנתה */
   .page-leftovers .source-timeline {
-    --u: var(--leftovers-timeline-u);
-    left: var(--margin-mobile);
+    left: 0;
     top: var(--leftovers-timeline-top);
+    width: calc(var(--grid-columns) * var(--cell) + var(--line));
+    height: calc(var(--timeline-width) * var(--px));
   }
 
-  /* האיורים שברקע: באותו מקום ביחס לציר כמו בפיגמה */
-  .page-leftovers .source-background--left {
-    left: calc(var(--margin-mobile) - 115.204 * var(--leftovers-timeline-u));
-    top: calc(var(--leftovers-timeline-top) + 82.934 * var(--leftovers-timeline-u));
+  .page-leftovers .timeline-axis {
+    left: calc(var(--timeline-mobile-axis-x) * var(--px));
+    top: calc(var(--timeline-axis-left) * var(--px));
+    width: var(--line);
+    height: calc(var(--timeline-axis-width) * var(--px));
+    translate: -50% 0;
   }
 
-  .page-leftovers .source-background--right {
-    left: calc(var(--margin-mobile) + 628.01 * var(--leftovers-timeline-u));
-    top: calc(var(--leftovers-timeline-top) + 83.93 * var(--leftovers-timeline-u));
+  /* האזור של כל שנה: חצי הדרך לשנה הסמוכה מלמעלה ומלמטה */
+  .page-leftovers .timeline-year {
+    left: calc(var(--timeline-mobile-hit-left) * var(--px));
+    top: calc((var(--tick) - var(--timeline-step) / 2) * var(--px));
+    width: calc(var(--timeline-mobile-hit-width) * var(--px));
+    height: calc(var(--timeline-step) * var(--px));
   }
 
+  .page-leftovers .timeline-year-label {
+    left: calc((var(--timeline-mobile-year-x) - var(--timeline-mobile-hit-left)) * var(--px));
+    top: 50%;
+    translate: -50% -50%;
+    font-size: calc(var(--text-timeline-year-size) * var(--px));
+  }
+
+  .page-leftovers .timeline-tick {
+    left: calc((var(--timeline-mobile-tick-left) - var(--timeline-mobile-hit-left)) * var(--px));
+    top: 50%;
+    width: calc(var(--timeline-tick-height) * var(--px));
+    height: var(--line);
+    translate: 0 -50%;
+  }
+
+  /* התצלום: 267 רוחב, הגובה לפי הפרופורציות של הווריאנט שלו. ממורכז מול השנה,
+     אבל לא עולה מעל השנה הראשונה ולא יורד מתחת לשנה האחרונה */
+  .page-leftovers .timeline-photo {
+    --photo-height: calc(var(--timeline-mobile-photo-width) * var(--h) / var(--w));
+    left: 0;
+    top: calc(clamp(var(--timeline-mobile-first-top), var(--tick) - var(--photo-height) / 2, var(--timeline-mobile-last-bottom) - var(--photo-height)) * var(--px));
+    width: calc(var(--timeline-mobile-photo-width) * var(--px));
+    height: calc(var(--photo-height) * var(--px));
+  }
+
+  /* הגריד נגמר בשורה שלמה מתחת לרולר: What's Next, ואחריו הרולר (שמכסה את סוף הגריד) */
   .page-leftovers .full-project-panel .full-project-grid {
-    height: var(--leftovers-grid-height);
+    height: round(up, var(--leftovers-next-top) + var(--cell) + var(--next-projects-height), var(--cell));
   }
-
 }
 
 /* ----- התוויות בגריד ----- */

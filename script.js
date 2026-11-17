@@ -1646,12 +1646,16 @@ if (gridSectionTitles.length) {
 
       // עמוד עם פריים מובייל בפיגמה קובע את רוחב המשבצת (--title-mobile-columns): קודם בשורה אחת,
       // ואם לא נכנס (מסך צר), עם השבירות של הפיגמה באותה משבצת. רק אם גם זה לא נכנס, מוסיפים משבצות
+      // (בכל רוחב: קודם עם השבירות של הפיגמה, ואז בשורה אחת)
       const fixedColumns = parseFloat(style.getPropertyValue("--title-mobile-columns"));
       const tries = [];
       if (fixedColumns) {
         tries.push({ reflow: true, singleLine: true, columns: fixedColumns });
         tries.push({ reflow: false, columns: fixedColumns });
-        for (let columns = fixedColumns + 1; columns <= maxColumns; columns++) tries.push({ reflow: true, singleLine: true, columns: columns });
+        for (let columns = fixedColumns + 1; columns <= maxColumns; columns++) {
+          tries.push({ reflow: false, columns: columns });
+          tries.push({ reflow: true, singleLine: true, columns: columns });
+        }
       } else {
         for (let columns = 1; columns <= Math.min(2, maxColumns); columns++) tries.push({ reflow: false, columns: columns });
         for (let columns = 1; columns <= maxColumns; columns++) tries.push({ reflow: true, columns: columns });
