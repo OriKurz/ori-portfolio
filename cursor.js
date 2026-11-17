@@ -15,6 +15,14 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
   cursor.setAttribute("aria-hidden", "true");
   cursor.innerHTML = '<div class="custom-cursor-ball"></div>';
   const ball = cursor.firstChild;
+  // התווית עם שם הפרויקט (רק בעמוד שיש בו אלמנטים עם data-cursor-label, כמו האינדקס):
+  // כשהעכבר על אלמנט כזה, היא מופיעה במקום הכדור
+  let label = null;
+  if (document.querySelector("[data-cursor-label]")) {
+    label = document.createElement("div");
+    label.className = "custom-cursor-label text-label";
+    cursor.appendChild(label);
+  }
   document.body.appendChild(cursor);
 
   // מה נחשב לחיץ
@@ -117,6 +125,12 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
     if (element === currentElement) return;
     if (currentElement) currentElement.classList.remove("has-ball-cursor");
     currentElement = element;
+    const labelText = element && label ? element.getAttribute("data-cursor-label") : null;
+    if (labelText) {
+      label.textContent = labelText;
+      label.style.setProperty("--label-width", element.getAttribute("data-cursor-label-width"));
+    }
+    cursor.classList.toggle("is-label", Boolean(labelText));
     if (element) {
       element.classList.add("has-ball-cursor");
       // ממתינים פריים, כדי שמעברי ה-hover כבר יתחילו ונוכל לקרוא את הצבע שלהם

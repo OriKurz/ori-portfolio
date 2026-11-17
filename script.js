@@ -1857,6 +1857,7 @@ if (descriptionScroll && projectPageScroll && bottomArea) {
 // התמונות חוזרות על עצמן ברצף, עם אותו ריווח גם בנקודת החיבור, בלי קפיצה.
 // המהירות: --projects-strip-speed ב-styles.css (משבצות בשנייה).
 // hover על תמונה (עכבר) או פוקוס במקלדת עוצרים את הרצועה, וכשיוצאים היא ממשיכה.
+// התמונה שמתחת לעכבר מסומנת ב-is-hover, והכותרת שמתחתיה נפתחת (styles.css).
 // =========================================
 const projectsStrip = document.querySelector(".projects-strip");
 
@@ -1868,6 +1869,7 @@ if (projectsStrip) {
   let offset = 0;            // כמה הרצועה זזה שמאלה (בתוך סבב אחד)
   let speed = 0;             // המהירות (פיקסלים לשנייה)
   let mouse = null;          // איפה העכבר עכשיו (כדי לדעת אם הוא על תמונה, גם כשהתמונה זזה מתחתיו)
+  let hovered = null;        // התמונה שמתחת לעכבר
   let focused = false;       // פוקוס במקלדת על אחת התמונות
   let lastTime = null;
 
@@ -1895,6 +1897,7 @@ if (projectsStrip) {
   // keepPlace: בשינוי גודל החלון הרצועה נשארת באותה נקודה בלופ
   function buildStrip(keepPlace) {
     const place = keepPlace && setWidth ? offset / setWidth : null;
+    hovered = null;
     track.textContent = "";
     projects.forEach(function (project) { track.appendChild(project); });
 
@@ -1913,11 +1916,14 @@ if (projectsStrip) {
     draw();
   }
 
-  // האם העכבר על אחת התמונות
-  function isHovered() {
-    if (!mouse) return false;
-    const target = document.elementFromPoint(mouse.x, mouse.y);
-    return Boolean(target && target.closest(".projects-image") && projectsStrip.contains(target));
+  // התמונה שהעכבר עליה (או null), מסומנת ב-is-hover
+  function updateHovered() {
+    const target = mouse && document.elementFromPoint(mouse.x, mouse.y);
+    const image = target && projectsStrip.contains(target) ? target.closest(".projects-image") : null;
+    if (image === hovered) return;
+    if (hovered) hovered.classList.remove("is-hover");
+    hovered = image;
+    if (hovered) hovered.classList.add("is-hover");
   }
 
   function moveStrip(time) {
@@ -1925,7 +1931,8 @@ if (projectsStrip) {
     const seconds = Math.min((time - lastTime) / 1000, 0.1);
     lastTime = time;
 
-    if (!focused && !isHovered()) {
+    updateHovered();
+    if (!focused && !hovered) {
       offset = wrap(offset + speed * seconds);
       draw();
     }

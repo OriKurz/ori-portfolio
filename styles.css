@@ -181,6 +181,8 @@
   --text-hint-size: 20;
   --text-contact-ball-size: 17;
   --text-caption-size: 15;
+  --text-label-size: 17;
+  --text-label-line-height: 1.1;
   --text-nav-size: 20;
   --text-nav-mobile-size: 14;
   --text-about-size: 20;
@@ -1567,15 +1569,23 @@
   --projects-title-row: calc((112 - 4) / 96);
   --projects-subtitle-column: calc(402 / 96);
   --projects-subtitle-row: calc((137 - 4) / 96);
+  /* ORI KURZ ב-(921, 116) */
+  --projects-name-column: calc(921 / 96);
+  --projects-name-row: calc((116 - 4) / 96);
 
-  /* רצועת התמונות: בשורות 3 עד 5. כל תמונה ריבוע של 3 משבצות (מקו לקו),
-     עם מסגרת כתומה בעובי הקו, ו-15px בין תמונה לתמונה.
-     בטעינה התמונה הראשונה מתחילה ב-x = -34 */
-  --projects-strip-row: 3;
-  --projects-strip-rows: 3;
+  /* רצועת התמונות: בשורות 2 עד 5. כל תמונה ריבוע של 4 משבצות (מקו לקו),
+     עם מסגרת כתומה בעובי הקו, ו-24.6px בין תמונה לתמונה (הממוצע בפיגמה).
+     בטעינה התמונה הראשונה מתחילה ב-x = -235 */
+  --projects-strip-row: 2;
+  --projects-strip-rows: 4;
   --projects-image-size: calc(var(--projects-strip-rows) * var(--cell) + var(--line));
-  --projects-image-gap: calc(15 * var(--u));
-  --projects-strip-start: calc(-34 * var(--u));
+  --projects-image-gap: calc(24.6 * var(--u));
+  --projects-strip-start: calc(-235 * var(--u));
+  /* הגובה של הרצועה: התמונות, ומתחתן הכותרות של העבודות (עד 405 + 47 מראש התמונה) */
+  --projects-strip-height: calc(452 * var(--u));
+  /* המלבנים הכתומים (הכותרת מתחת לתמונה, והתווית שבמקום הסמן) נפתחים משמאל לימין,
+     באותו קצב כמו המלבנים בשונרא */
+  --projects-label-duration: 200ms;
   /* מהירות הרצועה: כמה משבצות בשנייה (script.js) */
   --projects-strip-speed: 1.5;
 }
@@ -1855,6 +1865,15 @@ body {
   font-size: calc(var(--text-nav-size) * var(--type-px));
   line-height: var(--line-height);
   letter-spacing: 0.04em;
+}
+
+/* Label: הטקסט במלבנים הכתומים באינדקס (הכותרת מתחת לתמונה, והתווית שבמקום הסמן) */
+.text-label {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: calc(var(--text-label-size) * var(--type-px));
+  line-height: var(--text-label-line-height);
+  letter-spacing: 0;
 }
 
 /* Display/Letter: כל אות של ORI KURZ בעמוד הבית. Telegraf UltraBold */
@@ -5695,6 +5714,14 @@ body {
   top: calc(var(--projects-subtitle-row) * var(--cell));
 }
 
+.projects-name {
+  position: absolute;
+  margin: 0;
+  left: calc(var(--projects-name-column) * var(--cell));
+  top: calc(var(--projects-name-row) * var(--cell));
+  white-space: nowrap;
+}
+
 /* ----- רצועת התמונות -----
    לרוחב כל החלון, על השורות שלה. script.js משכפל את התמונות כמה שצריך
    ומזיז את projects-track מימין לשמאל בלופ */
@@ -5703,7 +5730,7 @@ body {
   left: 0;
   top: calc(var(--grid-top) + var(--projects-strip-row) * var(--cell));
   width: 100vw;
-  height: var(--projects-image-size);
+  height: var(--projects-strip-height);
   overflow: hidden;
 }
 
@@ -5713,14 +5740,19 @@ body {
   will-change: transform;
 }
 
+/* פרויקט אחד: התמונה, ומתחתיה הכותרת של העבודה */
+.projects-item {
+  position: relative;
+  flex: none;
+  margin-right: var(--projects-image-gap);
+}
+
 /* תמונה: ריבוע עם מסגרת כתומה, והתמונה חתוכה בתוכה כמו בפיגמה */
 .projects-image {
   position: relative;
-  flex: none;
   display: block;
   width: var(--projects-image-size);
   height: var(--projects-image-size);
-  margin-right: var(--projects-image-gap);
   border: var(--line) solid var(--color-orange);
   -webkit-tap-highlight-color: transparent;
 }
@@ -5743,10 +5775,76 @@ body {
   object-position: var(--fit-position, center);
 }
 
-/* Focus במקלדת: אין hover שנראה, אז קו מתאר בצבע ובעובי קווי הגריד */
-.projects-image:focus-visible,
-.projects-image.is-focus {
-  outline: var(--line) solid var(--grid-line-color);
+/* Focus במקלדת: כמו Hover, הכותרת מתחת לתמונה נפתחת (למטה), בלי קו מתאר */
+.projects-image:focus-visible {
+  outline: none;
+}
+
+/* ----- הכותרת מתחת לתמונה: שני מלבנים כתומים (הקומפוננטה Group 16 בפיגמה) -----
+   סגורים עד ה-Hover, ונפתחים משמאל לימין כמו המלבנים בשונרא (clip-path) */
+.projects-caption {
+  position: absolute;
+  left: 0;
+  top: calc(var(--caption-top) * var(--u));
+  display: flex;
+  gap: calc(var(--box-gap) * var(--u));
+  margin: 0;
+  pointer-events: none;
+}
+
+.projects-caption-box {
+  display: flex;
+  align-items: center;
+  width: calc(var(--box-width) * var(--u));
+  height: calc(47 * var(--u));
+  padding: calc(7 * var(--u));
+  background-color: var(--color-orange);
+  color: var(--color-mint);
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--projects-label-duration) ease;
+}
+
+.projects-caption-box span {
+  flex-shrink: 0;
+  width: calc(var(--text-width) * var(--u));
+}
+
+/* Hover (script.js מסמן את התמונה שמתחת לעכבר ב-is-hover) ו-Focus */
+.projects-image.is-hover ~ .projects-caption .projects-caption-box,
+.projects-image:focus-visible ~ .projects-caption .projects-caption-box,
+.projects-image.is-focus ~ .projects-caption .projects-caption-box {
+  clip-path: inset(0 0 0 0);
+}
+
+/* ----- התווית שבמקום הסמן (הקומפוננטה בפיגמה): שם הפרויקט, ממורכזת על העכבר -----
+   cursor.js מציג אותה במקום הכדור כשהעכבר על תמונה של פרויקט, ופותח אותה משמאל לימין */
+.custom-cursor-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  width: calc(var(--label-width) * var(--u));
+  height: calc(30 * var(--u));
+  padding: calc(7 * var(--u));
+  background-color: var(--color-orange);
+  color: var(--color-mint);
+  white-space: nowrap;
+  translate: -50% -50%;
+  clip-path: inset(0 100% 0 0);
+}
+
+/* נפתחת משמאל לימין, וכשהעכבר יוצא מהתמונה נעלמת מיד */
+.custom-cursor.is-label .custom-cursor-label {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path var(--projects-label-duration) ease;
+}
+
+/* כשהתווית מוצגת, הכדור לא */
+.custom-cursor.is-label .custom-cursor-ball {
+  transform: scale(0);
+  transition: none;
 }
 
 /* =========================================
