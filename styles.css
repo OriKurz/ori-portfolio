@@ -5750,6 +5750,29 @@ body {
   white-space: nowrap;
 }
 
+/* ----- הרקע של הקרוסלה -----
+   כחול חלק על המשבצות של הרצועה (Rectangle 72 בפיגמה): לרוחב כל החלון, בשורות 2 עד 5.
+   מתחיל אחרי הקו העליון ונגמר לפני הקו התחתון, כך שהקווים שבתוכו מכוסים
+   והקווים שמסביבו נשארים. עומד במקום, והתמונות נעות מעליו */
+.projects-strip-background {
+  position: fixed;
+  left: 0;
+  top: calc(var(--grid-top) + var(--projects-strip-row) * var(--cell) + var(--line));
+  width: 100vw;
+  height: calc(var(--projects-strip-rows) * var(--cell) - var(--line));
+  background-color: var(--color-blue);
+}
+
+/* במובייל (Rectangle 71 בפיגמה): הטור של הקרוסלה, מאחרי הקו שלו ועד הקצה הימני, לכל הגובה */
+@media (max-width: 767.98px) and (orientation: portrait) {
+  .projects-strip-background {
+    left: calc(var(--projects-strip-column) * var(--cell) + var(--line));
+    top: 0;
+    width: calc(100vw - var(--projects-strip-column) * var(--cell) - var(--line));
+    height: 100dvh;
+  }
+}
+
 /* ----- רצועת התמונות -----
    לרוחב כל החלון, על השורות שלה. script.js משכפל את התמונות כמה שצריך
    ומזיז את projects-track מימין לשמאל בלופ */
