@@ -3,6 +3,7 @@
    with position:relative, give each one class="shunra-sticker", then call initShunraStickers(container).
    Their starting places are read from where they sit in the container.
    Mouse: press and hold (or press and drag) picks a sticker up. Touch: long press picks it up.
+   Touch: a quick swipe that starts on a sticker scrolls the page, as anywhere else.
    While held it grows a little. Drop it anywhere on the page, over anything: it shrinks back and stays there.
    The stickers live in their own layer on top of everything else in the grid area (.full-project-grid),
    so they scroll with it (on desktop only the grid area scrolls, on mobile the whole page does).
@@ -17,7 +18,7 @@ function initShunraStickers(root){
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const css=document.createElement('style');
   css.textContent=`#shunra-sticker-layer{position:absolute;left:0;top:0;width:0;height:0;z-index:990;pointer-events:none}
-  .stk{position:absolute;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:grab;transform-origin:50% 50%}
+  .stk{position:absolute;pointer-events:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:grab;transform-origin:50% 50%}
   .stk img{display:block;width:100%;height:auto;max-width:none;pointer-events:none;-webkit-user-drag:none;user-select:none}
   .stk.up{cursor:grabbing;z-index:2}
   html.stk-dragging,html.stk-dragging *{cursor:grabbing!important;user-select:none!important;-webkit-user-select:none!important}`;
@@ -45,6 +46,8 @@ function initShunraStickers(root){
       const it={el,img,fx:(r.left-a.x-b.x)/b.w,fy:(r.top-a.y-b.y)/b.w,fw:r.width/b.w,s:1,anim:null};
       img.removeAttribute('style');img.classList.remove('shunra-sticker');el.appendChild(img);layer.appendChild(el);
       el.addEventListener('pointerdown',e=>down(e,it));
+      // touch: a swipe over a sticker scrolls the page as usual. Only a lifted sticker stops the scroll
+      el.addEventListener('touchmove',e=>{if(held&&held.up&&held.it===it)e.preventDefault()},{passive:false});
       el.addEventListener('pointerenter',e=>hover(e,it,true));
       el.addEventListener('pointerleave',e=>hover(e,it,false));
       if(!reduce){it.waiting=true;setScale(it,ENTER)}    // waits, a bit bigger, for its entrance
