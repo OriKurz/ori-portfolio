@@ -1222,8 +1222,14 @@
     --timeline-mobile-first-top: calc(23 - 8);
     --timeline-mobile-last-bottom: calc(847 + 8);
 
-    /* What's Next: 17 שורות מתחת ל-Source Material (אחרי ציר הזמן), ואחריו הרולר והבאנר */
-    --leftovers-next-top: calc(var(--leftovers-source-top) + 17 * var(--cell));
+    /* Process: 18 שורות מתחת ל-Source Material (אחרי ציר הזמן ושורה ריקה), ומתחתיו הפסקה שלו.
+       אחרי שורה ריקה Looking Back והפסקה שלו, ואחרי עוד שורה ריקה What's Next, ואחריו הרולר והבאנר.
+       --description-process-rows ו---description-looking-back-rows: כמה שורות כל פסקה צריכה (script.js) */
+    --leftovers-process-top: calc(var(--leftovers-source-top) + 18 * var(--cell));
+    --description-process-rows: 1;
+    --leftovers-looking-back-top: calc(var(--leftovers-process-top) + (var(--description-process-rows) + 2) * var(--cell));
+    --description-looking-back-rows: 1;
+    --leftovers-next-top: calc(var(--leftovers-looking-back-top) + (var(--description-looking-back-rows) + 2) * var(--cell));
     --section-title-next-column: 0;
   }
 }
@@ -1984,6 +1990,15 @@ body {
 .text-body {
   font-family: var(--font-text);
   font-weight: 400;
+  font-size: calc(var(--text-body-size) * var(--type-px));
+  line-height: calc(var(--text-body-line-height) * var(--type-px));
+  letter-spacing: 0;
+}
+
+/* Body Strong: כותרת בתוך טקסט רץ, באותו גודל וגובה שורה (Process ו-Looking Back ב-Leftovers במחשב) */
+.text-body-strong {
+  font-family: var(--font-text);
+  font-weight: 800;
   font-size: calc(var(--text-body-size) * var(--type-px));
   line-height: calc(var(--text-body-line-height) * var(--type-px));
   letter-spacing: 0;
@@ -4338,9 +4353,10 @@ body {
   height: auto;
 }
 
-/* שבירת שורה בכותרות סעיפים שקיימת רק במובייל (כמו בפריים ShunM) */
+/* שבירת שורה שקיימת רק במובייל (כמו בפריימים ShunM ו-LeftM) */
 @media (min-width: 1025px), (orientation: landscape) {
-  .shunra-mobile-break {
+  .shunra-mobile-break,
+  .full-project-mobile-break {
     display: none;
   }
 }
@@ -4863,9 +4879,17 @@ body {
   .page-shunra .shunra-palette-color:nth-child(6) { --palette-mobile-column: 3; --palette-mobile-row: 2; } /* teal */
 }
 
-/* במחשב: שורה ריקה בין שני החלקים של התיאור (כמו בין הפסקאות) */
-.page-leftovers .full-project-description-story {
-  margin-top: 1lh;
+/* במחשב (לפי הפריים בפיגמה): בלי הפסקה של המובייל (story), והכותרות Process ו-Looking Back
+   בתוך הטקסט, בצבע שלו, אחרי שורה ריקה, והפסקה שלהן מיד מתחתן */
+@media (min-width: 1025px), (orientation: landscape) {
+  .page-leftovers .full-project-description-story {
+    display: none;
+  }
+
+  .page-leftovers .full-project-description .section-title {
+    margin: 1lh 0 0;
+    color: inherit;
+  }
 }
 
 /* What's Next בגריד: רק במובייל */
@@ -4918,7 +4942,9 @@ body {
   .page-leftovers .full-project-tagline,
   .page-leftovers .full-project-type,
   .page-leftovers .full-project-description-intro,
-  .page-leftovers .full-project-description-story {
+  .page-leftovers .full-project-description-story,
+  .page-leftovers .full-project-description-process,
+  .page-leftovers .full-project-description-looking-back {
     position: absolute;
     z-index: 1;
     left: 0;
@@ -4956,8 +4982,7 @@ body {
 
   /* השבירות של המחשב לא קיימות במובייל (הטקסט נשבר לפי הרוחב, כמו בפיגמה) */
   .page-leftovers .full-project-tagline br,
-  .page-leftovers .full-project-type-break,
-  .page-leftovers .full-project-description-break {
+  .page-leftovers .full-project-type-break {
     display: none;
   }
 
@@ -4976,6 +5001,48 @@ body {
     --box-rows: var(--description-story-rows);
     top: var(--leftovers-story-top);
   }
+
+  /* המשפט שנוסף לפסקה במחשב: במובייל הוא בפסקה story (כמו בפריים LeftM) */
+  .page-leftovers .full-project-desktop-only {
+    display: none;
+  }
+
+  /* Process ו-Looking Back: כותרת סעיף, ובשורה שמתחתיה הפסקה שלה */
+  .page-leftovers .full-project-description-process {
+    --box-columns: var(--grid-columns);
+    --box-rows: var(--description-process-rows);
+    top: calc(var(--leftovers-process-top) + var(--cell));
+  }
+
+  .page-leftovers .full-project-description-looking-back {
+    --box-columns: var(--grid-columns);
+    --box-rows: var(--description-looking-back-rows);
+    top: calc(var(--leftovers-looking-back-top) + var(--cell));
+  }
+
+  /* הכותרות Process ו-Looking Back: כותרות סעיפים רגילות, כמו אלה שבגריד (Section Title במובייל).
+     משבצת מאוחדת, והטקסט בפינה השמאלית התחתונה. רוחב המשבצת (--title-columns): script.js */
+  .page-leftovers .full-project-description .section-title {
+    --column: 0;
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    width: calc(var(--title-columns, 1) * var(--cell) + var(--line));
+    height: calc(var(--cell) + var(--line));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0 var(--section-title-padding) var(--section-title-padding-bottom);
+    border: var(--line) solid var(--grid-line-color);
+    background-color: var(--page-background);
+    font-weight: 400;
+    font-size: var(--section-title-mobile-size);
+    line-height: var(--line-height);
+  }
+
+  .page-leftovers .leftovers-process-title      { top: var(--leftovers-process-top); }
+  .page-leftovers .leftovers-looking-back-title { top: var(--leftovers-looking-back-top); }
 
   /* במובייל כל התוויות מציירות את התיבה שלהן בעצמן */
   .page-leftovers .leftovers-label-box {

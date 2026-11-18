@@ -1612,7 +1612,8 @@ if (nextProjectsStrip) {
 // בלי השבירות של הפיגמה (is-reflowed), ומוסיפים משבצות לרוחב עד שנכנס.
 // במחשב: בלי שינוי (CSS)
 // =========================================
-const gridSectionTitles = document.querySelectorAll(".full-project-grid .section-title");
+// (גם כותרות הסעיפים שבתוך התיאור, כמו Process ו-Looking Back ב-Leftovers)
+const gridSectionTitles = document.querySelectorAll(".full-project-grid .section-title, .full-project-description .section-title");
 
 if (gridSectionTitles.length) {
   const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
