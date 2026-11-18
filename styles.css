@@ -1372,10 +1372,17 @@
     --description-story-row: calc(var(--shunra-menu-row) + 14);
     --description-story-rows: 3;
 
-    /* Poster Campaign אחרי שורה ריקה, ומתחתיו הפוסטרים: כל הרוחב, 5 שורות שלמות */
+    /* Poster Campaign אחרי שורה ריקה, ומתחתיו הפוסטרים: כל הרוחב, 6 שורות שלמות.
+       התמונה בכל גובה המסגרת (בלי חיתוך למעלה ולמטה), ונחתכת קצת בצדדים (בערך 6% מכל צד) */
     --shunra-poster-title-row: calc(var(--description-story-row) + var(--description-story-rows) + 1);
     --shunra-posters-row: calc(var(--shunra-poster-title-row) + 1);
-    --shunra-posters-rows: 5;
+    --shunra-posters-rows: 6;
+    --shunra-poster-crop-top: 0%;
+    --shunra-poster-crop-height: 100%;
+
+    /* המלבנים הכתומים (שם המוצר): הטקסט 17, והמלבן קטן באותו יחס (17 / 20 מהגודל בפיגמה) */
+    --shunra-label-size: 17px;
+    --shunra-label-px: calc(var(--shunra-label-size) / 20);
 
     /* Merch אחרי שורה ריקה. המרצ'נדייז ממוקם ביחס לקו שמעליו, ותופס 10 שורות */
     --shunra-merch-row: calc(var(--shunra-posters-row) + var(--shunra-posters-rows) + 1);
@@ -1406,11 +1413,11 @@
     --shunra-illustrations-row: calc(var(--instagram-button-row) + 10);
     --shunra-logo-bottom-row: calc(var(--shunra-illustrations-row) + 2);
 
-    /* Color palette, והעיגולים בשורה שמתחתיו (שלושה, בכל משבצת שנייה, כמו בפיגמה) */
+    /* Color palette, והעיגולים בשלוש השורות שמתחתיו (בשחמט, כמו בפיגמה) */
     --shunra-palette-title-row: calc(var(--shunra-illustrations-row) + 7);
     --palette-row: calc(var(--shunra-palette-title-row) + 1);
 
-    /* What's Next: אחרי שתי שורות ריקות, והגריד נגמר מתחתיו */
+    /* What's Next: מיד מתחת לעיגולים, והגריד נגמר מתחתיו */
     --section-title-next-row: calc(var(--palette-row) + 3);
     --grid-rows: calc(var(--section-title-next-row) + 1);
   }
@@ -4716,8 +4723,10 @@ body {
     width: calc(223.48 * var(--px));
   }
 
-  /* ----- המוצרים: ביחס לקו שמעל The Menu. המספרים 150 בפיגמה ----- */
+  /* ----- המוצרים: ביחס לקו שמעל The Menu. המספרים 150 בפיגמה -----
+     המוצרים והמרצ'נדייז מעל כל השאר (גם הרקעים והכותרות), כדי שהמלבנים הכתומים יהיו השכבה העליונה */
   .page-shunra .shunra-products {
+    z-index: 2;
     top: calc(var(--shunra-menu-row) * var(--cell));
   }
 
@@ -4728,15 +4737,25 @@ body {
   /* הטקסט במלבן הכתום רחב מהמלבן (כמו במחשב): נחתך בתוכו, כדי שלא ירחיב את העמוד */
   .page-shunra .shunra-product-label {
     overflow: hidden;
+    width: calc(var(--label-width) * var(--shunra-label-px));
+    height: calc(51 * var(--shunra-label-px));
+    padding: calc(7 * var(--shunra-label-px));
+    font-size: var(--shunra-label-size);
   }
 
-  /* המיקומים מהפריים ShunM. ההזזה ב-Hover והמלבן הכתום (אין להם מצב בפריים):
-     באותו מקום ביחס למוצר כמו במחשב, לפי היחס בין הגודל של המוצר במובייל לגודל שלו במחשב */
+  .page-shunra .shunra-product-label span {
+    width: calc(var(--label-text-width) * var(--shunra-label-px));
+  }
+
+  /* המיקומים מהפריים ShunM. ההזזה ב-Hover (אין לה מצב בפריים): כמו במחשב, לפי היחס בין הגודל
+     של המוצר במובייל לגודל שלו במחשב. המלבנים הכתומים: קצת מחוץ למוצר, כדי שיכסו ממנו פחות.
+     1 ו-3 בשוליים השמאליים (1 קצת למעלה, כדי לא לכסות את The Menu), 2 במקום שלו,
+     והשאר הורחקו קצת מהמוצר (לימין ולמטה) */
   .page-shunra .shunra-product--1 {
     --number-right: 370.7; --number-top: -60.74;
     --image-left: 145.7; --image-top: -13.74; --image-width: 156;
     --hover-x: -10.23; --hover-y: 6.03;
-    --label-left: 80.4; --label-top: -8.24;
+    --label-left: 20; --label-top: -12.4;
   }
 
   .page-shunra .shunra-product--2 {
@@ -4750,29 +4769,28 @@ body {
     --number-right: 368.7; --number-top: 152.26;
     --image-left: 139.7; --image-top: 204.26; --image-width: 158;
     --hover-x: -7.18; --hover-y: 4.14;
-    --label-left: 77.8; --label-top: 261.16;
+    --label-left: 20; --label-top: 265;
   }
 
   .page-shunra .shunra-product--4 {
     --number-right: 110.7; --number-top: 269.26;
     --image-left: 110.7; --image-top: 297.26; --image-width: 57;
     --hover-x: 3.1; --hover-y: -3.72;
-    --label-left: 139.2; --label-top: 491.16;
+    --label-left: 151.2; --label-top: 505;
   }
 
-  /* המלבן: לא חורג מהשוליים של 20 בצד ימין */
   .page-shunra .shunra-product--5 {
     --number-right: 371.7; --number-top: 377.26;
     --image-left: 224.7; --image-top: 347.26; --image-width: 58;
     --hover-x: -1.48; --hover-y: 4.97;
-    --label-left: 253.7; --label-top: 544.96;
+    --label-left: 265.7; --label-top: 558.8;
   }
 
   .page-shunra .shunra-product--6 {
     --number-right: 107.7; --number-top: 544.26;
     --image-left: 122.7; --image-top: 579.26; --image-width: 143;
     --hover-x: 3.03; --hover-y: 3.09;
-    --label-left: 243.3; --label-top: 662.86;
+    --label-left: 255.3; --label-top: 666.7;
   }
 
   /* ----- המרצ'נדייז: ביחס לקו שמעל Merch. הריבועים לא על הגריד בפיגמה, אז הם בפיקסלים ----- */
@@ -4792,24 +4810,25 @@ body {
     top: calc((var(--square-y) + var(--square-height) - var(--image-bottom, 0)) * var(--u));
   }
 
+  /* המלבנים הכתומים: קטנים סביב אותו מרכז, כמו של המוצרים */
   .page-shunra .shunra-merch--bandanas-1 {
     --square-x: 19.52; --square-y: 77.55; --square-width: 195.09; --square-height: 226.62;
-    --label-left: 163.42; --label-top: 176.72;
+    --label-left: 177.82; --label-top: 180.55;
   }
 
   .page-shunra .shunra-merch--net-bag-2 {
     --square-x: 232.72; --square-y: 77.26; --square-width: 130.86; --square-height: 226.62;
-    --label-left: 199.31; --label-top: 137.86;
+    --label-left: 205.99; --label-top: 141.69;
   }
 
   .page-shunra .shunra-merch--net-bag-1 {
     --square-x: 28.72; --square-y: 314.25; --square-width: 141.75; --square-height: 214.32;
-    --label-left: 144.92; --label-top: 383.05;
+    --label-left: 151.6; --label-top: 386.88;
   }
 
   .page-shunra .shunra-merch--bandanas-2 {
     --square-x: 182.7; --square-y: 314.25; --square-width: 150.13; --square-height: 214.32;
-    --label-left: 162.22; --label-top: 471.95;
+    --label-left: 176.62; --label-top: 475.78;
   }
 
   .page-shunra .shunra-merch-image--bandanas-1 { --image-left: 19.52;  --image-width: 172.85; }
@@ -4829,15 +4848,19 @@ body {
     width: calc(var(--mw) * var(--u));
   }
 
-  /* ----- פלטת הצבעים: שלושה עיגולים כמו בפריים, בטורים 2, 4 ו-6 ----- */
+  /* ----- פלטת הצבעים: ששת העיגולים בשחמט על שלוש שורות, כמו בפריים ----- */
   .page-shunra .shunra-palette-color {
-    left: calc((var(--palette-column) - 1) * var(--cell) + var(--line));
+    left: calc(var(--palette-mobile-column) * var(--cell) + var(--line));
+    top: calc((var(--palette-row) + var(--palette-mobile-row)) * var(--cell) + var(--line));
     border-width: var(--line);
   }
 
-  .page-shunra .shunra-palette-color:nth-child(n + 4) {
-    display: none;
-  }
+  .page-shunra .shunra-palette-color:nth-child(1) { --palette-mobile-column: 1; --palette-mobile-row: 0; } /* wine */
+  .page-shunra .shunra-palette-color:nth-child(2) { --palette-mobile-column: 3; --palette-mobile-row: 0; } /* sea */
+  .page-shunra .shunra-palette-color:nth-child(3) { --palette-mobile-column: 5; --palette-mobile-row: 0; } /* sand */
+  .page-shunra .shunra-palette-color:nth-child(4) { --palette-mobile-column: 4; --palette-mobile-row: 1; } /* periwinkle */
+  .page-shunra .shunra-palette-color:nth-child(5) { --palette-mobile-column: 2; --palette-mobile-row: 1; } /* brick */
+  .page-shunra .shunra-palette-color:nth-child(6) { --palette-mobile-column: 3; --palette-mobile-row: 2; } /* teal */
 }
 
 /* במחשב: שורה ריקה בין שני החלקים של התיאור (כמו בין הפסקאות) */
