@@ -5741,8 +5741,9 @@ body {
   pointer-events: none;
 }
 
+/* SAY HI וטקסט האודות במנטה, AND LET’S WORK TOGETHER בכתום (כמו בפיגמה) */
 .say-hi-page {
-  color: var(--color-yellow);
+  color: var(--color-mint);
 }
 
 /* אזור העיצוב מהפיגמה, ממורכז בחלון */
@@ -5790,6 +5791,7 @@ body {
 
 .say-hi-text {
   --type-px: var(--tagline-type-px);
+  color: var(--color-orange);
   text-align: var(--say-hi-text-align);
   white-space: nowrap;
 }
@@ -5979,7 +5981,7 @@ body {
   border: none;
   border-radius: 50%;
   --type-px: var(--contact-ball-type-px);
-  color: var(--color-yellow);
+  color: var(--color-mint);
   text-align: center;
   text-decoration: none; /* גם כשהכדור יהיה קישור */
   cursor: pointer;
@@ -6001,9 +6003,9 @@ body {
   white-space: nowrap;
 }
 
-/* כל הכדורים ירוקים */
+/* כל הכדורים בכחול כהה */
 .contact-ball {
-  background-color: var(--color-green);
+  background-color: var(--color-dark-blue);
 }
 
 /* Hover: הכדור הופך לכחול, במעבר רך. הטקסט נשאר במשקל הרגיל. הכדור גם מאט ליד העכבר (script.js).
