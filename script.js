@@ -77,7 +77,8 @@ if (indexBar) {
 // הפולרויד בעמוד הבית: נדחף כמו דף נייר כבד שנעוץ בנקודה אחת.
 // נקודת הציר היא הפינה השמאלית העליונה של התמונה (ראו .photo ב-styles.css).
 // הטווח של הנדנוד מ-styles.css (--photo-swing-direction, --photo-swing-max): במחשב רק לכיוון
-// אחד, הרחק מ-ORI KURZ. בכל מקרה התמונה נשארת כולה בתוך המסך.
+// אחד, הרחק מ-ORI KURZ. התמונה נשארת כולה בתוך המסך, והנקודה הכי גבוהה שלה עולה לכל היותר
+// קצת מעל הקצה העליון של ה-Z. בקצה הטווח היא נעצרת ברכות וחוזרת קצת אחורה.
 // אין קפיץ: התמונה נשארת בזווית שאליה נדחפה, ורק דחיפה נוספת מזיזה אותה.
 // =========================================
 
@@ -86,6 +87,9 @@ const photo = document.querySelector(".photo");
 if (photo) {
   // הגדרות כלליות
   const edgeSlowdown = 3;    // ליד הקצה של הטווח התמונה מאטה בהדרגה (גדול יותר = עוצרת קרוב יותר לקצה)
+  const edgeZone = 5;        // באזור הזה (מעלות) לפני הזווית המקסימלית, התמונה חוזרת אחורה ברכות
+  const edgeReturn = 2;      // מהירות החזרה: כמה מעלות לשנייה, לכל מעלה בתוך האזור
+  const aboveZ = 0.1;        // כמה (במשבצות) התמונה יכולה לעלות מעל הקצה העליון של ה-Z
   const pushDuration = 60;   // כמה זמן (מילישניות) כל תנועת עכבר ממשיכה לדחוף
   const newPushAfter = 250;  // הפסקה (מילישניות) שאחריה תנועת עכבר נחשבת דחיפה חדשה
   const softStopSpeed = 6;   // מתחת למהירות הזאת החיכוך נחלש (עד שליש), כדי שהעצירה תהיה רכה
@@ -145,18 +149,48 @@ if (photo) {
     });
   }
 
+  // הנקודה הכי גבוהה של התמונה (y במסך) בזווית נוספת angleToCheck
+  function highestPoint(photoBox, angleToCheck) {
+    const radians = ((photoBox.tilt + angleToCheck) * Math.PI) / 180;
+    return photoBox.pivotY + Math.min(0, photoBox.width * Math.sin(radians), photoBox.height * Math.cos(radians),
+      photoBox.width * Math.sin(radians) + photoBox.height * Math.cos(radians));
+  }
+
+  // הגבול העליון של התמונה: קצת מעל הקצה העליון של האות Z (גובה אות גדולה ב-Telegraf: 0.665em).
+  // אם התמונה כבר בעיצוב מעל הקו הזה (במחשב), אין גבול כזה
+  function topLimit(photoBox) {
+    const letterZ = document.querySelector(".home-letter--z");
+    if (!letterZ) return -Infinity;
+    const box = letterZ.getBoundingClientRect();
+    const capHeight = 0.665 * parseFloat(getComputedStyle(letterZ).fontSize);
+    const limit = box.top + box.height / 2 - capHeight / 2 - aboveZ * box.height;
+    return highestPoint(photoBox, 0) >= limit ? limit : -Infinity;
+  }
+
   // הטווח המותר של הזווית הנוספת (מהזווית בעיצוב): לפי הכיוון והזווית המקסימלית מ-styles.css,
-  // ועד הזווית שבה פינה של התמונה הייתה יוצאת מהמסך. נמדד מחדש כשגודל החלון משתנה
+  // עד הזווית שבה פינה של התמונה הייתה יוצאת מהמסך או עולה מעל הגבול שליד ה-Z.
+  // כשהנדנוד לשני הצדדים, הזווית המקסימלית זהה בשניהם (הקטנה מביניהם).
+  // soft: באיזה קצה פועל הקפיץ הרך (לא בזווית שבעיצוב, כשהנדנוד רק לכיוון אחד).
+  // נמדד מחדש כשגודל החלון משתנה
   function measureSwingRange() {
     const styles = getComputedStyle(photo);
     const direction = parseFloat(styles.getPropertyValue("--photo-swing-direction")) || 0;
     const max = parseFloat(styles.getPropertyValue("--photo-swing-max")) || 0;
     const photoBox = getPhotoGeometry();
+    const limit = topLimit(photoBox);
+    function allowed(angleToCheck) {
+      return fitsOnScreen(photoBox, angleToCheck) && highestPoint(photoBox, angleToCheck) >= limit;
+    }
     let low = 0;
     let high = 0;
-    while (direction <= 0 && low > -max && fitsOnScreen(photoBox, low - 0.5)) low -= 0.5;
-    while (direction >= 0 && high < max && fitsOnScreen(photoBox, high + 0.5)) high += 0.5;
-    return { low: low, high: high };
+    while (direction <= 0 && low > -max && allowed(low - 0.5)) low -= 0.5;
+    while (direction >= 0 && high < max && allowed(high + 0.5)) high += 0.5;
+    if (direction === 0) {
+      const both = Math.min(-low, high);
+      low = -both;
+      high = both;
+    }
+    return { low: low, high: high, softLow: direction <= 0, softHigh: direction >= 0 };
   }
 
   // מחשב איפה נמצאת התמונה במסך: נקודת הציר, הגודל וההטיה
@@ -217,14 +251,22 @@ if (photo) {
       speed = Math.sign(speed) * Math.max(0, Math.abs(speed) - friction);
     }
 
+    // ליד הזווית המקסימלית: כשהיד לא דוחפת, התמונה חוזרת ברכות אל מחוץ לאזור, ונעצרת שם
+    const zone = Math.min(edgeZone, (range.high - range.low) / 4);
+    const pastHigh = range.softHigh ? Math.max(0, angle - (range.high - zone)) : 0;
+    const pastLow = range.softLow ? Math.max(0, range.low + zone - angle) : 0;
+    if (!handIsPushing && (pastHigh > 0 || pastLow > 0)) {
+      speed = edgeReturn * (pastLow - pastHigh);
+    }
+
     // ליד הקצה של הטווח: ככל שמתקרבים לקצה, המהירות לכיוונו קטנה, בלי קפיצה
     const room = speed > 0 ? range.high - angle : angle - range.low;
     speed = Math.sign(speed) * Math.min(Math.abs(speed), Math.max(0, room) * edgeSlowdown);
     angle += speed * seconds;
     angle = Math.max(range.low, Math.min(range.high, angle));
 
-    // הנייר נעצר: עוצרים את האנימציה, והזווית נשארת כמו שהיא
-    if (!handIsPushing && Math.abs(speed) < 0.05) {
+    // הנייר נעצר (ולא בתוך האזור של הקפיץ): עוצרים את האנימציה, והזווית נשארת כמו שהיא
+    if (!handIsPushing && Math.abs(speed) < 0.05 && pastHigh < 0.05 && pastLow < 0.05) {
       speed = 0;
       frame = null;
     } else {
