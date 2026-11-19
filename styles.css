@@ -3306,6 +3306,12 @@ body {
   top: var(--menu-top);
 }
 
+/* The Perfect Crime: ההמבורגר כתום, אז ב-Hover וב-Focus כחול (כמו ב-404) */
+.page-perfect-crime .full-project-menu {
+  --menu-line-color: var(--color-orange);
+  --menu-hover-color: var(--color-blue);
+}
+
 .full-project-title,
 .full-project-type {
   position: absolute;
@@ -3780,7 +3786,7 @@ body {
 }
 
 .contact-banner-text {
-  color: var(--color-yellow);
+  color: var(--color-mint);
   white-space: nowrap;
   transform: translateY(var(--banner-text-offset));
   transition: color var(--transition-speed) ease;
