@@ -2925,11 +2925,14 @@ body {
   display: flex;
   align-items: center; /* ההמבורגר והכפתורים במרכז הגובה */
   width: 100%;
-  height: var(--nav-height);
+  /* --nav-cover-extra (script.js): כמה הבר מתארך כלפי מטה כדי לכסות לגמרי את ההמבורגר של העמוד.
+     התוספת היא ריפוד בתחתית, כך שהתוכן נשאר באותו מקום */
+  height: calc(var(--nav-height) + var(--nav-cover-extra, 0px));
   padding-left: var(--nav-menu-inset);
   padding-right: var(--nav-list-end);
+  padding-bottom: var(--nav-cover-extra, 0px);
   background-color: var(--color-blue);
-  color: var(--color-yellow);
+  color: var(--color-mint);
   transform: translateY(-100%);
   visibility: hidden;
   transition:
@@ -2945,7 +2948,7 @@ body {
     visibility 0s;
 }
 
-/* ההמבורגר של הבר: צהוב (ב-hover ירוק, כמו כל ההמבורגרים).
+/* ההמבורגר של הבר: מנטה (ב-hover ירוק, כמו כל ההמבורגרים).
    יושב ב---nav-menu-inset מהקצה העליון, כמו המרחק מהקצה השמאלי */
 .nav-bar-menu {
   flex-shrink: 0;
@@ -2954,7 +2957,7 @@ body {
 }
 
 .nav-bar .menu-button-line {
-  background-color: var(--color-yellow);
+  background-color: var(--color-mint);
 }
 
 @media (hover: hover) and (pointer: fine) {

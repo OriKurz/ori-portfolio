@@ -899,8 +899,33 @@ if (navBar) {
     return navBar.classList.contains("is-open");
   }
 
+  // הבר מכסה לגמרי את ההמבורגר של העמוד: אם ההמבורגר יורד מתחת לקצה התחתון של הבר,
+  // הבר מתארך כלפי מטה עד מעט מתחתיו (--nav-cover-extra ב-styles.css)
+  const coverMargin = 2; // פיקסלים מתחת להמבורגר
+  function coverPageMenu() {
+    navBar.style.setProperty("--nav-cover-extra", "0px");
+    const barBottom = navBar.offsetHeight;
+    let menuBottom = 0;
+    pageMenuButtons.forEach(function (button) {
+      // לפי הגודל המלא, גם אם ההמבורגר עוד קטן מהלחיצה
+      const box = button.getBoundingClientRect();
+      if (box.height > 0) menuBottom = Math.max(menuBottom, box.top + box.height / 2 + button.offsetHeight / 2);
+    });
+    const extra = Math.max(0, Math.ceil(menuBottom + coverMargin - barBottom));
+    navBar.style.setProperty("--nav-cover-extra", extra + "px");
+  }
+
+  // ההמבורגר של העמוד יכול לזוז (גודל החלון, גלילה), אז מודדים שוב כשהבר פתוח
+  window.addEventListener("resize", function () {
+    if (isNavOpen()) coverPageMenu();
+  });
+  window.addEventListener("scroll", function () {
+    if (isNavOpen()) coverPageMenu();
+  }, { capture: true, passive: true });
+
   // fromKeyboard: נפתח במקלדת, אז הפוקוס עובר להמבורגר שבתוך הבר
   function setNavOpen(open, fromKeyboard) {
+    if (open) coverPageMenu();
     // אם הפוקוס היה בתוך הבר כשהוא נסגר, מחזירים אותו להמבורגר של העמוד
     const focusWasInside = navBar.contains(document.activeElement);
 
