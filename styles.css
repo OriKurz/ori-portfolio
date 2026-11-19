@@ -353,12 +353,12 @@
 }
 
 /* ----- עמוד התהליך -----
-   אזור העיצוב הוא 14 משבצות לרוחב ו-58 לגובה, עם מסגרת קו מסביב
+   אזור העיצוב הוא 14 משבצות לרוחב ו-65 לגובה, עם מסגרת קו מסביב
    ושוליים מנטה בלי קווים (כמו בפיגמה). הרוחב קובע את גודל המשבצת:
    14 משבצות + חצי משבצת שוליים מכל צד = 15. העמוד נגלל לגובה. */
 :root.page-process {
   --grid-columns: 14;
-  --grid-rows: 58;
+  --grid-rows: 65;
   --cell: round(down, 100vw / 15, 1px);
   /* עמוד התהליך לא ממלא את כל המסך (יש שוליים בלי קווים), אז הוא נשאר ממורכז לרוחב */
   --grid-left: round(down, (100vw - var(--grid-columns) * var(--cell)) / 2, 1px);
@@ -433,6 +433,8 @@
   --next-projects-column: 7.193; --next-projects-row: 47.005; --next-projects-columns: 6.646; --next-projects-rows: 1.667;
   /* "From Figma to site": ברוחב כל הגריד, מתחת ל-09/11 */
   --figma-to-site-column: 0; --figma-to-site-row: 50.06; --figma-to-site-columns: 14; --figma-to-site-rows: 7.25;
+  /* 19/11: הפלטה החדשה, ברוחב כל הגריד, מתחת ל-"From Figma to site" */
+  --palette-change-column: 0; --palette-change-row: 57.697; --palette-change-columns: 14; --palette-change-rows: 7.115;
 
   /* שלושה חיתוכים מאותו צילום מסך (direction-one-board.webp), כמו בפיגמה:
      רוחב, גובה, ומיקום התמונה בתוך המסגרת */
@@ -515,7 +517,7 @@
 @media (max-width: 1024px) and (orientation: portrait) {
   :root.page-process {
     --grid-columns: 8;
-    --grid-rows: 141;
+    --grid-rows: 145;
     --cell: round(down, 100vw / var(--grid-columns), 1px);
     --line: var(--line-mobile);
     --grid-top: var(--grid-left);
@@ -587,6 +589,7 @@
     --banner-strip-column: 0.224; --banner-strip-row: 133.213; --banner-strip-columns: 7.552; --banner-strip-rows: 0.334;
     --next-projects-column: 0.224; --next-projects-row: 133.771; --next-projects-columns: 7.552; --next-projects-rows: 1.894;
     --figma-to-site-column: 0.224; --figma-to-site-row: 136.224; --figma-to-site-columns: 7.552; --figma-to-site-rows: 3.909;
+    --palette-change-column: 0.224; --palette-change-row: 140.357; --palette-change-columns: 7.552; --palette-change-rows: 3.829;
 
     /* הכרטיסים: אחד מתחת לשני, ברוחב מלא. הטקסט מיושר לימין */
     --rhythm-card-column: var(--image-column);     --rhythm-card-row: 67.679;     --rhythm-card-columns: var(--image-columns);     --rhythm-card-rows: 2.156;
@@ -2593,6 +2596,7 @@ body {
 .shot--banner-strip { --column: var(--banner-strip-column); --row: var(--banner-strip-row); --columns: var(--banner-strip-columns); --rows: var(--banner-strip-rows); }
 .shot--next-projects { --column: var(--next-projects-column); --row: var(--next-projects-row); --columns: var(--next-projects-columns); --rows: var(--next-projects-rows); }
 .shot--figma-to-site { --column: var(--figma-to-site-column); --row: var(--figma-to-site-row); --columns: var(--figma-to-site-columns); --rows: var(--figma-to-site-rows); }
+.shot--palette-change { --column: var(--palette-change-column); --row: var(--palette-change-row); --columns: var(--palette-change-columns); --rows: var(--palette-change-rows); }
 
 /* צילומי מסך עם מסגרת כחולה, כמו בפיגמה */
 .shot--framed {
