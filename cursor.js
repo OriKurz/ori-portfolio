@@ -7,7 +7,7 @@
 // =========================================
 
 if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-  const paletteNames = ["blue", "pink", "yellow", "orange", "mint", "green"];
+  const paletteNames = ["blue", "pink", "orange", "mint", "dark-blue"];
   const rootStyle = getComputedStyle(document.documentElement);
 
   const cursor = document.createElement("div");

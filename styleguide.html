@@ -301,12 +301,15 @@
         "Can’t read styles.css from a file:// page. Open it through a local server or on Vercel."));
     }
 
-    // משתני הצבע: כל --color-... בבלוק :root
+    // משתני הצבע: כל --color-... בבלוק :root, חוץ מאלה שיוצאים מהפלטה
+    const retiredColors = ["--color-yellow", "--color-green"];
     const rootRule = rules.find(function (rule) {
       return rule.selectorText && rule.selectorText.split(",")[0].trim() === ":root";
     });
     const colorNames = rootRule
-      ? Array.from(rootRule.style).filter(function (name) { return name.startsWith("--color-"); })
+      ? Array.from(rootRule.style).filter(function (name) {
+          return name.startsWith("--color-") && !retiredColors.includes(name);
+        })
       : [];
 
     // מחלקות הטקסט: כל בורר שהוא בדיוק .text-...

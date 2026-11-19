@@ -130,9 +130,11 @@
   /* צבעים */
   --color-blue: #2f8cf4;
   --color-pink: #fea7ec;
-  --color-yellow: #ffff05;
   --color-mint: #effff9;
   --color-orange: #fa4202;
+  --color-dark-blue: #1b3958;
+  /* יוצאים מהפלטה: עדיין בשימוש בכמה עמודים, יימחקו כשכל העמודים יעודכנו */
+  --color-yellow: #ffff05;
   --color-green: #25bf61;
 
   /* צבעי העמוד */

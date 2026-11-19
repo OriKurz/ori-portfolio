@@ -11,7 +11,7 @@
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   // הצבעים מהפלטה (משתנים ב-styles.css)
-  const paletteColors = ["--color-blue", "--color-pink", "--color-yellow", "--color-orange", "--color-mint", "--color-green"];
+  const paletteColors = ["--color-blue", "--color-pink", "--color-orange", "--color-mint", "--color-dark-blue"];
 
   // צבע הרקע של כל עמוד (כמו --page-background של העמוד ב-styles.css),
   // כדי שהקוביות לא יהיו בצבע של העמוד שאליו עוברים
