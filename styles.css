@@ -6396,6 +6396,12 @@ body {
   border-radius: var(--menu-line-height);
 }
 
+/* צבעי ההמבורגר (כמו בפיגמה): מנטה, וב-Hover ו-Focus ורוד */
+.projects-menu {
+  --menu-line-color: var(--color-mint);
+  --menu-hover-color: var(--color-pink);
+}
+
 /* אזור העיצוב מהפיגמה, ממורכז בחלון */
 .projects-page {
   position: absolute;
@@ -6403,7 +6409,7 @@ body {
   top: var(--grid-top);
   width: calc(var(--design-columns) * var(--cell));
   height: calc(var(--grid-rows) * var(--cell));
-  color: var(--color-orange);
+  color: var(--color-mint);
 }
 
 .projects-title,
@@ -6421,6 +6427,8 @@ body {
 .projects-subtitle {
   left: calc(var(--projects-subtitle-column) * var(--cell));
   top: calc(var(--projects-subtitle-row) * var(--cell));
+  /* Project & more בבולד (Telegraf UltraBold), כמו בפיגמה, כדי שיהיה קריא בגודל שלו */
+  font-weight: 800;
 }
 
 .projects-name {
