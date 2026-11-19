@@ -133,7 +133,8 @@
   --color-mint: #effff9;
   --color-orange: #fa4202;
   --color-dark-blue: #1b3958;
-  /* יוצאים מהפלטה: עדיין בשימוש בכמה עמודים, יימחקו כשכל העמודים יעודכנו */
+  /* יצאו מהפלטה. נשארים רק בשביל process.html ודוגמאות הצבע ב-styleguide.html,
+     שמתעדים את הפלטה הישנה. לא משתמשים בהם בשום מקום אחר */
   --color-yellow: #ffff05;
   --color-green: #25bf61;
 
@@ -383,6 +384,8 @@
 
   --page-background: var(--color-mint);
   --grid-line-color: var(--color-blue);
+  /* כפתור HOME נשאר צהוב: העמוד מתעד את הפלטה הישנה */
+  --nav-button-text-color: var(--color-yellow);
 
   /* הכותרת Process */
   --heading-column: 0.286;
@@ -654,7 +657,6 @@
 
   /* גלולות (הכפתורים המעוגלים) */
   --pill-radius: calc(var(--cell) * 32 / 93);
-  --pill-text-color: var(--color-yellow);
 
   /* תפריט ההמבורגר: שלושה קווים ורודים */
   --menu-column: 0.129;    --menu-row: 0.129;
@@ -933,9 +935,9 @@
 
   /* פרויקטים נוספים: פס ורוד בשקיפות 50%, כמו בפיגמה. רואים דרכו את שאר העמוד */
   --next-projects-background: color-mix(in srgb, var(--color-pink) 50%, transparent);
-  /* Hover על תמונה: כיסוי בשקיפות 50% ושם הפרויקט בצהוב */
+  /* Hover על תמונה: כיסוי בשקיפות 50% ושם הפרויקט במנטה */
   --next-project-overlay: color-mix(in srgb, var(--color-orange) 50%, transparent);
-  --next-project-name-color: var(--color-yellow);
+  --next-project-name-color: var(--color-mint);
   /* מסגרת אחידה של 11 מהרקע השקוף סביב כל תמונה: 11 בין התמונות, ו-11 למעלה ולמטה (258 + 11 + 11).
      משותף לכל עמודי הפרויקטים */
   --next-project-size: calc(258 * var(--strip-px));
@@ -2193,7 +2195,7 @@ body {
   padding: var(--button-padding);
   background-color: var(--color-blue);
   border-color: var(--grid-line-color);
-  color: var(--nav-button-text-color, var(--color-yellow));
+  color: var(--nav-button-text-color, var(--color-mint));
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -2210,21 +2212,21 @@ body {
 @media (hover: hover) {
   .nav-button:hover {
     background-color: var(--color-pink);
-    color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-yellow)));
+    color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-mint)));
   }
 }
 
 /* is-hover / is-pressed / is-focus: מציגים מצב באופן קבוע (בעמוד styleguide.html) */
 .nav-button.is-hover {
   background-color: var(--color-pink);
-  color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-yellow)));
+  color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-mint)));
 }
 
 /* אפקט לחיצה */
 .nav-button:active,
 .nav-button.is-pressed {
   background-color: var(--color-pink);
-  color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-yellow)));
+  color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-mint)));
 }
 
 .nav-button:active .nav-button-label,
@@ -2237,7 +2239,7 @@ body {
 .nav-button.is-focus {
   outline: none;
   background-color: var(--color-pink);
-  color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-yellow)));
+  color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-mint)));
 }
 
 /* בערבית האותיות מחוברות, אז בלי ריווח בין אותיות */
@@ -2312,7 +2314,7 @@ body {
 /* נגיעה באצבע על כדור שמכסה כפתור: הכפתור לא נראה לחוץ */
 .is-touching-ball .nav-button:active {
   background-color: var(--color-blue);
-  color: var(--nav-button-text-color, var(--color-yellow));
+  color: var(--nav-button-text-color, var(--color-mint));
 }
 
 .is-touching-ball .nav-button:active .nav-button-label {
@@ -2816,7 +2818,7 @@ body {
   -webkit-tap-highlight-color: transparent; /* בלי ההבהוב הכחול בנגיעה בטלפון */
 }
 
-/* ----- גלולות: כפתור מעוגל עם טקסט צהוב באמצע (ורוד, או ירוק ב-Index) ----- */
+/* ----- גלולות: כפתור מעוגל עם טקסט באמצע ----- */
 .project-grid .pill {
   display: flex;
   align-items: center;
@@ -2824,7 +2826,6 @@ body {
   border: none;
   border-radius: var(--pill-radius);
   background-color: var(--color-pink);
-  color: var(--pill-text-color);
   font-size: var(--pill-text-size);
   text-decoration: none; /* גם כשהגלולה היא קישור */
   white-space: nowrap;
@@ -3058,15 +3059,6 @@ body {
   }
 }
 
-.project-grid .index-button {
-  --column: var(--index-column);
-  --row: var(--index-row);
-  width: var(--index-width);
-  height: var(--index-height);
-  background-color: var(--color-green);
-  font-size: var(--index-text-size);
-}
-
 /* ----- בר האינדקס: טור של כדורים צבעוניים (במובייל שורה) ----- */
 .index-bar {
   --column: var(--index-bar-column);
@@ -3088,7 +3080,6 @@ body {
   height: var(--ball-height);
   border: none;
   border-radius: var(--pill-radius);
-  color: var(--pill-text-color);
   font-size: var(--pill-text-size);
   white-space: nowrap;
   /* סגירה: חוזר לכדור קצת יותר מהר ממה שנפתח */
@@ -3107,7 +3098,6 @@ body {
 .project-grid .index-ball--pink   { background-color: var(--color-pink); }
 .project-grid .index-ball--blue   { background-color: var(--color-blue); }
 .project-grid .index-ball--orange { background-color: var(--color-orange); }
-.project-grid .index-ball--green  { background-color: var(--color-green); }
 
 /* כדורים בלי פרויקט: לא נפתחים, אז גם בלי יד של לחיצה */
 .index-ball:not(button) {
@@ -3205,31 +3195,6 @@ body {
   height: 100%;
   object-fit: cover;
   pointer-events: none; /* אי אפשר ללחוץ על הסרטון ולעצור אותו */
-}
-
-/* ----- עיגול "Motion Graphic": הטקסט במרכז העיגול ----- */
-.project-tag {
-  --column: var(--tag-column);
-  --row: var(--tag-row);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--tag-size);
-  height: var(--tag-size);
-  color: var(--color-yellow);
-  font-size: var(--pill-text-size);
-  text-align: center;
-}
-
-.project-tag-circle {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.project-tag-text {
-  position: relative; /* מעל העיגול */
 }
 
 /* ----- ריבועי השם: משבצות מנטה עם מסגרת בצבע הקו.
@@ -3795,14 +3760,18 @@ body {
 /* Hover: הטקסט ורוד, והאותיות והכוכבים קופצים בגל סביב העכבר (script.js מפצל
    את הטקסט לאותיות, ומזיז כל אות וכל כוכב עם translate). Focus: ורוד, וגל ממרכז הבאנר */
 @media (hover: hover) and (pointer: fine) {
-  .contact-banner:hover .contact-banner-text {
+  .contact-banner:hover .contact-banner-text,
+  .contact-banner:hover .contact-banner-star {
     color: var(--color-pink);
   }
 }
 
 .contact-banner.is-hover .contact-banner-text,
 .contact-banner:focus-visible .contact-banner-text,
-.contact-banner.is-focus .contact-banner-text {
+.contact-banner.is-focus .contact-banner-text,
+.contact-banner.is-hover .contact-banner-star,
+.contact-banner:focus-visible .contact-banner-star,
+.contact-banner.is-focus .contact-banner-star {
   color: var(--color-pink);
 }
 
@@ -3813,7 +3782,9 @@ body {
 
 /* לחיצה: הטקסט מנטה */
 .contact-banner:active .contact-banner-text,
-.contact-banner.is-pressed .contact-banner-text {
+.contact-banner.is-pressed .contact-banner-text,
+.contact-banner:active .contact-banner-star,
+.contact-banner.is-pressed .contact-banner-star {
   color: var(--color-mint);
 }
 
@@ -3821,6 +3792,14 @@ body {
 .contact-banner:focus-visible,
 .contact-banner.is-focus {
   outline: none;
+}
+
+/* הכוכבים: SVG בתוך ה-HTML, בצבע הטקסט (fill: currentColor), כך שהם משתנים יחד איתו */
+.contact-banner-star {
+  display: block;
+  color: var(--color-mint);
+  fill: currentColor;
+  transition: color var(--transition-speed) ease;
 }
 
 .contact-banner-star--1 {
