@@ -1474,7 +1474,11 @@
      בפיגמה הטקסטים מתחילים ב-x=55 */
   --title-left: calc(63 * var(--px));
   --title-width: calc(418 * var(--px));
+  /* "Academic project 2026" (x=53, y=220) ו-"Motion Graphics & Branding" לידה (x=265, y=223) */
+  --tagline-left: calc(61 * var(--px));
   --type-top: calc(228 * var(--px));
+  --type-left: calc(273 * var(--px));
+  --type-side-top: calc(231 * var(--px));
   --description-left: calc(54 * var(--px));
   --description-width: calc(417 * var(--px));
   /* גובה אזור הכותרת: התיאור נעלם מתחת לקו הזה כשהוא עולה עם הגלילה (כמו בשונרא) */
@@ -4707,6 +4711,16 @@ body {
   justify-content: flex-end;
   padding: 0 0 calc(6 * var(--u)) calc(6 * var(--u));
   background-color: var(--page-background);
+}
+
+/* שתי שורות המשנה, במיקומים מהפיגמה */
+.page-touch-grass .full-project-tagline {
+  left: var(--tagline-left);
+}
+
+.page-touch-grass .full-project-type {
+  left: var(--type-left);
+  top: var(--type-side-top);
 }
 
 /* הלוגו: מלבן של משבצות שלמות (טורים 4 עד 10, שורות 1 עד 5), ברקע של העמוד, והלוגו בדיוק באמצע */
