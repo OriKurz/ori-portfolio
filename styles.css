@@ -230,7 +230,7 @@
   --greeting-column: 3;
   --greeting-row: 2;
   --greeting-columns: 2;
-  --info-text-color: var(--color-pink);
+  --info-text-color: var(--color-dark-blue);
 
   /* ORI KURZ: כל אות במשבצת משלה (עמודה, שורה), כמו בפיגמה */
   --letter-o-column: 5;   --letter-o-row: 3;
@@ -242,21 +242,24 @@
   --letter-z-column: 10;  --letter-z-row: 5;
 
   /* הפולרויד: מרכז התמונה וגודלה (במשבצות) */
-  --photo-center-column: 12.1;
-  --photo-center-row: 6.04;
+  --photo-center-column: 12.034;
+  --photo-center-row: 5.454;
   --photo-width: calc(var(--cell) * 2.771);
   --photo-height: calc(var(--cell) * 3.169);
   --photo-rotation: -11.73deg;
+  /* הנדנוד רק לכיוון אחד, הרחק מ-ORI KURZ: 1 = עם כיוון השעון, -1 = נגד (script.js) */
+  --photo-swing-direction: -1;
 
   /* מעבר רך בין מצבי הכפתור */
   --transition-speed: 0.25s;
 
-  /* בריכת הכדורים (ball-pit.js): קוטר כדור במשבצות, ו-4 הצבעים */
+  /* בריכת הכדורים (ball-pit.js): קוטר כדור במשבצות, ו-5 הצבעים */
   --ball-size: 0.76;
   --ball-color-1: var(--color-mint);
   --ball-color-2: var(--color-orange);
-  --ball-color-3: var(--color-green);
+  --ball-color-3: #fdf0cd;
   --ball-color-4: var(--color-pink);
+  --ball-color-5: #265687;
 
   /* הכפתור PEEK / PLAY: במחשב הוא ממלא בדיוק 2 משבצות בעמודות 6-7 ושורה 7,
      את כל השטח שבין קווי הגריד (מתחיל אחרי הקו, ונגמר בקו הבא) */
@@ -267,8 +270,8 @@
   --toggle-top: calc(var(--toggle-row) * var(--cell) + var(--line));
   --toggle-width: calc(var(--toggle-columns) * var(--cell) - var(--line));
   --toggle-height: calc(var(--cell) - var(--line));
-  --toggle-text-color: var(--color-green);
-  --toggle-background: var(--color-yellow);
+  --toggle-text-color: var(--color-pink);
+  --toggle-background: var(--color-dark-blue);
   /* Hover ו-Focus: האותיות קופצות בגל משמאל לימין, כמו גל אוהדים.
      משך סבב אחד של אות, וההשהיה בין אות לאות (ball-pit.js קורא אותם, לכן במילישניות) */
   --toggle-wave-duration: 900ms;
@@ -327,7 +330,7 @@
     --index-button-column: 1;   --index-button-row: 3;
     --say-hi-button-column: 5;  --say-hi-button-row: 3;
 
-    /* "HI, IM": ורוד, על מלבן שמאחד 2 משבצות */
+    /* "HI, IM": על מלבן שמאחד 2 משבצות */
     --greeting-column: 1;
     --greeting-row: 5;
     --greeting-columns: 2;
@@ -344,11 +347,12 @@
     --letter-o-size: 68;
 
     /* הפולרויד */
-    --photo-center-column: 5.473;
+    --photo-center-column: 3.635;
     --photo-center-row: 13.243;
     --photo-width: calc(var(--cell) * 3.182);
     --photo-height: calc(var(--cell) * 3.638);
     --photo-rotation: 29.72deg;
+    --photo-swing-direction: 1;
   }
 }
 
@@ -2179,11 +2183,11 @@ body {
   padding: var(--button-padding);
   background-color: var(--color-blue);
   border-color: var(--grid-line-color);
-  color: var(--color-yellow);
+  color: var(--nav-button-text-color, var(--color-yellow));
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color var(--transition-speed) ease;
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
 /* הטקסט שבתוך הכפתור */
@@ -2196,18 +2200,21 @@ body {
 @media (hover: hover) {
   .nav-button:hover {
     background-color: var(--color-pink);
+    color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-yellow)));
   }
 }
 
 /* is-hover / is-pressed / is-focus: מציגים מצב באופן קבוע (בעמוד styleguide.html) */
 .nav-button.is-hover {
   background-color: var(--color-pink);
+  color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-yellow)));
 }
 
 /* אפקט לחיצה */
 .nav-button:active,
 .nav-button.is-pressed {
   background-color: var(--color-pink);
+  color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-yellow)));
 }
 
 .nav-button:active .nav-button-label,
@@ -2220,6 +2227,7 @@ body {
 .nav-button.is-focus {
   outline: none;
   background-color: var(--color-pink);
+  color: var(--nav-button-active-text-color, var(--nav-button-text-color, var(--color-yellow)));
 }
 
 /* בערבית האותיות מחוברות, אז בלי ריווח בין אותיות */
@@ -2230,6 +2238,13 @@ body {
 /* =========================================
    עמוד הבית
    ========================================= */
+
+/* צבעי כפתורי הניווט בעמוד הבית (כמו בפיגמה): טקסט מנטה,
+   וב-Hover, Focus ולחיצה טקסט כחול כהה על רקע ורוד */
+:root.page-home {
+  --nav-button-text-color: var(--color-mint);
+  --nav-button-active-text-color: var(--color-dark-blue);
+}
 
 /* עמוד של מסך אחד, בלי גלילה ובלי "קפיצה" גמישה בקצוות.
    touch-action: none = מגע באצבע לא גולל ולא מגדיל. הוא משמש רק
@@ -2287,6 +2302,7 @@ body {
 /* נגיעה באצבע על כדור שמכסה כפתור: הכפתור לא נראה לחוץ */
 .is-touching-ball .nav-button:active {
   background-color: var(--color-blue);
+  color: var(--nav-button-text-color, var(--color-yellow));
 }
 
 .is-touching-ball .nav-button:active .nav-button-label {
@@ -2380,7 +2396,7 @@ body {
   top: var(--grid-top);
   width: calc(var(--grid-columns) * var(--cell) + var(--line));
   height: calc(var(--grid-rows) * var(--cell) + var(--line));
-  color: var(--color-yellow);
+  color: var(--color-dark-blue);
 }
 
 /* ----- "HI, IM" -----
@@ -2401,8 +2417,8 @@ body {
 
 /* ----- הפולרויד: ממוקם לפי המרכז שלו, ומסובב -----
    --photo-swing היא הזווית הנוספת כשהעכבר דוחף את התמונה (script.js).
-   הסיבוב הנוסף הוא סביב מרכז הקצה העליון של הפולרויד (כולל ההטיה שלו):
-   זזים חצי גובה למעלה, מסובבים, וחוזרים חצי גובה למטה. */
+   הסיבוב הנוסף הוא סביב הפינה השמאלית העליונה של הפולרויד (כולל ההטיה שלו),
+   כאילו הוא תלוי ממנה: זזים לפינה, מסובבים, וחוזרים למרכז. */
 .photo {
   --photo-swing: 0deg;
   position: absolute;
@@ -2414,9 +2430,9 @@ body {
   transform:
     translate(-50%, -50%)
     rotate(var(--photo-rotation))
-    translateY(-50%)
+    translate(-50%, -50%)
     rotate(var(--photo-swing))
-    translateY(50%);
+    translate(50%, 50%);
 }
 
 /* ----- הכותרת "ORI KURZ": כל אות במשבצת משלה -----

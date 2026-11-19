@@ -75,7 +75,8 @@ if (indexBar) {
 
 // =========================================
 // הפולרויד בעמוד הבית: נדחף כמו דף נייר כבד שנעוץ בנקודה אחת.
-// נקודת הציר היא מרכז הקצה העליון של התמונה (ראו .photo ב-styles.css).
+// נקודת הציר היא הפינה השמאלית העליונה של התמונה (ראו .photo ב-styles.css).
+// התמונה מתנדנדת רק לכיוון אחד מהזווית בעיצוב, הרחק מ-ORI KURZ (--photo-swing-direction).
 // אין קפיץ: התמונה נשארת בזווית שאליה נדחפה, ורק דחיפה נוספת מזיזה אותה.
 // =========================================
 
@@ -83,7 +84,7 @@ const photo = document.querySelector(".photo");
 
 if (photo) {
   // הגדרות כלליות
-  const maxAngle = 18;       // זווית מקסימלית (במעלות) לכל כיוון מהזווית בעיצוב
+  const maxAngle = 18;       // זווית מקסימלית (במעלות) מהזווית בעיצוב, לכיוון המותר
   const edgeSlowdown = 3;    // ליד הקצה של הטווח התמונה מאטה בהדרגה (גדול יותר = עוצרת קרוב יותר לקצה)
   const pushDuration = 60;   // כמה זמן (מילישניות) כל תנועת עכבר ממשיכה לדחוף
   const newPushAfter = 250;  // הפסקה (מילישניות) שאחריה תנועת עכבר נחשבת דחיפה חדשה
@@ -132,6 +133,12 @@ if (photo) {
     return typeBag.shift();
   }
 
+  // הטווח המותר של הזווית הנוספת: מ-0 (הזווית בעיצוב) ועד maxAngle, בכיוון שהרחק מהאותיות
+  function swingRange() {
+    const direction = parseFloat(getComputedStyle(photo).getPropertyValue("--photo-swing-direction")) || 1;
+    return direction > 0 ? { low: 0, high: maxAngle } : { low: -maxAngle, high: 0 };
+  }
+
   // מחשב איפה נמצאת התמונה במסך: נקודת הציר, הגודל וההטיה
   function getPhotoGeometry() {
     const home = photo.offsetParent.getBoundingClientRect();
@@ -139,12 +146,12 @@ if (photo) {
     const height = photo.offsetHeight;
     const tilt = parseFloat(getComputedStyle(photo).getPropertyValue("--photo-rotation"));
     const tiltRadians = (tilt * Math.PI) / 180;
-    // מרכז התמונה, ומשם חצי גובה "למעלה" בכיוון של ההטיה
+    // מרכז התמונה, ומשם חצי רוחב שמאלה וחצי גובה "למעלה" בכיוון של ההטיה: הפינה השמאלית העליונה
     const centerX = home.left + photo.offsetLeft;
     const centerY = home.top + photo.offsetTop;
     return {
-      pivotX: centerX + (height / 2) * Math.sin(tiltRadians),
-      pivotY: centerY - (height / 2) * Math.cos(tiltRadians),
+      pivotX: centerX - (width / 2) * Math.cos(tiltRadians) + (height / 2) * Math.sin(tiltRadians),
+      pivotY: centerY - (width / 2) * Math.sin(tiltRadians) - (height / 2) * Math.cos(tiltRadians),
       width: width,
       height: height,
       tilt: tilt,
@@ -159,12 +166,12 @@ if (photo) {
     const radians = (-(photoBox.tilt + angle) * Math.PI) / 180;
     const dx = x - photoBox.pivotX;
     const dy = y - photoBox.pivotY;
-    // מסובבים את הנקודה בחזרה, כאילו התמונה ישרה
-    const across = dx * Math.cos(radians) - dy * Math.sin(radians);
+    // מסובבים את הנקודה בחזרה, כאילו התמונה ישרה. across: המרחק מהקו האמצעי של התמונה
+    const fromLeft = dx * Math.cos(radians) - dy * Math.sin(radians);
     const down = dx * Math.sin(radians) + dy * Math.cos(radians);
     return {
-      inside: Math.abs(across) <= photoBox.width / 2 && down >= 0 && down <= photoBox.height,
-      across: across,
+      inside: fromLeft >= 0 && fromLeft <= photoBox.width && down >= 0 && down <= photoBox.height,
+      across: fromLeft - photoBox.width / 2,
     };
   }
 
@@ -191,10 +198,11 @@ if (photo) {
     }
 
     // ליד הקצה של הטווח: ככל שמתקרבים לקצה, המהירות לכיוונו קטנה, בלי קפיצה
-    const room = maxAngle - Math.sign(speed) * angle;
+    const range = swingRange();
+    const room = speed > 0 ? range.high - angle : angle - range.low;
     speed = Math.sign(speed) * Math.min(Math.abs(speed), Math.max(0, room) * edgeSlowdown);
     angle += speed * seconds;
-    angle = Math.max(-maxAngle, Math.min(maxAngle, angle));
+    angle = Math.max(range.low, Math.min(range.high, angle));
 
     // הנייר נעצר: עוצרים את האנימציה, והזווית נשארת כמו שהיא
     if (!handIsPushing && Math.abs(speed) < 0.05) {
@@ -206,6 +214,13 @@ if (photo) {
 
     photo.style.setProperty("--photo-swing", angle + "deg");
   }
+
+  // סיבוב המסך מחליף את הכיוון המותר: מחזירים את הזווית לטווח החדש
+  window.addEventListener("resize", function () {
+    const range = swingRange();
+    angle = Math.max(range.low, Math.min(range.high, angle));
+    photo.style.setProperty("--photo-swing", angle + "deg");
+  });
 
   function startAnimation() {
     if (frame) return;

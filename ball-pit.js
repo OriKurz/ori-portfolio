@@ -62,7 +62,7 @@ if (ballCanvas) {
   let width = 0;           // גודל המסך (פיקסלים)
   let height = 0;
   let cell = 0;            // גודל משבצת (פיקסלים)
-  let colors = [];         // 4 הצבעים מ-styles.css
+  let colors = [];         // 5 הצבעים מ-styles.css
   let ballsAtEdges = false; // true = הכדורים בשוליים (הכפתור כתוב LET’S PLAY)
   let transitionTime = 0;   // כמה זמן עבר מאז הלחיצה האחרונה על הכפתור
   const hands = new Map();  // כל יד (עכבר או אצבע) שנמצאת עכשיו בבריכה
@@ -89,7 +89,7 @@ if (ballCanvas) {
     height = ballCanvas.clientHeight;
     ballRadius = sizeProbe.getBoundingClientRect().width / 2;
     cell = (2 * ballRadius) / parseFloat(styles.getPropertyValue("--ball-size"));
-    colors = [1, 2, 3, 4].map(function (number) {
+    colors = [1, 2, 3, 4, 5].map(function (number) {
       return styles.getPropertyValue("--ball-color-" + number).trim();
     });
 
@@ -254,7 +254,7 @@ if (ballCanvas) {
   // =========================================
   function createBalls() {
     const spots = coverSpots();
-    // 4 הצבעים בכמויות שוות, בסדר אקראי
+    // 5 הצבעים בכמויות שוות, בסדר אקראי
     const colorOrder = spots.map(function (spot, index) { return index % colors.length; });
     colorOrder.sort(function () { return Math.random() - 0.5; });
     balls = spots.map(function (spot, index) {
@@ -766,7 +766,7 @@ if (ballCanvas) {
   }
 
   // =========================================
-  // ציור: כל צבע בבת אחת (4 ציורים לכל הכדורים), כדי שזה יהיה מהיר גם בטלפון
+  // ציור: כל צבע בבת אחת (5 ציורים לכל הכדורים), כדי שזה יהיה מהיר גם בטלפון
   // =========================================
   function draw() {
     context.clearRect(0, 0, width, height);
