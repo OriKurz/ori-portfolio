@@ -1017,7 +1017,7 @@
   --grid-rows: 44.759;
 
   /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
-  --leftovers-navy: #222a33;   /* רקע העמוד והמלבנים של התוויות */
+  --leftovers-navy: var(--color-dark-blue);   /* רקע העמוד והמלבנים של התוויות */
   --leftovers-grid: #4a6c8f;   /* קווי הגריד */
   --leftovers-steel: #5c85b0;  /* ההמבורגר */
   --leftovers-sky: #99c1ea;    /* התיאור */
