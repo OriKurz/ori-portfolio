@@ -1494,12 +1494,13 @@
   --story-width: calc(379 * var(--u));
   --story-radius: calc(63 * var(--u));
 
-  /* האיור האדום (פנים_גזע בפיגמה): 1080x1181, חתוך מתוך התמונה (1080x1920) כמו בפיגמה */
-  --geza-left: calc(238 * var(--u));
-  --geza-top: calc(3819 * var(--u));
-  --geza-width: calc(1080 * var(--u));
-  --geza-height: calc(1181 * var(--u));
-  --geza-crop-top: calc(-454 * var(--u));
+  /* האיור האדום (פנים_גזע בפיגמה): 848x927, חתוך מתוך התמונה (1080x1920) כמו בפיגמה
+     (התמונה ברוחב המסגרת, ו-38.44% מהגובה שלה חתוכים למעלה) */
+  --geza-left: calc(333 * var(--u));
+  --geza-top: calc(4055 * var(--u));
+  --geza-width: calc(848 * var(--u));
+  --geza-height: calc(927 * var(--u));
+  --geza-crop-top: calc(-356.3 * var(--u));
 
   /* פרויקטים נוספים: פס כתום בשקיפות 50%, כמו בפיגמה */
   --next-projects-background: color-mix(in srgb, var(--color-orange) 50%, transparent);
