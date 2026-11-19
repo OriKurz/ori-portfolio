@@ -76,7 +76,8 @@ if (indexBar) {
 // =========================================
 // הפולרויד בעמוד הבית: נדחף כמו דף נייר כבד שנעוץ בנקודה אחת.
 // נקודת הציר היא הפינה השמאלית העליונה של התמונה (ראו .photo ב-styles.css).
-// התמונה מתנדנדת רק לכיוון אחד מהזווית בעיצוב, הרחק מ-ORI KURZ (--photo-swing-direction).
+// הטווח של הנדנוד מ-styles.css (--photo-swing-direction, --photo-swing-max): במחשב רק לכיוון
+// אחד, הרחק מ-ORI KURZ. בכל מקרה התמונה נשארת כולה בתוך המסך.
 // אין קפיץ: התמונה נשארת בזווית שאליה נדחפה, ורק דחיפה נוספת מזיזה אותה.
 // =========================================
 
@@ -84,7 +85,6 @@ const photo = document.querySelector(".photo");
 
 if (photo) {
   // הגדרות כלליות
-  const maxAngle = 18;       // זווית מקסימלית (במעלות) מהזווית בעיצוב, לכיוון המותר
   const edgeSlowdown = 3;    // ליד הקצה של הטווח התמונה מאטה בהדרגה (גדול יותר = עוצרת קרוב יותר לקצה)
   const pushDuration = 60;   // כמה זמן (מילישניות) כל תנועת עכבר ממשיכה לדחוף
   const newPushAfter = 250;  // הפסקה (מילישניות) שאחריה תנועת עכבר נחשבת דחיפה חדשה
@@ -133,10 +133,30 @@ if (photo) {
     return typeBag.shift();
   }
 
-  // הטווח המותר של הזווית הנוספת: מ-0 (הזווית בעיצוב) ועד maxAngle, בכיוון שהרחק מהאותיות
-  function swingRange() {
-    const direction = parseFloat(getComputedStyle(photo).getPropertyValue("--photo-swing-direction")) || 1;
-    return direction > 0 ? { low: 0, high: maxAngle } : { low: -maxAngle, high: 0 };
+  // האם התמונה כולה בתוך המסך בזווית נוספת angleToCheck
+  function fitsOnScreen(photoBox, angleToCheck) {
+    const radians = ((photoBox.tilt + angleToCheck) * Math.PI) / 180;
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+    return [[0, 0], [photoBox.width, 0], [0, photoBox.height], [photoBox.width, photoBox.height]].every(function (corner) {
+      const x = photoBox.pivotX + corner[0] * cos - corner[1] * sin;
+      const y = photoBox.pivotY + corner[0] * sin + corner[1] * cos;
+      return x >= 0 && x <= window.innerWidth && y >= 0 && y <= window.innerHeight;
+    });
+  }
+
+  // הטווח המותר של הזווית הנוספת (מהזווית בעיצוב): לפי הכיוון והזווית המקסימלית מ-styles.css,
+  // ועד הזווית שבה פינה של התמונה הייתה יוצאת מהמסך. נמדד מחדש כשגודל החלון משתנה
+  function measureSwingRange() {
+    const styles = getComputedStyle(photo);
+    const direction = parseFloat(styles.getPropertyValue("--photo-swing-direction")) || 0;
+    const max = parseFloat(styles.getPropertyValue("--photo-swing-max")) || 0;
+    const photoBox = getPhotoGeometry();
+    let low = 0;
+    let high = 0;
+    while (direction <= 0 && low > -max && fitsOnScreen(photoBox, low - 0.5)) low -= 0.5;
+    while (direction >= 0 && high < max && fitsOnScreen(photoBox, high + 0.5)) high += 0.5;
+    return { low: low, high: high };
   }
 
   // מחשב איפה נמצאת התמונה במסך: נקודת הציר, הגודל וההטיה
@@ -198,7 +218,6 @@ if (photo) {
     }
 
     // ליד הקצה של הטווח: ככל שמתקרבים לקצה, המהירות לכיוונו קטנה, בלי קפיצה
-    const range = swingRange();
     const room = speed > 0 ? range.high - angle : angle - range.low;
     speed = Math.sign(speed) * Math.min(Math.abs(speed), Math.max(0, room) * edgeSlowdown);
     angle += speed * seconds;
@@ -215,12 +234,15 @@ if (photo) {
     photo.style.setProperty("--photo-swing", angle + "deg");
   }
 
-  // סיבוב המסך מחליף את הכיוון המותר: מחזירים את הזווית לטווח החדש
-  window.addEventListener("resize", function () {
-    const range = swingRange();
+  // הטווח של הנדנוד. שינוי גודל החלון (וסיבוב המסך) משנה אותו: מחזירים את הזווית לטווח החדש
+  let range = measureSwingRange();
+  function updateSwingRange() {
+    range = measureSwingRange();
     angle = Math.max(range.low, Math.min(range.high, angle));
     photo.style.setProperty("--photo-swing", angle + "deg");
-  });
+  }
+  window.addEventListener("resize", updateSwingRange);
+  window.addEventListener("load", updateSwingRange);
 
   function startAnimation() {
     if (frame) return;

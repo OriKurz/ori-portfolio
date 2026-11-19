@@ -242,13 +242,15 @@
   --letter-z-column: 10;  --letter-z-row: 5;
 
   /* הפולרויד: מרכז התמונה וגודלה (במשבצות) */
-  --photo-center-column: 12.034;
-  --photo-center-row: 5.454;
+  --photo-center-column: 11.991;
+  --photo-center-row: 4.73;
   --photo-width: calc(var(--cell) * 2.771);
   --photo-height: calc(var(--cell) * 3.169);
   --photo-rotation: -11.73deg;
-  /* הנדנוד רק לכיוון אחד, הרחק מ-ORI KURZ: 1 = עם כיוון השעון, -1 = נגד (script.js) */
+  /* הנדנוד (script.js): הכיוון המותר (1 = עם כיוון השעון, -1 = נגד, 0 = לשני הצדדים)
+     והזווית המקסימלית במעלות. במחשב רק הרחק מ-ORI KURZ */
   --photo-swing-direction: -1;
+  --photo-swing-max: 18;
 
   /* מעבר רך בין מצבי הכפתור */
   --transition-speed: 0.25s;
@@ -283,7 +285,9 @@
   --toggle-wave-height: -0.45em;
   --toggle-text-offset: calc(var(--cell) * 5 / 96); /* בפיגמה הטקסט קצת מתחת לאמצע */
 
-  /* שכבות: מה מעל מה. הכדורים מעל כל העמוד, והכפתור PEEK / PLAY מעל הכדורים */
+  /* שכבות: מה מעל מה. הפולרויד מעל האותיות (וכפתורי הניווט מעליו),
+     הכדורים מעל כל העמוד, והכפתור PEEK / PLAY מעל הכדורים */
+  --layer-photo: 1;
   --layer-balls: 1;
   --layer-frame: 2;
   --layer-toggle: 3;
@@ -347,12 +351,15 @@
     --letter-o-size: 68;
 
     /* הפולרויד */
-    --photo-center-column: 3.635;
+    /* הפולרויד: ממורכז לרוחב המסך. מתנדנד לשני הצדדים בטווח גדול,
+       ו-script.js מגביל את הזווית כך שהתמונה תמיד כולה בתוך המסך */
+    --photo-center-column: 4;
     --photo-center-row: 13.243;
     --photo-width: calc(var(--cell) * 3.182);
     --photo-height: calc(var(--cell) * 3.638);
     --photo-rotation: 29.72deg;
-    --photo-swing-direction: 1;
+    --photo-swing-direction: 0;
+    --photo-swing-max: 90;
   }
 }
 
@@ -2422,6 +2429,7 @@ body {
 .photo {
   --photo-swing: 0deg;
   position: absolute;
+  z-index: var(--layer-photo);
   left: calc(var(--photo-center-column) * var(--cell));
   top: calc(var(--photo-center-row) * var(--cell));
   width: var(--photo-width);
@@ -2469,6 +2477,11 @@ body {
 }
 
 /* ----- המיקום של כל כפתור על הרשת ----- */
+/* כפתורי הניווט מעל הפולרויד */
+.home .nav-button {
+  z-index: var(--layer-photo);
+}
+
 .nav-button--index {
   --column: var(--index-button-column);
   --row: var(--index-button-row);
