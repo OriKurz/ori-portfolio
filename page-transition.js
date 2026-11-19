@@ -22,6 +22,7 @@
     "the-perfect-crime-project.html": "--color-mint",
     "leftovers-project.html": "--leftovers-navy",
     "shunra-project.html": "--shunra-cream",
+    "touch-grass-project.html": "--touch-grass-cream",
     "404.html": "--color-mint"
   };
 

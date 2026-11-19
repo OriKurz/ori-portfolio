@@ -1450,6 +1450,57 @@
   }
 }
 
+/* ----- עמוד הפרויקט Touch Grass (touch-grass-project.html) -----
+   אותה תבנית כמו שונרא, עם הצבעים של הפרויקט (הפריים "grass" בפיגמה). במחשב בלבד: המובייל ייבנה בהמשך.
+   מספרים כמו 1794 * var(--u) הם פיקסלים מהפריים, ביחס לפינה של הגריד (x=508, y=-3 בפיגמה).
+   11 משבצות באותו רוחב של 933. בפיגמה משבצת = 84.18 (נמדד מהקווים).
+   כל מלבן (כותרת, לוגו, סרטון, טקסטורה) ממוקם בטורים ובשורות שלמים, מקו לקו */
+:root.page-touch-grass {
+  --frame-cell: 84.18;
+  --grid-columns: 11;
+  /* הפס של הפרויקטים הנוספים מתחיל בדיוק על הקו של שורה 59, כמו בפיגמה */
+  --grid-rows: 59;
+
+  /* צבעי הפרויקט (לא חלק מצבעי האתר) */
+  --touch-grass-cream: #fff8df;  /* רקע העמוד */
+  --touch-grass-olive: #606d44;  /* קווי הגריד */
+
+  --page-background: var(--touch-grass-cream);
+  --grid-line-color: var(--touch-grass-olive);
+  --menu-line-color: var(--color-dark-blue);
+  --description-color: var(--color-orange);
+
+  /* הכותרת, שורת המשנה והתיאור (ההזזה של 8px בכותרת ובשורת המשנה כמו בעמודי הפרויקט האחרים).
+     בפיגמה הטקסטים מתחילים ב-x=55 */
+  --title-left: calc(63 * var(--px));
+  --title-width: calc(418 * var(--px));
+  --type-top: calc(228 * var(--px));
+  --description-left: calc(54 * var(--px));
+  --description-width: calc(417 * var(--px));
+  /* גובה אזור הכותרת: התיאור נעלם מתחת לקו הזה כשהוא עולה עם הגלילה (כמו בשונרא) */
+  --header-height: calc(306 * var(--px));
+  /* השורה הראשונה בתיאור (y=307 בפיגמה) */
+  --description-top: calc(307 * var(--px));
+  --description-bottom-space: calc(38 * var(--px));
+
+  /* הלוגו: 6 טורים ו-4 שורות, והלוגו (447 בפיגמה) באמצע */
+  --logo-width: calc(447 * var(--u));
+
+  /* הסטוריז: שלושה סרטונים (379x773 בפיגמה) עם פינות של 63, לא על הקווים */
+  --story-width: calc(379 * var(--u));
+  --story-radius: calc(63 * var(--u));
+
+  /* האיור האדום (פנים_גזע בפיגמה): 1080x1181, חתוך מתוך התמונה (1080x1920) כמו בפיגמה */
+  --geza-left: calc(238 * var(--u));
+  --geza-top: calc(3819 * var(--u));
+  --geza-width: calc(1080 * var(--u));
+  --geza-height: calc(1181 * var(--u));
+  --geza-crop-top: calc(-454 * var(--u));
+
+  /* פרויקטים נוספים: פס כתום בשקיפות 50%, כמו בפיגמה */
+  --next-projects-background: color-mix(in srgb, var(--color-orange) 50%, transparent);
+}
+
 /* ----- עמוד Say Hi (say-hi.html) -----
    הפריים בפיגמה: 1440x810, משבצת = 93px, והגריד מתחיל מהפינה של הפריים.
    אותה שיטה כמו בעמוד מבואה לפרויקט: אזור העיצוב ממורכז ושלם,
@@ -4161,7 +4212,8 @@ body {
 }
 
 .page-leftovers .full-project-description,
-.page-shunra .full-project-description {
+.page-shunra .full-project-description,
+.page-touch-grass .full-project-description {
   position: relative;
   left: auto;
   top: auto;
@@ -4634,6 +4686,117 @@ body {
     position: relative;
     overflow: visible;
   }
+}
+
+/* =========================================
+   עמוד הפרויקט Touch Grass (במחשב בלבד, המובייל ייבנה בהמשך)
+   ========================================= */
+
+/* כותרות הסעיפים: כל אחת במשבצת מאוחדת של משבצות שלמות (--column, --row, --box-columns),
+   ברקע של העמוד שמכסה את הקווים הפנימיים. הטקסט בפינה השמאלית התחתונה, 6 מהקו השמאלי ומהקו התחתון
+   (כמו בפיגמה, ובדיוק כמו בשונרא) */
+.touch-grass-title-box {
+  position: absolute;
+  z-index: 1;
+  left: calc(var(--column) * var(--cell) + var(--line));
+  top: calc(var(--row) * var(--cell) + var(--line));
+  width: calc(var(--box-columns, 2) * var(--cell) - var(--line));
+  height: calc(var(--cell) - var(--line));
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 calc(6 * var(--u)) calc(6 * var(--u));
+  background-color: var(--page-background);
+}
+
+/* הלוגו: מלבן של משבצות שלמות (טורים 4 עד 10, שורות 1 עד 5), ברקע של העמוד, והלוגו בדיוק באמצע */
+.touch-grass-logo-box {
+  position: absolute;
+  left: calc(4 * var(--cell) + var(--line));
+  top: calc(1 * var(--cell) + var(--line));
+  width: calc(6 * var(--cell) - var(--line));
+  height: calc(4 * var(--cell) - var(--line));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--page-background);
+}
+
+.touch-grass-logo {
+  width: var(--logo-width);
+  max-width: none;
+  height: auto;
+}
+
+/* ----- הסרטונים: מתנגנים לבד בלופ, בלי סאונד ובלי כפתורים -----
+   עד שהפריים הראשון נטען רואים את הרקע של העמוד, כמו בפיגמה */
+.touch-grass-video {
+  position: absolute;
+  display: block;
+  object-fit: cover;
+  background-color: var(--page-background);
+}
+
+/* מסך הלו"ז ותחנת האוטובוס: ממלאים בדיוק את המשבצות שבין הקווים (--column, --row, --columns, --rows) */
+.touch-grass-video--schedule,
+.touch-grass-video--busstop {
+  left: calc(var(--column) * var(--cell) + var(--line));
+  top: calc(var(--row) * var(--cell) + var(--line));
+  width: calc(var(--columns) * var(--cell) - var(--line));
+  height: calc(var(--rows) * var(--cell) - var(--line));
+}
+
+.touch-grass-video--schedule { --column: 1; --row: 6;  --columns: 9; --rows: 13; }
+.touch-grass-video--busstop  { --column: 1; --row: 42; --columns: 9; --rows: 11; }
+
+/* הסטוריז: במיקומים מהפיגמה, לא על הקווים */
+.touch-grass-story {
+  left: calc(var(--story-left) * var(--u));
+  top: calc(var(--story-top) * var(--u));
+  width: var(--story-width);
+  aspect-ratio: 379 / 773;
+  border-radius: var(--story-radius);
+}
+
+.touch-grass-story--1 { --story-left: 40;  --story-top: 1794; }
+.touch-grass-story--2 { --story-left: 468; --story-top: 1790; }
+.touch-grass-story--3 { --story-left: 276; --story-top: 2610; }
+
+/* האיור האדום: מאחורי תחנת האוטובוס והטקסטורות. החלון שלו נחתך בקצה הימני של הגריד */
+.touch-grass-geza {
+  position: absolute;
+  left: var(--geza-left);
+  top: var(--geza-top);
+  width: min(var(--geza-width), calc(var(--grid-columns) * var(--cell) + var(--line)) - var(--geza-left));
+  height: var(--geza-height);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.touch-grass-geza img {
+  position: absolute;
+  left: 0;
+  top: var(--geza-crop-top);
+  width: var(--geza-width);
+  max-width: none;
+  height: auto;
+}
+
+/* פלטת הטקסטורות: עיגול שממלא משבצת, עם קו בצבע ובעובי קווי הגריד */
+.touch-grass-texture {
+  position: absolute;
+  left: calc(var(--column) * var(--cell) + var(--line));
+  top: calc(var(--row) * var(--cell) + var(--line));
+  width: calc(var(--cell) - var(--line));
+  height: calc(var(--cell) - var(--line));
+  border: var(--line) solid var(--grid-line-color);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* המאצ'ה: בפיגמה התמונה צמודה למעלה */
+.touch-grass-texture--top {
+  object-position: top;
 }
 
 /* =========================================

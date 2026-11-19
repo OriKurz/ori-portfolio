@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" class="page-full-project page-touch-grass">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Touch Grass — Project — Ori Kurz</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- מעבר בין עמודים: נטען ב-head כדי לכסות את העמוד החדש מהציור הראשון -->
+  <script src="page-transition.js"></script>
+</head>
+<body>
+  <!-- בר הבחירה (התפריט): סגור בטעינה. ההמבורגר פותח אותו, והוא מחליק פנימה מלמעלה (script.js) -->
+  <nav class="nav-bar" id="nav-bar" aria-label="Main">
+    <!-- ההמבורגר של הבר: סוגר אותו -->
+    <button class="menu-button nav-bar-menu" type="button" aria-label="Close menu" aria-controls="nav-bar">
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+    </button>
+    <!-- INDEX מוביל לעמוד אינדקס הפרויקטים (projects.html) -->
+    <ul class="nav-bar-list">
+      <li><a class="nav-bar-link text-nav" href="index.html">HOME</a></li>
+      <li><a class="nav-bar-link text-nav" href="projects.html">INDEX</a></li>
+      <li><a class="nav-bar-link text-nav" href="say-hi.html">SAY HI :)</a></li>
+      <li><a class="nav-bar-link text-nav" href="process.html">PROCESS</a></li>
+    </ul>
+  </nav>
+
+
+  <!-- עמוד פרויקט מלא: הפריים "grass" מהפיגמה (במחשב בלבד, המובייל ייבנה בהמשך).
+       אותה תבנית כמו shunra-project.html -->
+  <main class="full-project">
+
+    <!-- האזור הנגלל (במחשב). הצד השמאלי "דבוק" בתוכו ולא זז -->
+    <div class="full-project-scroll">
+
+      <!-- העמודה השמאלית והגריד. העמודה "דבוקה" (sticky) עד סוף הקופסה הזו,
+           שנגמרת בדיוק מעל What's Next: בסוף העמוד הרצועה והבאנר דוחפים אותה למעלה -->
+      <div class="full-project-body">
+      <!-- ===== החלק של הטקסט (בלי גריד, לא נגלל) ===== -->
+      <section class="full-project-info">
+        <!-- התיאור: ארוך מגובה המסך, ולכן אזור גלילה משלו. הוא נעלם מתחת לכותרת (כמו בשונרא) -->
+        <div class="full-project-description-scroll">
+            <div class="full-project-description text-body">
+              <p>A series of motion elements for “Touch Grass”, a conference on mental health in times of conflict. The project spans a central event schedule screen, motion graphics promoting the conference on social media, and moving ads for bus stop displays.</p>
+              <p>Two main questions guided my process: How do we talk about mental health with sensitivity, without being triggering? And how do we talk about PTSD in a bleeding country that is still living through the trauma every day? It was important to me to use natural, handcrafted textures and handwritten elements to bring softness and a human touch to the visuals.</p>
+              <p>I chose trees as the central visual metaphor for the human mind, and red typography as a quiet reminder of the violence of war.</p>
+            </div>
+        </div>
+
+        <!-- הכותרת: תמיד במקומה, מעל התיאור. הרקע שלה מסתיר את התיאור כשהוא עולה.
+             הגלגלת עוברת דרכה אל התיאור (pointer-events: none ב-CSS) -->
+        <div class="full-project-header">
+          <!-- ההמבורגר: פותח וסוגר את בר הבחירה -->
+          <button class="menu-button full-project-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
+            <span class="menu-button-line"></span>
+            <span class="menu-button-line"></span>
+            <span class="menu-button-line"></span>
+          </button>
+
+          <h1 class="full-project-title text-page-title">Touch Grass</h1>
+          <p class="full-project-tagline text-subtitle">Motion Graphics | Branding</p>
+        </div>
+      </section>
+
+      <!-- ===== החלק של הגריד ===== -->
+      <section class="full-project-panel">
+        <div class="full-project-grid grid-lines">
+          <!-- האיור האדום: מאחורי תחנת האוטובוס והטקסטורות, וחתוך בקצה הימני של הגריד -->
+          <div class="touch-grass-geza" aria-hidden="true">
+            <img src="Images/touch-grass/geza.webp" width="1080" height="1920" loading="lazy" alt="">
+          </div>
+
+          <!-- הלוגו: במלבן של משבצות שלמות (הרקע מכסה את הקווים שבפנים), והלוגו באמצע -->
+          <div class="touch-grass-logo-box">
+            <img class="touch-grass-logo" src="Images/touch-grass/touch-grass-logo.webp" width="1066" height="790" alt="Touch Grass logo">
+          </div>
+
+          <!-- הסרטונים: מתנגנים לבד מהטעינה, בלופ, בלי סאונד ובלי כפתורים.
+               עד שהם נטענים רואים את הרקע של העמוד (כמו בפיגמה) -->
+          <video class="touch-grass-video touch-grass-video--schedule" src="video/touch-grass-schedule.mp4" autoplay muted loop playsinline preload="auto" aria-label="Touch Grass event schedule screen"></video>
+          <video class="touch-grass-video touch-grass-story touch-grass-story--1" src="video/touch-grass-story-1.mp4" autoplay muted loop playsinline preload="auto" aria-label="Touch Grass Instagram story 1"></video>
+          <video class="touch-grass-video touch-grass-story touch-grass-story--2" src="video/touch-grass-story-2.mp4" autoplay muted loop playsinline preload="auto" aria-label="Touch Grass Instagram story 2"></video>
+          <video class="touch-grass-video touch-grass-story touch-grass-story--3" src="video/touch-grass-story-3.mp4" autoplay muted loop playsinline preload="auto" aria-label="Touch Grass Instagram story 3"></video>
+          <video class="touch-grass-video touch-grass-video--busstop" src="video/touch-grass-busstop.mp4" autoplay muted loop playsinline preload="auto" aria-label="Touch Grass bus stop ad"></video>
+
+          <!-- פלטת הטקסטורות: עיגול שממלא משבצת, בשחמט על שתי שורות -->
+          <div class="touch-grass-textures" aria-hidden="true">
+            <img class="touch-grass-texture" src="Images/touch-grass/oreo.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 2; --row: 55;">
+            <img class="touch-grass-texture" src="Images/touch-grass/green.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 4; --row: 55;">
+            <img class="touch-grass-texture" src="Images/touch-grass/karamel.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 6; --row: 55;">
+            <img class="touch-grass-texture" src="Images/touch-grass/dark-green.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 8; --row: 55;">
+            <img class="touch-grass-texture" src="Images/touch-grass/b-p.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 3; --row: 56;">
+            <img class="touch-grass-texture" src="Images/touch-grass/dark.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 5; --row: 56;">
+            <img class="touch-grass-texture touch-grass-texture--top" src="Images/touch-grass/macha.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 7; --row: 56;">
+          </div>
+
+          <!-- כותרות הסעיפים: כל אחת במשבצת מאוחדת על הגריד -->
+          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 1;">Title Design</p>
+          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 5;">Schedule<br> Screen</p>
+          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 20;">Social Media<br> Stories</p>
+          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 41;">Outdoor<br> Campaign</p>
+          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 54;">Texture<br> Palette</p>
+          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 58;">What’s Next?</p>
+        </div>
+      </section>
+      </div>
+
+      <!-- ===== פרויקטים נוספים: רולר ברוחב כל המסך =====
+           script.js בונה את הדימויים מהרשימה המשותפת nextProjectsList ומזיז אותם בלופ.
+           כל דימוי הוא קישור. דימוי בלי href עוד לא מוביל לשום מקום -->
+      <section class="next-projects" aria-label="More projects">
+        <div class="next-projects-track"></div>
+      </section>
+
+      <!-- ===== באנר יצירת קשר: ברוחב כל המסך =====
+           מוביל לעמוד Say Hi (say-hi.html).
+           הטקסט רץ מימין לשמאל בלופ. יש בו שני חצאים זהים: כשהחצי הראשון יוצא,
+           השני נמצא בדיוק במקום שלו, ולכן אין קפיצה -->
+      <a class="contact-banner" href="say-hi.html" aria-label="Say hi, let’s make things together">
+        <div class="contact-banner-track" aria-hidden="true">
+          <div class="contact-banner-half">
+            <svg class="contact-banner-star contact-banner-star--1" viewBox="0 0 80 84" preserveAspectRatio="none" aria-hidden="true"><path d="M53.3333 24.9873L48.5333 0L44.2667 24.9873H6.4L32.5333 36.6835L0 48.3797H27.2L14.4 67.519L42.1333 50.5063V84L57.0667 50.5063L70.4 67.519L62.9333 44.6582H80L57.0667 32.962L77.3333 17.0127L53.3333 24.9873Z"/></svg>
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <svg class="contact-banner-star contact-banner-star--2" viewBox="0 0 96 85" preserveAspectRatio="none" aria-hidden="true"><path d="M57.0602 30.5227L72.4819 0V39.0227L96 35.5455L64.7711 56.7955L78.2651 79.9773L51.2771 66.4545L42.7952 85V66.4545L0 56.7955L35.0843 51.7727L13.8795 35.5455L42.7952 39.0227V19.3182L57.0602 30.5227Z"/></svg>
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+            <svg class="contact-banner-star contact-banner-star--1" viewBox="0 0 80 84" preserveAspectRatio="none" aria-hidden="true"><path d="M53.3333 24.9873L48.5333 0L44.2667 24.9873H6.4L32.5333 36.6835L0 48.3797H27.2L14.4 67.519L42.1333 50.5063V84L57.0667 50.5063L70.4 67.519L62.9333 44.6582H80L57.0667 32.962L77.3333 17.0127L53.3333 24.9873Z"/></svg>
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <svg class="contact-banner-star contact-banner-star--2" viewBox="0 0 96 85" preserveAspectRatio="none" aria-hidden="true"><path d="M57.0602 30.5227L72.4819 0V39.0227L96 35.5455L64.7711 56.7955L78.2651 79.9773L51.2771 66.4545L42.7952 85V66.4545L0 56.7955L35.0843 51.7727L13.8795 35.5455L42.7952 39.0227V19.3182L57.0602 30.5227Z"/></svg>
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+          </div>
+          <div class="contact-banner-half">
+            <svg class="contact-banner-star contact-banner-star--1" viewBox="0 0 80 84" preserveAspectRatio="none" aria-hidden="true"><path d="M53.3333 24.9873L48.5333 0L44.2667 24.9873H6.4L32.5333 36.6835L0 48.3797H27.2L14.4 67.519L42.1333 50.5063V84L57.0667 50.5063L70.4 67.519L62.9333 44.6582H80L57.0667 32.962L77.3333 17.0127L53.3333 24.9873Z"/></svg>
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <svg class="contact-banner-star contact-banner-star--2" viewBox="0 0 96 85" preserveAspectRatio="none" aria-hidden="true"><path d="M57.0602 30.5227L72.4819 0V39.0227L96 35.5455L64.7711 56.7955L78.2651 79.9773L51.2771 66.4545L42.7952 85V66.4545L0 56.7955L35.0843 51.7727L13.8795 35.5455L42.7952 39.0227V19.3182L57.0602 30.5227Z"/></svg>
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+            <svg class="contact-banner-star contact-banner-star--1" viewBox="0 0 80 84" preserveAspectRatio="none" aria-hidden="true"><path d="M53.3333 24.9873L48.5333 0L44.2667 24.9873H6.4L32.5333 36.6835L0 48.3797H27.2L14.4 67.519L42.1333 50.5063V84L57.0667 50.5063L70.4 67.519L62.9333 44.6582H80L57.0667 32.962L77.3333 17.0127L53.3333 24.9873Z"/></svg>
+            <span class="contact-banner-text text-banner">SAY HI</span>
+            <svg class="contact-banner-star contact-banner-star--2" viewBox="0 0 96 85" preserveAspectRatio="none" aria-hidden="true"><path d="M57.0602 30.5227L72.4819 0V39.0227L96 35.5455L64.7711 56.7955L78.2651 79.9773L51.2771 66.4545L42.7952 85V66.4545L0 56.7955L35.0843 51.7727L13.8795 35.5455L42.7952 39.0227V19.3182L57.0602 30.5227Z"/></svg>
+            <span class="contact-banner-text text-banner">LET’S MAKE THINGS TOGETHER</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="keyboard-nav.js"></script>
+  <script src="cursor.js"></script>
+</body>
+</html>
