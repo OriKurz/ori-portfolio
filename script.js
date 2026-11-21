@@ -14,22 +14,6 @@ window.addEventListener("pointerdown", function (event) {
 document.addEventListener("touchstart", function () {}, { passive: true });
 
 // =========================================
-// קישור שמוביל למקום אחר במובייל (data-mobile-href), למשל פרויקט שעוד אין לו גרסת מובייל:
-// במחשב ה-href הרגיל, במובייל (וגם בטאבלט לאורך) ה-data-mobile-href. מתחלף גם בסיבוב המסך
-// =========================================
-const mobileLinkScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
-
-function updateMobileLinks() {
-  document.querySelectorAll("[data-mobile-href]").forEach(function (link) {
-    if (!link.dataset.desktopHref) link.dataset.desktopHref = link.getAttribute("href");
-    link.setAttribute("href", mobileLinkScreen.matches ? link.dataset.mobileHref : link.dataset.desktopHref);
-  });
-}
-
-updateMobileLinks();
-mobileLinkScreen.addEventListener("change", updateMobileLinks);
-
-// =========================================
 // בר האינדקס בעמוד מבואה לפרויקט: כל כדור הוא פרויקט.
 // בכל רגע רק כדור אחד פתוח ומורחב לפס עם שם הפרויקט.
 // בטעינה The Perfect Crime נפתח אחרי השהיה קצרה. hover על כדור אחר פותח אותו,
@@ -1576,7 +1560,6 @@ if (sourceTimeline) {
 // הרשימה של הפרויקטים ברצועה: מקום אחד לכל עמודי הפרויקט.
 // כדי להוסיף פרויקט, מוסיפים אותו לרשימה:
 //   image: התמונה | alt: תיאור התמונה | href: העמוד שלו (פרויקט שעוד אין לו עמוד: 404.html, דף בהקמה)
-//   mobileHref: לאן הוא מוביל במובייל, אם זה שונה (עמוד שעוד אין לו גרסת מובייל: 404.html)
 //   name: השם שמופיע ב-hover (\n = שורה חדשה, כמו בפיגמה)
 //   width: הרוחב בפיגמה, אם הוא לא 258 | fit: "cover" או "fill"
 //   crop: גודל ומיקום התמונה בתוך הריבוע, כמו בפיגמה (width, height, left, top באחוזים)
@@ -1586,7 +1569,7 @@ const nextProjectsList = [
   { image: "Images/next-projects/project-2.webp", alt: "Hora", name: "Hora", href: "404.html", width: 259, fit: "cover" },
   { image: "Images/next-projects/project-3.webp", alt: "Leftovers*", name: "Leftovers*", href: "leftovers-project.html", crop: { width: "123.11%", height: "153.68%", left: "-11.36%", top: "-12.98%" } },
   { image: "Images/next-projects/project-4.webp", alt: "Shunra", name: "Shunra", href: "shunra-project.html", crop: { width: "102.56%", height: "152.87%", left: "-1.07%", top: "-36.22%" } },
-  { image: "Images/next-projects/project-5.webp", alt: "Touch Grass", name: "Touch\nGrass", href: "touch-grass-project.html", mobileHref: "404.html", crop: { width: "100%", height: "100%", left: "0%", top: "0%" } },
+  { image: "Images/next-projects/project-5.webp", alt: "Touch Grass", name: "Touch\nGrass", href: "touch-grass-project.html", crop: { width: "100%", height: "100%", left: "0%", top: "0%" } },
 ];
 
 // התנועה: הרצועה זזה לאט מימין לשמאל, בלופ בלי קפיצה (הרשימה חוזרת על עצמה ברצף).
@@ -1616,8 +1599,7 @@ if (nextProjectsStrip) {
   function createProject(project) {
     const link = document.createElement("a");
     link.className = "next-project";
-    const href = mobileScreen.matches && project.mobileHref ? project.mobileHref : project.href;
-    if (href) link.href = href;
+    if (project.href) link.href = project.href;
     if (project.width) link.style.setProperty("--w", project.width);
     if (project.fit) link.style.setProperty("--fit", project.fit);
     if (project.crop) {
@@ -1724,8 +1706,6 @@ if (nextProjectsStrip) {
     lastStripWidth = nextProjectsStrip.clientWidth;
     buildStrip();
   });
-  // מעבר בין מחשב למובייל (סיבוב המסך): הקישורים מתחלפים (mobileHref)
-  mobileScreen.addEventListener("change", buildStrip);
 }
 
 // =========================================

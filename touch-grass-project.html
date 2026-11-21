@@ -39,12 +39,14 @@
       <div class="full-project-body">
       <!-- ===== החלק של הטקסט (בלי גריד, לא נגלל) ===== -->
       <section class="full-project-info">
-        <!-- התיאור: ארוך מגובה המסך, ולכן אזור גלילה משלו. הוא נעלם מתחת לכותרת (כמו בשונרא) -->
+        <!-- התיאור: ארוך מגובה המסך, ולכן אזור גלילה משלו. הוא נעלם מתחת לכותרת (כמו בשונרא).
+             במובייל כל פסקה במשבצת מאוחדת משלה, פזורה בגריד (הפריים touchM בפיגמה). data-rows-var: המשתנה
+             שבו script.js שומר כמה שורות המשבצת צריכה כדי שהטקסט ייכנס -->
         <div class="full-project-description-scroll">
-            <div class="full-project-description text-body">
-              <p>A series of motion elements for “Touch Grass”, a conference on mental health in times of conflict. The project spans a central event schedule screen, motion graphics promoting the conference on social media, and moving ads for bus stop displays.</p>
-              <p>Two main questions guided my process: How do we talk about mental health with sensitivity, without being triggering? And how do we talk about PTSD in a bleeding country that is still living through the trauma every day? It was important to me to use natural, handcrafted textures and handwritten elements to bring softness and a human touch to the visuals.</p>
-              <p>I chose trees as the central visual metaphor for the human mind, and red typography as a quiet reminder of the violence of war.</p>
+            <div class="full-project-description text-body text-body-mobile">
+              <p class="touch-grass-description-intro" data-rows-var="--description-intro-rows">A series of motion elements for “Touch Grass”, a conference on mental health in times of conflict. The project spans a central event schedule screen, motion graphics promoting the conference on social media, and moving ads for bus stop displays.</p>
+              <p class="touch-grass-description-process" data-rows-var="--description-process-rows">Two main questions guided my process: How do we talk about mental health with sensitivity, without being triggering? And how do we talk about PTSD in a bleeding country that is still living through the<br class="full-project-mobile-break"> trauma every day?<br class="full-project-mobile-break"> It was important to me to use natural, handcrafted textures and handwritten elements to bring softness and a human touch to the visuals.</p>
+              <p class="touch-grass-description-closing" data-rows-var="--description-closing-rows">I chose trees as the central visual metaphor for the human mind, and red typography as a quiet reminder of the violence of war.</p>
             </div>
         </div>
 
@@ -59,8 +61,8 @@
           </button>
 
           <h1 class="full-project-title text-page-title">Touch Grass</h1>
-          <p class="full-project-tagline text-subtitle">Academic project<br>2026</p>
-          <p class="full-project-type text-subtitle">Motion Graphics<br>&amp; Branding</p>
+          <p class="full-project-tagline text-subtitle" data-rows-var="--tagline-rows">Academic project<br>2026</p>
+          <p class="full-project-type text-subtitle" data-rows-var="--type-rows">Motion Graphics<br>&amp; Branding</p>
         </div>
       </section>
 
@@ -85,24 +87,25 @@
           <video class="touch-grass-video touch-grass-story touch-grass-story--3" src="video/touch-grass-story-3.mp4" autoplay muted loop playsinline preload="auto" aria-label="Touch Grass Instagram story 3"></video>
           <video class="touch-grass-video touch-grass-video--busstop" src="video/touch-grass-busstop.mp4" autoplay muted loop playsinline preload="auto" aria-label="Touch Grass bus stop ad"></video>
 
-          <!-- פלטת הטקסטורות: עיגול שממלא משבצת, בשחמט על שתי שורות -->
+          <!-- פלטת הטקסטורות: עיגול שממלא משבצת, בשחמט (במחשב על שתי שורות, במובייל על שלוש) -->
           <div class="touch-grass-textures" aria-hidden="true">
-            <img class="touch-grass-texture" src="Images/touch-grass/oreo.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 2; --row: 55;">
-            <img class="touch-grass-texture" src="Images/touch-grass/green.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 4; --row: 55;">
-            <img class="touch-grass-texture" src="Images/touch-grass/karamel.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 6; --row: 55;">
-            <img class="touch-grass-texture" src="Images/touch-grass/dark-green.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 8; --row: 55;">
-            <img class="touch-grass-texture" src="Images/touch-grass/b-p.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 3; --row: 56;">
-            <img class="touch-grass-texture" src="Images/touch-grass/dark.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 5; --row: 56;">
-            <img class="touch-grass-texture touch-grass-texture--top" src="Images/touch-grass/macha.webp" width="1080" height="1920" loading="lazy" alt="" style="--column: 7; --row: 56;">
+            <img class="touch-grass-texture touch-grass-texture--oreo" src="Images/touch-grass/oreo.webp" width="1080" height="1920" loading="lazy" alt="">
+            <img class="touch-grass-texture touch-grass-texture--green" src="Images/touch-grass/green.webp" width="1080" height="1920" loading="lazy" alt="">
+            <img class="touch-grass-texture touch-grass-texture--karamel" src="Images/touch-grass/karamel.webp" width="1080" height="1920" loading="lazy" alt="">
+            <img class="touch-grass-texture touch-grass-texture--dark-green" src="Images/touch-grass/dark-green.webp" width="1080" height="1920" loading="lazy" alt="">
+            <img class="touch-grass-texture touch-grass-texture--b-p" src="Images/touch-grass/b-p.webp" width="1080" height="1920" loading="lazy" alt="">
+            <img class="touch-grass-texture touch-grass-texture--dark" src="Images/touch-grass/dark.webp" width="1080" height="1920" loading="lazy" alt="">
+            <img class="touch-grass-texture touch-grass-texture--macha" src="Images/touch-grass/macha.webp" width="1080" height="1920" loading="lazy" alt="">
           </div>
 
-          <!-- כותרות הסעיפים: כל אחת במשבצת מאוחדת על הגריד -->
-          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 1;">Title Design</p>
-          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 5;">Schedule<br> Screen</p>
-          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 20;">Social Media<br> Stories</p>
-          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 41;">Outdoor<br> Campaign</p>
-          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 54;">Texture<br> Palette</p>
-          <p class="section-title text-section-title touch-grass-title-box" style="--column: 0; --row: 58;">What’s Next?</p>
+          <!-- כותרות הסעיפים: כל אחת במשבצת מאוחדת על הגריד.
+               full-project-mobile-break: שבירת שורה שקיימת רק במובייל (כמו בפריים touchM) -->
+          <p class="section-title text-section-title touch-grass-title-box touch-grass-logo-title">Title<br class="full-project-mobile-break"> Design</p>
+          <p class="section-title text-section-title touch-grass-title-box touch-grass-schedule-title">Schedule<br> Screen</p>
+          <p class="section-title text-section-title touch-grass-title-box touch-grass-stories-title">Social Media<br> Stories</p>
+          <p class="section-title text-section-title touch-grass-title-box touch-grass-outdoor-title">Outdoor<br> Campaign</p>
+          <p class="section-title text-section-title touch-grass-title-box touch-grass-palette-title">Texture<br> Palette</p>
+          <p class="section-title text-section-title touch-grass-title-box touch-grass-next-title">What’s<br class="full-project-mobile-break"> Next?</p>
         </div>
       </section>
       </div>
