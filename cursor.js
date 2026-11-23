@@ -183,6 +183,8 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
     if (labeled) return labeled;
     for (let element = target; element && element !== document.body; element = element.parentElement) {
       if (element.classList.contains("has-ball-cursor")) return element;
+      // המדבקות של שונרא (shunra-stickers.js): מוגדר עליהן cursor: grab, אבל גם הן לחיצות
+      if (element.classList.contains("stk")) return element;
       if (element.matches(clickableSelector) || getComputedStyle(element).cursor === "pointer") return element;
     }
     return null;
@@ -198,6 +200,8 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
       label.style.setProperty("--label-width", element.getAttribute("data-cursor-label-width"));
     }
     cursor.classList.toggle("is-label", Boolean(labelText));
+    // על מדבקה העיגול פועם (styles.css)
+    cursor.classList.toggle("is-sticker", Boolean(element && element.classList.contains("stk")));
     if (element) {
       element.classList.add("has-ball-cursor");
       // ממתינים פריים, כדי שמעברי ה-hover כבר יתחילו ונוכל לקרוא את הצבע שלהם

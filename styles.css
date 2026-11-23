@@ -148,6 +148,8 @@
   --cursor-shape-duration: 250ms;  /* המעבר מריבוע לעיגול ובחזרה */
   --cursor-shape-bounce: 1.25;     /* הקפיצה בהתעגלות */
   --cursor-shape-easing: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --cursor-sticker-pulse-duration: 900ms;  /* הפעימה של העיגול מעל מדבקה של שונרא */
+  --cursor-sticker-pulse-scale: 1.2;
 
   /* מעבר בין עמודים (page-transition.js): קוביות מופיעות בסדר אקראי, ובעמוד הבא נעלמות */
   --page-transition-duration: 1000ms;  /* כל הכיסוי (וכל החשיפה), מהקובייה הראשונה עד האחרונה */
@@ -6922,6 +6924,24 @@ body {
   animation: cursor-shape-bounce var(--cursor-shape-duration) var(--cursor-shape-easing);
 }
 
+/* על מדבקה של שונרא: אחרי ההתעגלות העיגול פועם בלופ רך */
+.custom-cursor.is-round.is-sticker .custom-cursor-ball {
+  animation:
+    cursor-shape-bounce var(--cursor-shape-duration) var(--cursor-shape-easing),
+    cursor-sticker-pulse var(--cursor-sticker-pulse-duration) ease-in-out var(--cursor-shape-duration) infinite;
+}
+
+/* כשהמדבקה מורמת הפעימה נעצרת, עד שמניחים אותה */
+html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
+  animation: cursor-shape-bounce var(--cursor-shape-duration) var(--cursor-shape-easing);
+}
+
+@keyframes cursor-sticker-pulse {
+  50% {
+    scale: var(--cursor-sticker-pulse-scale);
+  }
+}
+
 @keyframes cursor-shape-bounce {
   50% {
     scale: var(--cursor-shape-bounce);
@@ -6935,7 +6955,9 @@ body {
     transition: transform var(--cursor-pop-duration) ease-in;
   }
 
-  .custom-cursor.is-round .custom-cursor-ball {
+  .custom-cursor.is-round .custom-cursor-ball,
+  .custom-cursor.is-round.is-sticker .custom-cursor-ball,
+  html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
     animation: none;
   }
 }
