@@ -17,7 +17,7 @@
   // כדי שהקוביות לא יהיו בצבע של העמוד שאליו עוברים
   const pageBackgrounds = {
     "index.html": "--color-blue",
-    "projects.html": "--color-blue",
+    "projects.html": "--color-mint",
     "say-hi.html": "--color-pink",
     "the-perfect-crime-project.html": "--color-mint",
     "leftovers-project.html": "--leftovers-navy",

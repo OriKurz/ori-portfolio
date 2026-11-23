@@ -1857,48 +1857,44 @@
 }
 
 /* ----- עמוד אינדקס הפרויקטים (projects.html) -----
-   הפריים INDEX2 בפיגמה: 1440x772, משבצת של 96px (15 טורים, 8 שורות), גריד שממלא את המסך
-   כמו בעמוד הבית. הגריד בפיגמה מתחיל ב-(0, 4), אז המיקומים כאן במשבצות: x / 96 ו-(y - 4) / 96.
+   הפריים INDEX2 בפיגמה: 1440x2209, משבצת של 96px (15 טורים, 23 שורות), גלריה שגוללים למטה.
+   המשבצת = רוחב החלון חלקי 15, בלי טורים עודפים (העמוד נגלל, אז לא צריך להיכנס לגובה).
+   הגריד בפיגמה מתחיל ב-(0, 4), אז המיקומים כאן במשבצות: x / 96 ו-(y - 4) / 96.
    מספרים כמו 15 * var(--u) הם פיקסלים מהפיגמה. */
 :root.page-projects {
-  --grid-rows: 8;
+  --grid-rows: 23;
+  --design-rows: 0;
+  --grid-top: 0px;
   --line: var(--line-desktop);
   /* פיקסל אחד בפיגמה */
   --u: calc(var(--cell) / 96);
   --type-px: var(--u);
 
-  --page-background: var(--color-blue);
-  --grid-line-color: var(--color-pink);
+  --page-background: var(--color-mint);
+  --grid-line-color: var(--color-dark-blue);
 
-  /* ההמבורגר: שלושה קווים ורודים (30x24 בפיגמה), במרכז המשבצת הראשונה */
+  /* ההמבורגר: שלושה קווים (30x24 בפיגמה), במרכז המשבצת הראשונה */
   --menu-width: calc(30 * var(--u));
   --menu-line-height: calc(4 * var(--u));
   --menu-gap: calc(6 * var(--u));
 
-  /* INDEX ב-(99, 112), ו-Project & more ב-(402, 137) */
-  --projects-title-column: calc(99 / 96);
+  /* INDEX ב-(95, 112), ו-Project & more ב-(400, 137) */
+  --projects-title-column: calc(95 / 96);
   --projects-title-row: calc((112 - 4) / 96);
-  --projects-subtitle-column: calc(402 / 96);
+  --projects-subtitle-column: calc(400 / 96);
   --projects-subtitle-row: calc((137 - 4) / 96);
-  /* ORI KURZ ב-(921, 116) */
-  --projects-name-column: calc(921 / 96);
-  --projects-name-row: calc((116 - 4) / 96);
+  /* ORI KURZ ב-(924, 115) */
+  --projects-name-column: calc(924 / 96);
+  --projects-name-row: calc((115 - 4) / 96);
 
-  /* רצועת התמונות: בשורות 2 עד 5. כל תמונה ריבוע של 4 משבצות (מקו לקו),
-     עם מסגרת כתומה בעובי הקו, ו-24.6px בין תמונה לתמונה (הממוצע בפיגמה).
-     בטעינה התמונה הראשונה מתחילה ב-x = -235 */
-  --projects-strip-row: 2;
-  --projects-strip-rows: 4;
-  --projects-image-size: calc(var(--projects-strip-rows) * var(--cell) + var(--line));
-  --projects-image-gap: calc(24.6 * var(--u));
-  --projects-strip-start: calc(-235 * var(--u));
-  /* הגובה של הרצועה: התמונות, ומתחתן הכותרות של העבודות (עד 405 + 47 מראש התמונה) */
-  --projects-strip-height: calc(452 * var(--u));
+  /* הגלריה: כל תמונה ריבוע של 6 משבצות (מקו לקו), עם מסגרת כחולה כהה בעובי הקו.
+     המלבנים של הכותרת 10 מתחת לתמונה */
+  --projects-image-columns: 6;
+  --projects-image-size: calc(var(--projects-image-columns) * var(--cell) + var(--line));
+  --projects-caption-gap: calc(10 * var(--u));
   /* המלבנים הכתומים (הכותרת מתחת לתמונה, והתווית שבמקום הסמן) נפתחים משמאל לימין,
      באותו קצב כמו המלבנים בשונרא */
   --projects-label-duration: 200ms;
-  /* מהירות הרצועה: כמה משבצות בשנייה (script.js) */
-  --projects-strip-speed: 1.5;
 }
 
 /* ----- עמוד אינדקס הפרויקטים במובייל -----
@@ -1907,6 +1903,7 @@
 @media (max-width: 1024px) and (orientation: portrait) {
   :root.page-projects {
     --design-columns: 8;
+    --grid-rows: 8;
     --line: var(--line-mobile);
     --grid-top: 0px;
     --u: calc(100vw / 393);
@@ -1935,6 +1932,8 @@
     --projects-tag-gap: calc(10 * var(--u));
     /* הזמן שבו הקרוסלה זזה עד שהתמונה שנלחצה ממורכזת (script.js) */
     --projects-center-duration: 700ms;
+    /* מהירות הקרוסלה: כמה משבצות בשנייה (script.js) */
+    --projects-strip-speed: 1.5;
   }
 }
 
@@ -6801,43 +6800,58 @@ body {
    עמוד אינדקס הפרויקטים (projects.html)
    ========================================= */
 
-/* עמוד של מסך אחד, בלי גלילה */
-.page-projects,
+/* במחשב: גלריה שגוללים למטה. הגובה: כל השורות של הפריים, ועוד הקו התחתון */
 .page-projects body {
-  height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
+  min-height: calc(var(--grid-rows) * var(--cell) + var(--line));
 }
 
-.page-projects body {
-  height: 100dvh;
+/* במובייל: עמוד של מסך אחד, בלי גלילה (רק הקרוסלה זזה) */
+@media (max-width: 1024px) and (orientation: portrait) {
+  .page-projects,
+  .page-projects body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  .page-projects body {
+    height: 100dvh;
+  }
 }
 
-/* ההמבורגר: במשבצת הראשונה בפינה השמאלית העליונה של המסך, ממורכז בין הקווים */
+/* ההמבורגר: במשבצת הראשונה בפינה השמאלית העליונה, ממורכז בין הקווים.
+   במחשב הוא נגלל עם הגריד, כדי שיישאר במרכז המשבצת שלו */
 .projects-menu {
   --menu-height: calc(3 * var(--menu-line-height) + 2 * var(--menu-gap));
-  position: fixed;
+  position: absolute;
   left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
   top: calc(mod(var(--grid-top), var(--cell)) + (var(--cell) + var(--line) - var(--menu-height)) / 2);
+}
+
+@media (max-width: 1024px) and (orientation: portrait) {
+  .projects-menu {
+    position: fixed;
+  }
 }
 
 .projects-menu .menu-button-line {
   border-radius: var(--menu-line-height);
 }
 
-/* צבע ההמבורגר (כמו בפיגמה): מנטה. ב-Hover ו-Focus כתום, כמו בכל האתר */
+/* צבע ההמבורגר (כמו בפיגמה): כחול כהה. ב-Hover ו-Focus כחול */
 .projects-menu {
-  --menu-line-color: var(--color-mint);
+  --menu-line-color: var(--color-dark-blue);
+  --menu-hover-color: var(--color-blue);
 }
 
-/* אזור העיצוב מהפיגמה, ממורכז בחלון */
+/* אזור העיצוב מהפיגמה */
 .projects-page {
   position: absolute;
   left: var(--grid-left);
   top: var(--grid-top);
   width: calc(var(--design-columns) * var(--cell));
   height: calc(var(--grid-rows) * var(--cell));
-  color: var(--color-mint);
+  color: var(--color-orange);
 }
 
 .projects-title,
@@ -6867,61 +6881,46 @@ body {
   white-space: nowrap;
 }
 
-/* ----- הרקע של הקרוסלה -----
-   כחול חלק על המשבצות של הרצועה (Rectangle 72 בפיגמה): לרוחב כל החלון, בשורות 2 עד 5.
-   מתחיל אחרי הקו העליון ונגמר לפני הקו התחתון, כך שהקווים שבתוכו מכוסים
-   והקווים שמסביבו נשארים. עומד במקום, והתמונות נעות מעליו */
+/* ----- הרקע של הקרוסלה (מובייל בלבד) -----
+   כחול חלק (Rectangle 71 בפיגמה): הטור של הקרוסלה, מאחרי הקו שלו ועד הקצה הימני, לכל הגובה.
+   הקווים שבתוכו מכוסים והקווים שמסביבו נשארים. עומד במקום, והתמונות נעות מעליו */
 .projects-strip-background {
-  position: fixed;
-  left: 0;
-  top: calc(var(--grid-top) + var(--projects-strip-row) * var(--cell) + var(--line));
-  width: 100vw;
-  height: calc(var(--projects-strip-rows) * var(--cell) - var(--line));
-  background-color: var(--color-blue);
+  display: none;
 }
 
-/* במובייל (Rectangle 71 בפיגמה): הטור של הקרוסלה, מאחרי הקו שלו ועד הקצה הימני, לכל הגובה */
 @media (max-width: 1024px) and (orientation: portrait) {
   .projects-strip-background {
+    display: block;
+    position: fixed;
     left: calc(var(--projects-strip-column) * var(--cell) + var(--line));
     top: 0;
     width: calc(100vw - var(--projects-strip-column) * var(--cell) - var(--line));
     height: 100dvh;
+    background-color: var(--color-blue);
   }
 }
 
-/* ----- רצועת התמונות -----
-   לרוחב כל החלון, על השורות שלה. script.js משכפל את התמונות כמה שצריך
-   ומזיז את projects-track מימין לשמאל בלופ */
+/* ----- הגלריה (מחשב) -----
+   כל פרויקט במשבצת שלו מהפיגמה (--column, --row), על אותה רשת כמו קווי הגריד */
 .projects-strip {
-  position: fixed;
-  left: 0;
-  top: calc(var(--grid-top) + var(--projects-strip-row) * var(--cell));
-  width: 100vw;
-  height: var(--projects-strip-height);
-  overflow: hidden;
+  position: absolute;
+  left: var(--grid-left);
+  top: var(--grid-top);
 }
 
-.projects-track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-}
-
-/* פרויקט אחד: התמונה, ומתחתיה הכותרת של העבודה */
 .projects-item {
-  position: relative;
-  flex: none;
-  margin-right: var(--projects-image-gap);
+  position: absolute;
+  left: calc(var(--column) * var(--cell));
+  top: calc(var(--row) * var(--cell));
 }
 
-/* תמונה: ריבוע עם מסגרת ורודה (כמו קווי הגריד), והתמונה חתוכה בתוכה כמו בפיגמה */
+/* תמונה: ריבוע עם מסגרת כחולה כהה (כמו קווי הגריד), והתמונה חתוכה בתוכה כמו בפיגמה */
 .projects-image {
   position: relative;
   display: block;
   width: var(--projects-image-size);
   height: var(--projects-image-size);
-  border: var(--line) solid var(--color-pink);
+  border: var(--line) solid var(--color-dark-blue);
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -6948,12 +6947,12 @@ body {
   outline: none;
 }
 
-/* ----- הכותרת מתחת לתמונה: שני מלבנים כתומים (הקומפוננטה Group 16 בפיגמה) -----
-   סגורים עד ה-Hover, ונפתחים משמאל לימין כמו המלבנים בשונרא (clip-path) */
+/* ----- הכותרת מתחת לתמונה: שני מלבנים כתומים (Frame 67 עד 72 בפיגמה) -----
+   10 מתחת לתמונה. סגורים עד ה-Hover, ונפתחים משמאל לימין כמו המלבנים בשונרא (clip-path) */
 .projects-caption {
   position: absolute;
   left: 0;
-  top: calc(var(--caption-top) * var(--u));
+  top: calc(var(--projects-image-columns) * var(--cell) + var(--projects-caption-gap));
   display: flex;
   gap: calc(var(--box-gap) * var(--u));
   margin: 0;
@@ -6977,11 +6976,22 @@ body {
   width: calc(var(--text-width) * var(--u));
 }
 
-/* Hover (script.js מסמן את התמונה שמתחת לעכבר ב-is-hover) ו-Focus */
-.projects-image.is-hover ~ .projects-caption .projects-caption-box,
+/* Hover (רק עכבר) ו-Focus. is-hover / is-focus: המצב הקבוע לתצוגה */
 .projects-image:focus-visible ~ .projects-caption .projects-caption-box,
+.projects-image.is-hover ~ .projects-caption .projects-caption-box,
 .projects-image.is-focus ~ .projects-caption .projects-caption-box {
   clip-path: inset(0 0 0 0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .projects-image:hover ~ .projects-caption .projects-caption-box {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* בכל רגע פתוח רק פרויקט אחד: כשהעכבר על תמונה, הכותרת של התמונה שבפוקוס נסגרת */
+  .projects-track:has(.projects-image:hover) .projects-image:focus-visible:not(:hover) ~ .projects-caption .projects-caption-box {
+    clip-path: inset(0 100% 0 0);
+  }
 }
 
 /* ----- התגיות (מובייל בלבד): טור של מלבנים כתומים משמאל לתמונה, צמודים לימין -----
@@ -7012,10 +7022,15 @@ body {
     white-space: normal;
   }
 
-  /* הקרוסלה: כל המסך (רק התמונות לחיצות), והטור מתחיל על קו הגריד */
+  /* הקרוסלה: כל המסך (רק התמונות לחיצות). script.js משכפל את התמונות כמה שצריך
+     ומזיז את projects-track מלמעלה למטה בלופ. הטור מתחיל על קו הגריד */
   .projects-strip {
+    position: fixed;
+    left: 0;
     top: 0;
+    width: 100vw;
     height: 100dvh;
+    overflow: hidden;
     pointer-events: none;
   }
 
@@ -7023,14 +7038,24 @@ body {
     position: absolute;
     top: 0;
     left: calc(var(--projects-strip-column) * var(--cell));
+    display: flex;
     flex-direction: column;
     width: var(--projects-image-size);
+    will-change: transform;
     pointer-events: auto;
   }
 
   .projects-item {
-    margin-right: 0;
+    position: relative;
+    left: auto;
+    top: auto;
+    flex: none;
     margin-bottom: var(--projects-image-gap);
+  }
+
+  /* פרויקט שמופיע רק בגלריה במחשב */
+  .projects-item--desktop-only {
+    display: none;
   }
 
   .projects-caption {

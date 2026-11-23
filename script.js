@@ -1570,6 +1570,7 @@ const nextProjectsList = [
   { image: "Images/next-projects/project-3.webp", alt: "Leftovers*", name: "Leftovers*", href: "leftovers-project.html", crop: { width: "123.11%", height: "153.68%", left: "-11.36%", top: "-12.98%" } },
   { image: "Images/next-projects/project-4.webp", alt: "Shunra", name: "Shunra", href: "shunra-project.html", crop: { width: "102.56%", height: "152.87%", left: "-1.07%", top: "-36.22%" } },
   { image: "Images/next-projects/project-5.webp", alt: "Touch Grass", name: "Touch\nGrass", href: "touch-grass-project.html", crop: { width: "100%", height: "100%", left: "0%", top: "0%" } },
+  { image: "Images/next-projects/haven.webp", alt: "Haven", name: "Haven", href: "404.html", crop: { width: "140.63%", height: "100%", left: "-13.65%", top: "0%" } },
 ];
 
 // התנועה: הרצועה זזה לאט מימין לשמאל, בלופ בלי קפיצה (הרשימה חוזרת על עצמה ברצף).
@@ -2069,12 +2070,13 @@ if (descriptionScroll && projectPageScroll && bottomArea) {
 }
 
 // =========================================
-// אינדקס הפרויקטים (projects.html): רצועת התמונות נעה בלופ מימין לשמאל.
+// אינדקס הפרויקטים (projects.html).
+// במחשב: גלריה רגילה שגוללים למטה (styles.css), בלי תנועה. הסקריפט רק מחזיר את כל הפרויקטים למקום.
 // במובייל: הקרוסלה היא טור, והתמונות נעות מלמעלה למטה.
 // התמונות חוזרות על עצמן ברצף, עם אותו ריווח גם בנקודת החיבור, בלי קפיצה.
 // המהירות: --projects-strip-speed ב-styles.css (משבצות בשנייה).
-// hover על תמונה (עכבר) או פוקוס במקלדת עוצרים את הרצועה, וכשיוצאים היא ממשיכה.
-// התמונה שמתחת לעכבר מסומנת ב-is-hover, והכותרת שמתחתיה נפתחת (styles.css).
+// hover על תמונה (עכבר) או פוקוס במקלדת עוצרים את הקרוסלה, וכשיוצאים היא ממשיכה.
+// פרויקט עם projects-item--desktop-only (Haven) מופיע רק בגלריה במחשב, לא בקרוסלה.
 // במובייל: נגיעה ראשונה בתמונה עוצרת את הלופ, מזיזה אותה ברכות למרכז המסך ופותחת
 // את התגיות שלה (is-selected). נגיעה נוספת בה נכנסת לעמוד, נגיעה בתמונה אחרת עוברת אליה,
 // ונגיעה מחוץ לקרוסלה סוגרת את התגיות והלופ ממשיך.
@@ -2083,10 +2085,14 @@ const projectsStrip = document.querySelector(".projects-strip");
 
 if (projectsStrip) {
   const track = projectsStrip.querySelector(".projects-track");
-  const projects = Array.from(track.children);
+  const allProjects = Array.from(track.children);
+  // הפרויקטים בקרוסלה של המובייל
+  const projects = allProjects.filter(function (project) {
+    return !project.classList.contains("projects-item--desktop-only");
+  });
   const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
 
-  let vertical = false;      // במובייל הרצועה נעה לאורך
+  let vertical = false;      // במובייל: הקרוסלה פעילה ונעה לאורך. במחשב: גלריה בלי תנועה
   let setWidth = 0;          // האורך של סבב אחד של התמונות (כולל הריווחים)
   let offset = 0;            // כמה הרצועה זזה (בתוך סבב אחד)
   let speed = 0;             // המהירות (פיקסלים לשנייה)
@@ -2098,7 +2104,7 @@ if (projectsStrip) {
   let centering = null;      // במובייל: התנועה למרכז { from, distance, start, duration }
 
   // מספר הפרויקט של כל תמונה (גם בשכפולים), כדי לסמן את כל העותקים שלו
-  projects.forEach(function (project, index) { project.dataset.project = index; });
+  allProjects.forEach(function (project, index) { project.dataset.project = index; });
 
   // קורא אורך מ-styles.css (בפיקסלים), גם כשהוא חישוב
   function readLength(value) {
@@ -2115,41 +2121,46 @@ if (projectsStrip) {
     return ((value % setWidth) + setWidth) % setWidth;
   }
 
-  // במחשב הרצועה זזה שמאלה. במובייל היא זזה למטה (ההזזה קטנה)
+  // הקרוסלה זזה למטה (ההזזה קטנה)
   function draw() {
-    track.style.transform = vertical
-      ? "translateY(" + (-offset) + "px)"
-      : "translateX(" + (-offset) + "px)";
+    track.style.transform = "translateY(" + (-offset) + "px)";
   }
 
-  // בונה את הרצועה: הסבב חוזר כמה פעמים שצריך כדי למלא את החלון, ועוד סבב אחד,
+  // בונה את הקרוסלה: הסבב חוזר כמה פעמים שצריך כדי למלא את החלון, ועוד סבב אחד,
   // כך שכשסבב יוצא מהקצה, הסבב הבא כבר נמצא בדיוק במקומו.
-  // keepPlace: בשינוי גודל החלון הרצועה נשארת באותה נקודה בלופ
+  // keepPlace: בשינוי גודל החלון הקרוסלה נשארת באותה נקודה בלופ.
+  // במחשב: רק הפרויקטים עצמם, בלי שכפולים ובלי תנועה
   function buildStrip(keepPlace) {
     const place = keepPlace && setWidth ? offset / setWidth : null;
+    const wasVertical = vertical;
     vertical = mobileScreen.matches;
+    if (hovered) hovered.classList.remove("is-hover");
     hovered = null;
     centering = null;
     track.textContent = "";
+    if (!vertical) {
+      allProjects.forEach(function (project) { track.appendChild(project); });
+      track.style.transform = "";
+      select(null);
+      return;
+    }
     projects.forEach(function (project) { track.appendChild(project); });
 
     const box = projects[0].getBoundingClientRect();
-    const step = (vertical ? box.height : box.width) + readLength("var(--projects-image-gap)");
+    const step = box.height + readLength("var(--projects-image-gap)");
     setWidth = step * projects.length;
     speed = readLength("calc(var(--projects-strip-speed) * var(--cell))");
-    const length = vertical ? projectsStrip.clientHeight : projectsStrip.clientWidth;
+    const length = projectsStrip.clientHeight;
     const copies = Math.ceil(length / setWidth) + 1;
     for (let i = 1; i < copies; i++) {
       projects.forEach(function (project) { track.appendChild(project.cloneNode(true)); });
     }
-    if (selected !== null) select(vertical ? selected : null);
+    if (selected !== null) select(selected);
 
-    // בטעינה: התמונה הראשונה במקום שלה בפיגמה
-    // (במובייל ההתחלה שלילית, אז קוראים אותה הפוכה: רוחב לא יכול להיות שלילי)
-    const start = vertical
-      ? readLength("calc(-1 * var(--projects-strip-start))")
-      : -readLength("calc(var(--grid-left) + var(--projects-strip-start))");
-    offset = place === null ? wrap(start) : wrap(place * setWidth);
+    // בטעינה (ובמעבר מהמחשב): התמונה הראשונה במקום שלה בפיגמה
+    // (ההתחלה שלילית, אז קוראים אותה הפוכה: רוחב לא יכול להיות שלילי)
+    const start = readLength("calc(-1 * var(--projects-strip-start))");
+    offset = place === null || !wasVertical ? wrap(start) : wrap(place * setWidth);
     draw();
   }
 
@@ -2182,6 +2193,10 @@ if (projectsStrip) {
     const seconds = Math.min((time - lastTime) / 1000, 0.1);
     lastTime = time;
 
+    if (!vertical) {
+      requestAnimationFrame(moveStrip);
+      return;
+    }
     updateHovered();
     if (centering) {
       // התמונה שנלחצה זזה למרכז, ובסוף התגיות שלה נפתחות
@@ -2194,7 +2209,7 @@ if (projectsStrip) {
         centering = null;
       }
     } else if (!focused && !hovered && selected === null) {
-      offset = wrap(offset + (vertical ? -speed : speed) * seconds);
+      offset = wrap(offset - speed * seconds);
       draw();
     }
     requestAnimationFrame(moveStrip);
@@ -2239,15 +2254,14 @@ if (projectsStrip) {
     mouse = null;
   });
 
-  // מקלדת: פוקוס על תמונה עוצר את הרצועה. אם התמונה חתוכה בקצה, מזיזים אותה פנימה
+  // מקלדת: פוקוס על תמונה עוצר את הקרוסלה. אם התמונה חתוכה בקצה, מזיזים אותה פנימה
   projectsStrip.addEventListener("focusin", function (event) {
     focused = true;
+    if (!vertical) return;
     const box = projectsStrip.getBoundingClientRect();
     const imageBox = event.target.getBoundingClientRect();
-    const start = vertical ? "top" : "left";
-    const end = vertical ? "bottom" : "right";
-    if (imageBox[start] < box[start]) offset = wrap(offset - (box[start] - imageBox[start]));
-    else if (imageBox[end] > box[end]) offset = wrap(offset + (imageBox[end] - box[end]));
+    if (imageBox.top < box.top) offset = wrap(offset - (box.top - imageBox.top));
+    else if (imageBox.bottom > box.bottom) offset = wrap(offset + (imageBox.bottom - box.bottom));
     draw();
   });
   projectsStrip.addEventListener("focusout", function (event) {
