@@ -3486,10 +3486,47 @@ body {
   margin-top: 1lh;
 }
 
-/* טקסט רץ שמופיע שורה אחרי שורה (רק במובייל, script.js): כל שורה מופיעה בבת אחת,
-   וההשהיה בין שורה לשורה */
+/* טקסט רץ שמופיע שורה אחרי שורה (רק במובייל, script.js): כל שורה בתוך חלון בגובה השורה,
+   והיא עולה למקומה מלמטה. ההשהיה בין שורה לשורה, ומשך העלייה של כל שורה */
 :root {
-  --text-line-reveal-stagger: 90ms;
+  --text-line-reveal-stagger: 60ms;
+  --text-line-reveal-duration: 350ms;
+  --text-line-reveal-easing: cubic-bezier(0.22, 1, 0.36, 1);
+  /* תוספת לחלון למעלה ולמטה, כדי שזנבות של אותיות (g, p) לא ייחתכו. לא משנה את הפריסה */
+  --text-line-reveal-bleed: 0.25em;
+}
+
+/* עד שהחלונות נבנים: רק הטקסט שקוף, והקופסה והרקע שלה גלויים */
+.is-line-reveal-pending {
+  color: transparent;
+}
+
+/* החלון: בגובה השורה, ומה שמחוץ לו לא נראה */
+.text-line-window {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  white-space: nowrap;
+  padding-block: var(--text-line-reveal-bleed);
+  margin-block: calc(-1 * var(--text-line-reveal-bleed));
+}
+
+/* השורה: מתחילה מתחת לחלון ועולה למקומה */
+.text-line-slide {
+  display: inline-block;
+  padding-block: var(--text-line-reveal-bleed);
+  margin-block: calc(-1 * var(--text-line-reveal-bleed));
+  transform: translateY(100%);
+  transition: transform var(--text-line-reveal-duration) var(--text-line-reveal-easing);
+}
+
+.text-line-slide.is-shown {
+  transform: none;
+}
+
+/* שורה שכבר עלתה לפני שינוי גודל המסך: במקומה מיד */
+.text-line-slide.is-instant {
+  transition: none;
 }
 
 /* קו תחתון בטקסט הרץ (Leftovers): העובי והמרחק מקו הבסיס לפי הפיגמה, באחוזים מגודל הטקסט.
