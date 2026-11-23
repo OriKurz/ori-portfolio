@@ -1831,7 +1831,15 @@ if (gridSectionTitles.length) {
       range.selectNodeContents(box);
       const textHeight = range.getBoundingClientRect().height;
       const border = parseFloat(style.borderTopWidth);
-      const rows = Math.max(minRows, Math.ceil((textHeight + 2 * textBoxPadding + border) / cell - 0.01));
+      let rows = Math.max(minRows, Math.ceil((textHeight + 2 * textBoxPadding + border) / cell - 0.01));
+      // data-rows-exact (The Perfect Crime): בדיוק כמה שהטקסט צריך, עם הריווח הפנימי של הקובייה.
+      // הגובה מעוגל לפיקסל שלם של המסך, כדי שהחלק של הגריד שמתחתיה יתחיל על פיקסל שלם
+      if (box.hasAttribute("data-rows-exact")) {
+        const pixel = 1 / window.devicePixelRatio;
+        const needed = textHeight + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 2 * border;
+        const height = Math.ceil(needed / pixel - 0.01) * pixel;
+        rows = (height - border) / cell;
+      }
       document.documentElement.style.setProperty(box.dataset.rowsVar, rows);
     });
   }

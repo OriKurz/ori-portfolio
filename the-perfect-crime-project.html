@@ -54,11 +54,11 @@
         <h1 class="full-project-title text-page-title">The Perfect Crime</h1>
         <p class="full-project-type text-subtitle"><span>Motion Graphics<br>Academic project<span class="full-project-type-comma">,</span><br class="full-project-type-break"> 2026</span></p>
 
-        <!-- במובייל כל פסקה במשבצת מאוחדת משלה. data-rows-var: המשתנה שבו script.js
-             שומר כמה שורות המשבצת צריכה כדי שהטקסט ייכנס -->
+        <!-- במובייל כל פסקה בקובייה משלה, בין שני חלקים של הגריד. data-rows-var: המשתנה שבו script.js
+             שומר את הגובה שלה בשורות. data-rows-exact: בדיוק כמה שהטקסט צריך, לא בשורות שלמות -->
         <div class="full-project-description text-body text-body-mobile">
-          <p class="full-project-description-intro" data-rows-var="--description-intro-rows">What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
-          <p class="full-project-description-story" data-rows-var="--description-story-rows">An audio-driven animation and sound design based on a soundbite from the sitcom The Office. Since the soundbite already tells the whole story, the challenge was finding a new one to tell.</p>
+          <p class="full-project-description-intro" data-rows-var="--description-intro-rows" data-rows-exact>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
+          <p class="full-project-description-story" data-rows-var="--description-story-rows" data-rows-exact>An audio-driven animation and sound design based on a soundbite from the sitcom The Office. Since the soundbite already tells the whole story, the challenge was finding a new one to tell.</p>
           <p class="full-project-description-credit">Created as part of<br>a motion design studio course</p>
         </div>
       </section>
@@ -66,6 +66,11 @@
       <!-- ===== החלק של הגריד ===== -->
       <section class="full-project-panel">
         <div class="full-project-grid grid-lines">
+
+          <!-- במובייל: שלושת החלקים של קווי הגריד, מעל ומתחת לקוביות של התיאור (styles.css) -->
+          <div class="full-project-grid-part full-project-grid-part--a" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--b" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--c" aria-hidden="true"></div>
 
           <!-- ----- הסרטון: כבוי בטעינה (רואים את הפריים הראשון).
                לחיצה מפעילה עם סאונד, לחיצה נוספת עוצרת (script.js).

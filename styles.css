@@ -4122,15 +4122,21 @@ body {
 
 /* =========================================
    The Perfect Crime במובייל (הפריים tpcM בפיגמה, 393 לרוחב)
-   גריד של 7 משבצות. הטקסטים של הפרויקט פזורים בתוך הגריד: הכותרת חופשית על הקווים,
-   ושורת המשנה ופסקאות התיאור במשבצות מאוחדות (כמו כותרות הסעיפים).
-   כל המיקומים בשורות ובעמודות. השורות של מה שמתחת לפסקאות נגזרות מהגובה שלהן,
-   כך שאם פסקה צריכה עוד שורה (script.js), כל מה שמתחתיה יורד איתה.
+   גריד של 7 משבצות. הכותרת חופשית על הקווים, ושורת המשנה במשבצת מאוחדת.
+   הגריד מחולק לשלושה חלקים (full-project-grid-part), ושתי פסקאות התיאור בקוביות שביניהם:
+   כל חלק נגמר על קו מעל קובייה ומתחיל מחדש בקו שמתחתיה, והמשבצות בכל חלק שלמות.
+   הקוביות גבוהות כמה שהטקסט צריך (script.js, data-rows-exact), ולכן השורות שלהן לא שלמות.
+   כל המיקומים בשורות ובעמודות, וכל מה שמתחת לקובייה יורד איתה.
    במחשב: בלי שינוי
    ========================================= */
 
 /* הפסיק לפני 2026: רק במובייל */
 .full-project-type-comma {
+  display: none;
+}
+
+/* חלקי הגריד: רק במובייל */
+.full-project-grid-part {
   display: none;
 }
 
@@ -4161,24 +4167,43 @@ body {
     --video-column: 0;        --video-row: 6;
     --video-columns: 7;       --video-rows: 4;
 
-    /* הפסקה הראשונה: משורה 11, אחרי שורה ריקה מתחת לסרטון.
-       --description-intro-rows: כמה שורות היא תופסת (script.js, לפחות 2) */
-    --description-intro-row: 11;
-    --description-intro-rows: 2;
+    /* החלק הראשון של הגריד: 11 שורות (הכותרת, שורת המשנה והסרטון) */
+    --part-a-rows: 11;
 
-    /* Little Things Magic ו-Tap to play: מיד מתחת לפסקה. החפצים: שורה וחצי מתחתם */
+    /* הקובייה של הפסקה הראשונה: על הקו התחתון של החלק הראשון.
+       --description-intro-rows: הגובה שלה בשורות, לא בהכרח שלמות (script.js).
+       הטקסט 15 מהקצה העליון והתחתון של הקובייה, ו-20 מקצוות המסך */
+    --description-box-inset: 15px;
+    --description-intro-row: var(--part-a-rows);
+    --description-intro-rows: 1.7;
+
+    /* החלק השני: מתחיל בקו התחתון של הקובייה, 14 שורות.
+       Little Things Magic ו-Tap to play בשורה הראשונה שלו, והחפצים 67 מתחת לקו שלה (1.2 שורות) */
     --section-title-elements-row: calc(var(--description-intro-row) + var(--description-intro-rows));
-    --elements-board-row: calc(var(--section-title-elements-row) + 1.5);
-    /* השורות שהחפצים מקבלים לפני הפסקה השנייה. אם הם ארוכים יותר, מה שמתחתם יורד (--elements-shift) */
-    --elements-board-rows: 13;
+    --part-b-rows: 14;
+    --elements-board-row: calc(var(--section-title-elements-row) + 1.2);
+    /* השורות שהחפצים מקבלים בחלק השני. אם הם ארוכים יותר, מה שמתחתם יורד (--elements-shift) */
+    --elements-board-rows: 12.8;
 
-    /* הפסקה השנייה: 15 שורות מתחת ל-Little Things Magic */
-    --description-story-rows: 2;
-    --description-story-row: calc(var(--section-title-elements-row) + 15 + var(--elements-shift, 0));
+    /* הקובייה של הפסקה השנייה: על הקו התחתון של החלק השני */
+    --description-story-rows: 2.4;
+    --description-story-row: calc(var(--section-title-elements-row) + var(--part-b-rows) + var(--elements-shift, 0));
 
-    /* Color palette מיד מתחת לפסקה, העיגולים ב-5 השורות שמתחת, ו-What's Next אחרי שורה ריקה.
-       (גם ככה יורדים ב---elements-shift, כי הם אחרי החפצים בגריד) */
-    --section-title-palette-row: calc(var(--section-title-elements-row) + 15 + var(--description-story-rows));
+    /* החלק השלישי: מתחיל בקו התחתון של הקובייה השנייה, עד סוף הגריד.
+       (בלי --elements-shift: מה שאחרי החפצים בגריד יורד בו לבד) */
+    --part-c-row: calc(var(--section-title-elements-row) + var(--part-b-rows) + var(--description-story-rows));
+
+    /* Main Scenes בשורה השנייה של החלק, והפריימים מתחתיה: עמודות 1 עד 5, כל 3 שורות (1, 2, 4, 3 כמו בפיגמה) */
+    --section-title-scenes-column: 0;
+    --section-title-scenes-row: calc(var(--part-c-row) + 1);
+    --still-1-column: 1;   --still-1-row: calc(var(--part-c-row) + 2);
+    --still-2-column: 1;   --still-2-row: calc(var(--part-c-row) + 5);
+    --still-4-column: 1;   --still-4-row: calc(var(--part-c-row) + 8);
+    --still-3-column: 1;   --still-3-row: calc(var(--part-c-row) + 11);
+    --still-columns: 5;
+
+    /* Color palette, העיגולים ב-5 השורות שמתחת, ו-What's Next אחרי שורה ריקה */
+    --section-title-palette-row: calc(var(--part-c-row) + 15);
     --section-title-next-row: calc(var(--section-title-palette-row) + 7);
     --grid-rows: calc(var(--section-title-next-row) + 1 + var(--elements-shift, 0));
 
@@ -4196,6 +4221,62 @@ body {
     --swatch-13-column: 1;  --swatch-13-row: calc(var(--section-title-palette-row) + 5);
     --swatch-14-column: 3;  --swatch-14-row: calc(var(--section-title-palette-row) + 5);
     --swatch-8-column: 5;   --swatch-8-row: calc(var(--section-title-palette-row) + 5);
+  }
+
+  /* קווי הגריד: לא על כל הגריד, אלא בשלושת החלקים. כל חלק מצייר את הקווים שלו כתבנית רציפה
+     שמכסה את כל השטח שלו (ולא אריחים), מהקו העליון עד הקו התחתון, ובאותם טורים */
+  .page-perfect-crime .full-project-grid.grid-lines {
+    background-image: none;
+  }
+
+  .page-perfect-crime .full-project-grid-part {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: calc(var(--part-row) * var(--cell));
+    width: calc(var(--grid-columns) * var(--cell) + var(--line));
+    height: calc(var(--part-rows) * var(--cell) + var(--line));
+    background-image:
+      repeating-linear-gradient(to right, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell)),
+      repeating-linear-gradient(to bottom, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell));
+    background-size: 100% 100%;
+    pointer-events: none;
+  }
+
+  .page-perfect-crime .full-project-grid-part--a {
+    --part-row: 0;
+    --part-rows: var(--part-a-rows);
+  }
+
+  .page-perfect-crime .full-project-grid-part--b {
+    --part-row: var(--section-title-elements-row);
+    --part-rows: calc(var(--part-b-rows) + var(--elements-shift, 0));
+  }
+
+  /* האחרון ממשיך עד סוף הגריד (גם מתחת לרצועה החצי שקופה של What's Next) */
+  .page-perfect-crime .full-project-grid-part--c {
+    --part-row: calc(var(--part-c-row) + var(--elements-shift, 0));
+    height: auto;
+    bottom: 0;
+  }
+
+  /* כותרות הסעיפים ו-Tap to play: בדיוק בשורה שלהן (גם כשהיא מתחילה אחרי קובייה, לא על שורה שלמה) */
+  .page-perfect-crime .full-project-grid .section-title,
+  .page-perfect-crime .full-project-grid .play-hint {
+    top: calc(var(--row) * var(--cell));
+  }
+
+  .page-perfect-crime .full-project-grid .elements-board ~ .section-title {
+    top: calc((var(--row) + var(--elements-shift, 0)) * var(--cell));
+  }
+
+  /* הפריימים: בין הקווים, ברוחב 5 משבצות, ביחס 16:9 */
+  .page-perfect-crime .shot {
+    --columns: var(--still-columns);
+    margin: var(--line) 0 0 var(--line);
+    width: calc(var(--columns) * var(--cell) - var(--line));
+    height: auto;
+    aspect-ratio: 16 / 9;
   }
 
   /* החלק של הטקסט לא תופס מקום: הגריד מתחיל למעלה, והטקסטים ממוקמים עליו */
@@ -4254,6 +4335,13 @@ body {
     display: none;
   }
 
+  /* הקוביות של התיאור: הטקסט 15 מהקצה העליון והתחתון (script.js מודד לפי זה) */
+  .page-perfect-crime .full-project-description-intro,
+  .page-perfect-crime .full-project-description-story {
+    padding-top: calc(var(--description-box-inset) - var(--line));
+    padding-bottom: calc(var(--description-box-inset) - var(--line));
+  }
+
   .page-perfect-crime .full-project-description-intro {
     --box-row: var(--description-intro-row);
     --box-columns: var(--grid-columns);
@@ -4268,8 +4356,6 @@ body {
 
   /* לא מופיעים בפריים במובייל */
   .page-perfect-crime .full-project-description-credit,
-  .page-perfect-crime .section-title--scenes,
-  .page-perfect-crime .shot,
   .page-perfect-crime .swatch--11 {
     display: none;
   }
@@ -4277,6 +4363,7 @@ body {
   /* כותרות הסעיפים: בשורה אחת, ברוחב המשבצות מהפיגמה. במסך צר שבו השורה לא נכנסת,
      הכותרת נשברת כמו במחשב באותה משבצת (script.js) */
   .page-perfect-crime .section-title--elements { --title-mobile-columns: 3; }
+  .page-perfect-crime .section-title--scenes,
   .page-perfect-crime .section-title--palette,
   .page-perfect-crime .section-title--next     { --title-mobile-columns: 2; }
 
