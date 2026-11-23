@@ -2264,3 +2264,191 @@ if (errorBackButton) {
     }, pressDelay);
   });
 }
+
+// =========================================
+// קו תחתון בטקסט הרץ (text-underline, כרגע ב-Leftovers).
+// כל ביטוי מתחלק לשורות (text-underline-line), וכל שורה היא קו נפרד.
+// קו מצטייר משמאל לימין כשהשורה שלו עוברת 85% מגובה האזור הנראה (המסך או אזור הגלילה של התיאור).
+// כמה קווים יחד (למשל בכניסה לעמוד): אחד אחרי השני, עם --text-underline-stagger ביניהם.
+// קו שהצטייר נשאר. כשגודל החלון משתנה, החלוקה לשורות מחושבת מחדש,
+// ומה שכבר הצטייר מופיע מיד. ב-prefers-reduced-motion כל הקווים מוצגים מיד.
+// =========================================
+const underlinePhraseElements = document.querySelectorAll(".text-underline");
+
+if (underlinePhraseElements.length) {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const staggerTime = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--text-underline-stagger")) || 120;
+
+  // לכל ביטוי: הטקסט המקורי, ואילו אותיות כבר קיבלו קו
+  const phrases = Array.from(underlinePhraseElements).map(function (element) {
+    return { element: element, text: element.textContent, drawnLetters: new Array(element.textContent.length).fill(false) };
+  });
+  const lineInfo = new Map(); // שורה ← הביטוי שלה והאותיות שבה
+  let started = false;
+  let nextDrawTime = 0;
+
+  // מחלק ביטוי לשורות לפי המיקום של כל אות על המסך. העטיפה לא משנה את השבירה לשורות
+  function splitPhrase(phrase) {
+    const element = phrase.element;
+    element.textContent = phrase.text;
+    const textNode = element.firstChild;
+    if (!textNode || element.getClientRects().length === 0) return []; // מוסתר (למשל טקסט של מחשב במובייל)
+
+    const range = document.createRange();
+    const lines = [];
+    let current = null;
+    for (let i = 0; i < phrase.text.length; i++) {
+      range.setStart(textNode, i);
+      range.setEnd(textNode, i + 1);
+      const rect = range.getClientRects()[0];
+      if (!rect) continue;
+      if (!current || rect.top > current.top + rect.height / 2) {
+        current = { start: i, end: i + 1, top: rect.top };
+        lines.push(current);
+      } else {
+        current.end = i + 1;
+      }
+    }
+
+    // בלי רווחים בקצוות של שורה
+    lines.forEach(function (line) {
+      while (line.start < line.end && phrase.text[line.start] === " ") line.start++;
+      while (line.end > line.start && phrase.text[line.end - 1] === " ") line.end--;
+    });
+
+    const fragment = document.createDocumentFragment();
+    const lineElements = [];
+    let position = 0;
+    lines.filter(function (line) { return line.end > line.start; }).forEach(function (line) {
+      if (line.start > position) fragment.append(phrase.text.slice(position, line.start));
+      const lineElement = document.createElement("span");
+      lineElement.className = "text-underline-line";
+      lineElement.textContent = phrase.text.slice(line.start, line.end);
+      fragment.append(lineElement);
+      lineElements.push(lineElement);
+      lineInfo.set(lineElement, { phrase: phrase, start: line.start, end: line.end });
+      position = line.end;
+    });
+    if (position < phrase.text.length) fragment.append(phrase.text.slice(position));
+    element.textContent = "";
+    element.append(fragment);
+    return lineElements;
+  }
+
+  function drawLine(lineElement) {
+    if (!lineElement.isConnected) return; // השורה חושבה מחדש בינתיים: השורה החדשה תצטייר במקומה
+    lineElement.classList.add("is-drawn");
+    const info = lineInfo.get(lineElement);
+    for (let i = info.start; i < info.end; i++) info.phrase.drawnLetters[i] = true;
+  }
+
+  // קווים שנכנסים יחד מצטיירים אחד אחרי השני
+  function queueLine(lineElement) {
+    const now = performance.now();
+    const drawAt = Math.max(now, nextDrawTime);
+    nextDrawTime = drawAt + staggerTime;
+    setTimeout(function () { drawLine(lineElement); }, drawAt - now);
+  }
+
+  // קו מצטייר כשהשורה עוברת 85% מגובה המסך (גם כשהיא בתוך אזור גלילה, כמו התיאור במחשב),
+  // וגם כשקפצו מעליה בבת אחת. בודקים בכל גלילה (בכל אזור) ובכל שינוי גודל
+  let waitingLines = [];
+  let checkScheduled = false;
+
+  function checkLines() {
+    checkScheduled = false;
+    if (!started) return;
+    const drawLimit = window.innerHeight * 0.85;
+    const ready = [];
+    waitingLines = waitingLines.filter(function (lineElement) {
+      if (!lineElement.isConnected) return false;
+      const rect = lineElement.getClientRects()[0];
+      if (!rect || rect.top > drawLimit) return true; // מוסתרת או עוד לא הגיעה
+      ready.push({ element: lineElement, rect: rect });
+      return false;
+    });
+    ready
+      .sort(function (a, b) { return a.rect.top - b.rect.top || a.rect.left - b.rect.left; })
+      .forEach(function (item) { queueLine(item.element); });
+  }
+
+  function scheduleCheck() {
+    if (checkScheduled) return;
+    checkScheduled = true;
+    requestAnimationFrame(checkLines);
+  }
+
+  document.addEventListener("scroll", scheduleCheck, { capture: true, passive: true });
+  window.addEventListener("resize", scheduleCheck);
+
+  // מחלק את כל הביטויים לשורות. שורה שחלק ממנה כבר הצטייר: מופיעה מיד
+  function splitAll() {
+    lineInfo.clear();
+    const waiting = [];
+    phrases.forEach(function (phrase) {
+      splitPhrase(phrase).forEach(function (lineElement) {
+        const info = lineInfo.get(lineElement);
+        const alreadyDrawn = phrase.drawnLetters.slice(info.start, info.end).some(Boolean);
+        if (alreadyDrawn || reducedMotion.matches) {
+          lineElement.classList.add("is-instant", "is-drawn");
+          if (reducedMotion.matches) drawLine(lineElement);
+        } else {
+          waiting.push(lineElement);
+        }
+      });
+    });
+
+    // מרחק קו הבסיס מהחלק העליון של השורה, כדי למקם את הקו לפי הפיגמה
+    phrases.forEach(function (phrase) {
+      const firstLine = phrase.element.querySelector(".text-underline-line");
+      if (!firstLine) return;
+      const marker = document.createElement("span");
+      marker.style.cssText = "display:inline-block;width:0;height:0;vertical-align:baseline";
+      firstLine.append(marker);
+      const baseline = marker.getBoundingClientRect().top - firstLine.getClientRects()[0].top;
+      marker.remove();
+      phrase.element.style.setProperty("--text-underline-baseline", baseline + "px");
+    });
+
+    waitingLines = waiting;
+    scheduleCheck();
+  }
+
+  // מתחילים לצייר רק כשהעמוד נחשף: אחרי מעבר בין עמודים, באמצע היעלמות הקוביות
+  function whenPageVisible(callback) {
+    const root = document.documentElement;
+    const isCovered = function () {
+      const overlay = document.querySelector(".page-transition");
+      return root.classList.contains("is-page-transition-arriving") || (overlay && !overlay.classList.contains("is-revealing"));
+    };
+    if (!isCovered()) return callback();
+    const duration = getComputedStyle(root).getPropertyValue("--page-transition-duration").trim();
+    const revealDelay = (parseFloat(duration) || 1000) * (duration.endsWith("ms") ? 1 : 1000) / 2;
+    const watcher = new MutationObserver(function () {
+      if (isCovered()) return;
+      watcher.disconnect();
+      setTimeout(callback, revealDelay);
+    });
+    watcher.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    watcher.observe(root, { attributes: true, attributeFilter: ["class"] });
+  }
+
+  const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  fontsReady.then(function () {
+    splitAll();
+    whenPageVisible(function () {
+      started = true;
+      scheduleCheck();
+    });
+  });
+
+  // שינוי גודל החלון: החלוקה לשורות מחושבת מחדש (רק כשהרוחב משתנה, לא כששורת הכתובת בטלפון זזה)
+  let lastWidth = window.innerWidth;
+  let resizeTimer = null;
+  window.addEventListener("resize", function () {
+    if (window.innerWidth === lastWidth) return;
+    lastWidth = window.innerWidth;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(splitAll, 150);
+  });
+}

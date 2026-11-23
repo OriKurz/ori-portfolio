@@ -3485,6 +3485,58 @@ body {
   margin-top: 1lh;
 }
 
+/* קו תחתון בטקסט הרץ (Leftovers): העובי והמרחק מקו הבסיס לפי הפיגמה, באחוזים מגודל הטקסט.
+   script.js מחלק כל ביטוי לשורות (text-underline-line), וכל שורה מצטיירת משמאל לימין
+   כשהיא נכנסת למסך, באותו משך ובאותו easing כמו הקו בבר הבחירה */
+:root {
+  --text-underline-thickness: 0.08em;
+  --text-underline-offset: 0.25em;
+  /* ההשהיה בין קו לקו כשכמה קווים מצטיירים יחד (למשל בכניסה לעמוד) */
+  --text-underline-stagger: 120ms;
+}
+
+.text-underline-line {
+  position: relative;
+}
+
+.text-underline-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* --text-underline-baseline: מהחלק העליון של השורה עד קו הבסיס (script.js מודד) */
+  top: calc(var(--text-underline-baseline, 0.8em) + var(--text-underline-offset));
+  height: var(--text-underline-thickness);
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--nav-underline-duration) ease;
+  pointer-events: none;
+}
+
+.text-underline-line.is-drawn::after {
+  transform: none;
+}
+
+/* קו שכבר הצטייר לפני שינוי גודל החלון: מופיע מיד, בלי לצייר שוב */
+.text-underline-line.is-instant::after {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-underline-line::after {
+    transition: none;
+  }
+}
+
+/* במובייל (הפריים LeftM): טקסט 17, והקו לפי הפיגמה */
+@media (max-width: 1024px) and (orientation: portrait) {
+  :root {
+    --text-underline-thickness: 0.065em;
+    --text-underline-offset: 0.195em;
+  }
+}
+
 /* ----- החלק של הגריד: מימין. עולה למעלה לגובה של הצד השמאלי, כדי לעמוד לידו ----- */
 .full-project-panel {
   position: relative;
