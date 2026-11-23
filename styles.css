@@ -1127,7 +1127,8 @@
 
   /* Source Material: התווית מעל ציר הזמן (בפיגמה מ-x=845, y=2326, ממורכזת מעל הציר) */
   --label-box-source-column: 5;   --label-box-source-row: 35;   --label-box-source-columns: 4;
-  --source-label-column: 5.934;   --source-label-row: 35.377;
+  /* הכותרת ממלאת את התיבה, והטקסט ממורכז בה (חריג לכלל של כותרות הסעיפים, כמו בפיגמה) */
+  --source-label-column: 5;   --source-label-row: 35;
   /* האיור שברקע (359x423 בפיגמה): פעמיים, אחד חתוך בקצה השמאלי של הגריד ואחד בקצה הימני */
   --source-background-width: calc(359 * var(--u));
   --source-background-height: calc(423 * var(--u));
@@ -5734,8 +5735,13 @@ body {
   .page-leftovers .leftovers-source-label { --title-mobile-columns: 3; }
   .page-leftovers .section-title--next    { --title-mobile-columns: 2; }
 
+  /* חריג לכלל של כותרות הסעיפים: ממורכזת בתיבה, לרוחב ולגובה, כמו בפיגמה */
   .page-leftovers .full-project-grid .leftovers-source-label {
     top: var(--leftovers-source-top);
+    justify-content: center;
+    align-items: center;
+    padding: 0 var(--section-title-padding);
+    text-align: center;
   }
 
   .page-leftovers .full-project-grid .section-title--next {
@@ -6187,6 +6193,19 @@ body {
 
 .leftovers-label-box--source { --column: var(--label-box-source-column); --row: var(--label-box-source-row); --columns: var(--label-box-source-columns); }
 .leftovers-source-label      { --column: var(--source-label-column);     --row: var(--source-label-row); }
+
+/* Source Material: חריג לכלל של כותרות הסעיפים. הטקסט ממורכז בתיבה שלו, לרוחב ולגובה, כמו בפיגמה */
+@media (min-width: 1025px), (orientation: landscape) {
+  .leftovers-source-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--label-box-source-columns) * var(--cell) + var(--line));
+    height: calc(var(--cell) + var(--line));
+    margin: 0;
+    text-align: center;
+  }
+}
 
 /* האיור שברקע: רק רקע, לא מגיב לכלום */
 .source-background {
