@@ -2277,6 +2277,7 @@ const underlinePhraseElements = document.querySelectorAll(".text-underline");
 
 if (underlinePhraseElements.length) {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const underlineMobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
   const staggerTime = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--text-underline-stagger")) || 240;
 
   // לכל ביטוי: הטקסט המקורי, ואילו אותיות כבר קיבלו קו
@@ -2293,11 +2294,15 @@ if (underlinePhraseElements.length) {
     element.textContent = phrase.text;
     const textNode = element.firstChild;
     if (!textNode || element.getClientRects().length === 0) return []; // מוסתר (למשל טקסט של מחשב במובייל)
+    // data-underline="desktop": קו רק במחשב. data-underline-desktop-end: במחשב הקו רק עד האות הזו
+    const desktop = !underlineMobileScreen.matches;
+    if (element.dataset.underline === "desktop" && !desktop) return [];
+    const underlineEnd = desktop && element.dataset.underlineDesktopEnd ? Number(element.dataset.underlineDesktopEnd) : phrase.text.length;
 
     const range = document.createRange();
     const lines = [];
     let current = null;
-    for (let i = 0; i < phrase.text.length; i++) {
+    for (let i = 0; i < underlineEnd; i++) {
       range.setStart(textNode, i);
       range.setEnd(textNode, i + 1);
       const rect = range.getClientRects()[0];

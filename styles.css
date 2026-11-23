@@ -3498,8 +3498,9 @@ body {
   --text-underline-start-delay: 500ms;
 }
 
-/* The Perfect Crime: העובי והמרחק לפי הפיגמה של העמוד (זהים במחשב ובמובייל) */
-:root.page-perfect-crime {
+/* The Perfect Crime ו-Touch Grass: העובי והמרחק לפי הפיגמה של העמוד (זהים במחשב ובמובייל) */
+:root.page-perfect-crime,
+:root.page-touch-grass {
   --text-underline-thickness: 0.085em;
   --text-underline-offset: 0.195em;
 }
