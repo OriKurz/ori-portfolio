@@ -2070,210 +2070,59 @@ if (descriptionScroll && projectPageScroll && bottomArea) {
 }
 
 // =========================================
-// אינדקס הפרויקטים (projects.html).
-// במחשב: גלריה רגילה שגוללים למטה (styles.css), בלי תנועה. הסקריפט רק מחזיר את כל הפרויקטים למקום.
-// במובייל: הקרוסלה היא טור, והתמונות נעות מלמעלה למטה.
-// התמונות חוזרות על עצמן ברצף, עם אותו ריווח גם בנקודת החיבור, בלי קפיצה.
-// המהירות: --projects-strip-speed ב-styles.css (משבצות בשנייה).
-// hover על תמונה (עכבר) או פוקוס במקלדת עוצרים את הקרוסלה, וכשיוצאים היא ממשיכה.
-// פרויקט עם projects-item--desktop-only (Haven) מופיע רק בגלריה במחשב, לא בקרוסלה.
-// במובייל: נגיעה ראשונה בתמונה עוצרת את הלופ, מזיזה אותה ברכות למרכז המסך ופותחת
-// את התגיות שלה (is-selected). נגיעה נוספת בה נכנסת לעמוד, נגיעה בתמונה אחרת עוברת אליה,
-// ונגיעה מחוץ לקרוסלה סוגרת את התגיות והלופ ממשיך.
+// אינדקס הפרויקטים (projects.html): גלריה שגוללים למטה. במחשב ה-Hover וה-Focus ב-CSS.
+// במובייל: בכל רגע תמונה אחת פעילה (is-selected), והתגיות שלה נפתחות (styles.css):
+// התמונה שהמרכז שלה הכי קרוב למרכז האזור הגלוי מתחת לשורות הקבועות למעלה.
+// מחשבים רק בגלילה ובשינוי גודל, ולא משנים שום דבר בגלילה עצמה.
 // =========================================
-const projectsStrip = document.querySelector(".projects-strip");
+const projectsGallery = document.querySelector(".projects-track");
 
-if (projectsStrip) {
-  const track = projectsStrip.querySelector(".projects-track");
-  const allProjects = Array.from(track.children);
-  // הפרויקטים בקרוסלה של המובייל
-  const projects = allProjects.filter(function (project) {
-    return !project.classList.contains("projects-item--desktop-only");
-  });
+if (projectsGallery) {
+  const items = Array.from(projectsGallery.querySelectorAll(".projects-item"));
+  const header = document.querySelector(".projects-page");
   const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
+  let active = null;
+  let waiting = false;
 
-  let vertical = false;      // במובייל: הקרוסלה פעילה ונעה לאורך. במחשב: גלריה בלי תנועה
-  let setWidth = 0;          // האורך של סבב אחד של התמונות (כולל הריווחים)
-  let offset = 0;            // כמה הרצועה זזה (בתוך סבב אחד)
-  let speed = 0;             // המהירות (פיקסלים לשנייה)
-  let mouse = null;          // איפה העכבר עכשיו (כדי לדעת אם הוא על תמונה, גם כשהתמונה זזה מתחתיו)
-  let hovered = null;        // התמונה שמתחת לעכבר
-  let focused = false;       // פוקוס במקלדת על אחת התמונות
-  let lastTime = null;
-  let selected = null;       // במובייל: מספר הפרויקט שהתגיות שלו פתוחות (או null)
-  let centering = null;      // במובייל: התנועה למרכז { from, distance, start, duration }
-
-  // מספר הפרויקט של כל תמונה (גם בשכפולים), כדי לסמן את כל העותקים שלו
-  allProjects.forEach(function (project, index) { project.dataset.project = index; });
-
-  // קורא אורך מ-styles.css (בפיקסלים), גם כשהוא חישוב
-  function readLength(value) {
-    const probe = document.createElement("div");
-    probe.style.cssText = "position:absolute;visibility:hidden;width:" + value;
-    projectsStrip.appendChild(probe);
-    const length = probe.getBoundingClientRect().width;
-    probe.remove();
-    return length;
+  function setActive(item) {
+    if (item === active) return;
+    if (active) active.classList.remove("is-selected");
+    active = item;
+    if (active) active.classList.add("is-selected");
   }
 
-  // שומר את ההזזה בתוך סבב אחד (לופ)
-  function wrap(value) {
-    return ((value % setWidth) + setWidth) % setWidth;
-  }
-
-  // הקרוסלה זזה למטה (ההזזה קטנה)
-  function draw() {
-    track.style.transform = "translateY(" + (-offset) + "px)";
-  }
-
-  // בונה את הקרוסלה: הסבב חוזר כמה פעמים שצריך כדי למלא את החלון, ועוד סבב אחד,
-  // כך שכשסבב יוצא מהקצה, הסבב הבא כבר נמצא בדיוק במקומו.
-  // keepPlace: בשינוי גודל החלון הקרוסלה נשארת באותה נקודה בלופ.
-  // במחשב: רק הפרויקטים עצמם, בלי שכפולים ובלי תנועה
-  function buildStrip(keepPlace) {
-    const place = keepPlace && setWidth ? offset / setWidth : null;
-    const wasVertical = vertical;
-    vertical = mobileScreen.matches;
-    if (hovered) hovered.classList.remove("is-hover");
-    hovered = null;
-    centering = null;
-    track.textContent = "";
-    if (!vertical) {
-      allProjects.forEach(function (project) { track.appendChild(project); });
-      track.style.transform = "";
-      select(null);
+  function updateActive() {
+    waiting = false;
+    if (!mobileScreen.matches) {
+      setActive(null);
       return;
     }
-    projects.forEach(function (project) { track.appendChild(project); });
-
-    const box = projects[0].getBoundingClientRect();
-    const step = box.height + readLength("var(--projects-image-gap)");
-    setWidth = step * projects.length;
-    speed = readLength("calc(var(--projects-strip-speed) * var(--cell))");
-    const length = projectsStrip.clientHeight;
-    const copies = Math.ceil(length / setWidth) + 1;
-    for (let i = 1; i < copies; i++) {
-      projects.forEach(function (project) { track.appendChild(project.cloneNode(true)); });
-    }
-    if (selected !== null) select(selected);
-
-    // בטעינה (ובמעבר מהמחשב): התמונה הראשונה במקום שלה בפיגמה
-    // (ההתחלה שלילית, אז קוראים אותה הפוכה: רוחב לא יכול להיות שלילי)
-    const start = readLength("calc(-1 * var(--projects-strip-start))");
-    offset = place === null || !wasVertical ? wrap(start) : wrap(place * setWidth);
-    draw();
-  }
-
-  // התמונה שהעכבר עליה (או null), מסומנת ב-is-hover
-  function updateHovered() {
-    const target = mouse && document.elementFromPoint(mouse.x, mouse.y);
-    const image = target && projectsStrip.contains(target) ? target.closest(".projects-image") : null;
-    if (image === hovered) return;
-    if (hovered) hovered.classList.remove("is-hover");
-    hovered = image;
-    if (hovered) hovered.classList.add("is-hover");
-  }
-
-  // מסמן פרויקט (התגיות שלו נפתחות), או null לסגירה. מסמנים את כל העותקים שלו,
-  // כי בנקודת החיבור של הלופ עותק אחר תופס את המקום
-  function select(index) {
-    selected = index;
-    Array.from(track.children).forEach(function (item) {
-      item.classList.toggle("is-selected", index !== null && item.dataset.project === String(index));
-    });
-  }
-
-  // תנועה רכה בהתחלה ובסוף
-  function easeInOut(t) {
-    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-  }
-
-  function moveStrip(time) {
-    if (lastTime === null) lastTime = time;
-    const seconds = Math.min((time - lastTime) / 1000, 0.1);
-    lastTime = time;
-
-    if (!vertical) {
-      requestAnimationFrame(moveStrip);
-      return;
-    }
-    updateHovered();
-    if (centering) {
-      // התמונה שנלחצה זזה למרכז, ובסוף התגיות שלה נפתחות
-      if (centering.start === null) centering.start = time;
-      const progress = Math.min((time - centering.start) / centering.duration, 1);
-      offset = wrap(centering.from + centering.distance * easeInOut(progress));
-      draw();
-      if (progress === 1) {
-        select(centering.project);
-        centering = null;
+    // מרכז האזור הגלוי: מתחת לשורות הקבועות ועד תחתית המסך
+    const top = header.getBoundingClientRect().bottom;
+    const center = (top + window.innerHeight) / 2;
+    let closest = null;
+    let closestDistance = Infinity;
+    items.forEach(function (item) {
+      const box = item.querySelector(".projects-image").getBoundingClientRect();
+      const distance = Math.abs(box.top + box.height / 2 - center);
+      if (distance < closestDistance) {
+        closest = item;
+        closestDistance = distance;
       }
-    } else if (!focused && !hovered && selected === null) {
-      offset = wrap(offset - speed * seconds);
-      draw();
-    }
-    requestAnimationFrame(moveStrip);
+    });
+    setActive(closest);
   }
 
-  // במובייל: נגיעה בתמונה
-  track.addEventListener("click", function (event) {
-    if (!vertical) return;
-    const image = event.target.closest(".projects-image");
-    if (!image) return;
-    const item = image.closest(".projects-item");
-    const project = Number(item.dataset.project);
-    // נגיעה נוספת בתמונה המסומנת: נכנסים לעמוד (הקישור עצמו)
-    if (selected === project && !centering) return;
-    event.preventDefault();
-    // התגיות של התמונה הקודמת נסגרות, והקרוסלה זזה ברכות עד שהתמונה ממורכזת במסך
-    select(null);
-    const imageBox = image.getBoundingClientRect();
-    const stripBox = projectsStrip.getBoundingClientRect();
-    const distance = (imageBox.top + imageBox.height / 2) - (stripBox.top + stripBox.height / 2);
-    centering = {
-      project: project,
-      from: offset,
-      distance: distance,
-      start: null,
-      duration: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--projects-center-duration")) || 0
-    };
-  });
+  // פעם אחת בכל פריים, גם כשיש הרבה אירועי גלילה
+  function requestUpdate() {
+    if (waiting) return;
+    waiting = true;
+    requestAnimationFrame(updateActive);
+  }
 
-  // במובייל: נגיעה מחוץ לקרוסלה סוגרת את התגיות, והלופ ממשיך
-  document.addEventListener("pointerdown", function (event) {
-    if (!vertical || track.contains(event.target)) return;
-    centering = null;
-    select(null);
-  });
-
-  // העכבר בלבד (באצבע אין hover: נגיעה מובילה ישר לעמוד)
-  window.addEventListener("pointermove", function (event) {
-    mouse = event.pointerType === "mouse" ? { x: event.clientX, y: event.clientY } : null;
-  });
-  document.documentElement.addEventListener("pointerleave", function () {
-    mouse = null;
-  });
-
-  // מקלדת: פוקוס על תמונה עוצר את הקרוסלה. אם התמונה חתוכה בקצה, מזיזים אותה פנימה
-  projectsStrip.addEventListener("focusin", function (event) {
-    focused = true;
-    if (!vertical) return;
-    const box = projectsStrip.getBoundingClientRect();
-    const imageBox = event.target.getBoundingClientRect();
-    if (imageBox.top < box.top) offset = wrap(offset - (box.top - imageBox.top));
-    else if (imageBox.bottom > box.bottom) offset = wrap(offset + (imageBox.bottom - box.bottom));
-    draw();
-  });
-  projectsStrip.addEventListener("focusout", function (event) {
-    if (!projectsStrip.contains(event.relatedTarget)) focused = false;
-  });
-
-  window.addEventListener("resize", function () {
-    buildStrip(true);
-  });
-
-  buildStrip(false);
-  requestAnimationFrame(moveStrip);
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate);
+  updateActive();
 }
 
 // =========================================

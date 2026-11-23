@@ -1897,43 +1897,51 @@
   --projects-label-duration: 200ms;
 }
 
-/* ----- עמוד אינדקס הפרויקטים במובייל -----
-   הפריים indexM בפיגמה (393x852): 8 משבצות לרוחב (49.125px), הגריד מתחיל בפינה העליונה.
-   מספרים כמו 15 * var(--u) הם פיקסלים בפריים (הגריד בפיגמה מתחיל ב-y = -3, אז לגובה מוסיפים 3) */
+/* ----- עמוד אינדקס הפרויקטים במובייל (גם טאבלט לאורך) -----
+   הפריים indexM בפיגמה (393 לרוחב): 8 משבצות לרוחב, קו 2px, הגריד מתחיל בפינה העליונה.
+   3 השורות העליונות (ההמבורגר והכותרות) קבועות, ומתחתן התמונות נגללות:
+   כל תמונה 6x6 משבצות בטורים 2 עד 7, ושורה אחת בין תמונה לתמונה.
+   העמוד: 3 שורות, ועוד 7 שורות לכל אחת מ-6 התמונות (התמונה ושורה מתחתיה), כך שהוא נגמר בשורה שלמה.
+   מספרים כמו 15 * var(--u) הם פיקסלים בפריים (הגריד בפיגמה מתחיל ב-(-1, -3), אז מוסיפים 1 לרוחב ו-3 לגובה) */
 @media (max-width: 1024px) and (orientation: portrait) {
   :root.page-projects {
     --design-columns: 8;
-    --grid-rows: 8;
+    --grid-rows: 45;
     --line: var(--line-mobile);
     --grid-top: 0px;
     --u: calc(100vw / 393);
 
-    /* ההמבורגר נשאר בגודל שהיה לו */
-    --menu-width: calc(30 * var(--cell) / 96);
-    --menu-line-height: calc(4 * var(--cell) / 96);
-    --menu-gap: calc(6 * var(--cell) / 96);
+    /* ההמבורגר: 30x24 כמו בפיגמה, במרכז המשבצת הראשונה */
+    --menu-width: calc(30 * var(--u));
+    --menu-line-height: calc(4 * var(--u));
+    --menu-gap: calc(6 * var(--u));
 
-    /* הטקסטים: 20px מהקצה השמאלי. INDEX (30) ב-y = 63, ו-Project & more (17) ב-y = 100.
-       ORI KURZ צמוד לשורה השלמה האחרונה במסך, כמו בפיגמה (2px מעל הקו שלה) */
+    /* השורות הקבועות למעלה */
+    --projects-header-rows: 3;
+
+    /* הטקסטים: INDEX (30) ב-(57, 66), ו-Project & more (17) ב-(57, 103).
+       ORI ב-(256, 66), ו-KURZ מתחתיו ב-(255, 103) */
     --text-page-title-size: 30;
     --text-subtitle-size: 17;
-    --projects-mobile-title-top: calc(66 * var(--u));
-    --projects-mobile-subtitle-top: calc(103 * var(--u));
-    --projects-mobile-name-top: calc(round(down, 100dvh, var(--cell)) - var(--cell) - 2 * var(--u));
-    --projects-mobile-name-width: calc(116 * var(--u));
+    --projects-title-column: calc(57 / 49.125);
+    --projects-title-row: calc(66 / 49.125);
+    --projects-subtitle-column: calc(57 / 49.125);
+    --projects-subtitle-row: calc(103 / 49.125);
+    --projects-name-column: calc(256 / 49.125);
+    --projects-name-row: calc(66 / 49.125);
+    --projects-name-last-left: calc(-1 * var(--u));
+    --projects-name-last-top: calc(37 * var(--u));
 
-    /* הקרוסלה: טור לאורך, שמתחיל על קו הגריד של הטור החמישי (ומימין נשארים שוליים דקים).
-       תמונות של 192, ו-15 ביניהן. בטעינה התמונה הראשונה מתחילה ב-y = -35.5 */
-    --projects-strip-column: 4;
-    --projects-image-size: calc(192 * var(--u));
-    --projects-image-gap: calc(15 * var(--u));
-    --projects-strip-start: calc(-35.5 * var(--u));
-    /* התגיות: 10 ביניהן ו-10 מהתמונה */
-    --projects-tag-gap: calc(10 * var(--u));
-    /* הזמן שבו הקרוסלה זזה עד שהתמונה שנלחצה ממורכזת (script.js) */
-    --projects-center-duration: 700ms;
-    /* מהירות הקרוסלה: כמה משבצות בשנייה (script.js) */
-    --projects-strip-speed: 1.5;
+    /* התגיות (הפריימים 337-3900 ו-331-3829 בפיגמה):
+       שם הפרויקט: 34 משמאל לקצה התמונה ו-27 מתחת לראש שלה, בגובה 47.
+       מתחת לתמונה (6 מהקצה שלה): כותרת המשנה (148) והקטגוריות (142), בגובה 40 ו-5 ביניהן */
+    --projects-name-tag-left: calc(-34 * var(--u));
+    --projects-name-tag-top: calc(27 * var(--u));
+    --projects-tags-gap: calc(6 * var(--u));
+    --projects-tag-gap: calc(5 * var(--u));
+    --projects-tag-height: calc(40 * var(--u));
+    --projects-tag-first-width: calc(148 * var(--u));
+    --projects-tag-second-width: calc(142 * var(--u));
   }
 }
 
@@ -1971,6 +1979,8 @@
   --nav-text-optical-shift: 0.055em;
   /* מעל כל התוכן */
   --layer-nav-bar: 10;
+  /* השורות הקבועות למעלה באינדקס במובייל: מעל התמונות, מתחת להמבורגר */
+  --layer-projects-header: 8;
   /* ההמבורגר מעל כל שכבה בעמוד (כותרות, כדורים), ומתחת לבר הבחירה */
   --layer-menu: 9;
 }
@@ -6800,23 +6810,9 @@ body {
    עמוד אינדקס הפרויקטים (projects.html)
    ========================================= */
 
-/* במחשב: גלריה שגוללים למטה. הגובה: כל השורות של הפריים, ועוד הקו התחתון */
+/* גלריה שגוללים למטה. הגובה: כל השורות של הפריים, ועוד הקו התחתון */
 .page-projects body {
   min-height: calc(var(--grid-rows) * var(--cell) + var(--line));
-}
-
-/* במובייל: עמוד של מסך אחד, בלי גלילה (רק הקרוסלה זזה) */
-@media (max-width: 1024px) and (orientation: portrait) {
-  .page-projects,
-  .page-projects body {
-    height: 100%;
-    overflow: hidden;
-    overscroll-behavior: none;
-  }
-
-  .page-projects body {
-    height: 100dvh;
-  }
 }
 
 /* ההמבורגר: במשבצת הראשונה בפינה השמאלית העליונה, ממורכז בין הקווים.
@@ -6828,6 +6824,7 @@ body {
   top: calc(mod(var(--grid-top), var(--cell)) + (var(--cell) + var(--line) - var(--menu-height)) / 2);
 }
 
+/* במובייל: קבוע למעלה, עם השורות הקבועות */
 @media (max-width: 1024px) and (orientation: portrait) {
   .projects-menu {
     position: fixed;
@@ -6881,26 +6878,7 @@ body {
   white-space: nowrap;
 }
 
-/* ----- הרקע של הקרוסלה (מובייל בלבד) -----
-   כחול חלק (Rectangle 71 בפיגמה): הטור של הקרוסלה, מאחרי הקו שלו ועד הקצה הימני, לכל הגובה.
-   הקווים שבתוכו מכוסים והקווים שמסביבו נשארים. עומד במקום, והתמונות נעות מעליו */
-.projects-strip-background {
-  display: none;
-}
-
-@media (max-width: 1024px) and (orientation: portrait) {
-  .projects-strip-background {
-    display: block;
-    position: fixed;
-    left: calc(var(--projects-strip-column) * var(--cell) + var(--line));
-    top: 0;
-    width: calc(100vw - var(--projects-strip-column) * var(--cell) - var(--line));
-    height: 100dvh;
-    background-color: var(--color-blue);
-  }
-}
-
-/* ----- הגלריה (מחשב) -----
+/* ----- הגלריה -----
    כל פרויקט במשבצת שלו מהפיגמה (--column, --row), על אותה רשת כמו קווי הגריד */
 .projects-strip {
   position: absolute;
@@ -6994,68 +6972,41 @@ body {
   }
 }
 
-/* ----- התגיות (מובייל בלבד): טור של מלבנים כתומים משמאל לתמונה, צמודים לימין -----
-   הקומפוננטה בפיגמה: שם הפרויקט ועוד שתי תגיות. נפתחות משמאל לימין כמו המלבנים בשונרא,
-   כשהתמונה מסומנת (is-selected, script.js) */
+/* ----- התגיות (מובייל בלבד) -----
+   על התמונה הפעילה (is-selected, script.js): שם הפרויקט על הקצה השמאלי של התמונה,
+   ומתחת לתמונה כותרת המשנה והקטגוריות. נפתחות משמאל לימין כמו המלבנים בשונרא */
 .projects-tags {
   display: none;
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
-  .projects-title,
-  .projects-subtitle,
-  .projects-name {
-    left: var(--margin-mobile);
-  }
-
-  .projects-title {
-    top: var(--projects-mobile-title-top);
-  }
-
-  .projects-subtitle {
-    top: var(--projects-mobile-subtitle-top);
-  }
-
-  .projects-name {
-    top: var(--projects-mobile-name-top);
-    width: var(--projects-mobile-name-width);
-    white-space: normal;
-  }
-
-  /* הקרוסלה: כל המסך (רק התמונות לחיצות). script.js משכפל את התמונות כמה שצריך
-     ומזיז את projects-track מלמעלה למטה בלופ. הטור מתחיל על קו הגריד */
-  .projects-strip {
+  /* 3 השורות העליונות: קבועות, והתמונות נגללות מתחתן.
+     הרקע והקווים כמו בשאר הגריד, עד הקו שמתחתן (כולל) */
+  .projects-page {
     position: fixed;
+    z-index: var(--layer-projects-header);
     left: 0;
     top: 0;
     width: 100vw;
-    height: 100dvh;
-    overflow: hidden;
-    pointer-events: none;
+    height: calc(var(--projects-header-rows) * var(--cell) + var(--line));
+    background-color: var(--page-background);
+    background-image:
+      linear-gradient(to right, var(--grid-line-color) var(--line), transparent var(--line)),
+      linear-gradient(to bottom, var(--grid-line-color) var(--line), transparent var(--line));
+    background-size: var(--cell) var(--cell);
   }
 
-  .projects-track {
+  /* ORI ו-KURZ בשתי שורות, כמו בפיגמה */
+  .projects-name-last {
     position: absolute;
-    top: 0;
-    left: calc(var(--projects-strip-column) * var(--cell));
-    display: flex;
-    flex-direction: column;
-    width: var(--projects-image-size);
-    will-change: transform;
-    pointer-events: auto;
+    left: var(--projects-name-last-left);
+    top: var(--projects-name-last-top);
   }
 
+  /* תמונה אחת בכל שורה, בטור השני */
   .projects-item {
-    position: relative;
-    left: auto;
-    top: auto;
-    flex: none;
-    margin-bottom: var(--projects-image-gap);
-  }
-
-  /* פרויקט שמופיע רק בגלריה במחשב */
-  .projects-item--desktop-only {
-    display: none;
+    left: var(--cell);
+    top: calc(var(--mobile-row) * var(--cell));
   }
 
   .projects-caption {
@@ -7064,12 +7015,8 @@ body {
 
   .projects-tags {
     position: absolute;
-    top: 0;
-    right: calc(100% + var(--projects-tag-gap));
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--projects-tag-gap);
+    inset: 0;
+    display: block;
     margin: 0;
     pointer-events: none;
   }
@@ -7077,22 +7024,47 @@ body {
   .projects-tag {
     display: flex;
     align-items: center;
-    width: calc(var(--box-width) * var(--u));
-    height: calc(var(--box-height, 47) * var(--u));
-    padding: calc(7 * var(--u));
+    flex-shrink: 0;
+    height: var(--projects-tag-height);
     background-color: var(--color-orange);
     color: var(--color-mint);
     clip-path: inset(0 100% 0 0);
     transition: clip-path var(--projects-label-duration) ease;
   }
 
-  .projects-tag--center {
+  /* שם הפרויקט (Group 17 בפיגמה): הטקסט ממורכז */
+  .projects-tag--name {
+    position: absolute;
+    left: var(--projects-name-tag-left);
+    top: var(--projects-name-tag-top);
     justify-content: center;
+    width: calc(var(--box-width) * var(--u));
+    height: calc(47 * var(--u));
+    padding: calc(7 * var(--u));
   }
 
-  .projects-tag span {
+  .projects-tag--name span {
     flex-shrink: 0;
     width: calc(var(--text-width) * var(--u));
+  }
+
+  /* כותרת המשנה והקטגוריות: 6 מתחת לתמונה, 5 ביניהן */
+  .projects-tags-row {
+    position: absolute;
+    left: 0;
+    top: calc(var(--projects-image-size) + var(--projects-tags-gap));
+    display: flex;
+    gap: var(--projects-tag-gap);
+  }
+
+  .projects-tags-row .projects-tag:first-child {
+    width: var(--projects-tag-first-width);
+    padding: calc(3 * var(--u)) calc(7 * var(--u)) calc(7 * var(--u));
+  }
+
+  .projects-tags-row .projects-tag:last-child {
+    width: var(--projects-tag-second-width);
+    padding: calc(7 * var(--u)) calc(7 * var(--u)) calc(9 * var(--u));
   }
 
   .projects-item.is-selected .projects-tag {

@@ -39,30 +39,27 @@
   <main class="projects-page">
     <h1 class="projects-title text-page-title">INDEX</h1>
     <p class="projects-subtitle text-subtitle">Project<br>&amp; more</p>
-    <p class="projects-name text-page-title">ORI KURZ</p>
+    <p class="projects-name text-page-title">ORI <span class="projects-name-last">KURZ</span></p>
   </main>
 
-  <!-- הפרויקטים: כל תמונה היא פרויקט.
-       במחשב: גלריה שגוללים למטה (הפריים INDEX2 בפיגמה). כל תמונה 6x6 משבצות, במקום שלה מהפיגמה
-       (--column, --row: המשבצת של הפינה השמאלית העליונה).
-       במובייל: קרוסלה של טור, שנעה מלמעלה למטה בלופ (script.js), בסדר של ה-HTML.
+  <!-- הפרויקטים: כל תמונה היא פרויקט, ריבוע של 6x6 משבצות, וגוללים למטה.
+       במחשב (הפריים INDEX2 בפיגמה): שני טורים. --column, --row: המשבצת של הפינה השמאלית העליונה.
+       במובייל (הפריים indexM): תמונה אחת בכל שורה, בטורים 2 עד 7, ושורה אחת בין תמונה לתמונה.
+       --mobile-row: השורה של התמונה במובייל (3, ואז כל 7 שורות).
        החיתוך כמו בפיגמה (--crop-...).
        פרויקט שעוד אין לו עמוד: href="404.html". כדי לחבר לו עמוד: מחליפים את ה-href.
-       מתחת לכל תמונה שני מלבנים כתומים (projects-caption): כותרת המשנה והקטגוריות,
+       במחשב: מתחת לכל תמונה שני מלבנים כתומים (projects-caption): כותרת המשנה והקטגוריות,
        נפתחים משמאל לימין ב-Hover ובפוקוס.
        --box-width / --text-width: הרוחב של כל מלבן ושל הטקסט בו,
        --box-gap: הרווח בין שני המלבנים (פיקסלים בפיגמה).
        data-cursor-label: השם שמופיע במקום הסמן כשהעכבר על התמונה (cursor.js),
        ו-data-cursor-label-width: רוחב התווית בפיגמה.
-       במובייל, במקום הכותרת והתווית: התגיות (projects-tags) בטור משמאל לתמונה, כמו בקומפוננטה בפיגמה.
-       נפתחות בנגיעה ראשונה בתמונה (script.js). projects-tag--center: הטקסט ממורכז במלבן. --box-height: גובה המלבן, אם הוא לא 47.
-       projects-item--desktop-only: רק בגלריה במחשב, לא בקרוסלה של המובייל (Haven) -->
-  <!-- הרקע של הקרוסלה במובייל (כמו בפיגמה): כחול חלק שמכסה את קווי הגריד באזור שלה, ועומד במקום -->
-  <div class="projects-strip-background" aria-hidden="true"></div>
-
+       במובייל, במקום הכותרת והתווית: התגיות (projects-tags), נפתחות על התמונה הפעילה (script.js):
+       שם הפרויקט (projects-tag--name, על הקצה השמאלי של התמונה), ומתחת לתמונה כותרת המשנה והקטגוריות.
+       --box-width / --text-width של השם: הרוחב בפיגמה -->
   <div class="projects-strip">
     <div class="projects-track">
-      <div class="projects-item" style="--column: 1; --row: 2">
+      <div class="projects-item" style="--column: 1; --row: 2; --mobile-row: 10">
         <a class="projects-image" href="touch-grass-project.html" aria-label="Touch Grass" data-cursor-label="Touch Grass" data-cursor-label-width="116">
           <span class="projects-image-frame"><img src="Images/next-projects/touch-grass-index.webp" width="1394" height="2400" alt="" draggable="false" style="--crop-width: 215.56%; --crop-height: 372.41%; --crop-left: -37.37%; --crop-top: -264.15%"></span>
         </a>
@@ -71,12 +68,14 @@
           <span class="projects-caption-box" style="--box-width: 180; --text-width: 144"><span class="text-label">Motion Graphics &amp; Branding</span></span>
         </p>
         <p class="projects-tags" aria-hidden="true">
-          <span class="projects-tag projects-tag--center" style="--box-width: 116; --text-width: 103"><span class="text-label">Touch Grass</span></span>
-          <span class="projects-tag" style="--box-width: 153; --text-width: 156"><span class="text-label">Motion elements for conference</span></span>
-          <span class="projects-tag" style="--box-width: 153; --text-width: 144"><span class="text-label">Motion Graphics &amp; Branding</span></span>
+          <span class="projects-tag projects-tag--name" style="--box-width: 116; --text-width: 103"><span class="text-label">Touch Grass</span></span>
+          <span class="projects-tags-row">
+            <span class="projects-tag"><span class="text-label">motion elements for conference</span></span>
+            <span class="projects-tag"><span class="text-label">Motion Graphics &amp; Branding</span></span>
+          </span>
         </p>
       </div>
-      <div class="projects-item" style="--column: 1; --row: 9">
+      <div class="projects-item" style="--column: 1; --row: 9; --mobile-row: 24">
         <a class="projects-image" href="the-perfect-crime-project.html" aria-label="The Perfect Crime" data-cursor-label="The Perfect Crime" data-cursor-label-width="162">
           <span class="projects-image-frame"><img src="Images/next-projects/project-1.webp" width="1024" height="576" alt="" loading="lazy" draggable="false" style="--fit: fill"></span>
         </a>
@@ -85,12 +84,14 @@
           <span class="projects-caption-box" style="--box-width: 144; --text-width: 144"><span class="text-label">Motion Graphics</span></span>
         </p>
         <p class="projects-tags" aria-hidden="true">
-          <span class="projects-tag projects-tag--center" style="--box-width: 152; --text-width: 143"><span class="text-label">The Perfect Crime</span></span>
-          <span class="projects-tag" style="--box-width: 137; --text-width: 138"><span class="text-label">A sound-driven<br>short film</span></span>
-          <span class="projects-tag" style="--box-width: 144; --text-width: 144"><span class="text-label">Motion Graphics</span></span>
+          <span class="projects-tag projects-tag--name" style="--box-width: 152; --text-width: 143"><span class="text-label">The Perfect Crime</span></span>
+          <span class="projects-tags-row">
+            <span class="projects-tag"><span class="text-label">A sound-driven<br>short film</span></span>
+            <span class="projects-tag"><span class="text-label">Motion Graphics</span></span>
+          </span>
         </p>
       </div>
-      <div class="projects-item" style="--column: 8; --row: 9">
+      <div class="projects-item" style="--column: 8; --row: 9; --mobile-row: 17">
         <a class="projects-image" href="shunra-project.html" aria-label="Shunra" data-cursor-label="Shunra" data-cursor-label-width="98">
           <span class="projects-image-frame"><img src="Images/next-projects/project-4.webp" width="912" height="1360" alt="" loading="lazy" draggable="false" style="--crop-width: 102.56%; --crop-height: 152.87%; --crop-left: -1.07%; --crop-top: -36.22%"></span>
         </a>
@@ -99,12 +100,14 @@
           <span class="projects-caption-box" style="--box-width: 215; --text-width: 213"><span class="text-label">Branding, Visual Language and Packaging Design</span></span>
         </p>
         <p class="projects-tags" aria-hidden="true">
-          <span class="projects-tag" style="--box-width: 74; --text-width: 57"><span class="text-label">Shunra</span></span>
-          <span class="projects-tag" style="--box-width: 141; --text-width: 134"><span class="text-label">A raw fish brand for cats</span></span>
-          <span class="projects-tag projects-tag--center" style="--box-width: 173; --box-height: 69; --text-width: 169"><span class="text-label">Branding,<br>Visual Language and Packaging Design</span></span>
+          <span class="projects-tag projects-tag--name" style="--box-width: 74; --text-width: 57"><span class="text-label">Shunra</span></span>
+          <span class="projects-tags-row">
+            <span class="projects-tag"><span class="text-label">A raw fish brand for cats</span></span>
+            <span class="projects-tag"><span class="text-label">Branding &amp;<br>Visual Language</span></span>
+          </span>
         </p>
       </div>
-      <div class="projects-item" style="--column: 8; --row: 2">
+      <div class="projects-item" style="--column: 8; --row: 2; --mobile-row: 3">
         <a class="projects-image" href="leftovers-project.html" aria-label="Leftovers*" data-cursor-label="Leftovers*" data-cursor-label-width="98">
           <span class="projects-image-frame"><img src="Images/next-projects/project-3.webp" width="1080" height="1350" alt="" draggable="false" style="--crop-width: 123.11%; --crop-height: 153.68%; --crop-left: -11.36%; --crop-top: -12.98%"></span>
         </a>
@@ -113,12 +116,14 @@
           <span class="projects-caption-box" style="--box-width: 192; --text-width: 174"><span class="text-label">Map Design<br>&amp; Data Visualization</span></span>
         </p>
         <p class="projects-tags" aria-hidden="true">
-          <span class="projects-tag" style="--box-width: 94; --text-width: 87"><span class="text-label">Leftovers*</span></span>
-          <span class="projects-tag" style="--box-width: 125; --text-width: 134"><span class="text-label">The story of<br>Villa Epecuén</span></span>
-          <span class="projects-tag" style="--box-width: 174; --text-width: 174"><span class="text-label">Map Design<br>&amp; Data Visualization</span></span>
+          <span class="projects-tag projects-tag--name" style="--box-width: 94; --text-width: 87"><span class="text-label">Leftovers*</span></span>
+          <span class="projects-tags-row">
+            <span class="projects-tag"><span class="text-label">The story of<br>Villa Epecuén</span></span>
+            <span class="projects-tag"><span class="text-label">Map Design &amp; Data Visualization</span></span>
+          </span>
         </p>
       </div>
-      <div class="projects-item" style="--column: 1; --row: 16">
+      <div class="projects-item" style="--column: 1; --row: 16; --mobile-row: 31">
         <a class="projects-image" href="404.html" aria-label="Hora" data-cursor-label="Hora" data-cursor-label-width="98">
           <span class="projects-image-frame"><img src="Images/next-projects/project-2.webp" width="1326" height="1324" alt="" loading="lazy" draggable="false" style="--crop-width: 100.15%; --crop-height: 100%; --crop-left: -0.07%; --crop-top: 0.28%"></span>
         </a>
@@ -127,18 +132,27 @@
           <span class="projects-caption-box" style="--box-width: 196; --text-width: 141"><span class="text-label">Motion Graphics</span></span>
         </p>
         <p class="projects-tags" aria-hidden="true">
-          <span class="projects-tag" style="--box-width: 50; --text-width: 42"><span class="text-label">Hora</span></span>
-          <span class="projects-tag" style="--box-width: 148; --text-width: 134"><span class="text-label">Motion Graphics</span></span>
-          <span class="projects-tag" style="--box-width: 148; --text-width: 128"><span class="text-label">An MTV ident-style animation</span></span>
+          <span class="projects-tag projects-tag--name" style="--box-width: 50; --text-width: 42"><span class="text-label">Hora</span></span>
+          <span class="projects-tags-row">
+            <span class="projects-tag"><span class="text-label">An MTV ident-style animation</span></span>
+            <span class="projects-tag"><span class="text-label">Motion Graphics</span></span>
+          </span>
         </p>
       </div>
-      <div class="projects-item projects-item--desktop-only" style="--column: 8; --row: 16">
+      <div class="projects-item" style="--column: 8; --row: 16; --mobile-row: 38">
         <a class="projects-image" href="404.html" aria-label="Haven" data-cursor-label="Haven" data-cursor-label-width="98">
           <span class="projects-image-frame"><img src="Images/next-projects/haven.webp" width="1440" height="1024" alt="" loading="lazy" draggable="false" style="--crop-width: 140.63%; --crop-height: 100%; --crop-left: -13.65%; --crop-top: 0%"></span>
         </a>
         <p class="projects-caption" aria-hidden="true" style="--box-gap: 23">
           <span class="projects-caption-box" style="--box-width: 168; --text-width: 151"><span class="text-label">Onboarding for Mars settlers</span></span>
           <span class="projects-caption-box" style="--box-width: 190; --text-width: 141"><span class="text-label">UX/UI &amp;<br>Motion Design</span></span>
+        </p>
+        <p class="projects-tags" aria-hidden="true">
+          <span class="projects-tag projects-tag--name" style="--box-width: 67; --text-width: 50"><span class="text-label">Haven</span></span>
+          <span class="projects-tags-row">
+            <span class="projects-tag"><span class="text-label">Onboarding for Mars settlers</span></span>
+            <span class="projects-tag"><span class="text-label">UX/UI &amp;<br>Motion Design</span></span>
+          </span>
         </p>
       </div>
     </div>
