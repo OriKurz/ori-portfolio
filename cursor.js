@@ -1,14 +1,19 @@
 // =========================================
-// סמן העכבר, במחשב בלבד: במצב רגיל החץ של המערכת.
-// מעל אלמנט לחיץ החץ מתחלף בכדור קטן בצבע אקראי מהפלטה, מתוך הצבעים
-// שלא מופיעים באלמנט ובמה שסביבו (טקסט, רקע, צבע ה-hover, רקע העמוד וקווי הגריד).
-// הצבע נשאר כל עוד העכבר על אותו אלמנט, ומוגרל מחדש בכניסה הבאה.
+// סמן העכבר, במחשב בלבד: החץ של המערכת נעלם, ובמקומו ריבוע קטן
+// בצבע אקראי מהפלטה, מתוך הצבעים שלא מופיעים מתחתיו ובסביבה.
+// הצבע של הריבוע מוגרל מחדש רק כשהרקע שמתחתיו מתחלף.
+// מעל אלמנט לחיץ הריבוע מתעגל, בצבע שמוגרל מהצבעים שלא מופיעים באלמנט ובמה שסביבו
+// (טקסט, רקע, צבע ה-hover, רקע העמוד וקווי הגריד). הצבע נשאר כל עוד העכבר על
+// אותו אלמנט, ומוגרל מחדש בכניסה הבאה.
 // בטלפון ובטאבלט אין סמן, אז לא עושים כלום.
 // =========================================
 
 if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
   const paletteNames = ["blue", "pink", "orange", "mint", "dark-blue"];
   const rootStyle = getComputedStyle(document.documentElement);
+
+  // החץ של המערכת נעלם בכל העמוד (styles.css)
+  document.documentElement.classList.add("has-custom-cursor");
 
   const cursor = document.createElement("div");
   cursor.className = "custom-cursor";
@@ -30,7 +35,12 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
 
   let mouseX = -100;
   let mouseY = -100;
+  let mouseInside = false;
   let currentElement = null;
+  // הריבוע: הצבע שלו, והרקע שמתחתיו כשהוגרל
+  let squareColor = null;
+  let squareBackground = null;
+  let squareCheckPending = false;
 
   // צבע (בכל כתיב של הדפדפן) → מספרי RGB, או null אם הוא שקוף לגמרי
   function parseColor(text) {
@@ -105,15 +115,69 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
     const used = new Set();
     collectColors(element, used);
     collectBackground(element, used);
+    return pickFrom(used);
+  }
+
+  // צבע אקראי מהפלטה, מתוך הצבעים שלא ברשימה
+  function pickFrom(used) {
     let options = palette.filter(function (color) { return !used.has(color.name); });
     if (!options.length) options = palette;
     return "var(--color-" + options[Math.floor(Math.random() * options.length)].name + ")";
   }
 
-  // האלמנט הלחיץ שמתחת לעכבר (או null). בזכוכית המגדלת הפעילה אין כדור
+  // הרקע שמתחת לעכבר: השכבה העליונה שיש לה צבע רקע, תמונה או סרטון
+  function backgroundAt() {
+    for (const layer of document.elementsFromPoint(mouseX, mouseY)) {
+      if (cursor.contains(layer)) continue;
+      if (/^(IMG|VIDEO|CANVAS|PICTURE|IMAGE)$/i.test(layer.tagName)) return layer;
+      const style = getComputedStyle(layer);
+      if (parseColor(style.backgroundColor) || style.backgroundImage !== "none") return layer;
+    }
+    return document.documentElement;
+  }
+
+  // מגריל צבע לריבוע מתוך הצבעים שלא מופיעים מתחתיו ובסביבה
+  function pickSquareColor() {
+    const used = new Set();
+    const top = document.elementsFromPoint(mouseX, mouseY).find(function (layer) {
+      return !cursor.contains(layer);
+    });
+    if (top) {
+      const style = getComputedStyle(top);
+      used.add(paletteNameOf(style.backgroundColor));
+      used.add(paletteNameOf(style.color));
+      collectBackground(top, used);
+    } else {
+      used.add(paletteNameOf(rootStyle.backgroundColor));
+      used.add(paletteNameOf(getComputedStyle(document.body).backgroundColor));
+    }
+    return pickFrom(used);
+  }
+
+  // הריבוע: מגריל צבע חדש רק כשהרקע שמתחתיו התחלף
+  function refreshSquare() {
+    if (currentElement) return;
+    const background = backgroundAt();
+    if (background !== squareBackground || !squareColor) {
+      squareBackground = background;
+      squareColor = pickSquareColor();
+    }
+    ball.style.backgroundColor = squareColor;
+  }
+
+  // בודקים את הרקע לכל היותר פעם בפריים
+  function scheduleSquareCheck() {
+    if (squareCheckPending) return;
+    squareCheckPending = true;
+    requestAnimationFrame(function () {
+      squareCheckPending = false;
+      if (mouseInside) refreshSquare();
+    });
+  }
+
+  // האלמנט הלחיץ שמתחת לעכבר (או null)
   function clickableAt(target) {
     if (!target || !target.closest) return null;
-    if (target.closest(".is-magnifying")) return null;
     // אלמנט עם תווית (תמונה באינדקס): בכל נקודה בו בוחרים אותו, ולא את מה שבתוכו
     const labeled = target.closest("[data-cursor-label]");
     if (labeled) return labeled;
@@ -140,38 +204,50 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
       requestAnimationFrame(function () {
         if (currentElement !== element) return;
         ball.style.backgroundColor = pickColor(element);
-        cursor.classList.add("is-visible");
+        cursor.classList.add("is-round");
       });
     } else {
-      cursor.classList.remove("is-visible");
+      // חוזר לריבוע, בצבע שלו (או בצבע חדש אם הרקע התחלף)
+      cursor.classList.remove("is-round");
+      if (mouseInside) refreshSquare();
     }
   }
 
+  // מה מוצג מתחת לעכבר. בזכוכית המגדלת הפעילה אין סמן
+  function updateFor(target) {
+    const hidden = !mouseInside || Boolean(target && target.closest && target.closest(".is-magnifying"));
+    cursor.classList.toggle("is-visible", !hidden);
+    setCurrent(hidden ? null : clickableAt(target));
+    if (!hidden) scheduleSquareCheck();
+  }
+
   function update() {
-    setCurrent(clickableAt(document.elementFromPoint(mouseX, mouseY)));
+    updateFor(document.elementFromPoint(mouseX, mouseY));
   }
 
   document.addEventListener("pointermove", function (event) {
     if (event.pointerType !== "mouse") return;
     mouseX = event.clientX;
     mouseY = event.clientY;
+    mouseInside = true;
     cursor.style.transform = "translate(" + mouseX + "px, " + mouseY + "px)";
-    setCurrent(clickableAt(event.target));
+    updateFor(event.target);
   }, { passive: true });
 
   // הדף זז מתחת לעכבר שעומד: גלילה, או אלמנטים שזזים לבד (כדורים)
   document.addEventListener("scroll", update, { capture: true, passive: true });
   setInterval(update, 150);
 
-  // העכבר יצא מהחלון
+  // העכבר יצא מהחלון: הסמן נעלם, ומופיע שוב כשהעכבר חוזר
   document.addEventListener("mouseout", function (event) {
     if (!event.relatedTarget) {
+      mouseInside = false;
       mouseX = mouseY = -100;
-      setCurrent(null);
+      updateFor(null);
     }
   });
 
-  // במסך מלא רק האלמנט שבמסך המלא נראה, אז הכדור עובר לתוכו
+  // במסך מלא רק האלמנט שבמסך המלא נראה, אז הסמן עובר לתוכו
   function placeCursor() {
     const fullscreen = document.fullscreenElement || document.webkitFullscreenElement;
     (fullscreen || document.body).appendChild(cursor);

@@ -142,9 +142,12 @@
   --page-background: var(--color-blue);
   --grid-line-color: var(--color-pink);
 
-  /* סמן העכבר מעל אלמנט לחיץ (במחשב): כדור קטן בצבע מהפלטה */
-  --cursor-size: 14px;
+  /* סמן העכבר (במחשב): ריבוע בצבע מהפלטה, שמתעגל מעל אלמנט לחיץ */
+  --cursor-size: 16px;
   --cursor-pop-duration: 0.18s;
+  --cursor-shape-duration: 250ms;  /* המעבר מריבוע לעיגול ובחזרה */
+  --cursor-shape-bounce: 1.25;     /* הקפיצה בהתעגלות */
+  --cursor-shape-easing: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* מעבר בין עמודים (page-transition.js): קוביות מופיעות בסדר אקראי, ובעמוד הבא נעלמות */
   --page-transition-duration: 1000ms;  /* כל הכיסוי (וכל החשיפה), מהקובייה הראשונה עד האחרונה */
@@ -6872,12 +6875,16 @@ body {
 }
 
 /* =========================================
-   סמן העכבר מעל אלמנט לחיץ: כדור קטן במקום החץ, במחשב בלבד (cursor.js).
-   במצב רגיל החץ של המערכת נשאר. cursor.js מסמן את האלמנט שהעכבר עליו ב-has-ball-cursor
+   סמן העכבר, במחשב בלבד (cursor.js): החץ של המערכת נעלם, ובמקומו ריבוע קטן.
+   מעל אלמנט לחיץ הריבוע מתעגל לעיגול. cursor.js מוסיף ל-html את has-custom-cursor
    ========================================= */
-.has-ball-cursor,
-.has-ball-cursor * {
-  cursor: none !important;
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor *,
+  html.has-custom-cursor *::before,
+  html.has-custom-cursor *::after {
+    cursor: none !important;
+  }
 }
 
 .custom-cursor {
@@ -6889,23 +6896,51 @@ body {
   will-change: transform;
 }
 
-/* הכדור עצמו: מרכזו בנקודת העכבר. הצבע נקבע ב-cursor.js */
+/* הריבוע עצמו: מרכזו בנקודת העכבר. הצבע נקבע ב-cursor.js */
 .custom-cursor-ball {
   width: var(--cursor-size);
   height: var(--cursor-size);
   margin: calc(var(--cursor-size) / -2) 0 0 calc(var(--cursor-size) / -2);
-  border-radius: 50%;
+  border-radius: 0;
   transform: scale(0);
-  transition: transform var(--cursor-pop-duration) ease-in;
+  transition:
+    transform var(--cursor-pop-duration) ease-in,
+    border-radius var(--cursor-shape-duration) var(--cursor-shape-easing);
 }
 
 /* מופיע בגדילה קפיצית, ונעלם בהתכווצות */
 .custom-cursor.is-visible .custom-cursor-ball {
   transform: scale(1);
-  transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition:
+    transform var(--cursor-pop-duration) var(--cursor-shape-easing),
+    border-radius var(--cursor-shape-duration) var(--cursor-shape-easing);
 }
 
-/* במסך מלא של הסרטון, כשהבר מוסתר, גם הכדור מוסתר */
+/* מעל אלמנט לחיץ: מתעגל וקופץ קלות. בחזרה לריבוע: אותו מעבר, בלי הקפיצה */
+.custom-cursor.is-round .custom-cursor-ball {
+  border-radius: 50%;
+  animation: cursor-shape-bounce var(--cursor-shape-duration) var(--cursor-shape-easing);
+}
+
+@keyframes cursor-shape-bounce {
+  50% {
+    scale: var(--cursor-shape-bounce);
+  }
+}
+
+/* פחות תנועה: הריבוע מתעגל מיד, בלי קפיצה */
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor-ball,
+  .custom-cursor.is-visible .custom-cursor-ball {
+    transition: transform var(--cursor-pop-duration) ease-in;
+  }
+
+  .custom-cursor.is-round .custom-cursor-ball {
+    animation: none;
+  }
+}
+
+/* במסך מלא של הסרטון, כשהבר מוסתר, גם הסמן מוסתר */
 .video-player.is-fullscreen:not(.is-active):not(.is-seeking) .custom-cursor {
   opacity: 0;
 }
@@ -7221,7 +7256,7 @@ body {
   transition: clip-path var(--projects-label-duration) ease;
 }
 
-/* כשהתווית מוצגת, הכדור לא */
+/* כשהתווית מוצגת, הסמן לא */
 .custom-cursor.is-label .custom-cursor-ball {
   transform: scale(0);
   transition: none;
