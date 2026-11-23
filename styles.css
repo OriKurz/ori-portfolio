@@ -5840,9 +5840,10 @@ body {
     height: calc(var(--photo-height) * var(--px));
   }
 
-  /* הגריד נגמר בשורה שלמה מתחת לרולר: What's Next, ואחריו הרולר (שמכסה את סוף הגריד) */
+  /* השורה של What's Next היא האחרונה בגריד, והרולר צמוד מיד מתחתיה (שמכסה את סוף הגריד).
+     בלי עיגול למעלה, כדי שלא תיווצר שורה ריקה ביניהם */
   .page-leftovers .full-project-panel .full-project-grid {
-    height: round(up, var(--leftovers-next-top) + var(--cell) + var(--next-projects-height), var(--cell));
+    height: calc(var(--leftovers-next-top) + var(--cell) + var(--next-projects-height));
   }
 }
 
