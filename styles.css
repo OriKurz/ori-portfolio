@@ -189,6 +189,8 @@
   --text-caption-size: 15;
   --text-label-size: 17;
   --text-label-line-height: 1.1;
+  /* Tag/Mobile: התגים מתחת לתמונות באינדקס במובייל. בפיקסלים של המסך (לא כפול --type-px) */
+  --text-tag-mobile-size: 16;
   --text-nav-size: 20;
   --text-nav-mobile-size: 14;
   --text-about-size: 20;
@@ -1901,12 +1903,13 @@
    הפריים indexM בפיגמה (393 לרוחב): 8 משבצות לרוחב, קו 2px, הגריד מתחיל בפינה העליונה.
    3 השורות העליונות (ההמבורגר והכותרות) קבועות, ומתחתן התמונות נגללות:
    כל תמונה 6x6 משבצות בטורים 2 עד 7, ושורה אחת בין תמונה לתמונה.
-   העמוד: 3 שורות, ועוד 7 שורות לכל אחת מ-6 התמונות (התמונה ושורה מתחתיה), כך שהוא נגמר בשורה שלמה.
+   העמוד: 3 שורות, ועוד 7 שורות לכל אחת מ-6 התמונות (התמונה ושורת התגים מתחתיה),
+   ועוד שורת רווח אחת בסוף, כך שהוא נגמר על קו.
    מספרים כמו 15 * var(--u) הם פיקסלים בפריים (הגריד בפיגמה מתחיל ב-(-1, -3), אז מוסיפים 1 לרוחב ו-3 לגובה) */
 @media (max-width: 1024px) and (orientation: portrait) {
   :root.page-projects {
     --design-columns: 8;
-    --grid-rows: 45;
+    --grid-rows: 46;
     --line: var(--line-mobile);
     --grid-top: 0px;
     --u: calc(100vw / 393);
@@ -1932,16 +1935,21 @@
     --projects-name-last-left: calc(-1 * var(--u));
     --projects-name-last-top: calc(37 * var(--u));
 
-    /* התגיות (הפריימים 337-3900 ו-331-3829 בפיגמה):
-       שם הפרויקט: 34 משמאל לקצה התמונה ו-27 מתחת לראש שלה, בגובה 47.
-       מתחת לתמונה (6 מהקצה שלה): כותרת המשנה (148) והקטגוריות (142), בגובה 40 ו-5 ביניהן */
-    --projects-name-tag-left: calc(-34 * var(--u));
-    --projects-name-tag-top: calc(27 * var(--u));
-    --projects-tags-gap: calc(6 * var(--u));
-    --projects-tag-gap: calc(5 * var(--u));
-    --projects-tag-height: calc(40 * var(--u));
-    --projects-tag-first-width: calc(148 * var(--u));
-    --projects-tag-second-width: calc(142 * var(--u));
+    /* התגיות (הפריימים 337-3900 ו-331-3829 בפיגמה), בפיקסלים של המסך, בלי שינוי קנה מידה:
+       שם הפרויקט: 34 משמאל לקצה התמונה ו-27 מתחת לראש שלה, 47 לגובה.
+       כותרת המשנה (148) והקטגוריות (142): 40 לגובה, 5 ביניהן, באמצע שורת הרווח שמתחת לתמונה */
+    --projects-name-tag-left: -34px;
+    --projects-name-tag-top: 27px;
+    --projects-name-tag-height: 47px;
+    --projects-tag-gap: 5px;
+    --projects-tag-height: 40px;
+    --projects-tag-first-width: 148px;
+    --projects-tag-second-width: 142px;
+    /* הריווח הפנימי: הראשון 3 למעלה ו-7 למטה, השני 7 למעלה ו-9 למטה, 7 מהצדדים */
+    --projects-tag-first-padding: 3px 7px 7px;
+    --projects-tag-second-padding: 7px 7px 9px;
+    /* התמונות מתכווצות קצת פחות מהכלל הכללי בלחיצה */
+    --projects-image-pressed-scale: 0.933;
   }
 }
 
@@ -2236,6 +2244,15 @@ body {
   font-family: var(--font-text);
   font-weight: 400;
   font-size: calc(var(--text-label-size) * var(--type-px));
+  line-height: var(--text-label-line-height);
+  letter-spacing: 0;
+}
+
+/* Tag/Mobile: 16px קבוע, בכל רוחב מסך */
+.text-tag-mobile {
+  font-family: var(--font-text);
+  font-weight: 400;
+  font-size: calc(var(--text-tag-mobile-size) * 1px);
   line-height: var(--text-label-line-height);
   letter-spacing: 0;
 }
@@ -6990,10 +7007,22 @@ body {
     width: 100vw;
     height: calc(var(--projects-header-rows) * var(--cell) + var(--line));
     background-color: var(--page-background);
+  }
+
+  /* קווי הגריד: לא אריחים (ספארי מעגל את גודל האריח לפיקסלים של המסך, והקווים זזים),
+     אלא שתי תבניות רציפות על כל השטח, כך שהקו ה-n נמצא בדיוק ב-n כפול --cell */
+  .page-projects body.grid-lines,
+  .projects-page {
     background-image:
-      linear-gradient(to right, var(--grid-line-color) var(--line), transparent var(--line)),
-      linear-gradient(to bottom, var(--grid-line-color) var(--line), transparent var(--line));
-    background-size: var(--cell) var(--cell);
+      repeating-linear-gradient(to right, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell)),
+      repeating-linear-gradient(to bottom, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell));
+    background-size: 100% 100%;
+    background-position: 0 0;
+  }
+
+  /* לחיצה על תמונה: 0.933 (ולא הכלל הכללי) */
+  .projects-image:where(:active, .is-pressed) {
+    scale: var(--projects-image-pressed-scale);
   }
 
   /* ORI ו-KURZ בשתי שורות, כמו בפיגמה */
@@ -7013,7 +7042,9 @@ body {
     display: none;
   }
 
+  /* השם בפיקסלים של המסך (Label, 17) */
   .projects-tags {
+    --type-px: 1px;
     position: absolute;
     inset: 0;
     display: block;
@@ -7038,33 +7069,39 @@ body {
     left: var(--projects-name-tag-left);
     top: var(--projects-name-tag-top);
     justify-content: center;
-    width: calc(var(--box-width) * var(--u));
-    height: calc(47 * var(--u));
-    padding: calc(7 * var(--u));
+    width: calc(var(--box-width) * 1px);
+    height: var(--projects-name-tag-height);
+    padding: 7px;
   }
 
   .projects-tag--name span {
     flex-shrink: 0;
-    width: calc(var(--text-width) * var(--u));
+    width: calc(var(--text-width) * 1px);
   }
 
-  /* כותרת המשנה והקטגוריות: 6 מתחת לתמונה, 5 ביניהן */
+  /* הטקסט לא נשבר אף פעם מעבר לשבירות שב-HTML (וכך לא מגיע לשורה שלישית) */
+  .projects-tag span {
+    white-space: nowrap;
+  }
+
+  /* כותרת המשנה והקטגוריות: באמצע לגובה של שורת הרווח שמתחת לתמונה
+     (בין הקו שמתחת לתמונה לקו הבא), 5 ביניהן */
   .projects-tags-row {
     position: absolute;
     left: 0;
-    top: calc(var(--projects-image-size) + var(--projects-tags-gap));
+    top: calc(6.5 * var(--cell) + var(--line) / 2 - var(--projects-tag-height) / 2);
     display: flex;
     gap: var(--projects-tag-gap);
   }
 
   .projects-tags-row .projects-tag:first-child {
     width: var(--projects-tag-first-width);
-    padding: calc(3 * var(--u)) calc(7 * var(--u)) calc(7 * var(--u));
+    padding: var(--projects-tag-first-padding);
   }
 
   .projects-tags-row .projects-tag:last-child {
     width: var(--projects-tag-second-width);
-    padding: calc(7 * var(--u)) calc(7 * var(--u)) calc(9 * var(--u));
+    padding: var(--projects-tag-second-padding);
   }
 
   .projects-item.is-selected .projects-tag {

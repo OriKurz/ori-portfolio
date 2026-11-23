@@ -89,6 +89,7 @@
 | About/Mobile Small Strong | `text-about-mobile-small-strong` | Telegraf UltraBold | 14 | 18px | 4% | המילים המודגשות בטור הרחב ב-Say Hi במובייל |
 | Caption | `text-caption` | Telegraf Regular | 15 | 100% | 0 | טקסט התיאור מתחת לתמונות בגלריית הלוקיישנים ב-Leftovers |
 | Label | `text-label` | Telegraf Regular | 17 | 110% | 0 | המלבנים הכתומים באינדקס: הכותרת מתחת לתמונה, והתווית שבמקום הסמן |
+| Tag/Mobile | `text-tag-mobile` | Telegraf Regular | 16px קבוע | 110% | 0 | התגים הכתומים מתחת לתמונות באינדקס במובייל |
 | Nav | `text-nav` | Telegraf Regular | 20 | 100% | 4% | הכפתורים בבר הבחירה במחשב |
 | Nav/Mobile | `text-nav` (במובייל) | Telegraf Regular | 14 | 100% | 4% | הכפתורים בבר הבחירה במובייל |
 
