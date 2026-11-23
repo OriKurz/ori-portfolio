@@ -7568,47 +7568,6 @@ html.gallery-open body {
   outline: var(--line) solid var(--grid-line-color);
 }
 
-/* ----- מובייל (אין פריים): 20 מהקצוות, חצים קטנים עם אזור נגיעה של 44,
-   במרכז הרווח שבין הדימוי לקצה. הדימוי תמיד בין החצים, ולא נוגע ב-X ----- */
-@media (max-width: 1024px) and (orientation: portrait) {
-  .gallery {
-    --gallery-touch-size: 44px;
-    --gallery-arrow-size: 28px;
-    /* הרווח בין קצה המסך לדימוי: השוליים, החץ, ועוד רווח זהה מהדימוי */
-    --gallery-side-gap: calc(2 * var(--margin-mobile) + var(--gallery-arrow-size));
-    --gallery-top-gap: calc(var(--margin-mobile) + var(--gallery-touch-size));
-    --gallery-box-width: calc(100vw - 2 * var(--gallery-side-gap));
-    --gallery-box-height: calc(100dvh - 2 * var(--gallery-top-gap));
-    --gallery-close-width: 21px;
-  }
-
-  .gallery.is-single {
-    --gallery-box-width: calc(100vw - 2 * var(--margin-mobile));
-  }
-
-  .gallery.is-tall {
-    --gallery-box-height: calc(100dvh - 2 * var(--margin-mobile));
-  }
-
-  .gallery-close {
-    top: var(--margin-mobile);
-    right: var(--margin-mobile);
-    width: var(--gallery-touch-size);
-    height: var(--gallery-touch-size);
-    margin: calc((var(--gallery-close-width) - var(--gallery-touch-size)) / 2);
-    padding: calc((var(--gallery-touch-size) - var(--gallery-close-width)) / 2);
-  }
-
-  .gallery-arrow {
-    width: var(--gallery-touch-size);
-    height: var(--gallery-touch-size);
-    padding: calc((var(--gallery-touch-size) - var(--gallery-arrow-size)) / 2);
-  }
-
-  .gallery-arrow--prev { left: calc(var(--gallery-side-gap) / 2 - var(--gallery-touch-size) / 2); }
-  .gallery-arrow--next { right: calc(var(--gallery-side-gap) / 2 - var(--gallery-touch-size) / 2); }
-}
-
 @keyframes gallery-fade-in  { from { opacity: 0; } }
 @keyframes gallery-fade-out { to { opacity: 0; } }
 @keyframes gallery-pop { from { opacity: 0; scale: 0.85; } }

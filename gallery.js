@@ -9,9 +9,11 @@
 //                            על זה שמוצג עכשיו (is-shown).
 //   data-gallery-order="מספר"  (לא חובה) הסדר בקבוצה, כשהוא שונה מהסדר ב-HTML.
 //   data-gallery-tall          (לא חובה) הדימוי תופס את כל הגובה הפנוי, פחות משבצת
-//                            למעלה ולמטה (במובייל 20px), כמו הפוסטרים של שונרא.
+//                            למעלה ולמטה, כמו הפוסטרים של שונרא.
+//   data-gallery-label="טקסט"  (לא חובה) התווית לקורא מסך של הדימוי שפותח את הגלריה.
 // סגירה: X, לחיצה על השכבה מחוץ לדימוי, או Esc. בזמן שהגלריה פתוחה העמוד לא נגלל.
-// דפדוף: החצים, מקשי החצים, והחלקה הצידה בטלפון.
+// דפדוף: החצים ומקשי החצים.
+// במובייל (כולל טאבלט לאורך) אין גלריה: הדימויים לא לחיצים, כמו לפני שהייתה גלריה.
 // =========================================
 
 (function () {
@@ -19,6 +21,7 @@
   if (!triggers.length) return;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
 
   // האייקונים מהפיגמה (Component 2 = חץ, Component 4 = X), בצבע currentColor
   const arrowIcon = '<svg viewBox="0 0 53 53" fill="none" aria-hidden="true"><circle cx="26.5" cy="26.5" r="25" stroke-width="3" stroke="currentColor"/><path d="M20.7391 26.8841V25.3841H19.971V26.8841V28.3841H20.7391V26.8841ZM18.9104 25.8234C18.3246 26.4092 18.3246 27.3589 18.9104 27.9447L28.4563 37.4907C29.0421 38.0764 29.9918 38.0764 30.5776 37.4907C31.1634 36.9049 31.1634 35.9551 30.5776 35.3693L22.0923 26.8841L30.5776 18.3988C31.1634 17.813 31.1634 16.8632 30.5776 16.2775C29.9918 15.6917 29.0421 15.6917 28.4563 16.2775L18.9104 25.8234Z" fill="currentColor"/></svg>';
@@ -33,15 +36,8 @@
     const media = eachSelector ? Array.from(trigger.querySelectorAll(eachSelector)) : [trigger];
     groups[name].push.apply(groups[name], media);
 
-    // נגיש במקלדת ולחיץ, כמו כל רכיב לחיץ באתר
-    trigger.setAttribute("role", "button");
-    trigger.setAttribute("tabindex", "0");
-    if (!trigger.hasAttribute("aria-label")) {
-      trigger.setAttribute("aria-label", "Open " + (media[0].getAttribute("alt") || media[0].getAttribute("aria-label") || "image"));
-    }
-    trigger.classList.add("gallery-trigger");
-
     trigger.addEventListener("click", function () {
+      if (mobileScreen.matches) return;
       let start = media[0];
       if (eachSelector) start = trigger.querySelector(eachSelector + ".is-shown") || media[0];
       // הגודל של משבצת בעמוד, לשוליים של דימוי גבוה
@@ -56,6 +52,26 @@
       }
     });
   });
+
+  // במחשב: הדימויים נגישים במקלדת ולחיצים, כמו כל רכיב לחיץ באתר.
+  // במובייל: בלי שום סימן לחיץ (בלי role, tabindex, סמן או התכווצות בלחיצה)
+  function setTriggersEnabled() {
+    const enabled = !mobileScreen.matches;
+    triggers.forEach(function (trigger) {
+      trigger.classList.toggle("gallery-trigger", enabled);
+      if (enabled) {
+        const first = trigger.dataset.galleryEach ? trigger.querySelector(trigger.dataset.galleryEach) : trigger;
+        trigger.setAttribute("role", "button");
+        trigger.setAttribute("tabindex", "0");
+        trigger.setAttribute("aria-label", trigger.dataset.galleryLabel || "Open " + (first.getAttribute("alt") || "image"));
+      } else {
+        trigger.removeAttribute("role");
+        trigger.removeAttribute("tabindex");
+        trigger.removeAttribute("aria-label");
+      }
+    });
+    if (!enabled) close();
+  }
 
   // סדר הדפדוף: לפי data-gallery-order אם יש, אחרת לפי הסדר ב-HTML
   Object.keys(groups).forEach(function (name) {
@@ -287,19 +303,8 @@
   // בלי גלילה של העמוד מאחור (גלגלת ונגיעה)
   gallery.addEventListener("wheel", function (event) { event.preventDefault(); }, { passive: false });
 
-  // החלקה הצידה בטלפון: הדימוי זז לכיוון האצבע (שמאלה = הקודם, ימינה = הבא)
-  let touchStartX = null;
-  let touchStartY = 0;
-  gallery.addEventListener("touchstart", function (event) {
-    touchStartX = event.touches[0].clientX;
-    touchStartY = event.touches[0].clientY;
-  }, { passive: true });
   gallery.addEventListener("touchmove", function (event) { event.preventDefault(); }, { passive: false });
-  gallery.addEventListener("touchend", function (event) {
-    if (touchStartX === null) return;
-    const dx = event.changedTouches[0].clientX - touchStartX;
-    const dy = event.changedTouches[0].clientY - touchStartY;
-    touchStartX = null;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? -1 : 1);
-  });
+
+  setTriggersEnabled();
+  mobileScreen.addEventListener("change", setTriggersEnabled);
 })();
