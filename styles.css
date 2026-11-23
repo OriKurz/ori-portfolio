@@ -7340,3 +7340,188 @@ body {
 .error-back-button.is-pressed {
   scale: var(--error-button-pressed-scale);
 }
+
+/* =========================================
+   הגלריה (gallery.js, הפריים galery בפיגמה: 1440×810)
+   שכבה כחולה כהה ב-60% מעל כל העמוד, הדימוי באמצע (התיבה שלו 1244×700),
+   X בפינה הימנית העליונה וחץ בכל צד. הכול גדל עם המסך לפי --gallery-px.
+   Hover ו-Focus של הכפתורים: --menu-hover-color, כמו ההמבורגר. Pressed: ברירת המחדל.
+   ========================================= */
+.gallery {
+  /* פיקסל אחד בפיגמה: הפריים נכנס כולו במסך */
+  --gallery-px: min(100vw / 1440, 100dvh / 810);
+  --gallery-box-width: calc(100vw - 2 * 98 * var(--gallery-px));
+  --gallery-box-height: calc(100dvh - 2 * 55 * var(--gallery-px));
+  --gallery-arrow-size: calc(53 * var(--gallery-px));
+  --gallery-arrow-side: calc(18 * var(--gallery-px));
+  --gallery-close-width: calc(22.5 * var(--gallery-px));
+  --gallery-close-top: calc(13 * var(--gallery-px));
+  --gallery-close-right: calc(18.5 * var(--gallery-px));
+  --gallery-color: var(--color-dark-blue);
+  /* התנועה: השכבה נכנסת ונעלמת ב-fade, הדימוי "קופץ" פנימה עם overshoot קטן,
+     ובדפדוף מחליק לצד ונכנס מהצד השני */
+  --gallery-fade-duration: 0.25s;
+  --gallery-pop-duration: 0.45s;
+  --gallery-pop-ease: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --gallery-slide-duration: 0.35s;
+  --gallery-slide-distance: 6vw;
+
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: color-mix(in srgb, var(--color-dark-blue) 60%, transparent);
+  animation: gallery-fade-in var(--gallery-fade-duration) ease both;
+}
+
+.gallery[hidden] {
+  display: none;
+}
+
+.gallery.is-closing {
+  animation: gallery-fade-out var(--gallery-fade-duration) ease both;
+}
+
+/* העמוד שמאחור לא נגלל */
+html.gallery-open,
+html.gallery-open body {
+  overflow: hidden;
+}
+
+/* הדימוי: הכי גדול שנכנס בתיבה, באותו יחס */
+.gallery-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.gallery-media {
+  grid-area: 1 / 1;
+  display: block;
+  width: min(var(--gallery-box-width), var(--gallery-box-height) * var(--gallery-aspect, 16 / 9));
+  aspect-ratio: var(--gallery-aspect, 16 / 9);
+  height: auto;
+  object-fit: contain;
+  animation: gallery-pop var(--gallery-pop-duration) var(--gallery-pop-ease) both;
+}
+
+.gallery-media.is-entering-next { animation: gallery-enter-next var(--gallery-slide-duration) ease-out both; }
+.gallery-media.is-entering-prev { animation: gallery-enter-prev var(--gallery-slide-duration) ease-out both; }
+.gallery-media.is-leaving-next  { animation: gallery-leave-next var(--gallery-slide-duration) ease-in both; }
+.gallery-media.is-leaving-prev  { animation: gallery-leave-prev var(--gallery-slide-duration) ease-in both; }
+
+/* ----- הכפתורים ----- */
+.gallery-button {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--gallery-color);
+  cursor: pointer;
+  transition: color var(--transition-speed) ease, scale var(--transition-speed) ease;
+}
+
+.gallery-button svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gallery-close {
+  top: var(--gallery-close-top);
+  right: var(--gallery-close-right);
+  width: var(--gallery-close-width);
+}
+
+.gallery-arrow {
+  top: 50%;
+  width: var(--gallery-arrow-size);
+  height: var(--gallery-arrow-size);
+  translate: 0 -50%;
+}
+
+.gallery-arrow--prev { left: var(--gallery-arrow-side); }
+.gallery-arrow--next { right: var(--gallery-arrow-side); }
+.gallery-arrow--next svg { rotate: 180deg; }
+
+/* דימוי יחיד: בלי חצים */
+.gallery.is-single .gallery-arrow {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .gallery-button:hover {
+    color: var(--menu-hover-color);
+  }
+}
+
+.gallery-button:focus-visible,
+.gallery-button.is-hover,
+.gallery-button.is-focus {
+  outline: none;
+  color: var(--menu-hover-color);
+}
+
+/* הדימויים שפותחים את הגלריה: Focus בקו מתאר בצבע קווי הגריד (אין להם Hover שנראה) */
+.gallery-trigger {
+  cursor: pointer;
+}
+
+.gallery-trigger:focus-visible {
+  outline: var(--line) solid var(--grid-line-color);
+}
+
+/* ----- מובייל (אין פריים): 20 מהקצוות, חצים קטנים עם אזור נגיעה של 44,
+   במרכז הרווח שבין הדימוי לקצה. הדימוי תמיד בין החצים, ולא נוגע ב-X ----- */
+@media (max-width: 1024px) and (orientation: portrait) {
+  .gallery {
+    --gallery-touch-size: 44px;
+    --gallery-arrow-size: 28px;
+    /* הרווח בין קצה המסך לדימוי: השוליים, החץ, ועוד רווח זהה מהדימוי */
+    --gallery-side-gap: calc(2 * var(--margin-mobile) + var(--gallery-arrow-size));
+    --gallery-top-gap: calc(var(--margin-mobile) + var(--gallery-touch-size));
+    --gallery-box-width: calc(100vw - 2 * var(--gallery-side-gap));
+    --gallery-box-height: calc(100dvh - 2 * var(--gallery-top-gap));
+    --gallery-close-width: 21px;
+  }
+
+  .gallery.is-single {
+    --gallery-box-width: calc(100vw - 2 * var(--margin-mobile));
+  }
+
+  .gallery-close {
+    top: var(--margin-mobile);
+    right: var(--margin-mobile);
+    width: var(--gallery-touch-size);
+    height: var(--gallery-touch-size);
+    margin: calc((var(--gallery-close-width) - var(--gallery-touch-size)) / 2);
+    padding: calc((var(--gallery-touch-size) - var(--gallery-close-width)) / 2);
+  }
+
+  .gallery-arrow {
+    width: var(--gallery-touch-size);
+    height: var(--gallery-touch-size);
+    padding: calc((var(--gallery-touch-size) - var(--gallery-arrow-size)) / 2);
+  }
+
+  .gallery-arrow--prev { left: calc(var(--gallery-side-gap) / 2 - var(--gallery-touch-size) / 2); }
+  .gallery-arrow--next { right: calc(var(--gallery-side-gap) / 2 - var(--gallery-touch-size) / 2); }
+}
+
+@keyframes gallery-fade-in  { from { opacity: 0; } }
+@keyframes gallery-fade-out { to { opacity: 0; } }
+@keyframes gallery-pop { from { opacity: 0; scale: 0.85; } }
+@keyframes gallery-enter-next { from { opacity: 0; translate: var(--gallery-slide-distance) 0; } }
+@keyframes gallery-enter-prev { from { opacity: 0; translate: calc(-1 * var(--gallery-slide-distance)) 0; } }
+@keyframes gallery-leave-next { to { opacity: 0; translate: calc(-1 * var(--gallery-slide-distance)) 0; } }
+@keyframes gallery-leave-prev { to { opacity: 0; translate: var(--gallery-slide-distance) 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery,
+  .gallery.is-closing,
+  .gallery-media {
+    animation: none;
+  }
+}
