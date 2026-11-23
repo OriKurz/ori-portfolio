@@ -50,7 +50,9 @@
         </button>
 
         <!-- הטקסט של הפרויקט. במובייל הוא פזור בתוך הגריד, לפי הפריים tpcM בפיגמה (styles.css).
-             הפסיק לפני 2026 מופיע רק במובייל, ושבירת השורה לפניו רק במחשב -->
+             הפסיק לפני 2026 מופיע רק במובייל, ושבירת השורה לפניו רק במחשב.
+             text-underline: קו תחתון כמו בפיגמה, שמצטייר שורה אחרי שורה כשהיא נכנסת למסך (script.js).
+             הפסקה עטופה ב-span אחד, כי במובייל היא flex, וכל span בתוכה היה הופך לשורה נפרדת -->
         <h1 class="full-project-title text-page-title">The Perfect Crime</h1>
         <p class="full-project-type text-subtitle"><span>Motion Graphics<br>Academic project<span class="full-project-type-comma">,</span><br class="full-project-type-break"> 2026</span></p>
 
@@ -58,7 +60,7 @@
              שומר את הגובה שלה בשורות. data-rows-exact: בדיוק כמה שהטקסט צריך, לא בשורות שלמות -->
         <div class="full-project-description text-body text-body-mobile">
           <p class="full-project-description-intro" data-rows-var="--description-intro-rows" data-rows-exact>What happens when a line worker at a packaging factory plans the perfect crime down to the smallest detail?</p>
-          <p class="full-project-description-story" data-rows-var="--description-story-rows" data-rows-exact>An audio-driven animation and sound design based on a soundbite from the sitcom The Office. Since the soundbite already tells the whole story, the challenge was finding a new one to tell.</p>
+          <p class="full-project-description-story" data-rows-var="--description-story-rows" data-rows-exact><span>An <span class="text-underline">audio-driven animation</span> and sound design based on a soundbite from the sitcom <span class="text-underline">The Office</span>. Since the soundbite already tells the whole story, the challenge was finding a new one to tell.</span></p>
           <p class="full-project-description-credit">Created as part of<br>a motion design studio course</p>
         </div>
       </section>

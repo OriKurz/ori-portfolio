@@ -229,7 +229,12 @@
         requestAnimationFrame(function () {
           overlay.classList.remove("is-covered");
           overlay.classList.add("is-revealing");
-          setTimeout(function () { overlay.remove(); }, cssTime("--page-transition-duration") + 50);
+          setTimeout(function () {
+            overlay.remove();
+            // המעבר נגמר לגמרי: מסמנים ומודיעים (למשל לקווים התחתונים ב-script.js)
+            root.classList.add("is-page-transition-done");
+            document.dispatchEvent(new Event("pagetransitionend"));
+          }, cssTime("--page-transition-duration") + 50);
         });
       }, Math.max(0, holdEnd - Date.now()));
     }

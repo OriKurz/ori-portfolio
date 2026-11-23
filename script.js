@@ -2277,7 +2277,7 @@ const underlinePhraseElements = document.querySelectorAll(".text-underline");
 
 if (underlinePhraseElements.length) {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const staggerTime = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--text-underline-stagger")) || 120;
+  const staggerTime = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--text-underline-stagger")) || 240;
 
   // לכל ביטוי: הטקסט המקורי, ואילו אותיות כבר קיבלו קו
   const phrases = Array.from(underlinePhraseElements).map(function (element) {
@@ -2414,23 +2414,18 @@ if (underlinePhraseElements.length) {
     scheduleCheck();
   }
 
-  // מתחילים לצייר רק כשהעמוד נחשף: אחרי מעבר בין עמודים, באמצע היעלמות הקוביות
+  // מתחילים לצייר רק כשהמעבר בין העמודים נגמר לגמרי והקוביות נעלמו (page-transition.js).
+  // כניסה בלי מעבר (כתובת ישירה, רענון): אחרי --text-underline-start-delay
   function whenPageVisible(callback) {
     const root = document.documentElement;
-    const isCovered = function () {
-      const overlay = document.querySelector(".page-transition");
-      return root.classList.contains("is-page-transition-arriving") || (overlay && !overlay.classList.contains("is-revealing"));
-    };
-    if (!isCovered()) return callback();
-    const duration = getComputedStyle(root).getPropertyValue("--page-transition-duration").trim();
-    const revealDelay = (parseFloat(duration) || 1000) * (duration.endsWith("ms") ? 1 : 1000) / 2;
-    const watcher = new MutationObserver(function () {
-      if (isCovered()) return;
-      watcher.disconnect();
-      setTimeout(callback, revealDelay);
-    });
-    watcher.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
-    watcher.observe(root, { attributes: true, attributeFilter: ["class"] });
+    if (root.classList.contains("is-page-transition-done")) return callback();
+    const transitionRunning = root.classList.contains("is-page-transition-arriving") || document.querySelector(".page-transition");
+    if (transitionRunning) {
+      document.addEventListener("pagetransitionend", callback, { once: true });
+      return;
+    }
+    const startDelay = parseFloat(getComputedStyle(root).getPropertyValue("--text-underline-start-delay")) || 500;
+    setTimeout(callback, startDelay);
   }
 
   const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
