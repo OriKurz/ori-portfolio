@@ -124,7 +124,7 @@
 
   // מחליף את הדימוי המוצג. direction: 1 קדימה, -1 אחורה, 0 פתיחה
   // המעבר בין דימויים, כמו קרוסלה, בלי שינוי של opacity:
-  // א. הנוכחי קטן ל-85% במקום. ב. בגודל הזה הוא מחליק החוצה מהמסך, והבא (גם ב-85%)
+  // א. הנוכחי קטן ל-92% במקום. ב. בגודל הזה הוא מחליק החוצה מהמסך, והבא (גם ב-92%)
   // נכנס מהצד השני ומתמקם במרכז, שניהם יחד. ג. החדש גדל בחזרה ל-100%.
   // התזמונים ב---gallery-shrink-duration, --gallery-slide-duration ו---gallery-grow-duration
   let animating = false;
@@ -154,15 +154,16 @@
     const total = shrink + slide + grow;
     const slideStart = shrink / total;
     const slideEnd = (shrink + slide) / total;
-    const scale = getComputedStyle(gallery).getPropertyValue("--gallery-switch-scale").trim() || "0.85";
+    const scale = getComputedStyle(gallery).getPropertyValue("--gallery-switch-scale").trim() || "0.92";
     const ease = "ease-in-out";
 
     // כמה צריך לזוז כדי לצאת לגמרי מהמסך: חצי מסך ועוד חצי מהדימוי המוקטן
     function offscreen(element) {
       return window.innerWidth / 2 + element.getBoundingClientRect().width / 2 + 1;
     }
-    const outX = -direction * offscreen(previous);
-    const inX = direction * offscreen(next);
+    // החץ הימני (קדימה): הנוכחי יוצא ימינה והבא נכנס משמאל. החץ השמאלי: הפוך
+    const outX = direction * offscreen(previous);
+    const inX = -direction * offscreen(next);
 
     animating = true;
     previous.animate([
@@ -286,7 +287,7 @@
   // בלי גלילה של העמוד מאחור (גלגלת ונגיעה)
   gallery.addEventListener("wheel", function (event) { event.preventDefault(); }, { passive: false });
 
-  // החלקה הצידה בטלפון: ימינה = הקודם, שמאלה = הבא
+  // החלקה הצידה בטלפון: הדימוי זז לכיוון האצבע (שמאלה = הקודם, ימינה = הבא)
   let touchStartX = null;
   let touchStartY = 0;
   gallery.addEventListener("touchstart", function (event) {
@@ -299,6 +300,6 @@
     const dx = event.changedTouches[0].clientX - touchStartX;
     const dy = event.changedTouches[0].clientY - touchStartY;
     touchStartX = null;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? -1 : 1);
   });
 })();
