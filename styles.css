@@ -7358,13 +7358,15 @@ body {
   --gallery-close-top: calc(13 * var(--gallery-px));
   --gallery-close-right: calc(18.5 * var(--gallery-px));
   --gallery-color: var(--color-dark-blue);
-  /* התנועה: השכבה נכנסת ונעלמת ב-fade, הדימוי "קופץ" פנימה עם overshoot קטן,
-     ובדפדוף מחליק לצד ונכנס מהצד השני */
+  /* התנועה: השכבה נכנסת ונעלמת ב-fade, והדימוי "קופץ" פנימה עם overshoot קטן */
   --gallery-fade-duration: 0.25s;
   --gallery-pop-duration: 0.45s;
   --gallery-pop-ease: cubic-bezier(0.34, 1.4, 0.64, 1);
-  --gallery-slide-duration: 0.35s;
-  --gallery-slide-distance: 6vw;
+  /* המעבר בין דימויים (gallery.js): קטן ל-85%, מחליק כמו קרוסלה, וגדל בחזרה */
+  --gallery-switch-scale: 0.85;
+  --gallery-shrink-duration: 0.25s;
+  --gallery-slide-duration: 0.45s;
+  --gallery-grow-duration: 0.25s;
 
   position: fixed;
   inset: 0;
@@ -7391,6 +7393,7 @@ html.gallery-open body {
 .gallery-stage {
   position: absolute;
   inset: 0;
+  overflow: hidden;
   display: grid;
   place-items: center;
 }
@@ -7405,10 +7408,15 @@ html.gallery-open body {
   animation: gallery-pop var(--gallery-pop-duration) var(--gallery-pop-ease) both;
 }
 
-.gallery-media.is-entering-next { animation: gallery-enter-next var(--gallery-slide-duration) ease-out both; }
-.gallery-media.is-entering-prev { animation: gallery-enter-prev var(--gallery-slide-duration) ease-out both; }
-.gallery-media.is-leaving-next  { animation: gallery-leave-next var(--gallery-slide-duration) ease-in both; }
-.gallery-media.is-leaving-prev  { animation: gallery-leave-prev var(--gallery-slide-duration) ease-in both; }
+/* דימוי שנכנס במעבר: בלי הקפיצה של הפתיחה (gallery.js מניע אותו) */
+.gallery-media.is-switching {
+  animation: none;
+}
+
+/* דימוי גבוה (הפוסטרים של שונרא): כל הגובה הפנוי, פחות משבצת למעלה ולמטה */
+.gallery.is-tall {
+  --gallery-box-height: calc(100dvh - 2 * var(--gallery-cell));
+}
 
 /* ----- הכפתורים ----- */
 .gallery-button {
@@ -7491,6 +7499,10 @@ html.gallery-open body {
     --gallery-box-width: calc(100vw - 2 * var(--margin-mobile));
   }
 
+  .gallery.is-tall {
+    --gallery-box-height: calc(100dvh - 2 * var(--margin-mobile));
+  }
+
   .gallery-close {
     top: var(--margin-mobile);
     right: var(--margin-mobile);
@@ -7513,10 +7525,6 @@ html.gallery-open body {
 @keyframes gallery-fade-in  { from { opacity: 0; } }
 @keyframes gallery-fade-out { to { opacity: 0; } }
 @keyframes gallery-pop { from { opacity: 0; scale: 0.85; } }
-@keyframes gallery-enter-next { from { opacity: 0; translate: var(--gallery-slide-distance) 0; } }
-@keyframes gallery-enter-prev { from { opacity: 0; translate: calc(-1 * var(--gallery-slide-distance)) 0; } }
-@keyframes gallery-leave-next { to { opacity: 0; translate: calc(-1 * var(--gallery-slide-distance)) 0; } }
-@keyframes gallery-leave-prev { to { opacity: 0; translate: var(--gallery-slide-distance) 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   .gallery,

@@ -8,6 +8,8 @@
 //                            כל דימוי בפנים הוא פריט נפרד, והגלריה נפתחת
 //                            על זה שמוצג עכשיו (is-shown).
 //   data-gallery-order="מספר"  (לא חובה) הסדר בקבוצה, כשהוא שונה מהסדר ב-HTML.
+//   data-gallery-tall          (לא חובה) הדימוי תופס את כל הגובה הפנוי, פחות משבצת
+//                            למעלה ולמטה (במובייל 20px), כמו הפוסטרים של שונרא.
 // סגירה: X, לחיצה על השכבה מחוץ לדימוי, או Esc. בזמן שהגלריה פתוחה העמוד לא נגלל.
 // דפדוף: החצים, מקשי החצים, והחלקה הצידה בטלפון.
 // =========================================
@@ -42,6 +44,9 @@
     trigger.addEventListener("click", function () {
       let start = media[0];
       if (eachSelector) start = trigger.querySelector(eachSelector + ".is-shown") || media[0];
+      // הגודל של משבצת בעמוד, לשוליים של דימוי גבוה
+      gallery.style.setProperty("--gallery-cell", getComputedStyle(trigger).getPropertyValue("--cell"));
+      gallery.classList.toggle("is-tall", trigger.hasAttribute("data-gallery-tall"));
       open(name, groups[name].indexOf(start));
     });
     trigger.addEventListener("keydown", function (event) {
@@ -118,22 +123,73 @@
   }
 
   // מחליף את הדימוי המוצג. direction: 1 קדימה, -1 אחורה, 0 פתיחה
+  // המעבר בין דימויים, כמו קרוסלה, בלי שינוי של opacity:
+  // א. הנוכחי קטן ל-85% במקום. ב. בגודל הזה הוא מחליק החוצה מהמסך, והבא (גם ב-85%)
+  // נכנס מהצד השני ומתמקם במרכז, שניהם יחד. ג. החדש גדל בחזרה ל-100%.
+  // התזמונים ב---gallery-shrink-duration, --gallery-slide-duration ו---gallery-grow-duration
+  let animating = false;
+  let pendingStep = 0;
+
+  function readDuration(name) {
+    return parseFloat(getComputedStyle(gallery).getPropertyValue(name)) * 1000 || 0;
+  }
+
   function show(newIndex, direction) {
     index = (newIndex + items.length) % items.length;
     const next = makeMedia(items[index]);
-    if (direction) next.classList.add(direction > 0 ? "is-entering-next" : "is-entering-prev");
-
     const previous = current;
-    if (previous) {
-      if (reducedMotion.matches || !direction) {
-        previous.remove();
-      } else {
-        previous.classList.add(direction > 0 ? "is-leaving-next" : "is-leaving-prev");
-        previous.addEventListener("animationend", function () { previous.remove(); }, { once: true });
-      }
-    }
     stage.appendChild(next);
     current = next;
+
+    if (!previous) return;
+    if (reducedMotion.matches || !direction) {
+      previous.remove();
+      return;
+    }
+
+    next.classList.add("is-switching");
+    const shrink = readDuration("--gallery-shrink-duration");
+    const slide = readDuration("--gallery-slide-duration");
+    const grow = readDuration("--gallery-grow-duration");
+    const total = shrink + slide + grow;
+    const slideStart = shrink / total;
+    const slideEnd = (shrink + slide) / total;
+    const scale = getComputedStyle(gallery).getPropertyValue("--gallery-switch-scale").trim() || "0.85";
+    const ease = "ease-in-out";
+
+    // כמה צריך לזוז כדי לצאת לגמרי מהמסך: חצי מסך ועוד חצי מהדימוי המוקטן
+    function offscreen(element) {
+      return window.innerWidth / 2 + element.getBoundingClientRect().width / 2 + 1;
+    }
+    const outX = -direction * offscreen(previous);
+    const inX = direction * offscreen(next);
+
+    animating = true;
+    previous.animate([
+      { scale: "1", translate: "0 0", offset: 0, easing: ease },
+      { scale: scale, translate: "0 0", offset: slideStart, easing: ease },
+      { scale: scale, translate: outX + "px 0", offset: slideEnd },
+      { scale: scale, translate: outX + "px 0", offset: 1 }
+    ], { duration: total, fill: "forwards" });
+
+    const animation = next.animate([
+      { scale: scale, translate: inX + "px 0", offset: 0 },
+      { scale: scale, translate: inX + "px 0", offset: slideStart, easing: ease },
+      { scale: scale, translate: "0 0", offset: slideEnd, easing: ease },
+      { scale: "1", translate: "0 0", offset: 1 }
+    ], { duration: total });
+
+    animation.finished.then(function () {
+      previous.remove();
+      if (current !== next) return; // הגלריה נסגרה או נפתחה מחדש בינתיים
+      animating = false;
+      // לחיצה שהגיעה בזמן המעבר: המעבר הבא מתחיל עכשיו
+      if (pendingStep) {
+        const queued = pendingStep;
+        pendingStep = 0;
+        step(queued);
+      }
+    }).catch(function () {});
   }
 
   // ----- נעילת הגלילה: העמוד וכל השאר לא זזים, ואי אפשר להגיע אליהם ב-Tab -----
@@ -159,6 +215,8 @@
     gallery.classList.toggle("is-single", items.length < 2);
     stage.innerHTML = "";
     current = null;
+    animating = false;
+    pendingStep = 0;
     show(Math.max(0, startIndex), 0);
     gallery.hidden = false;
     gallery.classList.remove("is-closing");
@@ -174,6 +232,8 @@
       gallery.classList.remove("is-closing");
       stage.innerHTML = "";
       current = null;
+      animating = false;
+      pendingStep = 0;
     }
     if (reducedMotion.matches) {
       finish();
@@ -190,6 +250,10 @@
 
   function step(direction) {
     if (items.length < 2) return;
+    if (animating) {
+      pendingStep = direction;
+      return;
+    }
     show(index + direction, direction);
   }
 
