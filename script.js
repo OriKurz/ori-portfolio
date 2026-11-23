@@ -1582,7 +1582,7 @@ const nextProjectsStrip = document.querySelector(".next-projects");
 if (nextProjectsStrip) {
   const track = nextProjectsStrip.querySelector(".next-projects-track");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const secondsPerProject = 7;  // המהירות הרגילה: כמה שניות לוקח לפרויקט אחד לעבור
+  const secondsPerProject = 3;  // המהירות הרגילה: כמה שניות לוקח לפרויקט אחד לעבור
   const mobileSpeedUp = 2.25;   // במובייל הרצועה מהירה פי 2.25
   const mobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
   const maxPush = 5;            // כמה מהר יותר (פי) כשהעכבר צמוד לקצה השמאלי
