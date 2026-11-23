@@ -2266,6 +2266,186 @@ if (errorBackButton) {
 }
 
 // =========================================
+// מתחילים רק כשהמעבר בין העמודים נגמר לגמרי והקוביות נעלמו (page-transition.js).
+// כניסה בלי מעבר (כתובת ישירה, רענון): אחרי --text-underline-start-delay.
+// משותף לקווים התחתונים ולטקסט שמופיע שורה אחרי שורה
+// =========================================
+function whenPageVisible(callback) {
+  const root = document.documentElement;
+  if (root.classList.contains("is-page-transition-done")) return callback();
+  const transitionRunning = root.classList.contains("is-page-transition-arriving") || document.querySelector(".page-transition");
+  if (transitionRunning) {
+    document.addEventListener("pagetransitionend", callback, { once: true });
+    return;
+  }
+  const startDelay = parseFloat(getComputedStyle(root).getPropertyValue("--text-underline-start-delay")) || 500;
+  setTimeout(callback, startDelay);
+}
+
+// =========================================
+// טקסט רץ שמופיע שורה אחרי שורה (רק במובייל, בעמודי הפרויקטים).
+// כל פסקה מוסתרת עד שהחלק העליון שלה עובר 85% מגובה המסך, ואז השורות שלה מופיעות
+// אחת אחרי השנייה, כל אחת בבת אחת, עם --text-line-reveal-stagger ביניהן.
+// ההסתרה היא clip-path על הפסקה, עד הגבול שבין השורה האחרונה שהופיעה לבאה אחריה,
+// כך שהטקסט והשבירה שלו לא משתנים. השורות נמדדות לפי המיקום שלהן על המסך,
+// ונמדדות מחדש כשגודל המסך משתנה. פסקה שהופיעה נשארת גלויה.
+// ב-prefers-reduced-motion ובמחשב: הטקסט גלוי מיד.
+// lineRevealCovers(element): האם השורה הזו כבר הופיעה (הקווים התחתונים מחכים לה)
+// =========================================
+const revealParagraphElements = document.querySelectorAll(".full-project-description p");
+let lineRevealCovers = function () { return true; };
+
+if (revealParagraphElements.length) {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const revealMobileScreen = window.matchMedia("(max-width: 1024px) and (orientation: portrait)");
+  const revealStagger = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--text-line-reveal-stagger")) || 90;
+
+  // לכל פסקה: הגבולות שבין השורות (מהחלק העליון שלה), וכמה שורות כבר הופיעו
+  const paragraphs = Array.from(revealParagraphElements).map(function (element) {
+    return { element: element, boundaries: [], shownLines: 0, queuedLines: 0, triggered: false, done: false };
+  });
+  let started = false;
+  let nextRevealTime = 0;
+
+  function revealActive() {
+    return revealMobileScreen.matches && !reducedMotion.matches;
+  }
+
+  // מודד את השורות של פסקה לפי המיקום של הטקסט על המסך.
+  // הגבול בין שתי שורות: באמצע בין המרכזים שלהן (שם נגמרת שורה אחת ומתחילה הבאה)
+  function measureLines(paragraph) {
+    const element = paragraph.element;
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const top = element.getBoundingClientRect().top;
+    const centers = [];
+    Array.from(range.getClientRects()).forEach(function (rect) {
+      if (rect.width === 0 || rect.height === 0) return;
+      const center = rect.top + rect.height / 2 - top;
+      const sameLine = centers.some(function (existing) { return Math.abs(existing - center) < rect.height / 2; });
+      if (!sameLine) centers.push(center);
+    });
+    centers.sort(function (a, b) { return a - b; });
+    paragraph.boundaries = centers.slice(1).map(function (center, index) {
+      return (centers[index] + center) / 2;
+    });
+  }
+
+  // מציג את השורות שכבר הופיעו (clip-path עד הגבול שאחרי השורה האחרונה שהופיעה)
+  function applyClip(paragraph) {
+    const element = paragraph.element;
+    if (paragraph.done || !revealActive()) {
+      element.style.clipPath = "";
+      return;
+    }
+    const lineCount = paragraph.boundaries.length + 1;
+    if (paragraph.shownLines >= lineCount) {
+      paragraph.done = true;
+      element.style.clipPath = "";
+      return;
+    }
+    // 50 פיקסלים לצדדים, כדי שהקווים התחתונים בקצה לא ייחתכו
+    const bottom = paragraph.shownLines === 0 ? 0 : paragraph.boundaries[paragraph.shownLines - 1];
+    element.style.clipPath = "polygon(-50px 0, calc(100% + 50px) 0, calc(100% + 50px) " + bottom + "px, -50px " + bottom + "px)";
+  }
+
+  function showNextLine(paragraph) {
+    paragraph.shownLines++;
+    applyClip(paragraph);
+    scheduleUnderlineCheck();
+  }
+
+  // שורות שנכנסות יחד (גם מכמה פסקאות) מופיעות אחת אחרי השנייה.
+  // אחרי מדידה מחדש: רק השורות שנוספו נכנסות לתור
+  function queueParagraph(paragraph) {
+    paragraph.triggered = true;
+    const lineCount = paragraph.boundaries.length + 1;
+    for (; paragraph.queuedLines < lineCount; paragraph.queuedLines++) {
+      const now = performance.now();
+      const showAt = Math.max(now, nextRevealTime);
+      nextRevealTime = showAt + revealStagger;
+      setTimeout(function () { showNextLine(paragraph); }, showAt - now);
+    }
+  }
+
+  let revealCheckScheduled = false;
+
+  function checkParagraphs() {
+    revealCheckScheduled = false;
+    if (!started || !revealActive()) return;
+    const revealLimit = window.innerHeight * 0.85;
+    paragraphs
+      .filter(function (paragraph) {
+        if (paragraph.triggered || paragraph.done) return false;
+        const rect = paragraph.element.getClientRects()[0];
+        return rect && rect.top <= revealLimit; // מוסתרת (display: none) או עוד לא הגיעה: מחכה
+      })
+      .sort(function (a, b) { return a.element.getBoundingClientRect().top - b.element.getBoundingClientRect().top; })
+      .forEach(queueParagraph);
+  }
+
+  function scheduleRevealCheck() {
+    if (revealCheckScheduled) return;
+    revealCheckScheduled = true;
+    requestAnimationFrame(checkParagraphs);
+  }
+
+  // מודד מחדש את כל הפסקאות. פסקה באמצע ההופעה ממשיכה מאותה שורה
+  function measureAll() {
+    paragraphs.forEach(function (paragraph) {
+      if (!paragraph.done) measureLines(paragraph);
+      applyClip(paragraph);
+      if (paragraph.triggered && !paragraph.done && revealActive()) queueParagraph(paragraph);
+    });
+    scheduleRevealCheck();
+  }
+
+  lineRevealCovers = function (element) {
+    if (!revealActive()) return true;
+    const paragraphElement = element.closest(".full-project-description p");
+    const paragraph = paragraphs.find(function (item) { return item.element === paragraphElement; });
+    if (!paragraph || paragraph.done) return true;
+    if (paragraph.shownLines === 0) return false;
+    const rect = element.getClientRects()[0];
+    if (!rect) return false;
+    const lineCenter = rect.top + rect.height / 2 - paragraphElement.getBoundingClientRect().top;
+    const bottom = paragraph.shownLines > paragraph.boundaries.length ? Infinity : paragraph.boundaries[paragraph.shownLines - 1];
+    return lineCenter < bottom;
+  };
+
+  // ההסתרה מופעלת רק עכשיו, כשהסקריפט נטען (בלי JavaScript הטקסט גלוי)
+  paragraphs.forEach(applyClip);
+
+  document.addEventListener("scroll", scheduleRevealCheck, { capture: true, passive: true });
+  window.addEventListener("resize", scheduleRevealCheck);
+
+  const revealFontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  revealFontsReady.then(function () {
+    measureAll();
+    whenPageVisible(function () {
+      started = true;
+      scheduleRevealCheck();
+    });
+  });
+
+  // שינוי גודל המסך: השורות נמדדות מחדש (רק כשהרוחב משתנה, לא כששורת הכתובת בטלפון זזה)
+  let revealLastWidth = window.innerWidth;
+  let revealResizeTimer = null;
+  window.addEventListener("resize", function () {
+    if (window.innerWidth === revealLastWidth) return;
+    revealLastWidth = window.innerWidth;
+    clearTimeout(revealResizeTimer);
+    revealResizeTimer = setTimeout(measureAll, 150);
+  });
+  // מעבר בין מובייל למחשב (סיבוב הטלפון), ושינוי בהעדפת התנועה
+  revealMobileScreen.addEventListener("change", measureAll);
+  reducedMotion.addEventListener("change", measureAll);
+}
+
+// הקווים התחתונים בודקים שוב כששורה מופיעה (מוגדר בקוד של הקווים)
+let scheduleUnderlineCheck = function () {};
+
+// =========================================
 // קו תחתון בטקסט הרץ (text-underline, כרגע ב-Leftovers).
 // כל ביטוי מתחלק לשורות (text-underline-line), וכל שורה היא קו נפרד.
 // קו מצטייר משמאל לימין כשהשורה שלו עוברת 85% מגובה האזור הנראה (המסך או אזור הגלילה של התיאור).
@@ -2369,6 +2549,7 @@ if (underlinePhraseElements.length) {
       if (!lineElement.isConnected) return false;
       const rect = lineElement.getClientRects()[0];
       if (!rect || rect.top > drawLimit) return true; // מוסתרת או עוד לא הגיעה
+      if (!lineRevealCovers(lineElement)) return true; // השורה של הטקסט עוד לא הופיעה (במובייל)
       ready.push({ element: lineElement, rect: rect });
       return false;
     });
@@ -2385,6 +2566,7 @@ if (underlinePhraseElements.length) {
 
   document.addEventListener("scroll", scheduleCheck, { capture: true, passive: true });
   window.addEventListener("resize", scheduleCheck);
+  scheduleUnderlineCheck = scheduleCheck;
 
   // מחלק את כל הביטויים לשורות. שורה שחלק ממנה כבר הצטייר: מופיעה מיד
   function splitAll() {
@@ -2417,20 +2599,6 @@ if (underlinePhraseElements.length) {
 
     waitingLines = waiting;
     scheduleCheck();
-  }
-
-  // מתחילים לצייר רק כשהמעבר בין העמודים נגמר לגמרי והקוביות נעלמו (page-transition.js).
-  // כניסה בלי מעבר (כתובת ישירה, רענון): אחרי --text-underline-start-delay
-  function whenPageVisible(callback) {
-    const root = document.documentElement;
-    if (root.classList.contains("is-page-transition-done")) return callback();
-    const transitionRunning = root.classList.contains("is-page-transition-arriving") || document.querySelector(".page-transition");
-    if (transitionRunning) {
-      document.addEventListener("pagetransitionend", callback, { once: true });
-      return;
-    }
-    const startDelay = parseFloat(getComputedStyle(root).getPropertyValue("--text-underline-start-delay")) || 500;
-    setTimeout(callback, startDelay);
   }
 
   const fontsReady = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
