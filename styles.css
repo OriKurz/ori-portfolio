@@ -4193,13 +4193,13 @@ body {
        (בלי --elements-shift: מה שאחרי החפצים בגריד יורד בו לבד) */
     --part-c-row: calc(var(--section-title-elements-row) + var(--part-b-rows) + var(--description-story-rows));
 
-    /* Main Scenes בשורה השנייה של החלק, והפריימים מתחתיה: עמודות 1 עד 5, כל 3 שורות (1, 2, 4, 3 כמו בפיגמה) */
+    /* Main Scenes בשורה השנייה של החלק, והפריימים מתחתיה: עמודות 1 עד 5, כל 3 שורות, לפי הסדר 1, 2, 3, 4 */
     --section-title-scenes-column: 0;
     --section-title-scenes-row: calc(var(--part-c-row) + 1);
     --still-1-column: 1;   --still-1-row: calc(var(--part-c-row) + 2);
     --still-2-column: 1;   --still-2-row: calc(var(--part-c-row) + 5);
-    --still-4-column: 1;   --still-4-row: calc(var(--part-c-row) + 8);
-    --still-3-column: 1;   --still-3-row: calc(var(--part-c-row) + 11);
+    --still-3-column: 1;   --still-3-row: calc(var(--part-c-row) + 8);
+    --still-4-column: 1;   --still-4-row: calc(var(--part-c-row) + 11);
     --still-columns: 5;
 
     /* Color palette, העיגולים ב-5 השורות שמתחת, ו-What's Next אחרי שורה ריקה */
