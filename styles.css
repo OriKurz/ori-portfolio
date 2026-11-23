@@ -143,7 +143,7 @@
   --grid-line-color: var(--color-pink);
 
   /* סמן העכבר (במחשב): ריבוע בצבע מהפלטה, שמתעגל מעל אלמנט לחיץ */
-  --cursor-size: 16px;
+  --cursor-size: 22px;
   --cursor-pop-duration: 0.18s;
   --cursor-shape-duration: 250ms;  /* המעבר מריבוע לעיגול ובחזרה */
   --cursor-shape-bounce: 1.25;     /* הקפיצה בהתעגלות */

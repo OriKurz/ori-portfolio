@@ -11,6 +11,7 @@
 if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
   const paletteNames = ["blue", "pink", "orange", "mint", "dark-blue"];
   const rootStyle = getComputedStyle(document.documentElement);
+  const creamPage = document.documentElement.matches(".page-shunra, .page-touch-grass");
 
   // החץ של המערכת נעלם בכל העמוד (styles.css)
   document.documentElement.classList.add("has-custom-cursor");
@@ -120,6 +121,8 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
 
   // צבע אקראי מהפלטה, מתוך הצבעים שלא ברשימה
   function pickFrom(used) {
+    // בעמודים עם רקע קרם (Shunra ו-Touch Grass) מנטה לא נראה, אז הוא יוצא מההגרלה
+    if (creamPage) used.add("mint");
     let options = palette.filter(function (color) { return !used.has(color.name); });
     if (!options.length) options = palette;
     return "var(--color-" + options[Math.floor(Math.random() * options.length)].name + ")";
