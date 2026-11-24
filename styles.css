@@ -2603,6 +2603,8 @@ body {
   top: var(--grid-top);
   width: calc(var(--grid-columns) * var(--cell) + var(--line));
   height: calc(var(--grid-rows) * var(--cell) + var(--line));
+  /* כשהגריד ממלא בדיוק את החלון, הקו הימני האחרון יוצא ממנו: לא לגרום לגלילה הצידה */
+  max-width: calc(100vw - var(--grid-left));
   color: var(--color-dark-blue);
 }
 

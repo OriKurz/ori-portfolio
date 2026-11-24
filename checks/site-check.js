@@ -251,17 +251,6 @@ function pageChecks() {
     if (outside) fail("ג. אלמנט מחוץ לעמוד", `${describe(element)} ב-(${Math.round(left)}, ${Math.round(top)})`);
   });
 
-  // ד. טקסט לא נחתך בתגיות, בלייבלים ובקופסאות הטקסט
-  const textBoxSelector = "[class*='tag'], [class*='label'], [class*='caption'], [class*='box'], .section-title, .play-hint, .grid-box";
-  Array.from(document.querySelectorAll(textBoxSelector)).forEach((element) => {
-    if (!isShown(element) || !element.innerText || !element.innerText.trim()) return;
-    if (getComputedStyle(element).display.startsWith("inline") && getComputedStyle(element).display !== "inline-block") return;
-    if (element.clientWidth === 0 || element.clientHeight === 0) return;
-    const extraHeight = element.scrollHeight - element.clientHeight;
-    const extraWidth = element.scrollWidth - element.clientWidth;
-    if (extraHeight > 1 || extraWidth > 1) fail("ד. טקסט נחתך", `${describe(element)} (חסרים ${Math.max(extraWidth, 0)}px לרוחב, ${Math.max(extraHeight, 0)}px לגובה)`);
-  });
-
   // ה. הפונטים נטענו: הפונט הראשון של כל טקסט נראה, במשקל ובסגנון שלו
   const fonts = new Set();
   Array.from(document.querySelectorAll("body *")).forEach((element) => {
@@ -279,13 +268,113 @@ function pageChecks() {
   // ח. What's Next: הרצועה צמודה מיד מתחת לשורה (בלי שורת רווח)
   const strip = document.querySelector(".next-projects");
   if (strip && isShown(strip)) {
-    const title = Array.from(document.querySelectorAll("body *")).find((element) => hasOwnText(element) && /what.s\s*next/i.test(element.textContent) && isShown(element));
+    const title = Array.from(document.querySelectorAll("body *")).find((element) => hasOwnText(element) && /what.s\s*next/i.test(element.textContent.replace(/\s+/g, " ")) && isShown(element));
     if (title) {
-      const row = title.closest(".section-title, .grid-box, .on-grid") || title;
-      const line = parseFloat(getComputedStyle(row).getPropertyValue("--line")) || 3;
-      const gap = strip.getBoundingClientRect().top - row.getBoundingClientRect().bottom;
-      if (gap > 1 || gap < -(line + 1)) fail("ח. What's Next לא צמוד", `${Math.round(gap)}px בין השורה של What's Next לרצועה`);
+      // הכותרת יושבת בשורה האחרונה של הגריד, והרצועה מתחילה בקו שמתחתיה:
+      // בין תחתית הכותרת לרצועה יש פחות משורה שלמה, והרצועה לא עולה על הכותרת
+      const measure = (name) => {
+        const probe = document.createElement("div");
+        probe.style.cssText = `position:absolute;left:0;top:0;height:0;visibility:hidden;width:var(${name})`;
+        title.appendChild(probe);
+        const value = probe.getBoundingClientRect().width;
+        probe.remove();
+        return value;
+      };
+      const cell = measure("--cell");
+      const line = measure("--line") || 3;
+      const gap = strip.getBoundingClientRect().top - title.getBoundingClientRect().bottom;
+      if (gap >= cell - line || gap < -(line + 1)) fail("ח. What's Next לא צמוד", `${Math.round(gap)}px בין What's Next לרצועה (משבצת: ${Math.round(cell)}px)`);
     }
+  }
+  return failures;
+}
+
+// ----- ד. טקסט לא נחתך: האותיות בתוך הקופסה הנראית שלהן -----
+// הקופסה הנראית = האלמנט עצמו או ההורה הקרוב שיש לו רקע, מסגרת או חיתוך (הכדור, המלבן הכתום).
+// אלמנט שסגור בכוונה (clip-path של 100%, נפתח ב-hover או בנגיעה) נבדק רק כשהוא פתוח (openStates)
+const textBoxSelector = "[class*='tag'], [class*='label'], [class*='caption'], [class*='box'], .section-title, .play-hint, .grid-box";
+function textClipChecks(selector) {
+  const failures = [];
+  const describe = (element) => {
+    const classes = (element.getAttribute("class") || "").trim().split(/\s+/).filter(Boolean).slice(0, 2).join(".");
+    return element.tagName.toLowerCase() + (classes ? "." + classes : "") + ` "${element.innerText.trim().replace(/\s+/g, " ").slice(0, 40)}"`;
+  };
+  const isShown = (element) => {
+    for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0 || node.hasAttribute("hidden")) return false;
+    }
+    return true;
+  };
+  const isClosed = (element) => {
+    for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+      const clip = getComputedStyle(node).clipPath;
+      if (/inset\(/.test(clip) && /100%/.test(clip)) return true;
+    }
+    return false;
+  };
+  const hasVisibleBox = (node) => {
+    const style = getComputedStyle(node);
+    const background = style.backgroundColor;
+    const alpha = /rgba\(/.test(background) ? Number(background.split(",")[3].replace(")", "")) : background === "transparent" ? 0 : 1;
+    return alpha > 0 || style.backgroundImage !== "none" || parseFloat(style.borderTopWidth) > 0 ||
+      style.overflowX !== "visible" || style.overflowY !== "visible" || style.clipPath !== "none";
+  };
+  document.querySelectorAll(selector).forEach((element) => {
+    if (!element.innerText || !element.innerText.trim() || !isShown(element) || isClosed(element)) return;
+    let boxElement = null;
+    for (let node = element, level = 0; node && node !== document.body && level < 5; node = node.parentElement, level++) {
+      if (hasVisibleBox(node)) { boxElement = node; break; }
+    }
+    if (!boxElement) return;
+    // אזור גלילה (כמו התיאור הארוך ב-Leftovers): הטקסט צריך להיות בתוך כל התוכן שלו, גם מה שעוד לא נגלל
+    const visible = boxElement.getBoundingClientRect();
+    const style = getComputedStyle(boxElement);
+    const scrolls = /auto|scroll/.test(style.overflowX + style.overflowY);
+    const box = scrolls ? {
+      left: visible.left - boxElement.scrollLeft, top: visible.top - boxElement.scrollTop,
+      right: visible.left - boxElement.scrollLeft + boxElement.scrollWidth, bottom: visible.top - boxElement.scrollTop + boxElement.scrollHeight,
+    } : visible;
+    let worst = 0;
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    for (let text = walker.nextNode(); text; text = walker.nextNode()) {
+      if (!text.textContent.trim() || !isShown(text.parentElement)) continue;
+      const range = document.createRange();
+      range.selectNodeContents(text);
+      Array.from(range.getClientRects()).forEach((rect) => {
+        if (!rect.width || !rect.height) return;
+        worst = Math.max(worst, box.left - rect.left, rect.right - box.right, box.top - rect.top, rect.bottom - box.bottom);
+      });
+    }
+    // עד 2 פיקסלים: המדידה כוללת את הרווח שאחרי האות, ולא רק את האות עצמה
+    if (worst > 2) failures.push({ check: "ד. טקסט נחתך", element: `${describe(element)} (יוצא ${Math.round(worst)}px מהקופסה)` });
+  });
+  return failures;
+}
+
+// אלמנטים שנפתחים ב-hover (במחשב) או בנגיעה (בטלפון): פותחים כל אחד ובודקים אותו פתוח
+const openStates = [
+  // שונרא: המלבנים הכתומים של המוצרים
+  { page: "shunra-project.html", trigger: ".shunra-product-image", target: ".shunra-product-label", touch: "tap" },
+  // אינדקס: הכיתובים במחשב (hover), והתגיות בטלפון (התמונה שבמרכז המסך)
+  { page: "projects.html", trigger: ".projects-image", target: textBoxSelector, touch: "center" },
+];
+async function checkOpenStates(page, file, touch) {
+  const failures = [];
+  const mobileLayout = await page.evaluate(() => matchMedia("(max-width: 1024px) and (orientation: portrait)").matches);
+  for (const state of openStates.filter((s) => s.page === file)) {
+    const action = touch ? state.touch : "hover";
+    if (action === "center" && !mobileLayout) continue; // מגע בפריסת מחשב: אין דרך לפתוח, אז אין מה לבדוק
+    const triggers = await page.$$(state.trigger);
+    for (const trigger of triggers) {
+      if (!(await trigger.isVisible())) continue;
+      if (action === "hover") await trigger.hover({ force: true });
+      else if (action === "tap") await trigger.tap({ force: true });
+      else await trigger.evaluate((element) => element.scrollIntoView({ block: "center", behavior: "instant" }));
+      await page.waitForTimeout(800);
+      failures.push(...await page.evaluate(textClipChecks, state.target));
+    }
+    if (action === "hover") await page.mouse.move(0, 0);
   }
   return failures;
 }
@@ -299,48 +388,50 @@ function imageChecks() {
   }).map((image) => ({ check: "ז. תמונה לא נטענה", element: image.getAttribute("src") }));
 }
 
-// ----- השוואת הסימולציות: מיקום, גודל ועיצוב של כל אלמנט (ט) -----
+// ----- השוואת הסימולציות (ט): המיקום והגודל של כל אלמנט נראה, מול כרום הרגיל -----
+// (הבדלי עיצוב שנובעים מהחלופות, כמו hidden במקום clip, לא נחשבים: רק מה שזז או משנה גודל)
 const movingSelector = [
   ".page-transition", ".custom-cursor", "[class*='ball']", "#shunra-sticker-layer", ".stk",
   ".next-projects-track", ".contact-banner", ".projects-track", "video",
 ].join(", ");
 function dumpLayout(movingSelector) {
-  const origin = location.origin;
-  return [document.documentElement, ...document.querySelectorAll("body, body *")]
-    .filter((element) => !element.closest(movingSelector) && !["SCRIPT", "STYLE"].includes(element.tagName))
-    .map((element) => {
-      const style = getComputedStyle(element);
-      const values = {};
-      for (let i = 0; i < style.length; i++) {
-        const name = style[i];
-        if (!name.startsWith("--")) values[name] = style.getPropertyValue(name).split(origin).join("");
-      }
-      const box = element.getBoundingClientRect();
-      const classes = (element.getAttribute("class") || "").trim().split(/\s+/).filter(Boolean).slice(0, 2).join(".");
-      return { name: element.tagName.toLowerCase() + (classes ? "." + classes : ""), box: [box.x, box.y, box.width, box.height], values };
-    });
-}
-// שני ערכים שווים כשהמספרים שבהם שונים בפחות מ-2 (פיקסלים), ושאר הטקסט זהה
-function sameValue(a, b) {
-  if (a === b) return true;
-  const numbers = /-?\d*\.?\d+(?:e-?\d+)?/g;
-  if (a.replace(numbers, "#") !== b.replace(numbers, "#")) return false;
-  const na = a.match(numbers) || [];
-  const nb = b.match(numbers) || [];
-  return na.every((n, i) => Math.abs(Number(n) - Number(nb[i])) <= tolerance);
+  const isShown = (element) => {
+    for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0 || node.hasAttribute("hidden")) return false;
+    }
+    return true;
+  };
+  // המקום של אלמנט בעמוד: מספר הילד בכל רמה, כדי להשוות כל אלמנט לעצמו
+  const placeOf = (element) => {
+    const parts = [];
+    for (let node = element; node && node !== document.documentElement; node = node.parentElement) {
+      parts.unshift(Array.prototype.indexOf.call(node.parentElement.children, node));
+    }
+    return parts.join("/");
+  };
+  const layout = {};
+  document.querySelectorAll("body *").forEach((element) => {
+    if (element.closest(movingSelector) || ["SCRIPT", "STYLE"].includes(element.tagName) || !isShown(element)) return;
+    const box = element.getBoundingClientRect();
+    if (box.width < 1 || box.height < 1) return;
+    const classes = (element.getAttribute("class") || "").trim().split(/\s+/).filter(Boolean).slice(0, 2).join(".");
+    layout[placeOf(element)] = { name: element.tagName.toLowerCase() + (classes ? "." + classes : ""), box: [box.x, box.y, box.width, box.height] };
+  });
+  return layout;
 }
 function compareLayouts(reference, simulated) {
   const failures = [];
-  if (reference.length !== simulated.length) {
-    failures.push({ check: "ט. שונה מכרום הרגיל", element: `${simulated.length} אלמנטים במקום ${reference.length}` });
-    return failures;
-  }
-  reference.forEach((a, i) => {
-    const b = simulated[i];
-    const moved = a.box.some((v, k) => Math.abs(v - b.box[k]) > tolerance);
-    if (moved) failures.push({ check: "ט. שונה מכרום הרגיל", element: `${a.name}: מיקום/גודל ${a.box.map(Math.round).join(",")} ← ${b.box.map(Math.round).join(",")}` });
-    const styles = Object.keys(a.values).filter((name) => !sameValue(a.values[name], b.values[name] || ""));
-    if (styles.length) failures.push({ check: "ט. שונה מכרום הרגיל", element: `${a.name}: ${styles.slice(0, 3).map((n) => `${n} ${a.values[n].slice(0, 40)} ← ${(b.values[n] || "").slice(0, 40)}`).join("; ")}` });
+  Object.keys(reference).forEach((place) => {
+    const a = reference[place];
+    const b = simulated[place];
+    if (!b) {
+      failures.push({ check: "ט. שונה מכרום הרגיל", element: `${a.name}: לא מוצג` });
+      return;
+    }
+    if (a.box.some((v, k) => Math.abs(v - b.box[k]) > tolerance)) {
+      failures.push({ check: "ט. שונה מכרום הרגיל", element: `${a.name}: מיקום/גודל ${a.box.map(Math.round).join(",")} ← ${b.box.map(Math.round).join(",")}` });
+    }
   });
   // אותו הבדל שחוזר בהרבה אלמנטים: מספיק לדווח עליו כמה פעמים
   return failures.slice(0, 15);
@@ -384,10 +475,12 @@ async function runPage(browser, engineName, sizeName, file, baseUrl, options) {
     await settle(page);
     await scrollTo(page, 0);
     failures.push(...await page.evaluate(`(${pageChecks.toString().replace(/tolerancePx/g, tolerance)})()`));
+    failures.push(...await page.evaluate(textClipChecks, textBoxSelector));
     if (options.dump) layout = await page.evaluate(dumpLayout, movingSelector);
     if (options.screenshot) {
       await page.screenshot({ path: path.join(screenshotDir, `${file.replace(/\.html$/, "")}_${options.label}_${size.width}x${size.height}.png`), fullPage: true });
     }
+    failures.push(...await checkOpenStates(page, file, !!size.mobile));
     await scrollThrough(page);
     failures.push(...await page.evaluate(imageChecks));
   } catch (error) {
