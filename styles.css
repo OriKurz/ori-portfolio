@@ -1348,8 +1348,9 @@
 
   /* צבעי הפרויקט (לא חלק מששת הצבעים של האתר) */
   --shunra-cream: #fff8df;     /* רקע העמוד */
-  --shunra-ink: #265687;       /* קווי הגריד */
-  --shunra-steel: #5c85b0;     /* ההמבורגר */
+  --shunra-ink: #265687;       /* הטקסט הרץ במחשב */
+  --shunra-slate: #4a6c8f;     /* קווי הגריד וההמבורגר (ובמובייל גם הטקסט הרץ) */
+  --shunra-steel: #5c85b0;     /* ההמבורגר הקודם (כבר לא בשימוש) */
   --shunra-red: #e5262c;       /* הרשת (מושבתת כרגע) */
   --shunra-red-dark: #a01a1f;  /* הצד האחורי של הרשת: גוון כהה יותר של אותו אדום */
   --shunra-number: #da472a;    /* המספרים של המוצרים */
@@ -1371,8 +1372,8 @@
   --layer-nav-bar: 1000;
 
   --page-background: var(--shunra-cream);
-  --grid-line-color: var(--shunra-ink);
-  --menu-line-color: var(--shunra-steel);
+  --grid-line-color: var(--shunra-slate);
+  --menu-line-color: var(--shunra-slate);
 
   --description-color: var(--shunra-ink);
 
@@ -1438,9 +1439,8 @@
     /* הבאנר נשאר בגודל שהיה לו במובייל (לפי משבצת של גריד של 14 טורים, כמו ב-Leftovers) */
     --banner-px: calc(round(down, (100vw - var(--line)) / 14, var(--device-px)) / var(--frame-cell) * 1.3);
 
-    /* בפריים הטקסטים וההמבורגר בכתום ובכחול של קווי הגריד */
-    --description-color: var(--color-orange);
-    --menu-line-color: var(--shunra-ink);
+    /* בפריים הטקסט הרץ וההמבורגר בכחול של קווי הגריד */
+    --description-color: var(--shunra-slate);
 
     /* ההמבורגר: בדיוק במרכז המשבצת הראשונה (בין הקווים) */
     --menu-left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
