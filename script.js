@@ -1581,6 +1581,15 @@ const nextProjectsStrip = document.querySelector(".next-projects");
 
 if (nextProjectsStrip) {
   const track = nextProjectsStrip.querySelector(".next-projects-track");
+
+  // ספארי 15 (בלי overflow: clip): הרצועה חותכת ב-hidden, אז פוקוס במקלדת יכול לגלול אותה.
+  // מחזירים אותה מיד למקום (styles.css)
+  if (window.CSS && CSS.supports && !CSS.supports("overflow", "clip")) {
+    nextProjectsStrip.addEventListener("scroll", function () {
+      nextProjectsStrip.scrollLeft = 0;
+      nextProjectsStrip.scrollTop = 0;
+    });
+  }
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const secondsPerProject = 3;  // המהירות הרגילה: כמה שניות לוקח לפרויקט אחד לעבור
   const mobileSpeedUp = 2.25;   // במובייל הרצועה מהירה פי 2.25

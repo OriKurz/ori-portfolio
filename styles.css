@@ -7807,3 +7807,29 @@ html.gallery-open body {
     animation: none;
   }
 }
+
+/* =========================================
+   חלופה ל-overflow: clip (ספארי 15 לא מכיר אותו, ובלעדיו יש גלילה לרוחב).
+   hidden חותך אותו דבר, אבל הופך את האלמנט לאזור גלילה, ולכן הוא שם רק על אלמנטים
+   שאין בהם sticky ושום דבר לא יוצא מהם לגובה (נמדד). בדפדפן עדכני הבלוק הזה לא פועל
+   ========================================= */
+@supports not (overflow: clip) {
+  .next-projects,
+  .styleguide-stage {
+    overflow: hidden;
+  }
+
+  .page-leftovers .full-project-grid,
+  .page-styleguide body {
+    overflow-x: hidden;
+  }
+
+  /* כאן ה-clip על הפאנל, אבל הגריד שבתוכו ממשיך מתחת לרצועה של What's Next (margin שלילי),
+     ו-hidden על הפאנל היה חותך אותו. לכן החיתוך על הגריד עצמו, שבו נמצא כל מה שיוצא לצדדים */
+  @media (max-width: 1024px) and (orientation: portrait) {
+    .page-touch-grass .full-project-panel .full-project-grid,
+    .page-shunra .full-project-panel .full-project-grid {
+      overflow-x: hidden;
+    }
+  }
+}
