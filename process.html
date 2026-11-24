@@ -37,6 +37,21 @@
     <!-- אזור העיצוב: 14x96 משבצות (במובייל 8 משבצות לרוחב). קווי הגריד הם הרקע שלו -->
     <div class="process-grid grid-lines">
 
+      <!-- השורה הראשונה של הגריד: קבועה למעלה לאורך כל הגלילה, והתוכן נגלל מתחתיה -->
+      <header class="process-header grid-lines">
+        <!-- ההמבורגר: פותח את בר הבחירה. ממורכז במשבצת הראשונה בפינה השמאלית העליונה -->
+        <button class="menu-button process-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+          <span class="menu-button-line"></span>
+        </button>
+
+        <h1 class="on-grid process-heading text-page-title">Process</h1>
+
+        <!-- כפתור HOME: אותה קומפוננטה Button כמו בעמוד הבית -->
+        <a class="grid-box nav-button process-home-button text-button" href="index.html"><span class="nav-button-label">HOME</span></a>
+      </header>
+
       <!-- מלבני מנטה שמאחדים משבצות (מסתירים את הקווים שבתוכם) -->
       <div class="grid-box merge-box merge-box--1"></div>
       <div class="grid-box merge-box merge-box--2"></div>
@@ -54,25 +69,13 @@
       <div class="grid-box merge-box merge-box--14"></div>
       <div class="grid-box merge-box merge-box--15"></div>
 
-      <!-- ההמבורגר: פותח את בר הבחירה. ממורכז במשבצת הראשונה בפינה השמאלית העליונה -->
-      <button class="menu-button process-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
-        <span class="menu-button-line"></span>
-        <span class="menu-button-line"></span>
-        <span class="menu-button-line"></span>
-      </button>
-
       <!-- תוויות טקסט -->
       <p class="on-grid process-label text-section-title process-label--date-1">#19/10/2026</p>
       <p class="on-grid process-label text-section-title process-label--coming-soon">#Coming Soon page</p>
 
-      <!-- כפתור HOME: אותה קומפוננטה Button כמו בעמוד הבית -->
-      <a class="grid-box nav-button process-home-button text-button" href="index.html"><span class="nav-button-label">HOME</span></a>
-
       <p class="on-grid process-label text-section-title process-label--direction-one">#Two initial directions – Direction one</p>
       <p class="on-grid process-label text-section-title process-label--direction-two">#Two initial directions –  Direction two</p>
       <p class="on-grid process-label text-section-title process-label--date-2">#26/10/2026</p>
-
-      <h1 class="on-grid process-heading text-page-title">Process</h1>
 
       <!-- 19/10: עמוד ה-Coming soon -->
       <img class="on-grid shot shot--coming-soon" src="Images/process/coming-soon-page.webp" width="1020" height="722" alt="The Coming Soon page">

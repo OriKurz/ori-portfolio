@@ -406,6 +406,8 @@
 
   --page-background: var(--color-mint);
   --grid-line-color: var(--color-blue);
+  /* השורה הקבועה למעלה: מעל התוכן ומתחת לבר הבחירה */
+  --layer-process-header: 8;
   /* כפתור HOME: טקסט מנטה, כמו בפיגמה */
   --nav-button-text-color: var(--color-mint);
 
@@ -2787,6 +2789,41 @@ body {
   --column: var(--heading-column);
   --row: var(--heading-row);
   white-space: nowrap;
+}
+
+/* ----- השורה הראשונה (ההמבורגר, הכותרת ו-HOME): קבועה למעלה בגלילה -----
+   sticky בתוך אזור העיצוב: מתחילה במקום שלה, ונצמדת לראש המסך כשגוללים.
+   הקווים שלה מתחילים מאותה פינה כמו הגריד, אז הם ממשיכים אותו בדיוק,
+   כולל הקו שמתחתיה. התוכן נגלל מתחתיה ונעלם */
+.process-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--layer-process-header);
+  display: block;
+  height: calc(var(--cell) + var(--line));
+  background-color: var(--page-background);
+}
+
+/* השוליים משני הצדדים (בלי קווים, כמו בפיגמה): גם הם מכסים את מה שנגלל מתחת לשורה */
+.process-header::before,
+.process-header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background-color: var(--page-background);
+}
+
+/* משמאל: עד קצה החלון */
+.process-header::before {
+  right: 100%;
+  width: var(--grid-left);
+}
+
+/* מימין: מה שנשאר עד קצה החלון (100% = רוחב השורה) */
+.process-header::after {
+  left: 100%;
+  width: calc(100vw - var(--grid-left) - 100%);
 }
 
 /* ----- ההמבורגר: ממורכז במשבצת הראשונה, בין הקווים ----- */
