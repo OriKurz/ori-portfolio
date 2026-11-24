@@ -41,7 +41,8 @@
 
   // בין אילו רכיבים עוברים: בר הבחירה הפתוח, המסך המלא של הסרטון, או כל העמוד
   function navigationArea() {
-    if (document.fullscreenElement) return document.fullscreenElement;
+    const fullscreen = document.fullscreenElement || document.webkitFullscreenElement; // ספארי ישן: רק עם webkit
+    if (fullscreen) return fullscreen;
     // רק בר הבחירה האמיתי (#nav-bar), לא העותק לתצוגה ב-styleguide.html
     const openNavBar = document.querySelector("#nav-bar.is-open");
     if (openNavBar) return openNavBar;

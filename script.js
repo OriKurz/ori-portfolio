@@ -2131,6 +2131,12 @@ if (projectsGallery) {
   window.addEventListener("scroll", requestUpdate, { passive: true });
   window.addEventListener("resize", requestUpdate);
   updateActive();
+
+  // חלופה לדפדפן בלי :has(): מסמנים את הפס כשהעכבר על תמונה (styles.css)
+  projectsGallery.querySelectorAll(".projects-image").forEach(function (image) {
+    image.addEventListener("mouseenter", function () { projectsGallery.classList.add("has-image-hover"); });
+    image.addEventListener("mouseleave", function () { projectsGallery.classList.remove("has-image-hover"); });
+  });
 }
 
 // =========================================

@@ -198,6 +198,8 @@
     const flip = dir => {
       if (busy || !img.animate) return; busy = true;
       item.classList.add("ea-jumping");                       // on top of everything while in the air
+      const board = item.closest(".elements-board");          // for browsers without :has() (styles.css)
+      if (board) board.classList.add("has-jumping");
       const r = d => `rotate(${dir * d}deg)`;
       const a = img.animate([
         { offset: 0, transform: `translateY(0) ${r(0)} scale(1,1)` },
@@ -209,7 +211,7 @@
         { offset: 0.91, transform: `translateY(-5%) ${r(360 * M)} scale(.98,1.03)` },
         { offset: 1, transform: `translateY(0) ${r(360 * M)} scale(1,1)` }
       ], { duration: 1150 * T, easing: "linear" });
-      a.onfinish = () => { busy = false; item.classList.remove("ea-jumping"); };
+      a.onfinish = () => { busy = false; item.classList.remove("ea-jumping"); if (board) board.classList.remove("has-jumping"); };
     };
     const side = e => { const r = item.getBoundingClientRect(); return e.clientX < r.left + r.width / 2 ? 1 : -1; };
     hover(item, e => flip(side(e)));

@@ -41,7 +41,7 @@ function initShunraStickers(root){
     const b=rootBox();
     root.querySelectorAll('img.shunra-sticker').forEach(img=>{
       const r=img.getBoundingClientRect();
-      const el=document.createElement('div');el.className='stk';
+      const el=document.createElement('div');el.className='stk';el.dataset.sticker=img.getAttribute('src'); // the file decides the rotation (styles.css)
       const a=areaBox();
       const it={el,img,fx:(r.left-a.x-b.x)/b.w,fy:(r.top-a.y-b.y)/b.w,fw:r.width/b.w,s:1,anim:null};
       img.removeAttribute('style');img.classList.remove('shunra-sticker');el.appendChild(img);layer.appendChild(el);

@@ -215,15 +215,22 @@
     document.documentElement.classList.toggle("gallery-open", lock);
     if (lock) {
       Array.from(document.body.children).forEach(function (child) {
-        if (child !== gallery && !child.inert) {
-          child.inert = true;
+        if (child !== gallery && !child.hasAttribute("inert")) {
+          child.setAttribute("inert", "");
           lockedElements.push(child);
         }
       });
     } else {
-      lockedElements.forEach(function (child) { child.inert = false; });
+      lockedElements.forEach(function (child) { child.removeAttribute("inert"); });
       lockedElements.length = 0;
     }
+  }
+
+  // דפדפן בלי inert (כרום לפני 102, ספארי לפני 15.5): פוקוס שיוצא מהגלריה חוזר לכפתור הסגירה
+  if (!("inert" in HTMLElement.prototype)) {
+    document.addEventListener("focusin", function (event) {
+      if (!gallery.hidden && !gallery.contains(event.target)) closeButton.focus();
+    });
   }
 
   function open(name, startIndex) {

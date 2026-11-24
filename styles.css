@@ -97,6 +97,15 @@
    .vars-base (וגם .vars-home, .vars-full-project, .vars-say-hi בהמשך):
    נותנים את המשתנים של עמוד לאלמנט אחד, כדי שרכיב יוצג בעמוד אחר
    בדיוק כמו בעמוד שלו (משמש את styleguide.html). בעמודים עצמם אין להם השפעה. */
+
+/* דפדפן ישן (בלי round, mod או dvh): המשתנים שמשתמשים בהם לא עובדים בו,
+   ו-css-fallback.js מחשב אותם במקומו. בדפדפן עדכני הסימון הזה לא קיים */
+@supports (not (width: round(down, 1px, 1px))) or (not (width: mod(1px, 1px))) or (not (height: 1dvh)) {
+  :root {
+    --css-fallback: 1;
+  }
+}
+
 :root,
 .vars-base {
   /* הרשת */
@@ -941,9 +950,9 @@
   --swatch-14-column: 7;  --swatch-14-row: 26;  --swatch-14-color: #f2dc8b;
 
   /* פרויקטים נוספים: פס ורוד בשקיפות 50%, כמו בפיגמה. רואים דרכו את שאר העמוד */
-  --next-projects-background: color-mix(in srgb, var(--color-pink) 50%, transparent);
+  --next-projects-background: rgba(254, 167, 236, 0.5); /* --color-pink ב-50% */
   /* Hover על תמונה: כיסוי בשקיפות 50% ושם הפרויקט במנטה */
-  --next-project-overlay: color-mix(in srgb, var(--color-orange) 50%, transparent);
+  --next-project-overlay: rgba(250, 66, 2, 0.5); /* --color-orange ב-50% */
   --next-project-name-color: var(--color-mint);
   /* מסגרת אחידה של 11 מהרקע השקוף סביב כל תמונה: 11 בין התמונות, ו-11 למעלה ולמטה (258 + 11 + 11).
      משותף לכל עמודי הפרויקטים */
@@ -1154,9 +1163,9 @@
   --timeline-pressed-scale: 0.9;
 
   /* פרויקטים נוספים: כאן הפס מנטה בשקיפות 50% */
-  --next-projects-background: color-mix(in srgb, var(--color-mint) 50%, transparent);
+  --next-projects-background: rgba(239, 255, 249, 0.5); /* --color-mint ב-50% */
   /* Hover על תמונה: הכחול הכהה של הפרויקט (מהפיגמה) בשקיפות 50% */
-  --next-project-overlay: color-mix(in srgb, var(--leftovers-ink) 50%, transparent);
+  --next-project-overlay: rgba(38, 86, 135, 0.5); /* --leftovers-ink ב-50% */
 }
 
 /* ----- Leftovers במובייל (הפריים LeftM בפיגמה, 393 לרוחב) -----
@@ -1347,7 +1356,7 @@
   --palette-row: 67;
 
   /* פרויקטים נוספים: פס כחול בשקיפות 50%, כמו בפיגמה */
-  --next-projects-background: color-mix(in srgb, var(--shunra-ink) 50%, transparent);
+  --next-projects-background: rgba(38, 86, 135, 0.5); /* --shunra-ink ב-50% */
 }
 
 /* ----- Shunra במובייל (הפריים ShunM בפיגמה, 393 לרוחב) -----
@@ -1515,7 +1524,7 @@
   --geza-crop-top: calc(-356.3 * var(--u));
 
   /* פרויקטים נוספים: פס כתום בשקיפות 50%, כמו בפיגמה */
-  --next-projects-background: color-mix(in srgb, var(--color-orange) 50%, transparent);
+  --next-projects-background: rgba(250, 66, 2, 0.5); /* --color-orange ב-50% */
 }
 
 /* ----- Touch Grass במובייל (הפריים touchM בפיגמה, 393 לרוחב) -----
@@ -2449,6 +2458,7 @@ body {
 
 /* הגריד הוא הרקע של כל החלון */
 .page-home body {
+  height: 100vh; /* דפדפן בלי dvh */
   height: 100dvh;
   overflow: hidden;
   overscroll-behavior: none;
@@ -2951,6 +2961,7 @@ body {
 
 /* במחשב: עמוד של מסך אחד, בלי גלילה (כמו עמוד הבית) */
 .page-project body {
+  height: 100vh; /* דפדפן בלי dvh */
   height: 100dvh;
   overflow: hidden;
 }
@@ -2965,6 +2976,7 @@ body {
 
   /* גובה העמוד: כל השורות, ולפחות גובה המסך */
   .project-page {
+    min-height: 100vh; /* דפדפן בלי dvh */
     min-height: 100dvh;
     height: calc(var(--grid-rows) * var(--cell) + var(--line));
   }
@@ -3409,12 +3421,14 @@ body {
    ה-sticky מחזיק רק עד סוף .full-project-body, שנגמרת בדיוק מעל What's Next:
    בסוף העמוד הרצועה והבאנר נכנסים מלמטה ודוחפים את הצד השמאלי למעלה, בלי לכסות אותו */
 .page-full-project body {
+  height: 100vh; /* דפדפן בלי dvh */
   height: 100dvh;
   overflow: hidden;
 }
 
 /* האזור הנגלל: כל החלון. בלי פס גלילה, כדי שלא יזיז את הגריד */
 .full-project-scroll {
+  height: 100vh; /* דפדפן בלי dvh */
   height: 100dvh;
   overflow-x: hidden;
   overflow-y: auto;
@@ -4155,8 +4169,11 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    left: calc(round(down, var(--column), 1) * var(--cell));
-    top: calc(round(down, var(--row), 1) * var(--cell));
+    /* הטור והשורה השלמים (במשתנה, כדי ש-css-fallback.js יחשב אותם בדפדפן ישן) */
+    --column-whole: round(down, var(--column), 1);
+    --row-whole: round(down, var(--row), 1);
+    left: calc(var(--column-whole) * var(--cell));
+    top: calc(var(--row-whole) * var(--cell));
     width: calc(var(--title-columns, 1) * var(--cell) + var(--line));
     height: calc(var(--cell) + var(--line));
     padding: 0 var(--section-title-padding) var(--section-title-padding-bottom);
@@ -4217,6 +4234,8 @@ body {
   /* בזמן שהארגז קופץ (ea-jumping, elements-anim.js) הוא מעל כל האיורים, וכל הלוח מעל
      כותרות הסעיפים. כשהוא נוחת הוא חוזר לסדר הרגיל */
   .elements-board:has(.ea-jumping) { z-index: 2; }
+  /* חלופה לדפדפן בלי :has() (elements-anim.js מסמן את הלוח) */
+  .elements-board.has-jumping { z-index: 2; }
   .elements-board .elements-board-item.ea-jumping { z-index: 15; }
 
   /* כל מה שמתחת לחפצים (Main Scenes והשאר) יורד ב---elements-shift שורות שלמות (script.js) */
@@ -4226,7 +4245,8 @@ body {
   }
 
   .full-project-grid .elements-board ~ .section-title {
-    top: calc((round(down, var(--row), 1) + var(--elements-shift, 0)) * var(--cell));
+    --row-whole: round(down, var(--row), 1);
+    top: calc((var(--row-whole) + var(--elements-shift, 0)) * var(--cell));
   }
 }
 
@@ -4758,10 +4778,11 @@ body {
   }
 }
 
-#shunra-sticker-layer .stk:has(> img[src$="06-seahorse.webp"]) { rotate: 14.31deg; }
-#shunra-sticker-layer .stk:has(> img[src$="02-red-fish.webp"])  { rotate: -47.24deg; }
-#shunra-sticker-layer .stk:has(> img[src$="05-ray.webp"])       { rotate: 15.86deg; }
-#shunra-sticker-layer .stk:has(> img[src$="03-oysters.webp"])   { rotate: 39.43deg; }
+/* הסיבוב של כל מדבקה, לפי הקובץ שלה (data-sticker, shunra-stickers.js) */
+#shunra-sticker-layer .stk[data-sticker$="06-seahorse.webp"] { rotate: 14.31deg; }
+#shunra-sticker-layer .stk[data-sticker$="02-red-fish.webp"]  { rotate: -47.24deg; }
+#shunra-sticker-layer .stk[data-sticker$="05-ray.webp"]       { rotate: 15.86deg; }
+#shunra-sticker-layer .stk[data-sticker$="03-oysters.webp"]   { rotate: 39.43deg; }
 
 /* הכפתור הכתום: קישור לעמוד האינסטגרם. הרקע ממלא בדיוק את השטח שבין קווי הגריד.
    Pressed: ההתכווצות הכללית. Focus: קו מתאר (אין Hover שנראה) */
@@ -6232,7 +6253,9 @@ body {
    הגריד נגמר בשורה שלמה: הגובה שלו (עד הבאנר) מעוגל למעלה למשבצת שלמה,
    והפס של הפרויקטים הנוספים יושב בתחתית שלו */
 .page-leftovers .full-project-grid {
-  height: round(up, var(--grid-rows) * var(--cell) + var(--next-projects-height), var(--cell));
+  /* במשתנה, כדי ש-css-fallback.js יחשב אותו בדפדפן ישן */
+  --leftovers-grid-height: round(up, var(--grid-rows) * var(--cell) + var(--next-projects-height), var(--cell));
+  height: var(--leftovers-grid-height);
   overflow-x: clip;
 }
 
@@ -6386,6 +6409,7 @@ body {
 }
 
 .page-say-hi body {
+  height: 100vh; /* דפדפן בלי dvh */
   height: 100dvh;
 }
 
@@ -6580,6 +6604,13 @@ body {
     align-content: start; /* הגובה העודף נשאר מתחת לטקסט, ולא בין השורות */
     grid-template-columns: calc(var(--about-work-left) - var(--margin-mobile)) auto;
     padding: 0 var(--margin-mobile) var(--margin-mobile);
+  }
+
+  /* דפדפן בלי dvh */
+  @supports not (height: 1dvh) {
+    .say-hi-about {
+      min-height: calc(100vh - var(--say-hi-pink-height));
+    }
   }
 
   /* השורות נשברות רק איפה שיש br, בדיוק כמו בפיגמה */
@@ -6938,6 +6969,12 @@ body {
   --toggle-row: 1;
 }
 
+/* חלופה לדפדפן בלי :has() */
+.styleguide-stage--has-toggle {
+  --toggle-column: 1;
+  --toggle-row: 1;
+}
+
 .styleguide-stage--menu {
   --styleguide-stage-columns: 2;
   --styleguide-stage-rows: 1;
@@ -7106,7 +7143,9 @@ html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
   --menu-height: calc(3 * var(--menu-line-height) + 2 * var(--menu-gap));
   position: absolute;
   left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
-  top: calc(mod(var(--grid-top), var(--cell)) + (var(--cell) + var(--line) - var(--menu-height)) / 2);
+  /* במשתנה, כדי ש-css-fallback.js יחשב אותו בדפדפן ישן */
+  --menu-top-gap: mod(var(--grid-top), var(--cell));
+  top: calc(var(--menu-top-gap) + (var(--cell) + var(--line) - var(--menu-height)) / 2);
 }
 
 /* במובייל: קבוע למעלה, עם השורות הקבועות */
@@ -7253,6 +7292,11 @@ html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
 
   /* בכל רגע פתוח רק פרויקט אחד: כשהעכבר על תמונה, הכותרת של התמונה שבפוקוס נסגרת */
   .projects-track:has(.projects-image:hover) .projects-image:focus-visible:not(:hover) ~ .projects-caption .projects-caption-box {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  /* חלופה לדפדפן בלי :has() (script.js מסמן את הפס כשהעכבר על תמונה) */
+  .projects-track.has-image-hover .projects-image:focus-visible:not(:hover) ~ .projects-caption .projects-caption-box {
     clip-path: inset(0 100% 0 0);
   }
 }
@@ -7418,6 +7462,7 @@ html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
   top: 0;
   left: 0;
   width: 100vw;
+  height: 100vh; /* דפדפן בלי lvh */
   height: 100lvh; /* בטלפון: גם מאחורי שורת הכתובת */
   z-index: var(--layer-page-transition);
   overflow: hidden;
@@ -7465,6 +7510,7 @@ html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
   top: 0;
   left: 0;
   width: 100vw;
+  height: 100vh; /* דפדפן בלי lvh */
   height: 100lvh;
   z-index: var(--layer-page-transition);
   background-color: var(--page-transition-color);
@@ -7483,6 +7529,7 @@ html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
 }
 
 .page-404 body {
+  height: 100vh; /* דפדפן בלי dvh */
   height: 100dvh;
 }
 
@@ -7639,7 +7686,7 @@ html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background-color: color-mix(in srgb, var(--color-dark-blue) 60%, transparent);
+  background-color: rgba(27, 57, 88, 0.6); /* --color-dark-blue ב-60% */
   animation: gallery-fade-in var(--gallery-fade-duration) ease both;
 }
 
