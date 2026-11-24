@@ -5130,7 +5130,19 @@ body {
   height: calc(var(--cell) - var(--line));
   border: var(--line) solid var(--grid-line-color);
   border-radius: 50%;
-  object-fit: cover;
+  overflow: hidden;
+}
+
+/* הטקסטורה בתוך העיגול: הגודל והמיקום של הפאטרן כמו בפיגמה, ביחס לעיגול כולו (כולל הקו),
+   ונחתכת בגבול העיגול. --texture-width: רוחב התמונה, פי כמה מהעיגול.
+   --texture-x / --texture-y: הפינה השמאלית העליונה של התמונה (הערכים: למטה, לכל עיגול) */
+.touch-grass-texture img {
+  position: absolute;
+  left: calc(var(--texture-x) * (100% + 2 * var(--line)) - var(--line));
+  top: calc(var(--texture-y) * (100% + 2 * var(--line)) - var(--line));
+  width: calc(var(--texture-width) * (100% + 2 * var(--line)));
+  max-width: none;
+  height: auto;
 }
 
 /* המיקום של כל טקסטורה: טור ושורה */
@@ -5142,10 +5154,14 @@ body {
 .touch-grass-texture--dark       { --column: 5; --row: 56; }
 .touch-grass-texture--macha      { --column: 7; --row: 56; }
 
-/* המאצ'ה: בפיגמה התמונה צמודה למעלה */
-.touch-grass-texture--macha {
-  object-position: top;
-}
+/* הגודל והמיקום של הפאטרן בכל עיגול, לפי הפיגמה (הפריים grass) */
+.touch-grass-texture--oreo       { --texture-width: 3.9661; --texture-x: -0.0053; --texture-y: -0.0814; }
+.touch-grass-texture--green      { --texture-width: 5.38;   --texture-x: -0.2332; --texture-y: -7.7046; }
+.touch-grass-texture--karamel    { --texture-width: 3.4353; --texture-x: -1.3227; --texture-y: -2.3807; }
+.touch-grass-texture--dark-green { --texture-width: 2.8201; --texture-x: -1.079;  --texture-y: -2.1037; }
+.touch-grass-texture--b-p        { --texture-width: 5.5765; --texture-x: 0;       --texture-y: -0.2403; }
+.touch-grass-texture--dark       { --texture-width: 4.6604; --texture-x: -2.0798; --texture-y: -1.9965; }
+.touch-grass-texture--macha      { --texture-width: 2.7059; --texture-x: -0.6677; --texture-y: -0.9557; }
 
 /* =========================================
    Touch Grass במובייל (הפריים touchM בפיגמה, 393 לרוחב)
@@ -5317,6 +5333,22 @@ body {
   .page-touch-grass .touch-grass-texture--macha      { --column: 5; --row: calc(var(--palette-title-row) + 2); }
   .page-touch-grass .touch-grass-texture--oreo       { --column: 2; --row: calc(var(--palette-title-row) + 3); }
   .page-touch-grass .touch-grass-texture--dark-green { --column: 4; --row: calc(var(--palette-title-row) + 3); }
+
+  /* הפאטרן בתוך העיגולים, לפי הפריים touchM: בירוק, בקרמל ובמאצ'ה מוגדל, ובשאר ממלא את העיגול (cover) */
+  .page-touch-grass .touch-grass-texture--green   { --texture-width: 2.7782; --texture-x: 0.0113;  --texture-y: -0.3852; }
+  .page-touch-grass .touch-grass-texture--karamel { --texture-width: 2.3328; --texture-x: -0.0051; --texture-y: -2.487; }
+  .page-touch-grass .touch-grass-texture--macha   { --texture-width: 2.5;    --texture-x: -0.1835; --texture-y: -1.0158; }
+
+  .page-touch-grass .touch-grass-texture--b-p img,
+  .page-touch-grass .touch-grass-texture--dark img,
+  .page-touch-grass .touch-grass-texture--dark-green img,
+  .page-touch-grass .touch-grass-texture--oreo img {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 /* =========================================
