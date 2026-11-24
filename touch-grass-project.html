@@ -42,15 +42,15 @@
       <section class="full-project-info">
         <!-- התיאור: ארוך מגובה המסך, ולכן אזור גלילה משלו. הוא נעלם מתחת לכותרת (כמו בשונרא).
              במובייל כל פסקה במשבצת מאוחדת משלה, פזורה בגריד (הפריים touchM בפיגמה). data-rows-var: המשתנה
-             שבו script.js שומר כמה שורות המשבצת צריכה כדי שהטקסט ייכנס -->
+             שבו script.js שומר כמה שורות המשבצת צריכה כדי שהטקסט ייכנס. data-rows-exact: בדיוק כמה שהטקסט צריך -->
         <div class="full-project-description-scroll">
             <!-- text-underline: קו תחתון כמו בפיגמה, שמצטייר שורה אחרי שורה כשהיא נכנסת למסך (script.js).
                  data-underline="desktop": קו רק במחשב. data-underline-desktop-end: במחשב הקו רק על האותיות הראשונות (במובייל גם הפסיק).
                  כל פסקה עטופה ב-span אחד, כי במובייל היא flex, וכל span בתוכה היה הופך לשורה נפרדת -->
             <div class="full-project-description text-body text-body-mobile">
-              <p class="touch-grass-description-intro" data-rows-var="--description-intro-rows"><span>A series of motion elements for “Touch Grass”, a conference on <span class="text-underline">mental health in times of conflict</span>. The project spans a central event <span class="text-underline" data-underline="desktop">schedule screen</span>, motion graphics promoting the conference on <span class="text-underline" data-underline="desktop">social media</span>, and <span class="text-underline" data-underline="desktop">moving ads</span> for bus stop displays.</span></p>
-              <p class="touch-grass-description-process" data-rows-var="--description-process-rows"><span>Two <span class="text-underline">main questions</span> guided my process: How do we talk about mental health with <span class="text-underline">sensitivity</span>, without being triggering? And how do we <span class="text-underline">talk about PTSD</span> in a bleeding country that is still living through the<br class="full-project-mobile-break"> trauma every day?<br class="full-project-mobile-break"> It was important to me to use natural, <span class="text-underline">handcrafted textures</span> and <span class="text-underline">handwritten</span> elements to bring softness and a <span class="text-underline" data-underline="desktop">human touch</span> to the visuals.</span></p>
-              <p class="touch-grass-description-closing" data-rows-var="--description-closing-rows"><span>I chose trees as the central visual metaphor for the <span class="text-underline" data-underline-desktop-end="10">human mind,</span> and red typography as a quiet reminder of the <span class="text-underline">violence of war</span>.</span></p>
+              <p class="touch-grass-description-intro" data-rows-var="--description-intro-rows" data-rows-exact><span>A series of motion elements for “Touch Grass”, a conference on <span class="text-underline">mental health in times of conflict</span>. The project spans a central event <span class="text-underline" data-underline="desktop">schedule screen</span>, motion graphics promoting the conference on <span class="text-underline" data-underline="desktop">social media</span>, and <span class="text-underline" data-underline="desktop">moving ads</span> for bus stop displays.</span></p>
+              <p class="touch-grass-description-process" data-rows-var="--description-process-rows" data-rows-exact><span>Two <span class="text-underline">main questions</span> guided my process: How do we talk about mental health with <span class="text-underline">sensitivity</span>, without being triggering? And how do we <span class="text-underline">talk about PTSD</span> in a bleeding country that is still living through the<br class="full-project-mobile-break"> trauma every day?<br class="full-project-mobile-break"> It was important to me to use natural, <span class="text-underline">handcrafted textures</span> and <span class="text-underline">handwritten</span> elements to bring softness and a <span class="text-underline" data-underline="desktop">human touch</span> to the visuals.</span></p>
+              <p class="touch-grass-description-closing" data-rows-var="--description-closing-rows" data-rows-exact><span>I chose trees as the central visual metaphor for the <span class="text-underline" data-underline-desktop-end="10">human mind,</span> and red typography as a quiet reminder of the <span class="text-underline">violence of war</span>.</span></p>
             </div>
         </div>
 
@@ -73,6 +73,12 @@
       <!-- ===== החלק של הגריד ===== -->
       <section class="full-project-panel">
         <div class="full-project-grid grid-lines">
+          <!-- במובייל: החלקים של קווי הגריד, מעל ומתחת לקוביות של התיאור (styles.css) -->
+          <div class="full-project-grid-part full-project-grid-part--a" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--b" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--c" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--d full-project-grid-part--last" aria-hidden="true"></div>
+
           <!-- האיור האדום: מאחורי תחנת האוטובוס והטקסטורות, וחתוך בקצה הימני של הגריד -->
           <div class="touch-grass-geza" aria-hidden="true">
             <img src="Images/touch-grass/geza.webp" width="1080" height="1920" loading="lazy" alt="">

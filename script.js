@@ -1821,8 +1821,8 @@ if (gridSectionTitles.length) {
     return cell;
   }
 
-  // The Perfect Crime במובייל: פסקאות התיאור יושבות במשבצות מאוחדות ברוחב הגריד.
-  // כל משבצת כזו גבוהה בשורות שלמות, כמה שצריך כדי שהטקסט ייכנס (לפחות 2, כמו בפיגמה).
+  // עמודי הפרויקטים במובייל: שורות המשנה ופסקאות התיאור יושבות במשבצות מאוחדות בגריד.
+  // שורות המשנה גבוהות בשורות שלמות, כמה שצריך כדי שהטקסט ייכנס.
   // מספר השורות נשמר במשתנה שכתוב ב-data-rows-var, וכל מה שמתחתיה יורד איתו (styles.css)
   const textBoxes = document.querySelectorAll("[data-rows-var]");
   const textBoxPadding = 4; // מרווח מינימלי מעל ומתחת לטקסט, בתוך המשבצת
@@ -1841,11 +1841,14 @@ if (gridSectionTitles.length) {
       const textHeight = range.getBoundingClientRect().height;
       const border = parseFloat(style.borderTopWidth);
       let rows = Math.max(minRows, Math.ceil((textHeight + 2 * textBoxPadding + border) / cell - 0.01));
-      // data-rows-exact (The Perfect Crime): בדיוק כמה שהטקסט צריך, עם הריווח הפנימי של הקובייה.
+      // data-rows-exact (פסקאות התיאור): בדיוק כמה שהטקסט צריך (לפי גובה השורות), עם הריווח הפנימי
+      // של הקובייה, כמו בפיגמה. מודדים את הקובייה בגובה אוטומטי.
       // הגובה מעוגל לפיקסל שלם של המסך, כדי שהחלק של הגריד שמתחתיה יתחיל על פיקסל שלם
       if (box.hasAttribute("data-rows-exact")) {
         const pixel = 1 / window.devicePixelRatio;
-        const needed = textHeight + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 2 * border;
+        box.style.height = "auto";
+        const needed = box.getBoundingClientRect().height;
+        box.style.height = "";
         const height = Math.ceil(needed / pixel - 0.01) * pixel;
         rows = (height - border) / cell;
       }

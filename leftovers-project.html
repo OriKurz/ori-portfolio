@@ -47,25 +47,25 @@
         <div class="full-project-description-scroll">
             <!-- התיאור: הטקסט של המחשב והטקסט של המובייל לפי שני הפריימים בפיגמה.
                  במובייל הוא מתחלק למשבצות מאוחדות בתוך הגריד (intro, story, process ו-looking-back),
-                 כל אחת גבוהה בשורות שלמות כמה שצריך (script.js), ו-Process ו-Looking Back הן כותרות סעיפים.
+                 כל אחת גבוהה בדיוק כמה שהטקסט צריך (script.js, data-rows-exact), ו-Process ו-Looking Back הן כותרות סעיפים.
                  text-underline: קו תחתון כמו בפיגמה, שמצטייר שורה אחרי שורה כשהיא נכנסת למסך (script.js).
                  full-project-mobile-break: שבירת שורה רק במובייל. full-project-desktop-only / story: רק במחשב / רק במובייל -->
             <div class="full-project-description text-body text-body-mobile">
-              <div class="full-project-description-intro" data-rows-var="--description-intro-rows">
+              <div class="full-project-description-intro" data-rows-var="--description-intro-rows" data-rows-exact>
                 <p>A map tracing the story of <span class="text-underline">Villa Epecuén</span>, a village in Argentina. In 1985, the neighboring <span class="text-underline">saltwater lake</span> flooded the village, and within a few days the entire village lay under <span class="text-underline">10 meters</span> of saltwater.<br class="full-project-mobile-break"> It stayed that way for <span class="text-underline">20 years</span>. In 2009, following a severe drought, the lake began to recede, gradually revealing a ghost town.</p>
                 <p>The map tells the town’s story across<br class="full-project-mobile-break"> a <span class="text-underline">40-year timeline</span>, using the village as a case study of the endless battle between humans and nature.<span class="full-project-desktop-only"> Working only with data and hard facts, I had to find a way to tell a powerful <span class="text-underline">story about leftovers</span>, and to bring forward what most people would rather forget, or not see at all.</span></p>
               </div>
-              <div class="full-project-description-story" data-rows-var="--description-story-rows">
+              <div class="full-project-description-story" data-rows-var="--description-story-rows" data-rows-exact>
                 <p>Working only with data and hard facts, I had to find a way to tell a powerful <span class="text-underline">story about leftovers,</span> and to bring forward what most people would rather forget, or not see at all.</p>
                 <p>The entire project is based on reliable data and satellite imagery, which served as my anchor throughout</p>
               </div>
               <h2 class="section-title text-body-strong leftovers-process-title">Process</h2>
-              <div class="full-project-description-process" data-rows-var="--description-process-rows">
+              <div class="full-project-description-process" data-rows-var="--description-process-rows" data-rows-exact>
                 <p>The research had two layers. The first came from above, <span class="text-underline">satellite images</span> from Google Earth, across the years the water moved. I placed them one over the other, isolated the water and the buildings, and stacked them in transparent turquoise layers. The longer an area was underwater, the deeper its color.</p>
                 <p>The second layer came from inside the village. I looked for places that mattered to the people who lived there before it was lost, and marked them on the map. Their photos became illustrations in the map’s language, so the small <span class="text-underline">stories of the people</span> stay inside the big picture seen from space.</p>
               </div>
               <h2 class="section-title text-body-strong leftovers-looking-back-title">Looking Back</h2>
-              <div class="full-project-description-looking-back" data-rows-var="--description-looking-back-rows">
+              <div class="full-project-description-looking-back" data-rows-var="--description-looking-back-rows" data-rows-exact>
                 <p>From this project, I learned to edit a story. I wanted to tell every layer of it, and the 70×50 cm map ended up holding more detail than it needed. Looking back, cutting details early would have told the same story more clearly.</p>
               </div>
             </div>
@@ -91,6 +91,12 @@
       <!-- ===== החלק של הגריד ===== -->
       <section class="full-project-panel">
         <div class="full-project-grid grid-lines">
+          <!-- במובייל: החלקים של קווי הגריד, מעל ומתחת לקוביות של התיאור (styles.css) -->
+          <div class="full-project-grid-part full-project-grid-part--a" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--b" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--c" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--d" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--e full-project-grid-part--last" aria-hidden="true"></div>
 
           <!-- ----- התוויות, כל אחת במלבן של כמה משבצות בצבע הרקע (מסתיר את הקו שבאמצע) ----- -->
           <div class="grid-box leftovers-label-box leftovers-label-box--place"></div>

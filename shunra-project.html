@@ -41,12 +41,12 @@
       <section class="full-project-info">
         <!-- התיאור: אזור גלילה משלו, עד השורה האחרונה. הוא נעלם מתחת לכותרת (כמו ב-Leftovers).
              במובייל כל פסקה במשבצת מאוחדת משלה, פזורה בגריד (הפריים ShunM בפיגמה). data-rows-var: המשתנה
-             שבו script.js שומר כמה שורות המשבצת צריכה כדי שהטקסט ייכנס -->
+             שבו script.js שומר כמה שורות המשבצת צריכה כדי שהטקסט ייכנס. data-rows-exact: בדיוק כמה שהטקסט צריך -->
         <div class="full-project-description-scroll">
             <div class="full-project-description text-body text-body-mobile">
-              <p class="full-project-description-intro" data-rows-var="--description-intro-rows">A branding project for Shunra, a high-end cat food brand based entirely on raw fish dishes. Every dish is made only from fresh fish, fruits and vegetables chosen for cats’ health. Shunra puts your cat first.</p>
-              <p class="full-project-description-story" data-rows-var="--description-story-rows">Our goal was to bring the sea into every layer of the brand, without ever showing it. A fishing net, stencil-sprayed numbers borrowed from shipping containers, fish market crates and a color palette of sea and port all carry it with them.</p>
-              <p class="full-project-description-closing" data-rows-var="--description-closing-rows">We designed packaging for three canned dishes, sashimi and ceviche, and two oils for seasoning them, salmon oil and oyster oil. We also created an illustrative language, posters and an Instagram page that introduce the brand and its flavors. Shunra also comes as merch: matching bandanas for cats and their owners, bags and stickers.</p>
+              <p class="full-project-description-intro" data-rows-var="--description-intro-rows" data-rows-exact>A branding project for Shunra, a high-end cat food brand based entirely on raw fish dishes. Every dish is made only from fresh fish, fruits and vegetables chosen for cats’ health. Shunra puts your cat first.</p>
+              <p class="full-project-description-story" data-rows-var="--description-story-rows" data-rows-exact>Our goal was to bring the sea into every layer of the brand, without ever showing it. A fishing net, stencil-sprayed numbers borrowed from shipping containers, fish market crates and a color palette of sea and port all carry it with them.</p>
+              <p class="full-project-description-closing" data-rows-var="--description-closing-rows" data-rows-exact>We designed packaging for three canned dishes, sashimi and ceviche, and two oils for seasoning them, salmon oil and oyster oil. We also created an illustrative language, posters and an Instagram page that introduce the brand and its flavors. Shunra also comes as merch: matching bandanas for cats and their owners, bags and stickers.</p>
             </div>
         </div>
 
@@ -70,6 +70,12 @@
       <!-- ===== החלק של הגריד ===== -->
       <section class="full-project-panel">
         <div class="full-project-grid grid-lines">
+          <!-- במובייל: החלקים של קווי הגריד, מעל ומתחת לקוביות של התיאור (styles.css) -->
+          <div class="full-project-grid-part full-project-grid-part--a" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--b" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--c" aria-hidden="true"></div>
+          <div class="full-project-grid-part full-project-grid-part--d full-project-grid-part--last" aria-hidden="true"></div>
+
           <!-- הלוגו: שם הפרויקט, במלבן של משבצות שלמות (הרקע מכסה את הקווים שבפנים), והלוגו באמצע -->
           <div class="shunra-logo-box shunra-logo-box--top">
             <img class="shunra-logo" src="Images/shunra/shunra-logo-orange.svg" width="449" height="106" alt="Shunra logo">

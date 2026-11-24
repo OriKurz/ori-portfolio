@@ -1219,7 +1219,7 @@
     --leftovers-map-width: calc(var(--leftovers-map-height) * var(--map-image-width) / var(--map-image-height));
     --map-label-column: 0;          --map-label-row: calc(var(--leftovers-map-row) + 9);
 
-    /* הפסקה הראשונה: אחרי שורה ריקה מתחת ל-Main map. לפחות 5 שורות (script.js) */
+    /* הפסקה הראשונה: אחרי שורה ריקה מתחת ל-Main map. הגובה בדיוק כמה שהטקסט צריך (script.js) */
     --description-intro-row: calc(var(--map-label-row) + 2);
     --description-intro-rows: 5;
 
@@ -1240,11 +1240,13 @@
     --gallery-row-gap: max(29 * var(--leftovers-gallery-u), var(--leftovers-caption-space) + var(--leftovers-caption-size));
     --leftovers-gallery-height: calc(4 * 245.5 * var(--leftovers-gallery-u) + 3 * var(--gallery-row-gap));
     --leftovers-gallery-padding: calc(16 * var(--leftovers-gallery-u));
-    /* הרקע: מהקו שמתחת לתוויות, עד הקו השלם הראשון מתחת לכיתובים של השורה האחרונה */
+    /* הרקע: מהקו שמתחת לתוויות, עד הקו השלם הראשון מתחת לכיתובים של השורה האחרונה
+       (הגובה בשורות שלמות, כי הקו שמעליו לא תמיד על כפולה של משבצת) */
     --leftovers-gallery-box-top: calc((var(--gallery-label-row) + 1) * var(--cell));
-    --leftovers-gallery-box-bottom: round(up, var(--leftovers-gallery-box-top) + var(--line) + var(--leftovers-gallery-padding) + var(--leftovers-gallery-height) + var(--leftovers-caption-space), var(--cell));
+    --leftovers-gallery-box-height: round(up, var(--line) + var(--leftovers-gallery-padding) + var(--leftovers-gallery-height) + var(--leftovers-caption-space), var(--cell));
+    --leftovers-gallery-box-bottom: calc(var(--leftovers-gallery-box-top) + var(--leftovers-gallery-box-height));
 
-    /* הפסקה השנייה: אחרי שורה ריקה מתחת לגלריה. לפחות 4 שורות (script.js) */
+    /* הפסקה השנייה: אחרי שורה ריקה מתחת לגלריה */
     --leftovers-story-top: calc(var(--leftovers-gallery-box-bottom) + var(--cell));
     --description-story-rows: 4;
 
@@ -1411,14 +1413,14 @@
     --shunra-logo-title-row: calc(var(--tagline-row) + var(--tagline-rows));
     --shunra-logo-row: calc(var(--shunra-logo-title-row) + 1);
 
-    /* הפסקה הראשונה: אחרי שורה ריקה מתחת ללוגו. לפחות 2 שורות (script.js) */
+    /* הפסקה הראשונה: אחרי שורה ריקה מתחת ללוגו. הגובה בדיוק כמה שהטקסט צריך (script.js) */
     --description-intro-row: calc(var(--shunra-logo-row) + 3);
     --description-intro-rows: 2;
 
     /* The Menu: אחרי שורה ריקה. המוצרים ממוקמים ביחס לקו שמעליו, ותופסים 14 שורות */
     --shunra-menu-row: calc(var(--description-intro-row) + var(--description-intro-rows) + 1);
 
-    /* הפסקה השנייה: לפחות 3 שורות */
+    /* הפסקה השנייה */
     --description-story-row: calc(var(--shunra-menu-row) + 14);
     --description-story-rows: 3;
 
@@ -1437,7 +1439,7 @@
     /* Merch אחרי שורה ריקה. המרצ'נדייז ממוקם ביחס לקו שמעליו, ותופס 10 שורות */
     --shunra-merch-row: calc(var(--shunra-posters-row) + var(--shunra-posters-rows) + 1);
 
-    /* הפסקה השלישית: לפחות 4 שורות */
+    /* הפסקה השלישית */
     --description-closing-row: calc(var(--shunra-merch-row) + 10);
     --description-closing-rows: 4;
 
@@ -1578,7 +1580,7 @@
     --logo-rows: 3;
     --logo-width: calc(216 * var(--px));
 
-    /* הפסקה הראשונה: אחרי שורה ריקה מתחת ללוגו. לפחות 3 שורות (script.js) */
+    /* הפסקה הראשונה: אחרי שורה ריקה מתחת ללוגו. הגובה בדיוק כמה שהטקסט צריך (script.js) */
     --description-intro-row: calc(var(--logo-row) + var(--logo-rows) + 1);
     --description-intro-rows: 3;
 
@@ -1586,7 +1588,7 @@
     --schedule-title-row: calc(var(--description-intro-row) + var(--description-intro-rows) + 1);
     --schedule-row: calc(var(--schedule-title-row) + 1);
 
-    /* הפסקה השנייה: אחרי שורה ריקה מתחת לסרטון. לפחות 4 שורות */
+    /* הפסקה השנייה: אחרי שורה ריקה מתחת לסרטון */
     --description-process-row: calc(var(--schedule-row) + 9 + 1);
     --description-process-rows: 4;
 
@@ -1596,7 +1598,7 @@
     --story-width: calc(302 * var(--px));
     --story-radius: calc(46 * var(--px));
 
-    /* הפסקה השלישית: לפחות 2 שורות */
+    /* הפסקה השלישית */
     --description-closing-row: calc(var(--stories-title-row) + 37);
     --description-closing-rows: 2;
 
@@ -4273,11 +4275,6 @@ body {
   display: none;
 }
 
-/* חלקי הגריד: רק במובייל */
-.full-project-grid-part {
-  display: none;
-}
-
 @media (max-width: 1024px) and (orientation: portrait) {
   :root.page-perfect-crime {
     --grid-columns: 7;
@@ -4310,8 +4307,7 @@ body {
 
     /* הקובייה של הפסקה הראשונה: על הקו התחתון של החלק הראשון.
        --description-intro-rows: הגובה שלה בשורות, לא בהכרח שלמות (script.js).
-       הטקסט 15 מהקצה העליון והתחתון של הקובייה, ו-20 מקצוות המסך */
-    --description-box-inset: 15px;
+       הטקסט 20 מקצוות המסך */
     --description-intro-row: var(--part-a-rows);
     --description-intro-rows: 1.7;
 
@@ -4361,41 +4357,19 @@ body {
     --swatch-8-column: 5;   --swatch-8-row: calc(var(--section-title-palette-row) + 5);
   }
 
-  /* קווי הגריד: לא על כל הגריד, אלא בשלושת החלקים. כל חלק מצייר את הקווים שלו כתבנית רציפה
-     שמכסה את כל השטח שלו (ולא אריחים), מהקו העליון עד הקו התחתון, ובאותם טורים */
-  .page-perfect-crime .full-project-grid.grid-lines {
-    background-image: none;
-  }
-
-  .page-perfect-crime .full-project-grid-part {
-    display: block;
-    position: absolute;
-    left: 0;
-    top: calc(var(--part-row) * var(--cell));
-    width: calc(var(--grid-columns) * var(--cell) + var(--line));
-    height: calc(var(--part-rows) * var(--cell) + var(--line));
-    background-image:
-      repeating-linear-gradient(to right, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell)),
-      repeating-linear-gradient(to bottom, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell));
-    background-size: 100% 100%;
-    pointer-events: none;
-  }
-
+  /* שלושת החלקים של הגריד (הכללים המשותפים: למטה, אחרי Leftovers במובייל) */
   .page-perfect-crime .full-project-grid-part--a {
-    --part-row: 0;
-    --part-rows: var(--part-a-rows);
+    --part-top: 0px;
+    --part-bottom: calc(var(--description-intro-row) * var(--cell));
   }
 
   .page-perfect-crime .full-project-grid-part--b {
-    --part-row: var(--section-title-elements-row);
-    --part-rows: calc(var(--part-b-rows) + var(--elements-shift, 0));
+    --part-top: calc(var(--section-title-elements-row) * var(--cell));
+    --part-bottom: calc(var(--description-story-row) * var(--cell));
   }
 
-  /* האחרון ממשיך עד סוף הגריד (גם מתחת לרצועה החצי שקופה של What's Next) */
   .page-perfect-crime .full-project-grid-part--c {
-    --part-row: calc(var(--part-c-row) + var(--elements-shift, 0));
-    height: auto;
-    bottom: 0;
+    --part-top: calc((var(--part-c-row) + var(--elements-shift, 0)) * var(--cell));
   }
 
   /* כותרות הסעיפים ו-Tap to play: בדיוק בשורה שלהן (גם כשהיא מתחילה אחרי קובייה, לא על שורה שלמה) */
@@ -4473,20 +4447,18 @@ body {
     display: none;
   }
 
-  /* הקוביות של התיאור: הטקסט 15 מהקצה העליון והתחתון (script.js מודד לפי זה) */
-  .page-perfect-crime .full-project-description-intro,
-  .page-perfect-crime .full-project-description-story {
-    padding-top: calc(var(--description-box-inset) - var(--line));
-    padding-bottom: calc(var(--description-box-inset) - var(--line));
-  }
-
+  /* הקוביות של התיאור: הריווח מלמעלה ומלמטה לפי הפיגמה (Frame 92 ו-Frame 95 בפריים tpcM) */
   .page-perfect-crime .full-project-description-intro {
+    --box-inset-top: 17px;
+    --box-inset-bottom: 17px;
     --box-row: var(--description-intro-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-intro-rows);
   }
 
   .page-perfect-crime .full-project-description-story {
+    --box-inset-top: 16px;
+    --box-inset-bottom: 17px;
     --box-row: var(--description-story-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-story-rows);
@@ -5258,6 +5230,7 @@ body {
     padding-left: var(--section-title-padding);
   }
 
+  /* הפסקאות: 13 מלמעלה ומלמטה, והאחרונה 20, כמו בפיגמה (Frame 97, Frame 91 ו-Frame 101 בפריים touchM) */
   .page-touch-grass .touch-grass-description-intro {
     --box-row: var(--description-intro-row);
     --box-columns: var(--grid-columns);
@@ -5271,9 +5244,31 @@ body {
   }
 
   .page-touch-grass .touch-grass-description-closing {
+    --box-inset-top: 20px;
+    --box-inset-bottom: 20px;
     --box-row: var(--description-closing-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-closing-rows);
+  }
+
+  /* ארבעת החלקים של הגריד: מעל ומתחת לפסקאות (הכללים המשותפים: אחרי Leftovers במובייל) */
+  .page-touch-grass .full-project-grid-part--a {
+    --part-top: 0px;
+    --part-bottom: calc(var(--description-intro-row) * var(--cell));
+  }
+
+  .page-touch-grass .full-project-grid-part--b {
+    --part-top: calc((var(--description-intro-row) + var(--description-intro-rows)) * var(--cell));
+    --part-bottom: calc(var(--description-process-row) * var(--cell));
+  }
+
+  .page-touch-grass .full-project-grid-part--c {
+    --part-top: calc((var(--description-process-row) + var(--description-process-rows)) * var(--cell));
+    --part-bottom: calc(var(--description-closing-row) * var(--cell));
+  }
+
+  .page-touch-grass .full-project-grid-part--d {
+    --part-top: calc((var(--description-closing-row) + var(--description-closing-rows)) * var(--cell));
   }
 
   /* כותרות הסעיפים: בפריים כולן בשתי משבצות, עם השבירות של הפיגמה.
@@ -5411,6 +5406,7 @@ body {
     display: inline;
   }
 
+  /* הפסקאות: 13 מלמעלה ומלמטה, כמו בפיגמה (Frame 100 ו-Frame 97 בפריים ShunM) */
   .page-shunra .full-project-description-intro {
     --box-row: var(--description-intro-row);
     --box-columns: var(--grid-columns);
@@ -5427,6 +5423,26 @@ body {
     --box-row: var(--description-closing-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-closing-rows);
+  }
+
+  /* ארבעת החלקים של הגריד: מעל ומתחת לפסקאות (הכללים המשותפים: אחרי Leftovers במובייל) */
+  .page-shunra .full-project-grid-part--a {
+    --part-top: 0px;
+    --part-bottom: calc(var(--description-intro-row) * var(--cell));
+  }
+
+  .page-shunra .full-project-grid-part--b {
+    --part-top: calc((var(--description-intro-row) + var(--description-intro-rows)) * var(--cell));
+    --part-bottom: calc(var(--description-story-row) * var(--cell));
+  }
+
+  .page-shunra .full-project-grid-part--c {
+    --part-top: calc((var(--description-story-row) + var(--description-story-rows)) * var(--cell));
+    --part-bottom: calc(var(--description-closing-row) * var(--cell));
+  }
+
+  .page-shunra .full-project-grid-part--d {
+    --part-top: calc((var(--description-closing-row) + var(--description-closing-rows)) * var(--cell));
   }
 
   /* כותרות הסעיפים: הטור והשורה. --title-mobile-columns: רוחב קבוע מהפיגמה, בשורה אחת אם נכנס.
@@ -5699,6 +5715,7 @@ body {
     display: inline;
   }
 
+  /* הפסקאות: 13 מלמעלה ומלמטה, כמו בפיגמה (Frame 98, Frame 99 ו-Frame 92 בפריים LeftM) */
   .page-leftovers .full-project-description-intro {
     --box-row: var(--description-intro-row);
     --box-columns: var(--grid-columns);
@@ -5917,6 +5934,102 @@ body {
      בלי עיגול למעלה, כדי שלא תיווצר שורה ריקה ביניהם */
   .page-leftovers .full-project-panel .full-project-grid {
     height: calc(var(--leftovers-next-top) + var(--cell) + var(--next-projects-height));
+  }
+
+  /* חמשת החלקים של הגריד: מעל ומתחת לפסקאות */
+  .page-leftovers .full-project-grid-part--a {
+    --part-top: 0px;
+    --part-bottom: calc(var(--description-intro-row) * var(--cell));
+  }
+
+  .page-leftovers .full-project-grid-part--b {
+    --part-top: calc((var(--description-intro-row) + var(--description-intro-rows)) * var(--cell));
+    --part-bottom: var(--leftovers-story-top);
+  }
+
+  .page-leftovers .full-project-grid-part--c {
+    --part-top: calc(var(--leftovers-story-top) + var(--description-story-rows) * var(--cell));
+    --part-bottom: calc(var(--leftovers-process-top) + var(--cell));
+  }
+
+  .page-leftovers .full-project-grid-part--d {
+    --part-top: calc(var(--leftovers-process-top) + (1 + var(--description-process-rows)) * var(--cell));
+    --part-bottom: calc(var(--leftovers-looking-back-top) + var(--cell));
+  }
+
+  .page-leftovers .full-project-grid-part--e {
+    --part-top: calc(var(--leftovers-looking-back-top) + (1 + var(--description-looking-back-rows)) * var(--cell));
+  }
+}
+
+/* =========================================
+   עמודי הפרויקטים במובייל: הגריד מחולק לחלקים (full-project-grid-part)
+   כל חלק נגמר בדיוק בקצה העליון של קוביית טקסט, והחלק הבא מתחיל בדיוק בקצה התחתון שלה,
+   עם קו מלא, וממשיך כרשת חדשה באותם טורים. בכל חלק רק משבצות שלמות.
+   הקוביות גבוהות בדיוק כמו הטקסט והריווח הפנימי מהפיגמה (script.js, data-rows-exact),
+   ולכן כל מה שמתחתיהן (גם השורות) זז יחד איתן.
+   --part-top ו---part-bottom: הקו העליון והתחתון של החלק (בכל עמוד, למעלה). בלי --part-bottom:
+   החלק ממשיך עד סוף הגריד (גם מתחת לרצועה החצי שקופה של What's Next)
+   ========================================= */
+.full-project-grid-part {
+  display: none;
+}
+
+@media (max-width: 1024px) and (orientation: portrait) {
+  .page-perfect-crime .full-project-grid.grid-lines,
+  .page-leftovers .full-project-grid.grid-lines,
+  .page-shunra .full-project-grid.grid-lines,
+  .page-touch-grass .full-project-grid.grid-lines {
+    background-image: none;
+  }
+
+  /* הקווים: תבנית רציפה שמכסה את כל החלק (ולא אריחים), מהקו העליון עד הקו התחתון */
+  .page-perfect-crime .full-project-grid-part,
+  .page-leftovers .full-project-grid-part,
+  .page-shunra .full-project-grid-part,
+  .page-touch-grass .full-project-grid-part {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: var(--part-top);
+    width: calc(var(--grid-columns) * var(--cell) + var(--line));
+    height: calc(var(--part-bottom) - var(--part-top) + var(--line));
+    background-image:
+      repeating-linear-gradient(to right, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell)),
+      repeating-linear-gradient(to bottom, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell));
+    background-size: 100% 100%;
+    pointer-events: none;
+  }
+
+  /* החלק האחרון: עד סוף הגריד */
+  .full-project-grid-part--last {
+    height: auto;
+    bottom: 0;
+  }
+
+  /* כותרות הסעיפים: בדיוק בשורה שלהן (גם כשהיא מתחילה מתחת לקובייה, לא על כפולה של משבצת).
+     ב-Leftovers הכותרות שמתחת לקוביות ממוקמות בעצמן (--leftovers-...-top) */
+  .page-shunra .full-project-grid .section-title,
+  .page-touch-grass .full-project-grid .section-title {
+    top: calc(var(--row) * var(--cell));
+  }
+
+  /* קוביות התיאור: הריווח מלמעלה ומלמטה מהקצה החיצוני של הקובייה, לפי הפיגמה (ברירת מחדל 13).
+     מהצדדים: 20 מקצוות המסך (בכללים של כל עמוד) */
+  .page-perfect-crime .full-project-description-intro,
+  .page-perfect-crime .full-project-description-story,
+  .page-leftovers .full-project-description-intro,
+  .page-leftovers .full-project-description-story,
+  .page-leftovers .full-project-description-process,
+  .page-leftovers .full-project-description-looking-back,
+  .page-shunra .full-project-description-intro,
+  .page-shunra .full-project-description-story,
+  .page-shunra .full-project-description-closing,
+  .page-touch-grass .touch-grass-description-intro,
+  .page-touch-grass .touch-grass-description-process,
+  .page-touch-grass .touch-grass-description-closing {
+    padding-top: calc(var(--box-inset-top, 13px) - var(--line));
+    padding-bottom: calc(var(--box-inset-bottom, 13px) - var(--line));
   }
 }
 
