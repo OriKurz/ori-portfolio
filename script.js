@@ -2547,7 +2547,7 @@ if (revealParagraphElements.length) {
 let scheduleUnderlineCheck = function () {};
 
 // =========================================
-// קו תחתון בטקסט הרץ (text-underline, כרגע ב-Leftovers).
+// קו תחתון בטקסט הרץ (text-underline).
 // כל ביטוי מתחלק לשורות (text-underline-line), וכל שורה היא קו נפרד.
 // קו מצטייר משמאל לימין כשהשורה שלו עוברת 85% מגובה האזור הנראה (המסך או אזור הגלילה של התיאור).
 // כמה קווים יחד (למשל בכניסה לעמוד): אחד אחרי השני, עם --text-underline-stagger ביניהם.
@@ -2575,9 +2575,10 @@ if (underlinePhraseElements.length) {
     element.textContent = phrase.text;
     const textNode = element.firstChild;
     if (!textNode || element.getClientRects().length === 0) return []; // מוסתר (למשל טקסט של מחשב במובייל)
-    // data-underline="desktop": קו רק במחשב. data-underline-desktop-end: במחשב הקו רק עד האות הזו
+    // data-underline="desktop" / "mobile": קו רק במחשב / רק במובייל. data-underline-desktop-end: במחשב הקו רק עד האות הזו
     const desktop = !underlineMobileScreen.matches;
     if (element.dataset.underline === "desktop" && !desktop) return [];
+    if (element.dataset.underline === "mobile" && desktop) return [];
     const underlineEnd = desktop && element.dataset.underlineDesktopEnd ? Number(element.dataset.underlineDesktopEnd) : phrase.text.length;
 
     const range = document.createRange();

@@ -3565,9 +3565,10 @@ body {
   --text-underline-start-delay: 500ms;
 }
 
-/* The Perfect Crime ו-Touch Grass: העובי והמרחק לפי הפיגמה של העמוד (זהים במחשב ובמובייל) */
+/* The Perfect Crime, Touch Grass ו-Shunra (רק במובייל): העובי והמרחק לפי הפיגמה של העמוד (זהים במחשב ובמובייל) */
 :root.page-perfect-crime,
-:root.page-touch-grass {
+:root.page-touch-grass,
+:root.page-shunra {
   --text-underline-thickness: 0.085em;
   --text-underline-offset: 0.195em;
 }
@@ -4447,18 +4448,18 @@ body {
     display: none;
   }
 
-  /* הקוביות של התיאור: הריווח מלמעלה ומלמטה לפי הפיגמה (Frame 92 ו-Frame 95 בפריים tpcM) */
+  /* הקוביות של התיאור: הגובה והמקום של הטקסט בתוכן כמו בפיגמה (Frame 92 ו-Frame 95 בפריים tpcM) */
   .page-perfect-crime .full-project-description-intro {
-    --box-inset-top: 17px;
-    --box-inset-bottom: 17px;
+    --box-inset-top: 16px;
+    --box-inset-bottom: 12px;
     --box-row: var(--description-intro-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-intro-rows);
   }
 
   .page-perfect-crime .full-project-description-story {
-    --box-inset-top: 16px;
-    --box-inset-bottom: 17px;
+    --box-inset-top: 15px;
+    --box-inset-bottom: 16px;
     --box-row: var(--description-story-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-story-rows);
@@ -5230,22 +5231,26 @@ body {
     padding-left: var(--section-title-padding);
   }
 
-  /* הפסקאות: 13 מלמעלה ומלמטה, והאחרונה 20, כמו בפיגמה (Frame 97, Frame 91 ו-Frame 101 בפריים touchM) */
+  /* הפסקאות: הגובה והמקום של הטקסט בתוכן כמו בפיגמה (Frame 97, Frame 91 ו-Frame 101 בפריים touchM) */
   .page-touch-grass .touch-grass-description-intro {
+    --box-inset-top: 23px;
+    --box-inset-bottom: 23px;
     --box-row: var(--description-intro-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-intro-rows);
   }
 
   .page-touch-grass .touch-grass-description-process {
+    --box-inset-top: 21px;
+    --box-inset-bottom: 20px;
     --box-row: var(--description-process-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-process-rows);
   }
 
   .page-touch-grass .touch-grass-description-closing {
-    --box-inset-top: 20px;
-    --box-inset-bottom: 20px;
+    --box-inset-top: 26px;
+    --box-inset-bottom: 26px;
     --box-row: var(--description-closing-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-closing-rows);
@@ -5406,20 +5411,26 @@ body {
     display: inline;
   }
 
-  /* הפסקאות: 13 מלמעלה ומלמטה, כמו בפיגמה (Frame 100 ו-Frame 97 בפריים ShunM) */
+  /* הפסקאות: הגובה והמקום של הטקסט בתוכן כמו בפיגמה (Frame 100, Rectangle 136 ו-Frame 97 בפריים ShunM) */
   .page-shunra .full-project-description-intro {
+    --box-inset-top: 21px;
+    --box-inset-bottom: 21px;
     --box-row: var(--description-intro-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-intro-rows);
   }
 
   .page-shunra .full-project-description-story {
+    --box-inset-top: 21px;
+    --box-inset-bottom: 23px;
     --box-row: var(--description-story-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-story-rows);
   }
 
   .page-shunra .full-project-description-closing {
+    --box-inset-top: 28px;
+    --box-inset-bottom: 27px;
     --box-row: var(--description-closing-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-closing-rows);
@@ -5715,14 +5726,19 @@ body {
     display: inline;
   }
 
-  /* הפסקאות: 13 מלמעלה ומלמטה, כמו בפיגמה (Frame 98, Frame 99 ו-Frame 92 בפריים LeftM) */
+  /* הפסקאות: הגובה והמקום של הטקסט בתוכן כמו בפיגמה (Frame 98, Frame 99 ו-Frame 92 בפריים LeftM).
+     ל-Process אין קובייה בפריים: 13 */
   .page-leftovers .full-project-description-intro {
+    --box-inset-top: 33px;
+    --box-inset-bottom: 32px;
     --box-row: var(--description-intro-row);
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-intro-rows);
   }
 
   .page-leftovers .full-project-description-story {
+    --box-inset-top: 29px;
+    --box-inset-bottom: 29px;
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-story-rows);
     top: var(--leftovers-story-top);
@@ -5741,6 +5757,8 @@ body {
   }
 
   .page-leftovers .full-project-description-looking-back {
+    --box-inset-top: 22px;
+    --box-inset-bottom: 22px;
     --box-columns: var(--grid-columns);
     --box-rows: var(--description-looking-back-rows);
     top: calc(var(--leftovers-looking-back-top) + var(--cell));
@@ -6014,7 +6032,8 @@ body {
     top: calc(var(--row) * var(--cell));
   }
 
-  /* קוביות התיאור: הריווח מלמעלה ומלמטה מהקצה החיצוני של הקובייה, לפי הפיגמה (ברירת מחדל 13).
+  /* קוביות התיאור: הריווח מלמעלה ומלמטה מהקצה החיצוני של הקובייה עד שורת הטקסט (line-height),
+     לכל קובייה לפי הפיגמה שלה (ברירת מחדל 13).
      מהצדדים: 20 מקצוות המסך (בכללים של כל עמוד) */
   .page-perfect-crime .full-project-description-intro,
   .page-perfect-crime .full-project-description-story,
