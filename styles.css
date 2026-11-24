@@ -1542,11 +1542,11 @@
 
   /* צבעי הפרויקט (לא חלק מצבעי האתר) */
   --touch-grass-cream: #fff8df;  /* רקע העמוד */
-  --touch-grass-olive: #606d44;  /* קווי הגריד */
+  --touch-grass-olive: #606d44;  /* קווי הגריד וההמבורגר */
 
   --page-background: var(--touch-grass-cream);
   --grid-line-color: var(--touch-grass-olive);
-  --menu-line-color: var(--color-dark-blue);
+  --menu-line-color: var(--touch-grass-olive);
   --description-color: var(--color-orange);
 
   /* הכותרת, שורת המשנה והתיאור (ההזזה של 8px בכותרת ובשורת המשנה כמו בעמודי הפרויקט האחרים).
