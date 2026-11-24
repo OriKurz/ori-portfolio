@@ -8,9 +8,10 @@
   const root = document.documentElement;
   if (!getComputedStyle(root).getPropertyValue("--css-fallback").trim()) return;
 
-  // dvh, svh ו-lvh: רק בדפדפן שלא מכיר אותם
-  const supportsDvh = window.CSS && CSS.supports && CSS.supports("height", "1dvh");
-  const needsFix = supportsDvh ? /round\(|mod\(/ : /round\(|mod\(|\d[dsl]vh\b/;
+  // dvh, svh ו-lvh: רק בדפדפן שלא מכיר אותם (styles.css מסמן גם את זה).
+  // בסימולציה של דפדפן ישן (checks/site-check.js) הם נקראים xdvh, xsvh ו-xlvh
+  const supportsDvh = !getComputedStyle(root).getPropertyValue("--css-fallback-dvh").trim();
+  const needsFix = supportsDvh ? /round\(|mod\(/ : /round\(|mod\(|\dx?[dsl]vh\b/;
 
   // ----- איזה משתנים צריך לחשב: כל משתנה ב-styles.css שהערך שלו משתמש ב-round, mod או dvh -----
   const targets = [];
@@ -101,7 +102,7 @@
       if (token === "(") { const inner = sum(); take(")"); return inner; }
       const number = /^(-?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)([a-z%]*)$/i.exec(token);
       if (number) {
-        const unit = number[2].toLowerCase();
+        const unit = number[2].toLowerCase().replace(/^x(?=[dsl]vh$)/, "");
         return unit
           ? { value: parseFloat(number[1]) * unitSize(unit), isLength: true }
           : { value: parseFloat(number[1]), isLength: false };

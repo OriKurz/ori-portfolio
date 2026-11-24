@@ -106,6 +106,12 @@
   }
 }
 
+@supports not (height: 1dvh) {
+  :root {
+    --css-fallback-dvh: 1;
+  }
+}
+
 :root,
 .vars-base {
   /* הרשת */

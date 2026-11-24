@@ -1,0 +1,12 @@
+{
+  "name": "ori-kurz-portfolio",
+  "private": true,
+  "description": "בדיקה אוטומטית לאתר (Playwright). האתר עצמו בלי build.",
+  "scripts": {
+    "check": "node checks/site-check.js",
+    "check:full": "node checks/site-check.js --full"
+  },
+  "devDependencies": {
+    "playwright": "1.49.1"
+  }
+}
