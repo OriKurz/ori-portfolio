@@ -23,7 +23,8 @@
     "leftovers-project.html": "--leftovers-navy",
     "shunra-project.html": "--shunra-cream",
     "touch-grass-project.html": "--touch-grass-cream",
-    "404.html": "--color-mint"
+    "404.html": "--color-mint",
+    "process.html": "--color-mint"
   };
 
   // קורא משתנה מ-styles.css

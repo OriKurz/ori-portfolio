@@ -10,13 +10,31 @@
   <link rel="icon" type="image/png" sizes="16x16" href="Images/favicon/favicon-16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="Images/favicon/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
+  <!-- מעבר בין עמודים: נטען ב-head כדי לכסות את העמוד החדש מהציור הראשון -->
+  <script src="page-transition.js"></script>
+  <script src="css-fallback.js"></script>
 </head>
 <body>
+  <!-- בר הבחירה (התפריט): סגור בטעינה. ההמבורגר פותח אותו, והוא מחליק פנימה מלמעלה (script.js) -->
+  <nav class="nav-bar" id="nav-bar" aria-label="Main">
+    <!-- ההמבורגר של הבר: סוגר אותו -->
+    <button class="menu-button nav-bar-menu" type="button" aria-label="Close menu" aria-controls="nav-bar">
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+      <span class="menu-button-line"></span>
+    </button>
+    <ul class="nav-bar-list">
+      <li><a class="nav-bar-link text-nav" href="index.html">HOME</a></li>
+      <li><a class="nav-bar-link text-nav" href="projects.html">INDEX</a></li>
+      <li><a class="nav-bar-link text-nav" href="say-hi.html">SAY HI :)</a></li>
+      <li><a class="nav-bar-link text-nav" href="process.html">PROCESS</a></li>
+    </ul>
+  </nav>
 
   <!-- עמוד התהליך: הפריים PROCESS מהפיגמה -->
   <main class="process-page">
 
-    <!-- אזור העיצוב: 14x65 משבצות (במובייל 8 משבצות לרוחב). קווי הגריד הם הרקע שלו -->
+    <!-- אזור העיצוב: 14x96 משבצות (במובייל 8 משבצות לרוחב). קווי הגריד הם הרקע שלו -->
     <div class="process-grid grid-lines">
 
       <!-- מלבני מנטה שמאחדים משבצות (מסתירים את הקווים שבתוכם) -->
@@ -32,6 +50,16 @@
       <div class="grid-box merge-box merge-box--10"></div>
       <div class="grid-box merge-box merge-box--11"></div>
       <div class="grid-box merge-box merge-box--12"></div>
+      <div class="grid-box merge-box merge-box--13"></div>
+      <div class="grid-box merge-box merge-box--14"></div>
+      <div class="grid-box merge-box merge-box--15"></div>
+
+      <!-- ההמבורגר: פותח את בר הבחירה. ממורכז במשבצת הראשונה בפינה השמאלית העליונה -->
+      <button class="menu-button process-menu" type="button" aria-label="Menu" aria-controls="nav-bar" aria-expanded="false">
+        <span class="menu-button-line"></span>
+        <span class="menu-button-line"></span>
+        <span class="menu-button-line"></span>
+      </button>
 
       <!-- תוויות טקסט -->
       <p class="on-grid process-label text-section-title process-label--date-1">#19/10/2026</p>
@@ -136,36 +164,65 @@
       <!-- 19/11: הפלטה החדשה אחרי בדיקות קריאות ועיוורון צבעים -->
       <img class="on-grid shot shot--palette-change" src="Images/process/palette-change.webp" width="2400" height="1217" loading="lazy" alt="New palette after readability and color blindness tests: before and after">
 
+      <!-- 24/11: כל מה שחסר (מובייל ומחשב לשני פרויקטים, האינדקס, דף ה-404, הגלריה ועוד) -->
+      <p class="on-grid process-label process-label--entry text-section-title process-label--entry-6">#Adding all missing features: mobile and desktop for two more projects, the index page, the 404 page, gallery view and more</p>
+
+      <img class="on-grid shot shot--framed-dark shot--index-mobile" src="Images/process/index-mobile.webp" width="930" height="1424" loading="lazy" alt="The index page on mobile">
+      <img class="on-grid shot shot--shunra-page" src="Images/process/shunra-page.webp" width="1336" height="612" loading="lazy" alt="The Shunra project page">
+      <img class="on-grid shot shot--touch-grass-page" src="Images/process/touch-grass-page.webp" width="964" height="402" loading="lazy" alt="The Touch Grass project page">
+      <img class="on-grid shot shot--gallery-view" src="Images/process/gallery-view.webp" width="1480" height="832" loading="lazy" alt="Gallery view with arrows">
+      <img class="on-grid shot shot--error-page" src="Images/process/error-page.webp" width="1648" height="706" loading="lazy" alt="The 404 page on desktop and mobile">
+
+      <!-- 24/11: בדיקת גדלי הטקסט והסגנונות -->
+      <p class="on-grid process-label process-label--entry text-section-title process-label--entry-7">#24/11/2026 #Final check of font sizes and styles, and fixing the inconsistencies it found</p>
+
+      <img class="on-grid shot shot--align-top-left shot--typography-audit" src="Images/process/typography-audit.webp" width="2400" height="1676" loading="lazy" alt="Typography audit of the live site">
+
       <!-- עיגולים צבעוניים (קישוט) -->
       <img class="on-grid circle circle--1" src="Images/process/circle-pink.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--2" src="Images/process/circle-pink.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--3" src="Images/process/circle-green.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--4" src="Images/process/circle-green.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--5" src="Images/process/circle-green.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--6" src="Images/process/circle-yellow.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--7" src="Images/process/circle-yellow.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--8" src="Images/process/circle-yellow.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--2" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--3" src="Images/process/circle-dark-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--4" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--5" src="Images/process/circle-cream.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--6" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--7" src="Images/process/circle-dark-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--8" src="Images/process/circle-cream.svg" width="73" height="73" loading="lazy" alt="">
       <img class="on-grid circle circle--9" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--10" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--11" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--12" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--13" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--14" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--10" src="Images/process/circle-pink.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--11" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--12" src="Images/process/circle-dark-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--13" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--14" src="Images/process/circle-cream.svg" width="73" height="73" loading="lazy" alt="">
       <img class="on-grid circle circle--15" src="Images/process/circle-pink.svg" width="73" height="73" loading="lazy" alt="">
       <img class="on-grid circle circle--16" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--17" src="Images/process/circle-pink.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--18" src="Images/process/circle-green.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--19" src="Images/process/circle-green.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--20" src="Images/process/circle-yellow.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--21" src="Images/process/circle-yellow.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--17" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--18" src="Images/process/circle-dark-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--19" src="Images/process/circle-cream.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--20" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--21" src="Images/process/circle-pink.svg" width="73" height="73" loading="lazy" alt="">
       <img class="on-grid circle circle--22" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--23" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--24" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
-      <img class="on-grid circle circle--25" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--23" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--24" src="Images/process/circle-cream.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--25" src="Images/process/circle-green.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--26" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--27" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--28" src="Images/process/circle-dark-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--29" src="Images/process/circle-cream.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--30" src="Images/process/circle-pink.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--31" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--32" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--33" src="Images/process/circle-cream.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--34" src="Images/process/circle-dark-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--35" src="Images/process/circle-cream.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--36" src="Images/process/circle-dark-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--37" src="Images/process/circle-orange.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--38" src="Images/process/circle-blue.svg" width="73" height="73" loading="lazy" alt="">
+      <img class="on-grid circle circle--39" src="Images/process/circle-pink.svg" width="73" height="73" loading="lazy" alt="">
 
     </div>
   </main>
 
   <script src="script.js"></script>
+  <script src="keyboard-nav.js"></script>
 </body>
 </html>
