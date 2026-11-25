@@ -1370,6 +1370,9 @@
 
   /* בר הבחירה הפתוח מעל שכבת המדבקות (shunra-stickers.js שם אותה ב-z-index 990) */
   --layer-nav-bar: 1000;
+  /* במובייל: השורה הקבועה למעלה גם מעל המדבקות, וההמבורגר מעליה (ומתחת לבר הבחירה) */
+  --layer-full-project-top-row: 995;
+  --layer-menu: 996;
 
   --page-background: var(--shunra-cream);
   --grid-line-color: var(--shunra-slate);
@@ -1952,6 +1955,9 @@
   --page-background: var(--color-mint);
   --grid-line-color: var(--color-dark-blue);
 
+  /* השורות הקבועות למעלה: ההמבורגר והכותרות */
+  --projects-header-rows: 2;
+
   /* ההמבורגר: שלושה קווים (30x24 בפיגמה), במרכז המשבצת הראשונה */
   --menu-width: calc(30 * var(--u));
   --menu-line-height: calc(4 * var(--u));
@@ -2064,10 +2070,12 @@
   --nav-text-optical-shift: 0.055em;
   /* מעל כל התוכן */
   --layer-nav-bar: 10;
-  /* השורות הקבועות למעלה באינדקס במובייל: מעל התמונות, מתחת להמבורגר */
+  /* השורות הקבועות למעלה באינדקס: מעל התמונות, מתחת להמבורגר */
   --layer-projects-header: 8;
   /* ההמבורגר מעל כל שכבה בעמוד (כותרות, כדורים), ומתחת לבר הבחירה */
   --layer-menu: 9;
+  /* שורת ההמבורגר הקבועה למעלה בעמודי הפרויקטים במובייל: מעל התוכן, מתחת להמבורגר */
+  --layer-full-project-top-row: 8;
 }
 
 /* מובייל (אין עיצוב בפיגמה): בר נמוך יותר, המבורגר בגודל ההמבורגר של העמודים במובייל,
@@ -6149,6 +6157,38 @@ body {
 }
 
 /* =========================================
+   עמודי הפרויקטים במובייל: השורה הראשונה של הגריד (שורת ההמבורגר) קבועה למעלה
+   sticky בתוך הגריד: מתחילה במקום של השורה הראשונה, ונשארת בראש המסך לאורך כל הגלילה.
+   הקווים שלה מתחילים מאותה פינה כמו הגריד, אז הם ממשיכים אותו בדיוק, כולל הקו שמתחתיה.
+   הרקע בצבע העמוד, והתוכן נגלל מתחתיה ונעלם. ההמבורגר קבוע מעליה, במרכז המשבצת הראשונה.
+   במחשב: בלי שינוי (ההמבורגר כבר מחוץ לגלילה)
+   ========================================= */
+.full-project-top-row {
+  display: none;
+}
+
+@media (max-width: 1024px) and (orientation: portrait) {
+  .full-project-top-row {
+    position: sticky;
+    top: 0;
+    z-index: var(--layer-full-project-top-row);
+    display: block;
+    /* עד קצה המסך, כדי שגם הפיקסל שנשאר מימין לגריד יכסה את מה שנגלל */
+    width: 100vw;
+    height: calc(var(--cell) + var(--line));
+    background-color: var(--page-background);
+    background-image:
+      repeating-linear-gradient(to right, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell)),
+      repeating-linear-gradient(to bottom, var(--grid-line-color) 0 var(--line), transparent var(--line) var(--cell));
+    background-size: 100% 100%;
+  }
+
+  .full-project-menu {
+    position: fixed;
+  }
+}
+
+/* =========================================
    עמודי הפרויקטים במובייל: הגריד מחולק לחלקים (full-project-grid-part)
    כל חלק נגמר בדיוק בקצה העליון של קוביית טקסט, והחלק הבא מתחיל בדיוק בקצה התחתון שלה,
    עם קו מלא, וממשיך כרשת חדשה באותם טורים. בכל חלק רק משבצות שלמות.
@@ -7446,21 +7486,14 @@ html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
 }
 
 /* ההמבורגר: במשבצת הראשונה בפינה השמאלית העליונה, ממורכז בין הקווים.
-   במחשב הוא נגלל עם הגריד, כדי שיישאר במרכז המשבצת שלו */
+   קבוע למעלה, עם השורות הקבועות */
 .projects-menu {
   --menu-height: calc(3 * var(--menu-line-height) + 2 * var(--menu-gap));
-  position: absolute;
+  position: fixed;
   left: calc((var(--cell) + var(--line) - var(--menu-width)) / 2);
   /* במשתנה, כדי ש-css-fallback.js יחשב אותו בדפדפן ישן */
   --menu-top-gap: mod(var(--grid-top), var(--cell));
   top: calc(var(--menu-top-gap) + (var(--cell) + var(--line) - var(--menu-height)) / 2);
-}
-
-/* במובייל: קבוע למעלה, עם השורות הקבועות */
-@media (max-width: 1024px) and (orientation: portrait) {
-  .projects-menu {
-    position: fixed;
-  }
 }
 
 .projects-menu .menu-button-line {
@@ -7473,13 +7506,20 @@ html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
   --menu-hover-color: var(--color-blue);
 }
 
-/* אזור העיצוב מהפיגמה */
+/* השורות העליונות של אזור העיצוב (ההמבורגר והכותרות): קבועות למעלה, והתמונות נגללות מתחתן.
+   הרקע בצבע העמוד, והקווים כמו בשאר הגריד (אותם אריחים מאותה פינה), עד הקו שמתחתן (כולל) */
 .projects-page {
-  position: absolute;
+  position: fixed;
+  z-index: var(--layer-projects-header);
   left: var(--grid-left);
   top: var(--grid-top);
   width: calc(var(--design-columns) * var(--cell));
-  height: calc(var(--grid-rows) * var(--cell));
+  height: calc(var(--projects-header-rows) * var(--cell) + var(--line));
+  background-color: var(--page-background);
+  background-image:
+    linear-gradient(to right, var(--grid-line-color) var(--line), transparent var(--line)),
+    linear-gradient(to bottom, var(--grid-line-color) var(--line), transparent var(--line));
+  background-size: var(--cell) var(--cell);
   color: var(--color-orange);
 }
 
@@ -7617,16 +7657,11 @@ html.stk-dragging .custom-cursor.is-round.is-sticker .custom-cursor-ball {
 }
 
 @media (max-width: 1024px) and (orientation: portrait) {
-  /* 3 השורות העליונות: קבועות, והתמונות נגללות מתחתן.
-     הרקע והקווים כמו בשאר הגריד, עד הקו שמתחתן (כולל) */
+  /* 3 השורות העליונות: קבועות (כמו במחשב), לכל רוחב המסך */
   .projects-page {
-    position: fixed;
-    z-index: var(--layer-projects-header);
     left: 0;
     top: 0;
     width: 100vw;
-    height: calc(var(--projects-header-rows) * var(--cell) + var(--line));
-    background-color: var(--page-background);
   }
 
   /* קווי הגריד: לא אריחים (ספארי מעגל את גודל האריח לפיקסלים של המסך, והקווים זזים),
