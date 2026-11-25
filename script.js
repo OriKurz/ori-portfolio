@@ -1272,7 +1272,10 @@ if (leftoversMap) {
     magnifying = on;
     magnifierButton.setAttribute("aria-pressed", String(on));
     leftoversMap.classList.toggle("is-magnifying", on);
-    if (!on) hideLens();
+    if (!on) {
+      stopLensHint();
+      hideLens();
+    }
   }
 
   function hideLens() {
@@ -1293,8 +1296,8 @@ if (leftoversMap) {
     const zoom = cssNumber(leftoversMap, "--magnifier-zoom");
     const size = lens.offsetWidth;
     const border = lens.clientLeft;
-    // בטלפון העיגול עולה מעל האצבע: חצי עיגול ועוד רבע עיגול
-    const lift = event.pointerType === "mouse" ? 0 : size * 0.75;
+    // בטלפון העיגול עולה מעל האצבע: חצי עיגול ועוד רבע עיגול (ברמז: בדיוק בנקודה)
+    const lift = event.pointerType === "mouse" || event.pointerType === "hint" ? 0 : size * 0.75;
     lens.style.setProperty("--lens-x", x + "px");
     lens.style.setProperty("--lens-y", (y - lift) + "px");
     lens.style.setProperty("--lens-bg-width", box.width * zoom + "px");
@@ -1305,6 +1308,64 @@ if (leftoversMap) {
 
   magnifierButton.addEventListener("click", function () {
     setMagnifying(!magnifying);
+  });
+
+  // ----- רמז חד-פעמי ואנימציית כניסה (רק שינוי גודל, styles.css) -----
+  // כשהמפה נכנסת למסך בגלילה (לפחות חצי ממנה נראה), העיגול מופיע לרגע במרכז המפה:
+  // גדל, נשאר כשנייה ומתכווץ. פעם אחת בכל כניסה לעמוד. במחשב רק כשהעכבר לא על המפה.
+  // נגיעה במפה או כניסה של העכבר באמצע הרמז עוצרות אותו, והזכוכית עובדת כרגיל מיד.
+  // במחשב: בכל כניסה של העכבר למפה העיגול גדל מעט, ואז עוקב אחרי העכבר כרגיל.
+  // ב-prefers-reduced-motion: בלי רמז ובלי אנימציית כניסה
+  let lensHinting = false;
+  let mouseOnMap = false;
+
+  function stopLensHint() {
+    if (!lensHinting) return;
+    lensHinting = false;
+    lens.classList.remove("is-hinting", "is-visible");
+  }
+
+  function showLensHint() {
+    if (!magnifying || mouseOnMap || reducedMotion.matches) return;
+    const box = leftoversMap.getBoundingClientRect();
+    lensHinting = true;
+    moveLens({ clientX: box.left + box.width / 2, clientY: box.top + box.height / 2, pointerType: "hint" });
+    lens.classList.remove("is-entering");
+    lens.classList.add("is-hinting");
+  }
+
+  lens.addEventListener("animationend", function (event) {
+    if (event.animationName === "magnifier-lens-hint") stopLensHint();
+    if (event.animationName === "magnifier-lens-enter") lens.classList.remove("is-entering");
+  });
+
+  if ("IntersectionObserver" in window) {
+    const hintObserver = new IntersectionObserver(function (entries) {
+      const entry = entries[0];
+      if (!entry.isIntersecting || !entry.rootBounds) return;
+      // חצי מהמפה, או חצי מגובה המסך כשהמפה גבוהה ממנו
+      const needed = Math.min(entry.boundingClientRect.height, entry.rootBounds.height) / 2;
+      if (entry.intersectionRect.height < needed) return;
+      hintObserver.disconnect();
+      showLensHint();
+    }, { threshold: Array.from({ length: 21 }, function (_, index) { return index / 20; }) });
+    // הגענו במעבר קוביות: מתחילים לבדוק רק כשהעמוד נחשף, כדי שהרמז לא יקרה מתחת לקוביות
+    if (document.documentElement.classList.contains("is-page-transition-arriving")) {
+      document.addEventListener("pagetransitionend", function () { hintObserver.observe(leftoversMap); }, { once: true });
+    } else {
+      hintObserver.observe(leftoversMap);
+    }
+  }
+
+  leftoversMap.addEventListener("pointerenter", function (event) {
+    if (event.pointerType !== "mouse") return;
+    mouseOnMap = true;
+    stopLensHint();
+    if (!magnifying || reducedMotion.matches) return;
+    // מתחילים את האנימציה מחדש בכל כניסה
+    lens.classList.remove("is-entering");
+    void lens.offsetWidth;
+    lens.classList.add("is-entering");
   });
 
   document.addEventListener("keydown", function (event) {
@@ -1333,6 +1394,7 @@ if (leftoversMap) {
   });
 
   leftoversMap.addEventListener("pointerdown", function (event) {
+    if (event.pointerType !== "mouse") stopLensHint();
     if (!magnifying || event.pointerType === "mouse") return;
     lensStart = { x: event.clientX, y: event.clientY };
     lastLensEvent = event;
@@ -1361,7 +1423,9 @@ if (leftoversMap) {
   });
 
   leftoversMap.addEventListener("pointerleave", function (event) {
-    if (event.pointerType === "mouse") lens.classList.remove("is-visible");
+    if (event.pointerType !== "mouse") return;
+    mouseOnMap = false;
+    lens.classList.remove("is-visible", "is-entering");
   });
 
   leftoversMap.addEventListener("pointerup", function (event) {

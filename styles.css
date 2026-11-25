@@ -1193,6 +1193,13 @@
   /* העיגול: 3.45 משבצות במחשב, מגדיל פי 2 (בטלפון 6 משבצות ופי 2.5, למטה) */
   --magnifier-lens-size: calc(var(--cell) * 3.45);
   --magnifier-zoom: 2;
+  /* כניסת העכבר למפה (במחשב): העיגול גדל מ-0.85 ל-1 */
+  --magnifier-enter-scale: 0.85;
+  --magnifier-enter-duration: 250ms;
+  /* הרמז החד-פעמי (script.js): העיגול גדל במרכז המפה מ-0.6 ל-1 ב-400ms, נשאר שנייה ומתכווץ ל-0 ב-250ms.
+     האחוזים באנימציה לפי התזמונים האלה (400 / 1650 ו-1400 / 1650) */
+  --magnifier-hint-scale: 0.6;
+  --magnifier-hint-duration: 1650ms;
 
   /* Source Material: התווית מעל ציר הזמן (בפיגמה מ-x=845, y=2326, ממורכזת מעל הציר) */
   --label-box-source-column: 5;   --label-box-source-row: 35;   --label-box-source-columns: 4;
@@ -6586,6 +6593,36 @@ body {
 
 .magnifier-lens.is-visible {
   visibility: visible;
+}
+
+/* אנימציית הכניסה והרמז: רק שינוי גודל (scale), בלי שינוי שקיפות.
+   scale נפרד מ-translate, כך שהעיגול נשאר ממורכז על הנקודה */
+.magnifier-lens.is-entering {
+  animation: magnifier-lens-enter var(--magnifier-enter-duration) ease-out;
+}
+
+.magnifier-lens.is-hinting {
+  animation: magnifier-lens-hint var(--magnifier-hint-duration) both;
+}
+
+@keyframes magnifier-lens-enter {
+  from { scale: var(--magnifier-enter-scale); }
+  to   { scale: 1; }
+}
+
+@keyframes magnifier-lens-hint {
+  0%      { scale: var(--magnifier-hint-scale); animation-timing-function: ease-out; }
+  24.24%  { scale: 1; animation-timing-function: linear; }
+  84.85%  { scale: 1; animation-timing-function: ease-in; }
+  100%    { scale: 0; }
+}
+
+/* פחות תנועה: בלי רמז ובלי אנימציית כניסה */
+@media (prefers-reduced-motion: reduce) {
+  .magnifier-lens.is-entering,
+  .magnifier-lens.is-hinting {
+    animation: none;
+  }
 }
 
 /* בטלפון: נגיעה ארוכה מציגה את הזכוכית, אז בלי התפריט של הדפדפן ובלי סימון */
