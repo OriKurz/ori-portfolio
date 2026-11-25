@@ -88,7 +88,15 @@
     const size = overlay.getBoundingClientRect();
     const columns = mobileQuery.matches ? 8 : 16;
     const cube = size.width / columns;
-    const rows = Math.ceil(size.height / cube);
+    let height = size.height;
+    // בטלפון לאורך: השכבה מכסה את כל המסך הפיזי, גם מאחורי שורת הכתובת הצפה של ספארי.
+    // הגובה הוא הגדול מבין שלוש המדידות, ועוד שורת קוביות, כך שהקוביות תמיד חורגות מתחת לקצה התחתון
+    if (mobileQuery.matches) {
+      const screenHeight = Math.max(window.innerHeight, window.screen.height, root.clientHeight);
+      height = Math.ceil(screenHeight + cube);
+      overlay.style.height = height + "px";
+    }
+    const rows = Math.ceil(height / cube);
     const total = columns * rows;
     const duration = cssTime("--page-transition-duration");
 
