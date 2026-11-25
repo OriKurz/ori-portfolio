@@ -1314,7 +1314,8 @@ if (leftoversMap) {
   // כשהמפה נכנסת למסך בגלילה (לפחות חצי ממנה נראה), העיגול מופיע לרגע במרכז המפה:
   // גדל, נשאר כשנייה ומתכווץ. פעם אחת בכל כניסה לעמוד. במחשב רק כשהעכבר לא על המפה.
   // נגיעה במפה או כניסה של העכבר באמצע הרמז עוצרות אותו, והזכוכית עובדת כרגיל מיד.
-  // במחשב: בכל כניסה של העכבר למפה העיגול גדל מעט, ואז עוקב אחרי העכבר כרגיל.
+  // אנימציית כניסה: בכל כניסה של העכבר למפה, ובטלפון בכל פעם שנגיעה ארוכה מציגה את העיגול,
+  // העיגול גדל בקפיצה קטנה, ואז עוקב כרגיל.
   // ב-prefers-reduced-motion: בלי רמז ובלי אנימציית כניסה
   let lensHinting = false;
   let mouseOnMap = false;
@@ -1332,6 +1333,14 @@ if (leftoversMap) {
     moveLens({ clientX: box.left + box.width / 2, clientY: box.top + box.height / 2, pointerType: "hint" });
     lens.classList.remove("is-entering");
     lens.classList.add("is-hinting");
+  }
+
+  function playLensEnter() {
+    if (reducedMotion.matches) return;
+    // מתחילים את האנימציה מחדש בכל כניסה
+    lens.classList.remove("is-entering");
+    void lens.offsetWidth;
+    lens.classList.add("is-entering");
   }
 
   lens.addEventListener("animationend", function (event) {
@@ -1361,11 +1370,7 @@ if (leftoversMap) {
     if (event.pointerType !== "mouse") return;
     mouseOnMap = true;
     stopLensHint();
-    if (!magnifying || reducedMotion.matches) return;
-    // מתחילים את האנימציה מחדש בכל כניסה
-    lens.classList.remove("is-entering");
-    void lens.offsetWidth;
-    lens.classList.add("is-entering");
+    if (magnifying) playLensEnter();
   });
 
   document.addEventListener("keydown", function (event) {
@@ -1404,6 +1409,7 @@ if (leftoversMap) {
       lensHeld = true;
       lensWasShown = true;
       moveLens(lastLensEvent);
+      playLensEnter();
     }, lensHoldTime);
   });
 

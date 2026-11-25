@@ -1193,9 +1193,11 @@
   /* העיגול: 3.45 משבצות במחשב, מגדיל פי 2 (בטלפון 6 משבצות ופי 2.5, למטה) */
   --magnifier-lens-size: calc(var(--cell) * 3.45);
   --magnifier-zoom: 2;
-  /* כניסת העכבר למפה (במחשב): העיגול גדל מ-0.85 ל-1 */
-  --magnifier-enter-scale: 0.85;
-  --magnifier-enter-duration: 250ms;
+  /* כניסת העיגול (העכבר נכנס למפה, או נגיעה ארוכה בטלפון): גדל מ-0.4, עובר מעט את הגודל (1.08)
+     ונוחת ב-1, כמו קפיצה קטנה */
+  --magnifier-enter-scale: 0.4;
+  --magnifier-enter-overshoot: 1.08;
+  --magnifier-enter-duration: 380ms;
   /* הרמז החד-פעמי (script.js): העיגול גדל במרכז המפה מ-0.6 ל-1 ב-400ms, נשאר שנייה ומתכווץ ל-0 ב-250ms.
      האחוזים באנימציה לפי התזמונים האלה (400 / 1650 ו-1400 / 1650) */
   --magnifier-hint-scale: 0.6;
@@ -6606,8 +6608,9 @@ body {
 }
 
 @keyframes magnifier-lens-enter {
-  from { scale: var(--magnifier-enter-scale); }
-  to   { scale: 1; }
+  0%   { scale: var(--magnifier-enter-scale); animation-timing-function: ease-out; }
+  65%  { scale: var(--magnifier-enter-overshoot); animation-timing-function: ease-in-out; }
+  100% { scale: 1; }
 }
 
 @keyframes magnifier-lens-hint {
