@@ -78,6 +78,25 @@
     return list;
   }
 
+  // ----- נעילת הגלילה בזמן המעבר (רק בטלפון לאורך, כשהשכבה absolute) -----
+  const scrollKeys = [" ", "PageUp", "PageDown", "End", "Home", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
+  function blockScroll(event) {
+    event.preventDefault();
+  }
+  function blockScrollKeys(event) {
+    if (scrollKeys.indexOf(event.key) !== -1) event.preventDefault();
+  }
+  function lockScroll() {
+    window.addEventListener("touchmove", blockScroll, { passive: false });
+    window.addEventListener("wheel", blockScroll, { passive: false });
+    window.addEventListener("keydown", blockScrollKeys, true);
+  }
+  function unlockScroll() {
+    window.removeEventListener("touchmove", blockScroll, { passive: false });
+    window.removeEventListener("wheel", blockScroll, { passive: false });
+    window.removeEventListener("keydown", blockScrollKeys, true);
+  }
+
   function createOverlay(color) {
     const overlay = document.createElement("div");
     overlay.className = "page-transition";
@@ -91,10 +110,16 @@
     let height = size.height;
     // בטלפון לאורך: השכבה מכסה את כל המסך הפיזי, גם מאחורי שורת הכתובת הצפה של ספארי.
     // הגובה הוא הגדול מבין שלוש המדידות, ועוד שורת קוביות, כך שהקוביות תמיד חורגות מתחת לקצה התחתון
+    // בספארי של iOS 26 אלמנט fixed לא מצויר מאחורי שורת הכתובת, ולכן בטלפון השכבה היא absolute
+    // בתוך העמוד, במיקום הגלילה של החלון (עמוד שנגלל באלמנט פנימי: החלון ב-0, אז top 0),
+    // והגלילה נעולה עד סוף המעבר, כדי שהשכבה לא תזוז
     if (mobileQuery.matches) {
       const screenHeight = Math.max(window.innerHeight, window.screen.height, root.clientHeight);
       height = Math.ceil(screenHeight + cube);
+      overlay.style.position = "absolute";
+      overlay.style.top = window.scrollY + "px";
       overlay.style.height = height + "px";
+      lockScroll();
     }
     const rows = Math.ceil(height / cube);
     const total = columns * rows;
@@ -199,6 +224,7 @@
     if (!event.persisted) return;
     leaving = false;
     document.querySelectorAll(".page-transition").forEach(function (overlay) { overlay.remove(); });
+    unlockScroll();
     root.classList.remove("is-page-transition-arriving");
   });
 
@@ -240,6 +266,7 @@
           overlay.classList.add("is-revealing");
           setTimeout(function () {
             overlay.remove();
+            unlockScroll();
             // המעבר נגמר לגמרי: מסמנים ומודיעים (למשל לקווים התחתונים ב-script.js)
             root.classList.add("is-page-transition-done");
             document.dispatchEvent(new Event("pagetransitionend"));
